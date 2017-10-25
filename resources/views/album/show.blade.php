@@ -69,7 +69,9 @@
         <input type="hidden" name="album-id" value="{{ $album->id }}" />
     </div>
 
-    @include('image.list', ['images' => $images])
+    <?php if (!empty($photos)): ?>
+    @include('image.list', ['photos' => $photos, 'counter' => 1])
+    <?php endif; ?>
 
     @include('album.edit_modal')
     @include('album.upload_photos_modal')

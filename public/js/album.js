@@ -19,11 +19,11 @@ var albumObject = {
     saveAlbum: function () {
         var params = {
             "_token": $('input[name="_token"]').val(),
-            "title": $('#albumNameModal').find('.album-name').val()
+            "title": $('#editAlbumModal').find('.album-name').val()
         };
         $.ajax({
             type: 'PUT',
-            url: albumObject.albumUpdateUrl,
+            url: albumObject.updateAlbumUrl,
             data: params,
             success: function (response) {
                 var messageBlock = $('.response-message');

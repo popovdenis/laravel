@@ -1,17 +1,16 @@
-<?php $counter = 1 ?>
 <table class="table-photos-list" align="center">
-    @foreach ($images as $key => $image)
+    @foreach ($photos as $key => $photo)
         <?php if ($counter == 8) { ?><tr><?php } ?>
             <td>
                 <div style="margin: 0 15px 15px 0">
-                    <a href="{{ url('/') }}/{{ $image->path }}"
+                    <a href="{{ url('/') }}/{{ $photo->path }}"
                        data-lightbox="roadtrip">
-                        <img src="{{ url('/') }}/{{ $image->path_thumb }}" />
+                        <img src="{{ url('/') }}/{{ $photo->path_thumb }}" />
                     </a>
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input class="remove-photo-checkbox" type="checkbox" value="{{ $image->id }}"
+                        <input class="remove-photo-checkbox" type="checkbox" value="{{ $photo->id }}"
                                style="display: none;">
                     </label>
                 </div>

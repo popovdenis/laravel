@@ -42,8 +42,6 @@ class ImageController extends Controller
             return Response::make($validation->errors()->first(), 400);
         }
         
-        
-        
         $extension = Input::file('file')->getClientOriginalExtension(); // getting file extension
         $fileName = time() . rand(1111, 9999);
         $uploadedFile = Input::file('file')->move(self::IMAGE_DESTINATION, $fileName . '.' . $extension);
@@ -84,7 +82,7 @@ class ImageController extends Controller
         }
     
         $album = Album::find($albumId);
-        $photos = $album->getImages($album, $photosIds);
+        $photos = $album->images($album, $photosIds);
         
         if (!empty($photos)) {
             Photo::destroy($photosIds);

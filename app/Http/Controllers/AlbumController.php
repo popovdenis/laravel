@@ -74,9 +74,9 @@ class AlbumController extends Controller
     public function show($id)
     {
         $album = Album::find($id);
-        $images = $album->images($album);
+        $photos = $album->images($album);
         
-        return view('album.show', compact('album', 'images'));
+        return view('album.show', compact('album', 'photos'));
     }
     
     /**
