@@ -6,12 +6,12 @@
                     <a href="{{ url('/') }}/{{ $photo->path }}"
                        data-lightbox="roadtrip">
                         <img src="{{ url('/') }}/{{ $photo->path_thumb }}" />
+                        @include('image.comments_box')
                     </a>
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input class="remove-photo-checkbox" type="checkbox" value="{{ $photo->id }}"
-                               style="display: none;">
+                        <input class="remove-photo-checkbox" type="checkbox" value="{{ $photo->id }}" style="display: none;">
                     </label>
                 </div>
             </td>
