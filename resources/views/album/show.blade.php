@@ -14,19 +14,28 @@
     <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
 
     <div>
-        <div class="btn-group">
-            <button data-toggle="dropdown"
-                    class="btn btn-primary">{{ trans('album.edit') }}<span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
-                <li><a data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
-                <li>
-                    <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
-                    <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
-                </li>
-            </ul>
-        </div>
+        @if ($owner->id === $currentUser->id)
+            <div class="btn-group">
+                <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
+                    <li><a data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
+                    <li>
+                        <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
+                        <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
+                    </li>
+                    <li><a>
+                            {!! Form::open([
+                            'method' => 'DELETE',
+                            'route' => ['album.destroy', $album->id],
+                            'style'=>'display:inline'
+                        ]) !!}
+                            {!! Form::submit(trans('album.delete')) !!}
+                            {!! Form::close() !!}
+                        </a></li>
+                </ul>
+            </div>
+        @endif
         <span>
             <a href="{{ url('/album/download', $album->id) }}"
                class="btn btn-warning">{{ trans('album.download') }}</a>
@@ -59,9 +68,6 @@
         </div>
     @endif
 
-    @if(Session::has('message'))
-        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-    @endif
 
     <div class="remove-photos-all-block" style="margin: 5px;display: none;">
         <button class="btn btn-danger btn-remove-photos-all">{{ trans('album.photo.remove') }}</button>

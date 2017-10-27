@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Item;
 
-class ItemCRUDController extends Controller
+class ItemCRUDController extends BaseController
 {
     /**
      * Display a listing of the resource.

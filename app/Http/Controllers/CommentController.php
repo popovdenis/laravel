@@ -9,13 +9,13 @@ use App\Comment;
 use App\Post;
 
 
-class CommentController extends Controller
+class CommentController extends BaseController
 {
-    
+ 
 	public function store(Request $request){
 		
 		/*
-		 * Cоставляем массив данных кроме указанных полей формы 
+		 * Cоставляем массив данных кроме указанных полей формы
 		 * (т.к. в БД данные поля называются по-другому)
 		 */
 		$data = $request->except('_token', 'comment_post_ID', 'comment_parent');
@@ -29,16 +29,16 @@ class CommentController extends Controller
 		
 		/*
 		 * Если активен аутентифицированный пользователь
-		 * то эти данные берем из таблицы users	
+		 * то эти данные берем из таблицы users
 		 */
 		$user = Auth::user(); //аутентиф.пользователь
 
 		if($user) {
 			$data['user_id'] = $user->id;
 			$data['name'] = (!empty($data['name'])) ? $data['name'] : $user->name;
-			$data['email'] = (!empty($data['email'])) ? $data['email'] : $user->email;								
+			$data['email'] = (!empty($data['email'])) ? $data['email'] : $user->email;
 		}
-			
+		
 		//Проверка
 		$validator = Validator::make($data,[
 			'post_id' => 'integer|required',
@@ -51,11 +51,11 @@ class CommentController extends Controller
 		/*
 		 * Создаем объект для сохранения, передаем ему массив данных
 		 */
-		$comment = new Comment($data); 
+		$comment = new Comment($data);
 
-				
+		
 		//Ошибки
-		if ($validator->fails()) {	
+		if ($validator->fails()) {
 			/*
 			 * Возвращаем ответ в формате json.
 			 * Метод all() переводит в массив т.к. данный формат работает или
@@ -64,7 +64,7 @@ class CommentController extends Controller
 			return \Response::json(['error'=>$validator->errors()->all()]);
 		}
 		
-			
+		
 		//получаем модель записи к которой принадлежит комментарий
 		$post = Post::find($data['post_id']);
 		/*

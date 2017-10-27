@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
-class UsersController extends Controller
+class UsersController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    
     /**
      * Display a listing of the resource.
      *

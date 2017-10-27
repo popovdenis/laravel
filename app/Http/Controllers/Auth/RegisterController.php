@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
-class RegisterController extends Controller
+class RegisterController extends BaseController
 {
     /*
     |--------------------------------------------------------------------------
@@ -90,11 +90,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        
+        $userData = $user->toArray();
+        $userData['fullname'] = $user->getFullname();
+    
+        \Mail::send('emails.welcome', $userData, function($message) use ($userData)
+        {
+            $message->from('no-reply@site.com', "Site name");
+            $message->subject("Добро пожаловать на сайт!");
+            $message->to($userData['email']);
+        });
+    
+        return $user;
     }
 }

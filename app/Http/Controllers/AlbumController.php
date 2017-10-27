@@ -13,14 +13,10 @@ use App\Album;
 use App\AlbumImage;
 use Folklore\Image\Facades\Image;
 use Chumper\Zipper\Zipper;
+use Illuminate\Support\Facades\Auth;
 
-class AlbumController extends Controller
+class AlbumController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-    
     /**
      * Display a listing of the resource.
      *
@@ -28,10 +24,10 @@ class AlbumController extends Controller
      */
     public function index(Request $request)
     {
-        $albums = Album::orderBy('id', 'DESC')->paginate(3);
+        $albums = Album::orderBy('id', 'DESC')->paginate(30);
         
         return view('album.index', compact('albums'))
-            ->with('i', ($request->input('page', 1) - 1) * 3);
+            ->with('i', ($request->input('page', 1) - 1) * 30);
     }
     
     /**
@@ -61,7 +57,10 @@ class AlbumController extends Controller
     
         Album::create($request->all());
     
-        return response() ->json(array('message'=> __('album.created.successfully')), 200);
+        return response()->json([
+            'message'=> __('album.created.successfully'),
+            'route' => route('user.show', \Auth::getUser()->getAuthIdentifier())
+        ], 200);
     }
     
     /**
@@ -75,8 +74,10 @@ class AlbumController extends Controller
     {
         $album = Album::find($id);
         $photos = $album->images($album);
+        $currentUser = Auth::getUser();
+        $owner = $album->owner();
         
-        return view('album.show', compact('album', 'photos'));
+        return view('album.show', compact('album', 'photos', 'owner', 'currentUser'));
     }
     
     /**
@@ -110,7 +111,7 @@ class AlbumController extends Controller
     
         Album::find($id)->update($request->all());
     
-        return response() ->json(array('message'=> 'updated.successfully'), 200);
+        return response()->json(array('message'=> 'updated.successfully'), 200);
     }
     
     public function download($id)
@@ -140,8 +141,10 @@ class AlbumController extends Controller
     public function destroy($id)
     {
         Album::find($id)->delete();
+    
+        \Session::flash('success', 'Album deleted successfully');
         
-        return redirect()->route('album.index')
+        return redirect()->route('user.show', \Auth::getUser()->getAuthIdentifier())
             ->with('success', 'Album deleted successfully');
     }
 }
