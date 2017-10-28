@@ -4,7 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Album;
-use App\Comment;
 
 class Photo extends Model
 {
@@ -20,10 +19,5 @@ class Photo extends Model
     public function album()
     {
         return $this->belongsTo(Album::class);
-    }
-    
-    public function comments()
-    {
-        return $this->belongsTo(\App\Comment::class, 'image_id');
     }
 }

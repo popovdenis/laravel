@@ -40,8 +40,6 @@
     </div>
 
     @include('album.list', array('albums' => $albums, 'count' => 1))
-    @if ($user->id === $currentUser->id)
-        @include('album.create')
-    @endif
+    @include('album.create')
 
 @endsection

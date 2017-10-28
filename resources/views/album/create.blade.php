@@ -11,7 +11,7 @@
                     url:'{{ route('album.store') }}',
                     data: params,
                     success:function(data) {
-                        window.location.href = data.route;
+                        window.location.reload();
                     }
                 });
             });

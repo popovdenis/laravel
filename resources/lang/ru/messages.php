@@ -6,6 +6,6 @@
  */
 return [
     'back' => 'Назад',
-    'logout' => 'Выйти',
+    'logout' => 'Log out',
     'You have uploaded images successfully' => 'You have uploaded images successfully'
 ];

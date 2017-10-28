@@ -14,8 +14,13 @@ use App\Album;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends BaseController
+class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -23,10 +28,10 @@ class UserController extends BaseController
      */
     public function index(Request $request)
     {
-        $users = User::orderBy('id', 'DESC')->paginate(30);
+        $users = User::orderBy('id', 'DESC')->paginate(3);
         
         return view('user.index', compact('users'))
-            ->with('i', ($request->input('page', 1) - 1) * 30);
+            ->with('i', ($request->input('page', 1) - 1) * 3);
     }
     
     /**
@@ -71,7 +76,7 @@ class UserController extends BaseController
     public function show($id)
     {
         $user = User::find($id);
-        $albums = $user->getAlbums()->orderBy('id', 'DESC')->paginate(30);
+        $albums = $user->getAlbums()->orderBy('id', 'DESC')->paginate(3);
         $currentUser = Auth::getUser();
         
         return view('user.show', compact('user', 'albums', 'currentUser'));

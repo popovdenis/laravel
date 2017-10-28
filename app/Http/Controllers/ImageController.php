@@ -17,9 +17,14 @@ use App\Model\ImageLib;
  *
  * @package App\Http\Controllers
  */
-class ImageController extends BaseController
+class ImageController extends Controller
 {
     const IMAGE_DESTINATION = 'uploads';
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     
     /**
      * Upload files.

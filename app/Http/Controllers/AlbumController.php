@@ -13,10 +13,14 @@ use App\Album;
 use App\AlbumImage;
 use Folklore\Image\Facades\Image;
 use Chumper\Zipper\Zipper;
-use Illuminate\Support\Facades\Auth;
 
-class AlbumController extends BaseController
+class AlbumController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -24,10 +28,10 @@ class AlbumController extends BaseController
      */
     public function index(Request $request)
     {
-        $albums = Album::orderBy('id', 'DESC')->paginate(30);
+        $albums = Album::orderBy('id', 'DESC')->paginate(3);
         
         return view('album.index', compact('albums'))
-            ->with('i', ($request->input('page', 1) - 1) * 30);
+            ->with('i', ($request->input('page', 1) - 1) * 3);
     }
     
     /**
@@ -57,10 +61,7 @@ class AlbumController extends BaseController
     
         Album::create($request->all());
     
-        return response()->json([
-            'message'=> __('album.created.successfully'),
-            'route' => route('user.show', \Auth::getUser()->getAuthIdentifier())
-        ], 200);
+        return response() ->json(array('message'=> __('album.created.successfully')), 200);
     }
     
     /**
@@ -74,10 +75,8 @@ class AlbumController extends BaseController
     {
         $album = Album::find($id);
         $photos = $album->images($album);
-        $currentUser = Auth::getUser();
-        $owner = $album->owner();
         
-        return view('album.show', compact('album', 'photos', 'owner', 'currentUser'));
+        return view('album.show', compact('album', 'photos'));
     }
     
     /**
@@ -111,7 +110,7 @@ class AlbumController extends BaseController
     
         Album::find($id)->update($request->all());
     
-        return response()->json(array('message'=> 'updated.successfully'), 200);
+        return response() ->json(array('message'=> 'updated.successfully'), 200);
     }
     
     public function download($id)
@@ -141,10 +140,8 @@ class AlbumController extends BaseController
     public function destroy($id)
     {
         Album::find($id)->delete();
-    
-        \Session::flash('success', 'Album deleted successfully');
         
-        return redirect()->route('user.show', \Auth::getUser()->getAuthIdentifier())
+        return redirect()->route('album.index')
             ->with('success', 'Album deleted successfully');
     }
 }
