@@ -141,7 +141,7 @@ body.lb-disable-scrolling {
   opacity: 1;
 }
 
-.lb-dataContainer {
+.lb-dataContainer, .lb-commentsContainer {
   margin: 0 auto;
   padding-top: 5px;
   *zoom: 1;
@@ -158,6 +158,11 @@ body.lb-disable-scrolling {
   content: "";
   display: table;
   clear: both;
+}
+
+.lb-commentsContainer {
+  display: table;
+  background-color: #ffffff;
 }
 
 .lb-data {

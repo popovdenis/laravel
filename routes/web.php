@@ -26,6 +26,6 @@ Route::resource('image', 'ImageController');
 Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
 Route::post('/image/removePhotos', 'ImageController@removePhotos');
 
-Auth::routes();
+Route::resource('comment', 'CommentController');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes();
