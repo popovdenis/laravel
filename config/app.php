@@ -178,7 +178,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Folklore\Image\ImageServiceProvider::class,
-        Klisl\Comments\CommentsServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class
     ],
 

@@ -61,7 +61,7 @@ class AlbumController extends Controller
     
         Album::create($request->all());
     
-        return response() ->json(array('message'=> __('album.created.successfully')), 200);
+        return response()->json(array('message'=> __('album.created.successfully')), 200);
     }
     
     /**
@@ -110,7 +110,7 @@ class AlbumController extends Controller
     
         Album::find($id)->update($request->all());
     
-        return response() ->json(array('message'=> 'updated.successfully'), 200);
+        return response()->json(array('message'=> 'updated.successfully'), 200);
     }
     
     public function download($id)

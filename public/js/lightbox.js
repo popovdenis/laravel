@@ -228,7 +228,7 @@
             self.album.push({
                 link: $link.attr('href'),
                 title: $link.attr('data-title') || $link.attr('title'),
-                comments: $link.parents('.gallery-item').find('.gallery-item-comments').clone()
+                comments: $link.parents('.gallery-item').find('.gallery-item-comments')
             });
         }
         

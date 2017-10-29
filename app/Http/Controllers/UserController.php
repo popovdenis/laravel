@@ -76,7 +76,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $albums = $user->getAlbums()->orderBy('id', 'DESC')->paginate(3);
+        $albums = $user->albums()->orderBy('id', 'DESC')->paginate(3);
         $currentUser = Auth::getUser();
         
         return view('user.show', compact('user', 'albums', 'currentUser'));

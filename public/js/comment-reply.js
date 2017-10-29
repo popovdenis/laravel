@@ -1,13 +1,13 @@
 addComment = {
-    moveForm: function(d, f, i, c) {
+    moveForm: function (d, f, i, c) {
         var m = this,
             a, h = m.I(d),
             b = m.I(i),
             l = m.I("cancel-comment-reply-link"),
             j = m.I("comment_parent"),
-            k = m.I("comment_post_ID");
+            k = m.I("comment_image_ID");
         if (!h || !b || !l || !j) {
-			alert(1);
+            alert(1);
             return
         }
         m.respondId = i;
@@ -24,7 +24,7 @@ addComment = {
         }
         j.value = f;
         l.style.display = "";
-        l.onclick = function() {
+        l.onclick = function () {
             var n = addComment,
                 e = n.I("wp-temp-form-div"),
                 o = n.I(n.respondId);
@@ -40,10 +40,11 @@ addComment = {
         };
         try {
             m.I("comment").focus()
-        } catch (g) {}
+        } catch (g) {
+        }
         return false
     },
-    I: function(a) {
+    I: function (a) {
         return document.getElementById(a)
     }
 };

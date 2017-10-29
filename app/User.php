@@ -27,7 +27,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     
-    public function getAlbums()
+    public function albums()
     {
         return $this->hasMany(Album::class);
     }

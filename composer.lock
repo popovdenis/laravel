@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "473ba0937a9e9761e5e87b6be7e6104b",
+    "content-hash": "5f8c928b0ce22b851c2a3144d11dff86",
     "packages": [
         {
             "name": "chumper/zipper",
@@ -464,59 +464,17 @@
             "time": "2015-04-20T18:58:01+00:00"
         },
         {
-            "name": "klisl/laravel-comments",
-            "version": "1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/klisl/laravel-comments.git",
-                "reference": "261834396ba7528e402d5e7d56ea19563111bdb3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/klisl/laravel-comments/zipball/261834396ba7528e402d5e7d56ea19563111bdb3",
-                "reference": "261834396ba7528e402d5e7d56ea19563111bdb3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Klisl\\Comments\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sergey Klimenchuk",
-                    "email": "ksl80@ukr.net",
-                    "homepage": "https://github.com/klisl/laravel-comments",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Package for using comments in Laravel-5",
-            "keywords": [
-                "comments",
-                "laravel"
-            ],
-            "time": "2017-07-16T09:48:30+00:00"
-        },
-        {
             "name": "laravel/framework",
-            "version": "v5.5.18",
+            "version": "v5.5.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1cc21baac11551377734b8c17ead17db4c34fe21"
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/1cc21baac11551377734b8c17ead17db4c34fe21",
-                "reference": "1cc21baac11551377734b8c17ead17db4c34fe21",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/c678100e84934ec85c9f8bc26bd0a60222682719",
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719",
                 "shasum": ""
             },
             "require": {
@@ -634,7 +592,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-10-19T12:50:26+00:00"
+            "time": "2017-10-25T19:10:45+00:00"
         },
         {
             "name": "laravel/tinker",
