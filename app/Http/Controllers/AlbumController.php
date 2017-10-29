@@ -141,7 +141,15 @@ class AlbumController extends Controller
      */
     public function destroy($id)
     {
-        Album::find($id)->delete();
+        $album = Album::find($id);
+        $photos = $album->images($album);
+        
+        $album->delete();
+        if (!empty($photos)) {
+            foreach ($photos as $photo) {
+                $photo->delete();
+            }
+        }
         
         return redirect()->route('user.show', $this->getCurrentUser()->id)
             ->with('success', 'Album deleted successfully');
