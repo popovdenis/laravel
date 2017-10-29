@@ -13,6 +13,7 @@ use App\Album;
 use App\AlbumImage;
 use Folklore\Image\Facades\Image;
 use Chumper\Zipper\Zipper;
+use Illuminate\Support\Facades\Auth;
 
 class AlbumController extends Controller
 {
@@ -75,8 +76,9 @@ class AlbumController extends Controller
     {
         $album = Album::find($id);
         $photos = $album->images($album);
+        $currentUser = Auth::getUser();
         
-        return view('album.show', compact('album', 'photos'));
+        return view('album.show', compact('album', 'photos', 'currentUser'));
     }
     
     /**

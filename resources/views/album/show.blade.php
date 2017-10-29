@@ -14,19 +14,21 @@
     <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
 
     <div>
-        <div class="btn-group">
-            <button data-toggle="dropdown"
-                    class="btn btn-primary">{{ trans('album.edit') }}<span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
-                <li><a data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
-                <li>
-                    <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
-                    <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
-                </li>
-            </ul>
-        </div>
+        <?php if ($album->owner()->id === $currentUser->id): ?>
+            <div class="btn-group">
+                <button data-toggle="dropdown"
+                        class="btn btn-primary">{{ trans('album.edit') }}<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
+                    <li><a data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
+                    <li>
+                        <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
+                        <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
         <span>
             <a href="{{ url('/album/download', $album->id) }}"
                class="btn btn-warning">{{ trans('album.download') }}</a>
