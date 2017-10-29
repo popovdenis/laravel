@@ -6,8 +6,20 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    
+    private $_currentUser = null;
+    
+    public function getCurrentUser()
+    {
+        if ($this->_currentUser === null) {
+            $this->_currentUser = Auth::getUser();
+        }
+        
+        return $this->_currentUser;
+    }
 }

@@ -58,7 +58,7 @@ class AlbumController extends Controller
             $request, [
             'title' => 'required',
         ]);
-        $request->merge(['user_id' => \Auth::getUser()->getAuthIdentifier()]);
+        $request->merge(['user_id' => $this->getCurrentUser()->getAuthIdentifier()]);
     
         Album::create($request->all());
     
@@ -76,7 +76,7 @@ class AlbumController extends Controller
     {
         $album = Album::find($id);
         $photos = $album->images($album);
-        $currentUser = Auth::getUser();
+        $currentUser = $this->getCurrentUser();
         
         return view('album.show', compact('album', 'photos', 'currentUser'));
     }
@@ -143,7 +143,7 @@ class AlbumController extends Controller
     {
         Album::find($id)->delete();
         
-        return redirect()->route('album.index')
+        return redirect()->route('user.show', $this->getCurrentUser()->id)
             ->with('success', 'Album deleted successfully');
     }
 }

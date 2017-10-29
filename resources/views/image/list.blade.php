@@ -1,20 +1,7 @@
 <style type="text/css">
-    /*.gallery {*/
-    /*width: 100%;*/
-    /*height: 100%*/
-    /*}*/
-    /*.gallery-inner {*/
-    /*position: absolute;*/
-    /*left: 0;*/
-    /*top: 0;*/
-    /*white-space: nowrap;*/
-    /*}*/
     .gallery-item {
         float: left;
         margin: 0 15px 15px 0;
-    }
-    .gallery-item-comments {
-        /*display: none;*/
     }
     .current {
         display: block;

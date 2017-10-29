@@ -26,6 +26,15 @@
                         <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
                         <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
                     </li>
+                    <li><a class="remove-album-link">
+                        {!! Form::open([
+                        'method' => 'DELETE',
+                        'route' => ['album.destroy', $album->id],
+                        'style'=>'display:inline'
+                    ]) !!}
+                        {!! Form::submit(trans('album.delete'), ['class'=>'remove-album-btn']) !!}
+                        {!! Form::close() !!}
+                    </a></li>
                 </ul>
             </div>
         <?php endif; ?>

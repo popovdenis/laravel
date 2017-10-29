@@ -316,3 +316,9 @@ footer {
 .btn-google {
     background-color: #c32f10;
 }
+
+.remove-album-btn {
+    border: none;
+    background-color: #ffffff;
+    padding: 0;
+}
