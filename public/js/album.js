@@ -12,6 +12,9 @@ var albumObject = {
         $('.upload-photo').on('click', function () {
             albumObject.uploadPhotoAlbum();
         });
+        $('.album-add-photo-popup').click(function () {
+            $('.upload-photo').prop('disabled', 'disabled');
+        });
         albumObject.initDropzone();
         albumObject.initRemovePhotoLink();
     },
@@ -86,7 +89,7 @@ var albumObject = {
             },
             complete: function (file) {
                 if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                    alert('ok');
+                    $('.upload-photo').prop('disabled', false);
                 }
             }
         });

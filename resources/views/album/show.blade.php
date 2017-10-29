@@ -21,7 +21,8 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
-                    <li><a data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
+                    <li><a class="album-add-photo-popup"
+                            data-toggle="modal" data-target="#uploadPhotoModal">{{ trans('album.add.photo') }}</a></li>
                     <li>
                         <a class="remove-photos-link">{{ trans('album.delete.photo') }}</a>
                         <a class="cancel-remove-photos-link" style="display: none;">{{ trans('album.cancel') }}</a>
