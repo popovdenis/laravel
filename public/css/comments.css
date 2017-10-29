@@ -259,7 +259,7 @@ h3#reply-title {
 
 #respond input {
     width: 80%;
-    padding: 9px;
+    /*padding: 9px;*/
     margin: 0;
     border: 1px solid #CFCFCF;
     background-color: #fff;
