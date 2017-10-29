@@ -83,6 +83,11 @@ var albumObject = {
                 if (response.result && response.filename != undefined) {
                     self.files.push(response.filename);
                 }
+            },
+            complete: function (file) {
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    alert('ok');
+                }
             }
         });
     },

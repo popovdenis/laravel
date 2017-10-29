@@ -81,20 +81,9 @@
     </div>
 
     <?php if (!empty($photos)): ?>
-    @include('image.list', ['photos' => $photos, 'counter' => 1])
+        @include('image.list', ['photos' => $photos, 'counter' => 1])
     <?php endif; ?>
 
     @include('album.edit_modal')
     @include('album.upload_photos_modal')
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            albumObject.updateAlbumUrl = "{{ route('album.update', $album->id) }}";
-            albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
-            albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
-            albumObject.removePhotosUrl = "{{ url('/') }}" + "/image/removePhotos";
-
-            albumObject.init();
-        });
-    </script>
 @endsection

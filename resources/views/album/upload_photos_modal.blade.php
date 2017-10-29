@@ -21,3 +21,14 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        albumObject.updateAlbumUrl = "{{ route('album.update', $album->id) }}";
+        albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
+        albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
+        albumObject.removePhotosUrl = "{{ url('/') }}" + "/image/removePhotos";
+
+        albumObject.init();
+    });
+</script>

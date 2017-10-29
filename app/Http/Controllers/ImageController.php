@@ -21,6 +21,8 @@ class ImageController extends Controller
 {
     const IMAGE_DESTINATION = 'uploads';
     
+    const TEMP_DESTINATION = 'temp';
+    
     public function __construct()
     {
         $this->middleware('auth');
@@ -44,7 +46,7 @@ class ImageController extends Controller
         
         $extension = Input::file('file')->getClientOriginalExtension(); // getting file extension
         $fileName = time() . rand(1111, 9999);
-        $uploadedFile = Input::file('file')->move(self::IMAGE_DESTINATION, $fileName . '.' . $extension);
+        $uploadedFile = Input::file('file')->move(self::TEMP_DESTINATION, $fileName . '.' . $extension);
     
         $config = [];
         $config['image_library'] = 'gd2';
@@ -111,6 +113,17 @@ class ImageController extends Controller
         foreach ($images as $image) {
             $filename = explode('.', $image);
             $ext = array_pop($filename);
+    
+            // move original file
+            \Storage::disk('public')->move(
+                self::TEMP_DESTINATION . '/' . $image,
+                self::IMAGE_DESTINATION . '/' . $image
+            );
+            // move thumbnail
+            \Storage::disk('public')->move(
+                self::TEMP_DESTINATION . '/' . $filename[0] . '_thumb.' . $ext,
+                self::IMAGE_DESTINATION . '/' . $filename[0] . '_thumb.' . $ext
+            );
             
             $imageData = [
                 'title' => $image,
