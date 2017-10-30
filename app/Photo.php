@@ -46,4 +46,13 @@ class Photo extends Model
         
         return $images;
     }
+    
+    public function delete()
+    {
+        $this->hasMany(AlbumImage::class, 'image_id')->delete();
+    
+        parent::delete();
+        
+        return $this;
+    }
 }

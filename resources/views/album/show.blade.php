@@ -86,6 +86,7 @@
             albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
             albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
             albumObject.init();
+            albumObject.initDropzone();
 
             photoObject.removePhotosUrl = "{{ url('/') }}" + "/image/removePhotos";
             photoObject.init();

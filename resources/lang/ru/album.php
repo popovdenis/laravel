@@ -7,11 +7,13 @@
 return [
     'my.albums' => 'Мои Альбомы',
     'edit' => 'Редактировать альбом',
-    'title' => 'Название:',
+    'title' => 'Название',
+    'placeholder.title' => 'Название альбома',
     'edit.name' => 'Изменить имя альбома',
     'add.photo' => 'Добавить фото',
     'delete.photo' => 'Удалить фото',
     'delete' => 'Удалить альбом',
+    'delete.selected' => 'Удалить выбранные альбомы',
     'download' => 'Скачать',
     'popup.close' => 'Закрыть',
     'popup.save' => 'Сохранить изменения',
@@ -21,4 +23,5 @@ return [
     'albums' => 'Альбомы',
     'created.successfully' => 'Album created successfully',
     'updated.successfully' => 'Album updated successfully',
+    'deleted.selected.success' => 'Selected albums were deleted successfully'
 ];

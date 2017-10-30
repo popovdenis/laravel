@@ -4,21 +4,25 @@ var albumObject = {
     albumUpdateUrl: null,
     uploadFilesUrl: null,
     uploadPhotoAlbumUrl: null,
+    removeAlbumsUrl: null,
     
     init: function () {
+        var self = this;
+        
         $('.btn-save-album').on('click', function () {
-            albumObject.saveAlbum();
+            self.saveAlbum();
         });
         $('.edit-album').on('click', function () {
-            albumObject.updateAlbum();
+            self.updateAlbum();
         });
         $('.upload-photo').on('click', function () {
-            albumObject.uploadPhotoAlbum();
+            self.uploadPhotoAlbum();
         });
         $('.album-add-photo-popup').click(function () {
             $('.upload-photo').prop('disabled', 'disabled');
         });
-        albumObject.initDropzone();
+    
+        self.deleteAlbumEvent();
     },
     
     getToken: function () {
@@ -63,6 +67,101 @@ var albumObject = {
                 }
             }
         });
+    },
+    
+    deleteAlbumEvent: function () {
+        var self = this;
+        $('.remove-albums-btn').on('click', function () {
+            $(this).hide();
+            $('.cancel-albums-btn').show();
+            self.displayRemoveSelectedAlbumsButton();
+            self.enableCheckboxes();
+        });
+        $('.cancel-albums-btn').on('click', function () {
+            $(this).hide();
+            $('.remove-albums-btn').show();
+            self.hideRemoveSelectedAlbumsButton();
+            self.disableCheckboxes();
+        });
+    },
+    
+    displayRemoveSelectedAlbumsButton: function () {
+        $('.delete-selected-albums').show();
+        this.initRemoveAlbumsBtnEvent();
+        this.disableRemoveAlbumsButton();
+    },
+    
+    disableRemoveAlbumsButton: function () {
+        $('.delete-selected-albums').prop('disabled', 'disabled');
+    },
+    
+    enableRemoveAlbumsButton: function () {
+        $('.delete-selected-albums').prop('disabled', false);
+    },
+    
+    hideRemoveSelectedAlbumsButton: function () {
+        $('.delete-selected-albums').hide();
+    },
+    
+    initRemoveAlbumsBtnEvent: function () {
+        var self = this;
+        $('.delete-selected-albums').off('click').on('click', function () {
+            var albumsToRemove = self.getCheckedCheckboxes();
+            if (albumsToRemove.length > 0) {
+                var albumsToRemoveIds = [];
+                albumsToRemove.each(function () {
+                    albumsToRemoveIds.push($(this).val());
+                });
+                
+                var params = {
+                    "_token": self.getToken(),
+                    "albumsIds": albumsToRemoveIds
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: self.removeAlbumsUrl,
+                    data: params,
+                    success: function (response) {
+                        if (response) {
+                            window.location.reload();
+                        }
+                    }
+                });
+            }
+        });
+    },
+    
+    enableCheckboxes: function () {
+        var self = this;
+        $('.album-checkbox').each(function () {
+            $(this).prop('checked', false).show();
+            self.initCheckboxEvent($(this));
+        });
+    },
+    
+    disableCheckboxes: function () {
+        $('.album-checkbox').each(function () {
+            $(this).prop('checked', false).hide();
+        });
+    },
+    
+    initCheckboxEvent: function (checkbox) {
+        var self = this;
+        checkbox.off('click').on('click', function () {
+            if ($(this).is(':checked')) {
+                self.enableRemoveAlbumsButton();
+            } else {
+                if (self.getCheckedCheckboxes().length > 0) {
+                    self.enableRemoveAlbumsButton();
+                } else {
+                    self.disableRemoveAlbumsButton();
+                }
+            }
+        });
+    },
+    
+    getCheckedCheckboxes: function () {
+        return $('.albums-list').find('.album-checkbox:checked');
     },
     
     uploadPhotoAlbum: function () {

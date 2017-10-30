@@ -19,7 +19,9 @@ Route::resource('admin','Admin\UsersController');
 Route::resource('admin/users','Admin\UsersController');
 
 Route::resource('user','UserController');
+
 Route::get('album/download/{id}', 'AlbumController@download')->where('id', '[0-9]+');
+Route::post('album/removeList/{ids?}', 'AlbumController@removeList');
 Route::resource('album','AlbumController');
 
 Route::resource('image', 'ImageController');

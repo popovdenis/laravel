@@ -25,14 +25,6 @@ $comments = $photo->comments()->get()->all();
         </h3>
         <!--параметр action используется ajax-->
         {!! Form::open(['route' => 'comment.store','method'=>'POST', 'id' => 'commentform-' . $photo->id]) !!}
-            <p class="comment-form-author">
-                <label for="author">Имя</label>
-                <input id="name" name="name" type="text" value="" size="30" aria-required="true"/>
-            </p>
-            <p class="comment-form-email">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="text" value="" size="30" aria-required="true"/>
-            </p>
             <p class="comment-form-comment">
                 <label for="comment">Ваш комментарий</label>
                 <textarea id="comment" name="text" cols="45" rows="8"></textarea>

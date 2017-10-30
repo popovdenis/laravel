@@ -1,6 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
+    <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
 
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -14,23 +15,15 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>{{ trans('album.albums') }}</h2>
-            </div>
-            <div class="pull-right">
-            @if ($user->id === $currentUser->id)
-                <button class="btn btn-success"
-                        data-toggle="modal" data-target="#newAlbum">{{ trans('album.create') }}</button>
-            @endif
-                <button class="btn btn-warning album-download">{{ trans('album.download') }}</button>
-                <button class="btn btn-danger album-delete">{{ trans('album.delete') }}</button>
-            </div>
-        </div>
-    </div>
+    @include('album.main', ['albums' => $albums, 'user' => $user, 'currentUser' => $currentUser])
 
-    @include('album.create')
-    @include('album.list', array('albums' => $albums, 'count' => 1))
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            albumObject.saveAlbumUrl = "{{ route('album.store') }}";
+            albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
+            albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
+            albumObject.removeAlbumsUrl = "{{ url('/album/removeList') }}";
+            albumObject.init();
+        });
+    </script>
 @endsection

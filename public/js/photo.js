@@ -25,7 +25,7 @@ var photoObject = {
     displayRemovePhotosButton: function () {
         $('.remove-photos-all-block').show();
         this.initRemovePhotosBtnEvent();
-        this.disabledRemovePhotosButton();
+        this.disableRemovePhotosButton();
     },
     
     initRemovePhotosBtnEvent: function () {
@@ -84,7 +84,7 @@ var photoObject = {
                 if (self.getCheckedCheckboxes().length > 0) {
                     self.enableRemovePhotosButton();
                 } else {
-                    self.disabledRemovePhotosButton();
+                    self.disableRemovePhotosButton();
                 }
             }
         });
@@ -94,7 +94,7 @@ var photoObject = {
         $('.remove-photos-all-block').find('button').prop('disabled', false);
     },
     
-    disabledRemovePhotosButton: function () {
+    disableRemovePhotosButton: function () {
         $('.remove-photos-all-block').find('button').prop('disabled', 'disabled');
     },
     

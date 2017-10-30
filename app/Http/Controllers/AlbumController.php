@@ -140,6 +140,32 @@ class AlbumController extends Controller
         return response()->download($zipPath);
     }
     
+    private function _removeAlbum($albumId)
+    {
+        $album = Album::find($albumId);
+    
+        foreach ($album->images($album) as $photo) {
+            foreach ($photo->comments()->get()->all() as $comment) {
+                $comment->delete();
+            }
+            $photo->delete();
+        }
+        $album->delete();
+    }
+    
+    public function removeList(Request $request)
+    {
+        $albumsIds = $request->get('albumsIds', []);
+        
+        if (!empty($albumsIds)) {
+            foreach ($albumsIds as $albumsId) {
+                $this->_removeAlbum(intval($albumsId));
+            }
+        }
+    
+        return response()->json(['message'=> __('album.deleted.selected.success')], 200);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -149,15 +175,7 @@ class AlbumController extends Controller
      */
     public function destroy($id)
     {
-        $album = Album::find($id);
-        $photos = $album->images($album);
-        
-        $album->delete();
-        if (!empty($photos)) {
-            foreach ($photos as $photo) {
-                $photo->delete();
-            }
-        }
+        $this->_removeAlbum($id);
         
         return redirect()->route('user.show', $this->getCurrentUser()->id)
             ->with('success', 'Album deleted successfully');

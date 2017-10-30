@@ -38,8 +38,8 @@ class CommentController extends Controller
         
         if ($user) {
             $data['user_id'] = $user->id;
-            $data['name'] = (!empty($data['name'])) ? $data['name'] : $user->name;
-            $data['email'] = (!empty($data['email'])) ? $data['email'] : $user->email;
+            $data['name'] = $user->getFullname();
+            $data['email'] = $user->email;
         }
         
         //Проверка
@@ -47,8 +47,6 @@ class CommentController extends Controller
             $data, [
                 'image_id' => 'integer|required',
                 'text' => 'required',
-                'name' => 'required',
-                'email' => 'required|email',
             ]
         );
         

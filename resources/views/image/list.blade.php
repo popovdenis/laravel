@@ -2,6 +2,7 @@
     .gallery-item {
         float: left;
         margin: 0 15px 15px 0;
+        width: 80%;
     }
     .current {
         display: block;
@@ -21,7 +22,7 @@
                     <a href="{{ url('/') }}/{{ $photo->path }}" data-lightbox="roadtrip">
                         <img src="{{ url('/') }}/{{ $photo->path_thumb }}"/>
                     </a>
-                    <div class="checkbox">
+                    <div>
                         <label>
                             <input class="remove-photo-checkbox" type="checkbox"
                                    value="{{ $photo->id }}" style="display: none;">
