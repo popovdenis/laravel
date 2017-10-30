@@ -52,12 +52,6 @@ class CommentController extends Controller
             ]
         );
         
-        /*
-         * Создаем объект для сохранения, передаем ему массив данных
-         */
-        $comment = new Comment($data);
-        
-        
         //Ошибки
         if ($validator->fails()) {
             /*
@@ -70,13 +64,22 @@ class CommentController extends Controller
         
         //получаем модель записи к которой принадлежит комментарий
         $image = Photo::find($data['image_id']);
+        
         /*
          * Сохраняем данные в БД
          * Используем связывающий метод comments()
          * для того, чтобы автоматически заполнилось поле post_id
          */
         $commentsObj = $image->comments();
+    
+        /*
+         * Создаем объект для сохранения, передаем ему массив данных
+         */
+        $comment = new Comment($data);
         $commentsObj->save($comment);
+        
+        // Update count of new comments for photo's owner
+        $image->album()->owner()->incrementNewComments();
         
         /*
          * Формируем массив данных для вывода нового комментария с помощью AJAX
@@ -86,7 +89,7 @@ class CommentController extends Controller
         $data['hash'] = md5($data['email']);
         $data['status'] = config('comments.show_immediately');
     
-        return redirect()->route('album.show', $image->album()->album_id)
+        return redirect()->route('album.show', $image->album()->id)
             ->with('success', 'Comment has been created successfully');
     }
     

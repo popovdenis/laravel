@@ -18,7 +18,10 @@ class Photo extends Model
     
     public function album()
     {
-        return $this->hasMany(AlbumImage::class, 'image_id')->first();
+        $relationShip = $this->hasMany(AlbumImage::class, 'image_id');
+        $albumId = $relationShip->get()->first()->album_id;
+        
+        return Album::find($albumId);
     }
     
     public function comments()

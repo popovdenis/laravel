@@ -47,6 +47,12 @@ class User extends Authenticatable
         return $this->comments()->where('is_new', true)->get()->all();
     }
     
+    public function incrementNewComments()
+    {
+        $this->new_comments++;
+        $this->save();
+    }
+    
     /**
      * Update the model in the database.
      *
