@@ -10,6 +10,7 @@
     <script type="text/javascript" src="{!! asset('js/lightbox.js') !!}"></script>
 
     <div>
+        @include('user/account.my_account')
         <?php if ($album->owner()->id === $currentUser->id): ?>
             <div class="btn-group">
                 <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}
@@ -40,16 +41,12 @@
                class="btn btn-warning">{{ trans('album.download') }}</a>
         </span>
         <div class="pull-right">
+            @include('user/account.my_comments', ['user' => $currentUser])
+            <a class="btn btn-primary"
+               href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}
+            </a>
             @include('user.logout')
-            <div class="pull-right">
-                <a class="btn btn-primary"
-                   href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}</a>
-            </div>
         </div>
-    </div>
-    <div class="pull-right">
-        @include('user/account.my_comments', ['user' => $currentUser])
-        @include('user/account.my_account')
     </div>
 
     <div class="row">
