@@ -77,6 +77,14 @@ class AlbumController extends Controller
         $album = Album::find($id);
         $photos = $album->images($album);
         $currentUser = $this->getCurrentUser();
+    
+        if ($album->owner()->id === $currentUser->getKey('id')) {
+            $newComments = $album->comments(true);
+            if ($newComments) {
+                $album->owner()->decreaseNewComments($album->getCountComments($newComments));
+                $album->markCommentsAsRead($newComments);
+            }
+        }
         
         return view('album.show', compact('album', 'photos', 'currentUser'));
     }

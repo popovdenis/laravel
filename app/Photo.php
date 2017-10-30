@@ -24,9 +24,14 @@ class Photo extends Model
         return Album::find($albumId);
     }
     
-    public function comments()
+    public function comments($newOnly = false)
     {
-        return $this->hasMany(\App\Comment::class, 'image_id')->where('status', 1)/*->groupBy('parent_id')*/;
+        $comments = $this->hasMany(\App\Comment::class, 'image_id')->where('status', 1)/*->groupBy('parent_id')*/;
+        if ($newOnly) {
+            $comments->where('is_new', 1);
+        }
+        
+        return $comments;
     }
     
     public function images(Album $album, array $imagesIds = [])

@@ -53,6 +53,12 @@ class User extends Authenticatable
         $this->save();
     }
     
+    public function decreaseNewComments($commentsCount = 0)
+    {
+        $this->new_comments -= $commentsCount;
+        $this->save();
+    }
+    
     /**
      * Update the model in the database.
      *

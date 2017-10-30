@@ -2,6 +2,7 @@
 
 namespace App;
 
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 use App\AlbumImage;
 
@@ -30,5 +31,38 @@ class Album extends Model
         }
         
         return $images;
+    }
+    
+    public function comments($newOnly = false)
+    {
+        $commentsPerImage = [];
+        $images = $this->images($this);
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                $commentsPerImage[$image->id] = $image->comments($newOnly)->get()->all();
+            }
+        }
+        
+        return $commentsPerImage;
+    }
+    
+    public function getCountComments(array $commentsPerPhotos)
+    {
+        $commentsCount = 0;
+        foreach ($commentsPerPhotos as $photoId => $comments) {
+            $commentsCount+= count($comments);
+        }
+    
+        return $commentsCount;
+    }
+    
+    public function markCommentsAsRead(array $commentsPerPhotos)
+    {
+        foreach ($commentsPerPhotos as $photoId => $comments) {
+            foreach ($comments as $comment) {
+                $comment->is_new = false;
+                $comment->save();
+            }
+        }
     }
 }

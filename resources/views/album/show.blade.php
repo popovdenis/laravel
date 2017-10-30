@@ -48,7 +48,7 @@
         </div>
     </div>
     <div class="pull-right">
-        @include('user/account.my_comments', ['user' => $album->owner()])
+        @include('user/account.my_comments', ['user' => $currentUser])
         @include('user/account.my_account')
     </div>
 
