@@ -7,7 +7,11 @@
                 <h4 class="modal-title" id="editAlbumLabel">{{ trans('album.edit') }}</h4>
             </div>
             <div class="modal-body">
-                <input class="album-name" name="album-name" value="{{ $album->title }}" />
+                <div class="form-group">
+                    <label for="albumNameInput">{{ trans('album.title') }}</label>
+                    <input class="album-name form-control" id="albumNameInput"
+                           name="album-name" value="{{ $album->title }}" />
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default"

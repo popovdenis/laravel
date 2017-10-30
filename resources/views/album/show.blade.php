@@ -1,13 +1,15 @@
 @extends('layouts.default')
 
 @section('content')
-
-    <script type="text/javascript" src="{!! asset('js/dropzone.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
-    <link rel="stylesheet" href="{!! asset('css/dropzone.css') !!}">
-
-    <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/lightbox.css')}}" />
+    <script type="text/javascript" src="{!! asset('js/photo.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/dropzone.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/lightbox.js') !!}"></script>
+
+    <link rel="stylesheet" type="text/css" media="all" href="{!! asset('css/dropzone.css') !!}">
+    <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/lightbox.css')}}" />
+
+    <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
 
     <div>
         @include('user/account.my_account')
@@ -72,16 +74,21 @@
         <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
     @endif
 
-    <div class="remove-photos-all-block" style="margin: 5px;display: none;">
-        <button class="btn btn-danger btn-remove-photos-all">{{ trans('album.photo.remove') }}</button>
-        <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
-        <input type="hidden" name="album-id" value="{{ $album->id }}" />
-    </div>
-
-    <?php if (!empty($photos)): ?>
-        @include('image.list', ['photos' => $photos, 'counter' => 1])
-    <?php endif; ?>
+    @include('image.main', ['photos' => $photos])
 
     @include('album.edit_modal')
     @include('album.upload_photos_modal')
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            albumObject.saveAlbumUrl = "{{ route('album.store') }}";
+            albumObject.updateAlbumUrl = "{{ route('album.update', $album->id) }}";
+            albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
+            albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
+            albumObject.init();
+
+            photoObject.removePhotosUrl = "{{ url('/') }}" + "/image/removePhotos";
+            photoObject.init();
+        });
+    </script>
 @endsection

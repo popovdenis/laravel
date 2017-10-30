@@ -1,22 +1,6 @@
-<div class="modal fade" id="newAlbum" tabindex="-1" role="dialog" aria-labelledby="newAlbumLabel" aria-hidden="true" style="display: none;">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.btn-save-album').on('click', function () {
-                var params = {
-                    '_token': '<?php echo csrf_token() ?>',
-                    'title': $('#albumStoreForm').find('input[name="title"]').val()
-                };
-                $.ajax({
-                    type:'POST',
-                    url:'{{ route('album.store') }}',
-                    data: params,
-                    success:function(data) {
-                        window.location.reload();
-                    }
-                });
-            });
-        });
-    </script>
+<div class="modal fade" id="newAlbum" tabindex="-1" role="dialog"
+     aria-labelledby="newAlbumLabel" aria-hidden="true" style="display: none;">
+
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open(['route' => 'album.store','method'=>'POST', 'id' => 'albumStoreForm']) !!}

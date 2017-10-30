@@ -21,14 +21,15 @@
                     <a href="{{ url('/') }}/{{ $photo->path }}" data-lightbox="roadtrip">
                         <img src="{{ url('/') }}/{{ $photo->path_thumb }}"/>
                     </a>
+                    <div class="checkbox">
+                        <label>
+                            <input class="remove-photo-checkbox" type="checkbox"
+                                   value="{{ $photo->id }}" style="display: none;">
+                        </label>
+                    </div>
                 </div>
                 <div class="gallery-item-comments">
                     @include('comments.comments_block', ['photo' => $photo])
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input class="remove-photo-checkbox" type="checkbox" value="{{ $photo->id }}" style="display: none;">
-                    </label>
                 </div>
             </div>
         @endforeach

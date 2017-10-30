@@ -9,8 +9,6 @@
         <i class="fa fa-edit"></i>{{ trans('comments.new_comments') }} ({{ $user->new_comments }})
     </button>
 
-    <input type="hidden" name="comments_token" value="<?php echo csrf_token() ?>" />
-
     <div class="modal fade" id="newCommentsModal" tabindex="-1" role="dialog"
          aria-labelledby="newCommentsModal" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">

@@ -1,13 +1,16 @@
 var albumObject = {
     files: [],
+    saveAlbumUrl: null,
     albumUpdateUrl: null,
     uploadFilesUrl: null,
     uploadPhotoAlbumUrl: null,
-    removePhotosUrl: null,
     
     init: function () {
-        $('.edit-album').on('click', function () {
+        $('.btn-save-album').on('click', function () {
             albumObject.saveAlbum();
+        });
+        $('.edit-album').on('click', function () {
+            albumObject.updateAlbum();
         });
         $('.upload-photo').on('click', function () {
             albumObject.uploadPhotoAlbum();
@@ -16,12 +19,33 @@ var albumObject = {
             $('.upload-photo').prop('disabled', 'disabled');
         });
         albumObject.initDropzone();
-        albumObject.initRemovePhotoLink();
+    },
+    
+    getToken: function () {
+        var _token = $('input[name="_token"]');
+        if (_token.length > 0) {
+            return $(_token.get(0)).val();
+        }
     },
     
     saveAlbum: function () {
         var params = {
-            "_token": $('input[name="_token"]').val(),
+            '_token': albumObject.getToken(),
+            'title': $('#albumStoreForm').find('input[name="title"]').val()
+        };
+        $.ajax({
+            type:'POST',
+            url: albumObject.saveAlbumUrl,
+            data: params,
+            success: function(data) {
+                window.location.reload();
+            }
+        });
+    },
+    
+    updateAlbum: function () {
+        var params = {
+            "_token": albumObject.getToken(),
             "title": $('#editAlbumModal').find('.album-name').val()
         };
         $.ajax({
@@ -34,11 +58,8 @@ var albumObject = {
                     if (response.message != undefined) {
                         messageBlock.addClass('alert-success');
                         messageBlock.html(response.message);
-                        
-                        window.location.reload();
                     }
-                } else {
-                
+                    window.location.reload();
                 }
             }
         });
@@ -46,7 +67,7 @@ var albumObject = {
     
     uploadPhotoAlbum: function () {
         var params = {
-            "_token": $('input[name="_token"]').val(),
+            "_token": albumObject.getToken(),
             "albumid": $('input[name="album-id"]').val(),
             "images": this.files
         };
@@ -60,11 +81,8 @@ var albumObject = {
                     if (response.message != undefined) {
                         messageBlock.addClass('alert-success');
                         messageBlock.html(response.message);
-                        
-                        window.location.reload();
                     }
-                } else {
-                
+                    window.location.reload();
                 }
             }
         });
@@ -73,7 +91,7 @@ var albumObject = {
     initDropzone: function () {
         var self = this;
         var params = {
-            "_token": $('input[name="_token"]').val()
+            "_token": albumObject.getToken()
         };
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone("div#dropzoneFileUpload", {
@@ -92,101 +110,6 @@ var albumObject = {
                     $('.upload-photo').prop('disabled', false);
                 }
             }
-        });
-    },
-    
-    displayRemovePhotosButton: function () {
-        $('.remove-photos-all-block').show();
-        this.initRemovePhotosBtnEvent();
-        this.disabledRemovePhotosButton();
-    },
-    
-    hideRemovePhotosButton: function () {
-        $('.remove-photos-all-block').hide();
-    },
-
-    initRemovePhotosBtnEvent: function () {
-        $('.remove-photos-all-block').off('click').on('click', function () {
-            var photosToRemove = albumObject.getCheckedCheckboxes();
-            if (photosToRemove.length > 0) {
-                var photosToRemoveIds = [];
-                photosToRemove.each(function () {
-                    photosToRemoveIds.push($(this).val());
-                });
-                
-                var params = {
-                    "_token": $('input[name="_token"]').val(),
-                    "albumid": $('input[name="album-id"]').val(),
-                    "photos": photosToRemoveIds
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: albumObject.removePhotosUrl,
-                    data: params,
-                    success: function (response) {
-                        if (response) {
-                            window.location.reload();
-                        }
-                    }
-                });
-            }
-        });
-    },
-
-    enableRemovePhotosButton: function () {
-        $('.remove-photos-all-block').find('button').prop('disabled', false);
-    },
-
-    disabledRemovePhotosButton: function () {
-        $('.remove-photos-all-block').find('button').prop('disabled', 'disabled');
-    },
-    
-    enableCheckboxes: function () {
-        var self = this;
-        $('.remove-photo-checkbox').each(function () {
-            $(this).prop('checked', false).show();
-            self.initCheckboxEvent($(this));
-        });
-    },
-    
-    disableCheckboxes: function () {
-        $('.remove-photo-checkbox').each(function () {
-            $(this).prop('checked', false).hide();
-        });
-    },
-    
-    getCheckedCheckboxes: function () {
-        return $('.table-photos-list').find('.remove-photo-checkbox:checked');
-    },
-    
-    initCheckboxEvent: function (checkbox) {
-        var self = this;
-        checkbox.off('click').on('click', function () {
-            if ($(this).is(':checked')) {
-                self.enableRemovePhotosButton();
-            } else {
-                if (self.getCheckedCheckboxes().length > 0) {
-                    self.enableRemovePhotosButton();
-                } else {
-                    self.disabledRemovePhotosButton();
-                }
-            }
-        });
-    },
-    
-    initRemovePhotoLink: function () {
-        var self = this;
-        $('.remove-photos-link').on('click', function () {
-            $(this).hide();
-            $('.cancel-remove-photos-link').show();
-            self.displayRemovePhotosButton();
-            self.enableCheckboxes();
-        });
-        $('.cancel-remove-photos-link').on('click', function () {
-            $(this).hide();
-            $('.remove-photos-link').show();
-            self.hideRemovePhotosButton();
-            self.disableCheckboxes();
         });
     }
 };
