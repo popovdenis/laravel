@@ -12,14 +12,15 @@
                     <div class="commentDate">
                         {{ is_object($item->created_at) ? $item->created_at->format('d.m.Y в H:i') : ''}}
                     </div>
-
                 </div>
                 <div class="comment-body">
                     <p>{{ $item->text }}</p>
                 </div>
                 <div class="reply group">
                     <a class="comment-reply-link" href="#respond"
-                       onclick="return addComment.moveForm('comment-{{$item->id}}', '{{$item->id}}', 'respond','{{$item->article_id}}')">Ответить</a>
+                       data-comment-id="{{$item->id}}" data-photo-id="{{$item->photo()->id}}">
+                        {{ trans('comments.reply') }}
+                    </a>
                 </div>
             </div>
         </div>

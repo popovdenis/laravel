@@ -9,10 +9,9 @@ $comments = $photo->comments()->get()->all();
     <?php if (!empty($comments)) : ?>
         <?php foreach($comments as $k => $comment) : ?>
             <!--Выводим только родительские комментарии parent_id = 0-->
-                <?php if($k): ?>
-                    @break
-                <?php endif ?>
-            @include('comments.comment', ['item' => $comment])
+                @if ($comment->isParent())
+                    @include('comments.comment', ['item' => $comment])
+                @endif
         <?php endforeach; ?>
     <?php endif ?>
     </ol>

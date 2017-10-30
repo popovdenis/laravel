@@ -68,7 +68,6 @@ class CommentController extends Controller
             return \Response::json(['error' => $validator->errors()->all()]);
         }
         
-        
         //получаем модель записи к которой принадлежит комментарий
         $image = Photo::find($data['image_id']);
         /*
@@ -89,5 +88,13 @@ class CommentController extends Controller
     
         return redirect()->route('album.show', $image->album()->album_id)
             ->with('success', 'Comment has been created successfully');
+    }
+    
+    public function getNewComments()
+    {
+        $newComments = $this->getCurrentUser()->getNewComments();
+        $comments = view('comments.comments_preview')->with('comments', $newComments)->render();
+        
+        return response()->json(['new_comments'=> $comments], 200);
     }
 }

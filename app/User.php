@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'password', 'is_admin'
+        'firstname', 'lastname', 'email', 'password', 'is_admin', 'new_comments'
     ];
 
     /**
@@ -30,6 +30,21 @@ class User extends Authenticatable
     public function albums()
     {
         return $this->hasMany(Album::class);
+    }
+    
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+    
+    public function hasNewComments()
+    {
+        return $this->new_comments > 0;
+    }
+    
+    public function getNewComments()
+    {
+        return $this->comments()->where('is_new', true)->get()->all();
     }
     
     /**

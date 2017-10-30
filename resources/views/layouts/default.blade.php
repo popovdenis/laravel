@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{!! asset('css/bootstrap.css') !!}">
     <link rel="stylesheet" href="{!! asset('css/font-awesome.css') !!}">
     <link rel="stylesheet" href="{!! asset('css/style.css') !!}">
+    <script type="text/javascript" src="{!! asset('js/comment.js') !!}"></script>
 </head>
 <body>
 

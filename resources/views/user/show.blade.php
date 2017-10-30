@@ -33,7 +33,7 @@
             @if ($user->id === $currentUser->id)
                 <div class="pull-right">
                     <button class="btn btn-success" data-toggle="modal"
-                            data-target="#newAlbum">{{ trans('album.create.new') }}</button>
+                            data-target="#newAlbum">{{ trans('album.create') }}</button>
                 </div>
             @endif
         </div>

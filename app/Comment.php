@@ -10,7 +10,7 @@ class Comment extends Model
     
     public function photo()
     {
-        return $this->belongsTo(Photo::class);
+        return $this->belongsTo(Photo::class, 'image_id')->get()->first();
     }
     
     public function user()
@@ -26,5 +26,10 @@ class Comment extends Model
     public function children()
     {
         return $this->hasMany('App\Comment', 'parent_id');
+    }
+    
+    public function isParent()
+    {
+        return (int) $this->parent_id === 0;
     }
 }

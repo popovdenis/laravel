@@ -27,6 +27,7 @@ Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
 Route::post('/image/removePhotos', 'ImageController@removePhotos');
 
 Route::resource('comment', 'CommentController');
+Route::post('/comment/getNewComments', 'CommentController@getNewComments');
 
 Auth::routes();
 

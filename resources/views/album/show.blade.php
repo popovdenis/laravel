@@ -9,15 +9,11 @@
     <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/lightbox.css')}}" />
     <script type="text/javascript" src="{!! asset('js/lightbox.js') !!}"></script>
 
-    <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/comments.css')}}" />
-    <script type="text/javascript" src="{!! asset('js/comment-reply.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
-
     <div>
         <?php if ($album->owner()->id === $currentUser->id): ?>
             <div class="btn-group">
-                <button data-toggle="dropdown"
-                        class="btn btn-primary">{{ trans('album.edit') }}<span class="caret"></span>
+                <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}
+                    <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
@@ -45,17 +41,21 @@
         </span>
         <div class="pull-right">
             @include('user.logout')
+            <div class="pull-right">
+                <a class="btn btn-primary"
+                   href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}</a>
+            </div>
         </div>
+    </div>
+    <div class="pull-right">
+        @include('user/account.my_comments', ['user' => $album->owner()])
+        @include('user/account.my_account')
     </div>
 
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
                 <h2>{{ $album->title }}</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary"
-                   href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}</a>
             </div>
         </div>
     </div>

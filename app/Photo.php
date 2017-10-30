@@ -23,7 +23,7 @@ class Photo extends Model
     
     public function comments()
     {
-        return $this->hasMany(\App\Comment::class, 'image_id')->where('status', 1)->groupBy('parent_id');
+        return $this->hasMany(\App\Comment::class, 'image_id')->where('status', 1)/*->groupBy('parent_id')*/;
     }
     
     public function images(Album $album, array $imagesIds = [])

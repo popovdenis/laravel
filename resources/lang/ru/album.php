@@ -17,7 +17,7 @@ return [
     'popup.save' => 'Сохранить изменения',
     'photo.remove' => 'Удалить фото',
     'cancel' => 'Отмена',
-    'create.new' => 'Новый альбом',
+    'create' => 'Новый альбом',
     'albums' => 'Альбомы',
     'created.successfully' => 'Album created successfully',
     'updated.successfully' => 'Album updated successfully',
