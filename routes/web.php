@@ -26,7 +26,7 @@ Route::get('album/downloadList', 'AlbumController@downloadList');
 Route::resource('album','AlbumController');
 
 Route::resource('image', 'ImageController');
-Route::get('/image/uploadFiles', 'ImageController@uploadFiles');
+Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
 Route::post('/image/removePhotos', 'ImageController@removePhotos');
 
 Route::resource('comment', 'CommentController');
