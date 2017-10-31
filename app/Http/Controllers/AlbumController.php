@@ -140,6 +140,27 @@ class AlbumController extends Controller
         return response()->download($zipPath);
     }
     
+    public function downloadList(Request $request)
+    {
+        $albumsIds = $request->get('albumsIds', []);
+        
+        $zip = new Zipper;
+        $images = [];
+        foreach ($albumsIds as $albumsId) {
+            $album = Album::find($albumsId);
+            foreach ($album->images($album) as $image) {
+                $images[] = $image->path;
+            }
+        }
+        
+        $zipName = time() . rand(1111, 9999);
+        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'))->add($images);
+        $zipPath = $archive->getFilePath();
+        $archive->close();
+        
+        return response()->download($zipPath);
+    }
+    
     private function _removeAlbum($albumId)
     {
         $album = Album::find($albumId);
@@ -164,27 +185,6 @@ class AlbumController extends Controller
         }
     
         return response()->json(['message'=> __('album.deleted.selected.success')], 200);
-    }
-    
-    public function downloadList(Request $request)
-    {
-        $albumsIds = $request->get('albumsIds', []);
-    
-        $zip = new Zipper;
-        $images = [];
-        foreach ($albumsIds as $albumsId) {
-            $album = Album::find($albumsId);
-            foreach ($album->images($album) as $image) {
-                $images[] = $image->path;
-            }
-        }
-
-        $zipName = time() . rand(1111, 9999);
-        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'))->add($images);
-        $zipPath = $archive->getFilePath();
-        $archive->close();
-
-        return response()->download($zipPath);
     }
     
     /**
