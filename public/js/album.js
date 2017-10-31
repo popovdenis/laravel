@@ -5,6 +5,10 @@ var albumObject = {
     uploadFilesUrl: null,
     uploadPhotoAlbumUrl: null,
     removeAlbumsUrl: null,
+    downloadAlbumsUrl: null,
+    
+    deleteAlbumsMode: false,
+    downloadAlbumsMode: false,
     
     init: function () {
         var self = this;
@@ -21,8 +25,15 @@ var albumObject = {
         $('.album-add-photo-popup').click(function () {
             $('.upload-photo').prop('disabled', 'disabled');
         });
+        $('.cancel-albums-btn').on('click', function () {
+            self.deleteAlbumsMode = false;
+            self.downloadAlbumsMode = false;
+            $(this).hide();
+            self.fireMode();
+        });
     
         self.deleteAlbumEvent();
+        self.downloadAlbumEvent();
     },
     
     getToken: function () {
@@ -69,38 +80,100 @@ var albumObject = {
         });
     },
     
+    downloadAlbumEvent: function () {
+        var self = this;
+        $('.download-albums-btn').on('click', function () {
+            self.downloadAlbumsMode = true;
+            self.fireMode();
+        });
+    },
+    
     deleteAlbumEvent: function () {
         var self = this;
         $('.remove-albums-btn').on('click', function () {
-            $(this).hide();
-            $('.cancel-albums-btn').show();
-            self.displayRemoveSelectedAlbumsButton();
-            self.enableCheckboxes();
-        });
-        $('.cancel-albums-btn').on('click', function () {
-            $(this).hide();
-            $('.remove-albums-btn').show();
-            self.hideRemoveSelectedAlbumsButton();
-            self.disableCheckboxes();
+            self.deleteAlbumsMode = true;
+            self.fireMode();
         });
     },
+    
+    fireMode: function () {
+        var self = this;
+        if (self.deleteAlbumsMode === false && self.downloadAlbumsMode === false) {
+            $('.cancel-albums-btn').hide();
+            $('.download-albums-btn').show();
+            $('.remove-albums-btn').show();
+            self.disableCheckboxes();
+            self.hideRemoveSelectedAlbumsButton();
+        } else {
+            if (self.deleteAlbumsMode === true) {
+                $('.cancel-albums-btn').show();
+                $('.download-albums-btn').hide();
+                $('.remove-albums-btn').hide();
+        
+                self.enableCheckboxes();
+                self.displayRemoveSelectedAlbumsButton();
+            }
+            if (self.downloadAlbumsMode === true) {
+                $('.cancel-albums-btn').show();
+                $('.download-albums-btn').hide();
+                $('.remove-albums-btn').hide();
+        
+                self.enableCheckboxes();
+                self.displayDownloadSelectedAlbumsButton();
+            }
+        }
+    },
+    
+    /** DOWNLOAD ALBUMS FUNCTIONALITY **/
+
+    displayDownloadSelectedAlbumsButton: function () {
+        $('.download-selected-albums').show();
+        this.initDownloadAlbumsBtnEvent();
+        this.disableDownloadAlbumsButton();
+    },
+    
+    initDownloadAlbumsBtnEvent: function () {
+        var self = this;
+        $('.download-selected-albums').off('click').on('click', function () {
+            var albumsToDownload = self.getCheckedCheckboxes();
+            if (albumsToDownload.length > 0) {
+                var albumsToDownloadIds = [];
+                albumsToDownload.each(function () {
+                    albumsToDownloadIds.push($(this).val());
+                });
+                
+                var params = {
+                    "_token": self.getToken(),
+                    "albumsIds": albumsToDownloadIds
+                };
+                $.ajax({
+                    type: 'GET',
+                    url: self.downloadAlbumsUrl,
+                    data: params,
+                    success: function (response) {
+                        if (response) {
+                            // window.location.reload();
+                        }
+                    }
+                });
+            }
+        });
+    },
+    
+    disableDownloadAlbumsButton: function () {
+        $('.download-selected-albums').prop('disabled', 'disabled');
+    },
+    
+    enableDownloadAlbumsButton: function () {
+        $('.download-selected-albums').prop('disabled', false);
+    },
+    
+    /** REMOVE ALBUMS FUNCTIONALITY  **/
     
     displayRemoveSelectedAlbumsButton: function () {
         $('.delete-selected-albums').show();
         this.initRemoveAlbumsBtnEvent();
         this.disableRemoveAlbumsButton();
-    },
-    
-    disableRemoveAlbumsButton: function () {
-        $('.delete-selected-albums').prop('disabled', 'disabled');
-    },
-    
-    enableRemoveAlbumsButton: function () {
-        $('.delete-selected-albums').prop('disabled', false);
-    },
-    
-    hideRemoveSelectedAlbumsButton: function () {
-        $('.delete-selected-albums').hide();
     },
     
     initRemoveAlbumsBtnEvent: function () {
@@ -131,6 +204,18 @@ var albumObject = {
         });
     },
     
+    disableRemoveAlbumsButton: function () {
+        $('.delete-selected-albums').prop('disabled', 'disabled');
+    },
+    
+    enableRemoveAlbumsButton: function () {
+        $('.delete-selected-albums').prop('disabled', false);
+    },
+    
+    hideRemoveSelectedAlbumsButton: function () {
+        $('.delete-selected-albums').hide();
+    },
+    
     enableCheckboxes: function () {
         var self = this;
         $('.album-checkbox').each(function () {
@@ -149,12 +234,27 @@ var albumObject = {
         var self = this;
         checkbox.off('click').on('click', function () {
             if ($(this).is(':checked')) {
-                self.enableRemoveAlbumsButton();
+                if (self.deleteAlbumsMode) {
+                    self.enableRemoveAlbumsButton();
+                }
+                if (self.downloadAlbumsMode) {
+                    self.enableDownloadAlbumsButton();
+                }
             } else {
                 if (self.getCheckedCheckboxes().length > 0) {
-                    self.enableRemoveAlbumsButton();
+                    if (self.deleteAlbumsMode) {
+                        self.enableRemoveAlbumsButton();
+                    }
+                    if (self.downloadAlbumsMode) {
+                        self.enableDownloadAlbumsButton();
+                    }
                 } else {
-                    self.disableRemoveAlbumsButton();
+                    if (self.deleteAlbumsMode) {
+                        self.disableRemoveAlbumsButton();
+                    }
+                    if (self.downloadAlbumsMode) {
+                        self.disableDownloadAlbumsButton();
+                    }
                 }
             }
         });

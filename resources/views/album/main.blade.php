@@ -9,7 +9,7 @@
                         data-toggle="modal" data-target="#newAlbum">{{ trans('album.create') }}</button>
             @endif
             @if ($albums->count())
-                <button class="btn btn-warning album-download">{{ trans('album.download') }}</button>
+                <button class="btn btn-warning download-albums-btn">{{ trans('album.download') }}</button>
                 <button class="btn btn-danger remove-albums-btn">{{ trans('album.delete') }}</button>
                 <button class="btn btn-danger cancel-albums-btn" style="display: none;">{{ trans('album.cancel') }}</button>
             @endif
@@ -22,6 +22,8 @@
 @if ($albums->count())
     <button class="btn btn-danger btn-xs delete-selected-albums"
             style="margin-bottom: 15px; display: none;">{{ trans('album.delete.selected') }}</button>
+    <button class="btn btn-warning btn-xs download-selected-albums"
+            style="margin-bottom: 15px; display: none;">{{ trans('album.download.selected') }}</button>
 
     @include('album.list', array('albums' => $albums, 'count' => 1))
 @endif

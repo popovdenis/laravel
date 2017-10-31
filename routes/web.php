@@ -21,11 +21,12 @@ Route::resource('admin/users','Admin\UsersController');
 Route::resource('user','UserController');
 
 Route::get('album/download/{id}', 'AlbumController@download')->where('id', '[0-9]+');
-Route::post('album/removeList/{ids?}', 'AlbumController@removeList');
+Route::post('album/removeList', 'AlbumController@removeList');
+Route::get('album/downloadList', 'AlbumController@downloadList');
 Route::resource('album','AlbumController');
 
 Route::resource('image', 'ImageController');
-Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
+Route::get('/image/uploadFiles', 'ImageController@uploadFiles');
 Route::post('/image/removePhotos', 'ImageController@removePhotos');
 
 Route::resource('comment', 'CommentController');

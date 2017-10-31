@@ -14,6 +14,7 @@ return [
     'delete.photo' => 'Удалить фото',
     'delete' => 'Удалить альбом',
     'delete.selected' => 'Удалить выбранные альбомы',
+    'download.selected' => 'Скачать выбранные альбомы',
     'download' => 'Скачать',
     'popup.close' => 'Закрыть',
     'popup.save' => 'Сохранить изменения',
