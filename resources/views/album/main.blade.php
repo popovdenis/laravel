@@ -10,20 +10,24 @@
             @endif
             @if ($albums->count())
                 <button class="btn btn-warning download-albums-btn">{{ trans('album.download') }}</button>
-                <button class="btn btn-danger remove-albums-btn">{{ trans('album.delete') }}</button>
-                <button class="btn btn-danger cancel-albums-btn" style="display: none;">{{ trans('album.cancel') }}</button>
+                @if ($user->id === $currentUser->id)
+                    <button class="btn btn-danger remove-albums-btn">{{ trans('album.delete') }}</button>
+                    <button class="btn btn-danger cancel-albums-btn" style="display: none;">{{ trans('album.cancel') }}</button>
+                @endif
             @endif
         </div>
     </div>
 </div>
 
-@include('album.create_modal')
-
 @if ($albums->count())
-    <button class="btn btn-danger btn-xs delete-selected-albums"
-            style="margin-bottom: 15px; display: none;">{{ trans('album.delete.selected') }}</button>
+    @if ($user->id === $currentUser->id)
+        <button class="btn btn-danger btn-xs delete-selected-albums"
+                style="margin-bottom: 15px; display: none;">{{ trans('album.delete.selected') }}</button>
+    @endif
     <button class="btn btn-warning btn-xs download-selected-albums"
             style="margin-bottom: 15px; display: none;">{{ trans('album.download.selected') }}</button>
 
     @include('album.list', array('albums' => $albums, 'count' => 1))
 @endif
+
+@include('album.create_modal')
