@@ -167,14 +167,21 @@ class AlbumController extends Controller
     private function _removeAlbum($albumId)
     {
         $album = Album::find($albumId);
-    
-        foreach ($album->images($album) as $photo) {
-            foreach ($photo->comments()->get()->all() as $comment) {
-                $comment->delete();
+        if ($album->owner()->id === $this->getCurrentUser()->id) {
+            foreach ($album->images($album) as $photo) {
+                foreach ($photo->comments()->get()->all() as $comment) {
+                    $comment->delete();
+                }
+                $photo->delete();
             }
-            $photo->delete();
+            $album->delete();
+            
+            return true;
         }
-        $album->delete();
+    
+        \Session::flash('error', $album->title . ' does not belong to the current user.');
+        
+        return false;
     }
     
     public function removeList(Request $request)
@@ -187,7 +194,8 @@ class AlbumController extends Controller
             }
         }
     
-        return response()->json(['message'=> __('album.deleted.selected.success')], 200);
+        return redirect()->route('user.show', $this->getCurrentUser()->id)
+            ->with('success', __('album.deleted.selected.success'));
     }
     
     /**

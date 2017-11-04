@@ -27,7 +27,6 @@
     <button class="btn btn-warning btn-xs download-selected-albums"
             style="margin-bottom: 15px; display: none;">{{ trans('album.download.selected') }}</button>
 
-    <form id="download-multiple-albums" method="get" action="{{ url('/album/download') }}"></form>
     @include('album.list', array('albums' => $albums, 'count' => 1))
 @endif
 

@@ -106,6 +106,7 @@ var albumObject = {
             $('.remove-albums-btn').show();
             self.disableCheckboxes();
             self.hideRemoveSelectedAlbumsButton();
+            self.hideDownloadSelectedAlbumsButton();
         } else {
             if (self.deleteAlbumsMode === true) {
                 $('.cancel-albums-btn').show();
@@ -114,6 +115,7 @@ var albumObject = {
         
                 self.enableCheckboxes();
                 self.displayRemoveSelectedAlbumsButton();
+                self.hideDownloadSelectedAlbumsButton();
             }
             if (self.downloadAlbumsMode === true) {
                 $('.cancel-albums-btn').show();
@@ -136,17 +138,23 @@ var albumObject = {
         return false;
     },
     
+    hideDownloadSelectedAlbumsButton: function () {
+        $('.download-selected-albums').hide();
+    },
+    
     initDownloadAlbumsBtnEvent: function () {
         var self = this;
         $('.download-selected-albums').off('click').on('click', function () {
             var albumsToDownload = self.getCheckedCheckboxes();
             if (albumsToDownload.length > 0) {
+                $('body').append('<form id="download-multiple-albums" method="get" ' +
+                    'action="' + self.downloadAlbumsUrl + '"></form>');
                 var form = $('#download-multiple-albums');
                 albumsToDownload.each(function () {
                     form.append('<input type="hidden" name="albumsIds[]" value="' + $(this).val() + '">');
                 });
                 form.submit();
-                form.empty();
+                form.remove();
             }
         });
         
@@ -174,25 +182,34 @@ var albumObject = {
         $('.delete-selected-albums').off('click').on('click', function () {
             var albumsToRemove = self.getCheckedCheckboxes();
             if (albumsToRemove.length > 0) {
-                var albumsToRemoveIds = [];
+                $('body').append('<form id="remove-multiple-albums" method="get" ' +
+                    'action="' + self.removeAlbumsUrl + '"></form>');
+                var form = $('#remove-multiple-albums');
                 albumsToRemove.each(function () {
-                    albumsToRemoveIds.push($(this).val());
+                    form.append('<input type="hidden" name="albumsIds[]" value="' + $(this).val() + '">');
                 });
+                form.submit();
+                form.remove();
                 
-                var params = {
-                    "_token": self.getToken(),
-                    "albumsIds": albumsToRemoveIds
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: self.removeAlbumsUrl,
-                    data: params,
-                    success: function (response) {
-                        if (response) {
-                            window.location.reload();
-                        }
-                    }
-                });
+                // var albumsToRemoveIds = [];
+                // albumsToRemove.each(function () {
+                //     albumsToRemoveIds.push($(this).val());
+                // });
+                //
+                // var params = {
+                //     "_token": self.getToken(),
+                //     "albumsIds": albumsToRemoveIds
+                // };
+                // $.ajax({
+                //     type: 'POST',
+                //     url: self.removeAlbumsUrl,
+                //     data: params,
+                //     success: function (response) {
+                //         if (response) {
+                //             window.location.reload();
+                //         }
+                //     }
+                // });
             }
         });
     },
