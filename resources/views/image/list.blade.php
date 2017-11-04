@@ -14,26 +14,24 @@
     });
 </script>
 
-<div class="gallery">
-    <div class="gallery-inner">
-        @foreach ($photos as $key => $photo)
-            <div class="gallery-item">
-                <div class="gallery-item-photo">
-                    <a href="{{ url('/') }}/{{ $photo->path }}" data-lightbox="roadtrip">
-                        <img src="{{ url('/') }}/{{ $photo->path_thumb }}"/>
-                    </a>
-                    <div>
-                        <label>
-                            <input class="remove-photo-checkbox" type="checkbox"
-                                   value="{{ $photo->id }}" style="display: none;">
-                        </label>
-                    </div>
-                </div>
-                <div class="gallery-item-comments">
-                    @include('comments.comments_block', ['photo' => $photo])
+<div class="photos-list">
+    @foreach ($photos as $key => $photo)
+        <div class="gallery-item">
+            <div class="gallery-item-photo">
+                <a href="{{ url('/') }}/{{ $photo->path }}" data-lightbox="roadtrip">
+                    <img src="{{ url('/') }}/{{ $photo->path_thumb }}"/>
+                </a>
+                <div>
+                    <label>
+                        <input class="photo-checkbox" type="checkbox"
+                               value="{{ $photo->id }}" style="display: none;">
+                    </label>
                 </div>
             </div>
-        @endforeach
-    </div>
+            <div class="gallery-item-comments">
+                @include('comments.comments_block', ['photo' => $photo])
+            </div>
+        </div>
+    @endforeach
 </div>
 

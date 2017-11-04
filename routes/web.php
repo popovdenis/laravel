@@ -20,13 +20,13 @@ Route::resource('admin/users','Admin\UsersController');
 
 Route::resource('user','UserController');
 
-Route::get('album/download/{id}', 'AlbumController@download')->where('id', '[0-9]+');
-Route::post('album/removeList', 'AlbumController@removeList');
-Route::get('album/download-photos', 'AlbumController@downloadList');
+Route::get('album/download', 'AlbumController@download');
+Route::get('album/removeList', 'AlbumController@removeList');
 Route::resource('album','AlbumController');
 
 Route::resource('image', 'ImageController');
 Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
+Route::get('image/download', 'ImageController@downloadList');
 Route::post('/image/removePhotos', 'ImageController@removePhotos');
 
 Route::resource('comment', 'CommentController');

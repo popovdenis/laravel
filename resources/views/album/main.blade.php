@@ -12,9 +12,9 @@
                 <button class="btn btn-warning download-albums-btn">{{ trans('album.download') }}</button>
                 @if ($user->id === $currentUser->id)
                     <button class="btn btn-danger remove-albums-btn">{{ trans('album.delete') }}</button>
-                    <button class="btn btn-danger cancel-albums-btn" style="display: none;">{{ trans('album.cancel') }}</button>
                 @endif
-            @endif
+                <button class="btn btn-danger cancel-albums-btn" style="display: none;">{{ trans('album.cancel') }}</button>
+                @endif
         </div>
     </div>
 </div>
@@ -27,6 +27,7 @@
     <button class="btn btn-warning btn-xs download-selected-albums"
             style="margin-bottom: 15px; display: none;">{{ trans('album.download.selected') }}</button>
 
+    <form id="download-multiple-albums" method="get" action="{{ url('/album/download') }}"></form>
     @include('album.list', array('albums' => $albums, 'count' => 1))
 @endif
 

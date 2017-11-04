@@ -8,12 +8,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Album;
-use App\AlbumImage;
-use Folklore\Image\Facades\Image;
 use Chumper\Zipper\Zipper;
-use Illuminate\Support\Facades\Auth;
 
 class AlbumController extends Controller
 {
@@ -123,26 +119,30 @@ class AlbumController extends Controller
         return response()->json(array('message'=> 'updated.successfully'), 200);
     }
     
-    public function download($id)
+    public function download(Request $request, $id = null)
     {
-        $album = Album::find($id);
+        $albumsIds = $request->get('albumsIds', []);
+        
         $zip = new Zipper;
-    
-        $images = [];
-        foreach ($album->images($album) as $image) {
-            $images[] = $image->path;
-        }
         $zipName = time() . rand(1111, 9999);
-        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'))->add($images);
+        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'));
+        
+        foreach ($albumsIds as $albumId) {
+            $album = Album::find($albumId);
+            foreach ($album->images($album) as $image) {
+                $archive->add($image->path);
+            }
+        }
+        
         $zipPath = $archive->getFilePath();
         $archive->close();
     
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
     
-    public function downloadList($albumsIds)
+    public function downloadList(Request $request)
     {
-//        $albumsIds = $request->get('albumsIds', []);
+        $albumsIds = $request->get('albumsIds', []);
     
         $zip = new Zipper;
         $zipName = time() . rand(1111, 9999);
@@ -160,10 +160,8 @@ class AlbumController extends Controller
         
         $zipPath = $archive->getFilePath();
         $archive->close();
-    
-        $headers = [ 'Content-Type' => 'application/octet-stream' ];
         
-        return response()->download($zipPath, $zipName, $headers)->deleteFileAfterSend(true);
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
     
     private function _removeAlbum($albumId)

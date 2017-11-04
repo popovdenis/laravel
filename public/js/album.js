@@ -141,25 +141,12 @@ var albumObject = {
         $('.download-selected-albums').off('click').on('click', function () {
             var albumsToDownload = self.getCheckedCheckboxes();
             if (albumsToDownload.length > 0) {
-                var albumsToDownloadIds = [];
+                var form = $('#download-multiple-albums');
                 albumsToDownload.each(function () {
-                    albumsToDownloadIds.push($(this).val());
+                    form.append('<input type="hidden" name="albumsIds[]" value="' + $(this).val() + '">');
                 });
-                
-                var params = {
-                    "_token": self.getToken(),
-                    "albumsIds": albumsToDownloadIds
-                };
-                $.ajax({
-                    type: 'GET',
-                    url: self.downloadAlbumsUrl,
-                    data: params,
-                    success: function (response) {
-                        if (response) {
-                            // window.location.reload();
-                        }
-                    }
-                });
+                form.submit();
+                form.empty();
             }
         });
         
@@ -269,6 +256,8 @@ var albumObject = {
     getCheckedCheckboxes: function () {
         return $('.albums-list').find('.album-checkbox:checked');
     },
+    
+    
     
     uploadPhotoAlbum: function () {
         var params = {

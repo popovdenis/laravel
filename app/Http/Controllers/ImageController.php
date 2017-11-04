@@ -9,8 +9,8 @@ use App\Photo;
 use App\AlbumImage;
 use App\Album;
 use Illuminate\Http\Request;
-use Folklore\Image\Facades\Image;
 use App\Model\ImageLib;
+use Chumper\Zipper\Zipper;
 
 /**
  * Class ImageController
@@ -77,7 +77,7 @@ class ImageController extends Controller
     public function removePhotos(Request $request)
     {
         $albumId = $request->get('albumid');
-        $photosIds = $request->get('photos');
+        $photosIds = $request->get('photosIds');
         
         if (empty($albumId) || empty($photosIds)) {
             return Response::json('error', 400);
@@ -154,5 +154,29 @@ class ImageController extends Controller
         } else {
             return Response::json(array('error' => true), 400);
         }
+    }
+    
+    public function downloadList(Request $request)
+    {
+        $albumId = $request->get('albumid', []);
+        $photosIds = $request->get('photosIds', []);
+
+        $album = Album::find($albumId);
+        $photos = $album->images($album, $photosIds);
+
+        $zip = new Zipper;
+        $zipName = time() . rand(1111, 9999);
+        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'));
+
+        if (!empty($photos)) {
+            foreach ($photos as $image) {
+                $archive->add($image->path);
+            }
+        }
+
+        $zipPath = $archive->getFilePath();
+        $archive->close();
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }
