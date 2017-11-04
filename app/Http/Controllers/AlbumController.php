@@ -58,7 +58,13 @@ class AlbumController extends Controller
     
         Album::create($request->all());
     
-        return response()->json(array('message'=> __('album.created.successfully')), 200);
+        if($request->ajax()){
+            return response()->json(array('message'=> __('album.created.successfully')), 200);
+        }
+    
+        return redirect()
+            ->route('user.show', $this->getCurrentUser()->id)
+            ->with('success', __('album.created.success'));
     }
     
     /**
