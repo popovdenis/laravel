@@ -53,6 +53,7 @@ var photoObject = {
             $('.remove-photos-btn').show();
             self.disableCheckboxes();
             self.hideRemoveSelectedPhotosButton();
+            self.hideDownloadSelectedAlbumsButton();
         } else {
             if (self.deletePhotosMode === true) {
                 $('.cancel-photos-btn').show();
@@ -61,6 +62,7 @@ var photoObject = {
                 
                 self.enableCheckboxes();
                 self.displayRemoveSelectedPhotosButton();
+                self.hideDownloadSelectedAlbumsButton();
             }
             if (self.downloadPhotosMode === true) {
                 $('.cancel-photos-btn').show();
@@ -83,31 +85,24 @@ var photoObject = {
         return false;
     },
     
+    hideDownloadSelectedAlbumsButton: function () {
+        $('.download-selected-photos').hide();
+    },
+    
     initDownloadPhotosBtnEvent: function () {
         var self = this;
         $('.download-selected-photos').off('click').on('click', function () {
             var photosToDownload = self.getCheckedCheckboxes();
             if (photosToDownload.length > 0) {
-                var photosToDownloadIds = [];
+                $('body').append('<form id="download-multiple-photos" method="get" ' +
+                    'action="' + self.downloadPhotosUrl + '"></form>');
+                var form = $('#download-multiple-photos');
+                form.append('<input type="hidden" name="albumid" value="' + $('input[name="album-id"]').val() + '">');
                 photosToDownload.each(function () {
-                    photosToDownloadIds.push($(this).val());
+                    form.append('<input type="hidden" name="photosIds[]" value="' + $(this).val() + '">');
                 });
-                
-                var params = {
-                    "_token": self.getToken(),
-                    "albumid": $('input[name="album-id"]').val(),
-                    "photosIds": photosToDownloadIds
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: self.downloadPhotosUrl,
-                    data: params,
-                    success: function (response) {
-                        if (response) {
-                            // window.location.reload();
-                        }
-                    }
-                });
+                form.submit();
+                form.remove();
             }
         });
         
@@ -135,26 +130,16 @@ var photoObject = {
         $('.delete-selected-photos').off('click').on('click', function () {
             var photosToRemove = self.getCheckedCheckboxes();
             if (photosToRemove.length > 0) {
-                var photosToRemoveIds = [];
-                photosToRemove.each(function () {
-                    photosToRemoveIds.push($(this).val());
-                });
+                $('body').append('<form id="remove-multiple-photos" method="get" ' +
+                    'action="' + self.removePhotosUrl + '"></form>');
                 
-                var params = {
-                    "_token": self.getToken(),
-                    "albumid": $('input[name="album-id"]').val(),
-                    "photosIds": photosToRemoveIds
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: self.removePhotosUrl,
-                    data: params,
-                    success: function (response) {
-                        if (response) {
-                            window.location.reload();
-                        }
-                    }
+                var form = $('#remove-multiple-photos');
+                form.append('<input type="hidden" name="albumid" value="' + $('input[name="album-id"]').val() + '">');
+                photosToRemove.each(function () {
+                    form.append('<input type="hidden" name="photosIds[]" value="' + $(this).val() + '">');
                 });
+                form.submit();
+                form.remove();
             }
         });
     },

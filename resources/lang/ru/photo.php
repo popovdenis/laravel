@@ -11,4 +11,6 @@ return [
     'download' => 'Скачать',
     'delete.selected' => 'Удалить выбранные фотографии',
     'download.selected' => 'Скачать выбранные фотографии',
+    'deleted.selected.success' => 'Selected photos were deleted successfully',
+    'deleted.selected.failure' => 'Some of selected photos were not deleted'
 ];

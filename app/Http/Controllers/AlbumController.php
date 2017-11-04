@@ -119,7 +119,7 @@ class AlbumController extends Controller
         return response()->json(array('message'=> 'updated.successfully'), 200);
     }
     
-    public function download(Request $request, $id = null)
+    public function download(Request $request)
     {
         $albumsIds = $request->get('albumsIds', []);
         
@@ -137,30 +137,6 @@ class AlbumController extends Controller
         $zipPath = $archive->getFilePath();
         $archive->close();
     
-        return response()->download($zipPath)->deleteFileAfterSend(true);
-    }
-    
-    public function downloadList(Request $request)
-    {
-        $albumsIds = $request->get('albumsIds', []);
-    
-        $zip = new Zipper;
-        $zipName = time() . rand(1111, 9999);
-        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'));
-        
-        if (!empty($albumsIds)) {
-            $images = [];
-            foreach ($albumsIds as $albumId) {
-                $album = Album::find($albumId);
-                foreach ($album->images($album) as $image) {
-                    $archive->add($image->path);
-                }
-            }
-        }
-        
-        $zipPath = $archive->getFilePath();
-        $archive->close();
-        
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
     
@@ -188,14 +164,17 @@ class AlbumController extends Controller
     {
         $albumsIds = $request->get('albumsIds', []);
         
+        $result = true;
         if (!empty($albumsIds)) {
             foreach ($albumsIds as $albumsId) {
-                $this->_removeAlbum(intval($albumsId));
+                if (!$this->_removeAlbum(intval($albumsId))) {
+                    $result = false;
+                }
             }
         }
-    
-        return redirect()->route('user.show', $this->getCurrentUser()->id)
-            ->with('success', __('album.deleted.selected.success'));
+        $message = ($result) ? 'album.deleted.selected.success' : 'album.deleted.selected.failure';
+        
+        return redirect()->route('user.show', $this->getCurrentUser()->id)->with('success', __($message));
     }
     
     /**

@@ -24,5 +24,6 @@ return [
     'albums' => 'Альбомы',
     'created.successfully' => 'Album created successfully',
     'updated.successfully' => 'Album updated successfully',
-    'deleted.selected.success' => 'Selected albums were deleted successfully'
+    'deleted.selected.success' => 'Selected albums were deleted successfully',
+    'deleted.selected.failure' => 'Some of selected albums were not deleted'
 ];

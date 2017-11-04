@@ -24,10 +24,10 @@ Route::get('album/download', 'AlbumController@download');
 Route::get('album/removeList', 'AlbumController@removeList');
 Route::resource('album','AlbumController');
 
-Route::resource('image', 'ImageController');
 Route::post('/image/uploadFiles', 'ImageController@uploadFiles');
-Route::get('image/download', 'ImageController@downloadList');
-Route::post('/image/removePhotos', 'ImageController@removePhotos');
+Route::get('image/download', 'ImageController@download');
+Route::get('/image/remove', 'ImageController@remove');
+Route::resource('image', 'ImageController');
 
 Route::resource('comment', 'CommentController');
 Route::post('/comment/getNewComments', 'CommentController@getNewComments');

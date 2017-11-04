@@ -12,8 +12,8 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        photoObject.removePhotosUrl = "{{ url('/') }}" + "/image/removePhotos";
-        photoObject.downloadPhotosUrl = "{{ url('/image/download-photos') }}";
+        photoObject.removePhotosUrl = "{{ url('/') }}" + "/image/remove";
+        photoObject.downloadPhotosUrl = "{{ url('/image/download') }}";
         photoObject.init();
     });
 </script>

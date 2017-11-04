@@ -190,26 +190,6 @@ var albumObject = {
                 });
                 form.submit();
                 form.remove();
-                
-                // var albumsToRemoveIds = [];
-                // albumsToRemove.each(function () {
-                //     albumsToRemoveIds.push($(this).val());
-                // });
-                //
-                // var params = {
-                //     "_token": self.getToken(),
-                //     "albumsIds": albumsToRemoveIds
-                // };
-                // $.ajax({
-                //     type: 'POST',
-                //     url: self.removeAlbumsUrl,
-                //     data: params,
-                //     success: function (response) {
-                //         if (response) {
-                //             window.location.reload();
-                //         }
-                //     }
-                // });
             }
         });
     },
@@ -273,7 +253,6 @@ var albumObject = {
     getCheckedCheckboxes: function () {
         return $('.albums-list').find('.album-checkbox:checked');
     },
-    
     
     
     uploadPhotoAlbum: function () {
