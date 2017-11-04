@@ -82,7 +82,8 @@ var albumObject = {
     
     downloadAlbumEvent: function () {
         var self = this;
-        $('.download-albums-btn').on('click', function () {
+        $('.download-albums-btn').on('click', function (e) {
+            e.preventDefault();
             self.downloadAlbumsMode = true;
             self.fireMode();
         });
@@ -90,7 +91,8 @@ var albumObject = {
     
     deleteAlbumEvent: function () {
         var self = this;
-        $('.remove-albums-btn').on('click', function () {
+        $('.remove-albums-btn').on('click', function (e) {
+            e.preventDefault();
             self.deleteAlbumsMode = true;
             self.fireMode();
         });
@@ -130,6 +132,8 @@ var albumObject = {
         $('.download-selected-albums').show();
         this.initDownloadAlbumsBtnEvent();
         this.disableDownloadAlbumsButton();
+        
+        return false;
     },
     
     initDownloadAlbumsBtnEvent: function () {
@@ -158,6 +162,8 @@ var albumObject = {
                 });
             }
         });
+        
+        return false;
     },
     
     disableDownloadAlbumsButton: function () {

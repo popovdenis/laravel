@@ -137,28 +137,33 @@ class AlbumController extends Controller
         $zipPath = $archive->getFilePath();
         $archive->close();
     
-        return response()->download($zipPath);
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
     
-    public function downloadList(Request $request)
+    public function downloadList($albumsIds)
     {
-        $albumsIds = $request->get('albumsIds', []);
-        
+//        $albumsIds = $request->get('albumsIds', []);
+    
         $zip = new Zipper;
-        $images = [];
-        foreach ($albumsIds as $albumsId) {
-            $album = Album::find($albumsId);
-            foreach ($album->images($album) as $image) {
-                $images[] = $image->path;
+        $zipName = time() . rand(1111, 9999);
+        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'));
+        
+        if (!empty($albumsIds)) {
+            $images = [];
+            foreach ($albumsIds as $albumId) {
+                $album = Album::find($albumId);
+                foreach ($album->images($album) as $image) {
+                    $archive->add($image->path);
+                }
             }
         }
         
-        $zipName = time() . rand(1111, 9999);
-        $archive = $zip->make(public_path('uploads/' . $zipName . '.zip'))->add($images);
         $zipPath = $archive->getFilePath();
         $archive->close();
+    
+        $headers = [ 'Content-Type' => 'application/octet-stream' ];
         
-        return response()->download($zipPath);
+        return response()->download($zipPath, $zipName, $headers)->deleteFileAfterSend(true);
     }
     
     private function _removeAlbum($albumId)

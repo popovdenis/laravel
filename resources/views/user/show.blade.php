@@ -23,7 +23,7 @@
             albumObject.uploadFilesUrl = "{{ url('/') }}" + '/image/uploadFiles';
             albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
             albumObject.removeAlbumsUrl = "{{ url('/album/removeList') }}";
-            albumObject.downloadAlbumsUrl = "{{ url('/album/downloadList') }}";
+            albumObject.downloadAlbumsUrl = "{{ url('/album/download-photos') }}";
             albumObject.init();
         });
     </script>
