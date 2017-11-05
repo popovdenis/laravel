@@ -63,6 +63,9 @@ class CommentController extends Controller
         //получаем модель записи к которой принадлежит комментарий
         $image = Photo::find($data['image_id']);
         
+        // get album owner
+        $data['image_owner_id'] = $image->album()->owner()->id;
+        
         /*
          * Сохраняем данные в БД
          * Используем связывающий метод comments()
@@ -88,7 +91,7 @@ class CommentController extends Controller
         $data['status'] = config('comments.show_immediately');
     
         return redirect()->route('album.show', $image->album()->id)
-            ->with('success', 'Comment has been created successfully');
+            ->with('success', __('comments.created.success'));
     }
     
     public function getNewComments()

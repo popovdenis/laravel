@@ -19,7 +19,7 @@
                             <img src="{{ asset('images/icons/user.png') }} "/>
                         </a>
                     </div>
-                    <div>{{ $currentUser->getFullname() }}</div>
+                    <div><strong>{{ $currentUser->getFullname() }}</strong></div>
                 </td>
             </tr>
             <?php foreach ($users as $key => $user): ?>

@@ -38,14 +38,24 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
     
+    public function commentsToImages()
+    {
+        return $this->hasMany(Comment::class, 'image_owner_id');
+    }
+    
     public function hasNewComments()
     {
         return $this->new_comments > 0;
     }
     
-    public function getNewComments()
+    public function newComments()
     {
-        return $this->comments()->where('is_new', true)->get()->all();
+        return $this->commentsToImages()
+            ->where('is_new', true)
+            ->orderBy('id', 'DESC')
+            ->groupBy('user_id')
+            ->get()
+            ->all();
     }
     
     public function incrementNewComments()

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    public $fillable = ['name', 'email', 'text', 'image_id', 'user_id', 'parent_id'];
+    public $fillable = ['name', 'email', 'text', 'image_id', 'user_id', 'image_owner_id', 'parent_id'];
     
     public function photo()
     {
@@ -15,7 +15,17 @@ class Comment extends Model
     
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    public function author()
+    {
+        return $this->user()->firstOrFail();
+    }
+    
+    public function imageOwner()
+    {
+        return $this->belongsTo(User::class, 'image_owner_id');
     }
     
     public function parent()

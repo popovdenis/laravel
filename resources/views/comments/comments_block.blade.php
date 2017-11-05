@@ -30,7 +30,7 @@ $comments = $photo->comments()->get()->all();
                 <textarea id="comment" name="text" cols="45" rows="8"></textarea>
             </p>
             <!--Данные поля так же нужны для работы JS - вставки формы сразу за комментарием на который нужно ответить-->
-            <input type="hidden" id="comment_image_ID" name="comment_image_ID" value="{{ $photo->id}}">
+            <input type="hidden" id="comment_image_ID" name="comment_image_ID" value="{{ $photo->id }}">
             <input type="hidden" id="comment_parent" name="comment_parent" value="0">
             <div class="clear"></div>
             <p class="form-submit">
@@ -39,3 +39,15 @@ $comments = $photo->comments()->get()->all();
         {!! Form::close() !!}
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if(window.location.hash) {
+            var hash = window.location.hash;
+            $('html, body').animate({
+                scrollTop: $(hash).offset().top
+            }, 800, function(){
+                window.location.hash = hash;
+            });
+        }
+    });
+</script>
