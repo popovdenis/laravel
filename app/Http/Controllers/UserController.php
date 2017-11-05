@@ -28,10 +28,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::where('is_admin', 0)->orderBy('id', 'DESC')->paginate(3);
+        $usersOnPage = config('pagination.albums.items_per_page');
+        
+        $users = User::where('is_admin', 0)->orderBy('id', 'DESC')->paginate($usersOnPage);
         
         return view('user.index', compact('users'))
-            ->with('i', ($request->input('page', 1) - 1) * 3);
+            ->with('i', ($request->input('page', 1) - 1) * $usersOnPage);
     }
     
     /**
@@ -75,8 +77,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $albumsOnPage = config('pagination.albums.items_per_page');
+        
         $user = User::find($id);
-        $albums = $user->albums()->orderBy('id', 'DESC')->paginate(3);
+        $albums = $user->albums()->orderBy('id', 'DESC')->paginate($albumsOnPage);
         $currentUser = Auth::getUser();
         
         return view('user.show', compact('user', 'albums', 'currentUser'));

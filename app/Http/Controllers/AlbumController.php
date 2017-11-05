@@ -25,10 +25,12 @@ class AlbumController extends Controller
      */
     public function index(Request $request)
     {
-        $albums = Album::orderBy('id', 'DESC')->paginate(3);
+        $showOnPage = config('album.pagination.showonpage');
+        
+        $albums = Album::orderBy('id', 'DESC')->paginate($showOnPage);
         
         return view('album.index', compact('albums'))
-            ->with('i', ($request->input('page', 1) - 1) * 3);
+            ->with('i', ($request->input('page', 1) - 1) * $showOnPage);
     }
     
     /**
