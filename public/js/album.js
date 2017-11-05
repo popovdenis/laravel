@@ -157,8 +157,6 @@ var albumObject = {
                 form.remove();
             }
         });
-        
-        return false;
     },
     
     disableDownloadAlbumsButton: function () {

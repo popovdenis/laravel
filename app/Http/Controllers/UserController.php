@@ -7,15 +7,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\ImageLib;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\User;
-use App\Album;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    const AVATAR_DESTINATION = 'uploads/users';
+    
     public function __construct()
     {
         $this->middleware('auth');
@@ -31,8 +31,9 @@ class UserController extends Controller
         $usersOnPage = config('pagination.albums.items_per_page');
         
         $users = User::where('is_admin', 0)->orderBy('id', 'DESC')->paginate($usersOnPage);
+        $currentUser = Auth::getUser();
         
-        return view('user.index', compact('users'))
+        return view('user.index', compact('users', 'currentUser'))
             ->with('i', ($request->input('page', 1) - 1) * $usersOnPage);
     }
     
@@ -110,30 +111,34 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(
-            $request, [
-                'email' => 'required',
-            ]
-        );
+        $this->validate($request, ['email' => 'required']);
+    
+        $user = User::find($id);
         
         $file = $request->file('file');
         
         if (!empty($file)) {
-//            foreach ($files as $file) {
-                // Set the destination path
-                $destinationPath = 'uploads';
-                // Get the orginal filname or create the filename of your choice
-                $filename = $file->getClientOriginalName();
-                // Copy the file in our upload folder
-//                $file->move($destinationPath, $filename);
-                Storage::put($file->getClientOriginalName(), file_get_contents($file));
-//            }
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'user_avatar_' . $user->getAuthIdentifier();
+            $uploadedFile = $file->move(self::AVATAR_DESTINATION, $fileName . '.' . $extension);
+            
+            $config = [];
+            $config['image_library'] = 'gd2';
+            $config['source_image'] = $uploadedFile->getRealPath();
+            $config['create_thumb'] = false;
+            $config['maintain_ratio'] = TRUE;
+            $config['width']         = 120;
+            $config['height']       = 120;
+    
+            $imageLib = new ImageLib($config);
+            $imageLib->resize();
+    
+            $request->merge(['avatar_path' => $uploadedFile->getPath() . '/' . $uploadedFile->getFilename()]);
         }
         
         User::find($id)->update($request->all());
         
-        return redirect()->route('user.index')
-            ->with('success', 'User has been updated successfully');
+        return redirect()->route('user.index')->with('success', __('user.updated.success'));
     }
     
     /**
@@ -147,7 +152,6 @@ class UserController extends Controller
     {
         User::find($id)->delete();
         
-        return redirect()->route('User.index')
-            ->with('success', 'User has been deleted successfully');
+        return redirect()->route('User.index')->with('success', __('user.deleted.success'));
     }
 }

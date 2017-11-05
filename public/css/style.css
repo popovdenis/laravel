@@ -322,3 +322,7 @@ footer {
     background-color: #ffffff;
     padding: 0;
 }
+
+.margin5 {
+    margin: 5px 5px 5px 0;
+}

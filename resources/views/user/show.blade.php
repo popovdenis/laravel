@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-    <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
+    @include('user.header', ['currentUser' => $currentUser])
 
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -10,7 +10,6 @@
             </div>
             <div class="pull-right">
                 <a class="btn btn-primary" href="{{ route('user.index') }}">{{ trans('messages.back') }}</a>
-                @include('user.logout')
             </div>
         </div>
     </div>

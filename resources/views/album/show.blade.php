@@ -11,8 +11,9 @@
 
     <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
 
-    <div>
-        @include('user/account.my_account')
+    @include('user.header', ['currentUser' => $currentUser])
+
+    <div class="row">
         <?php if ($album->owner()->id === $currentUser->id): ?>
             <div class="btn-group">
                 <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}
@@ -39,17 +40,10 @@
             </div>
         <?php endif; ?>
         <button class="btn btn-warning download-photos-btn">{{ trans('photo.download') }}</button>
-        {{--<button class="btn btn-danger cancel-photos-btn" style="display: none;">{{ trans('album.cancel') }}</button>--}}
-        {{--<span>--}}
-            {{--<a href="{{ url('/album/download', $album->id) }}"--}}
-               {{--class="btn btn-warning">{{ trans('album.download') }}</a>--}}
-        {{--</span>--}}
         <div class="pull-right">
-            @include('user/account.my_comments', ['user' => $currentUser])
             <a class="btn btn-primary"
                href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}
             </a>
-            @include('user.logout')
         </div>
     </div>
 

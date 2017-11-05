@@ -7,7 +7,14 @@
 return [
     'info' => 'Информация пользователя',
     'fullname' => 'Имя',
+    'firstname' => 'Имя',
+    'lastname' => 'Фамилия',
+    'email' => 'Email',
+    'password' => 'Пароль',
+    'avatar' => 'Логотип',
     'list' => 'Пользователи',
     'my_account' => 'Мой Аккаунт',
-    'edit.account' => 'Обновить данные'
+    'edit.account' => 'Обновить данные',
+    'updated.success' => 'Данные пользователя успешно обновлены',
+    'deleted.success' => 'Пользователь успешно удален'
 ];

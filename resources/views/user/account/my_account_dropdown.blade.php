@@ -6,5 +6,3 @@
         <li><a data-toggle="modal" data-target="#editUserModal">{{ trans('user.edit.account') }}</a></li>
     </ul>
 </div>
-
-@include('user/account.edit_account_popup')
