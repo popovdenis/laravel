@@ -22,8 +22,8 @@ return [
     'cancel' => 'Отмена',
     'create' => 'Новый альбом',
     'albums' => 'Альбомы',
-    'created.success' => 'Album created successfully',
-    'updated.successfully' => 'Album updated successfully',
-    'deleted.selected.success' => 'Selected albums were deleted successfully',
-    'deleted.selected.failure' => 'Some of selected albums were not deleted'
+    'created.success' => 'Альбом создан',
+    'updated.successfully' => 'Альбом обновлен',
+    'deleted.selected.success' => 'Выбранные альбомы были удалены успешно',
+    'deleted.selected.failure' => 'Некоторые из выбранных альбомов не были удалены'
 ];

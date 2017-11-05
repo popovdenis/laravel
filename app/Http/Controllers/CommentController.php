@@ -73,14 +73,18 @@ class CommentController extends Controller
          */
         $commentsObj = $image->comments();
     
+        if ($image->album()->owner()->id !== $this->getCurrentUser()->id) {
+            // Update count of new comments for photo's owner
+            $image->album()->owner()->incrementNewComments();
+        } else {
+            $data['is_new'] = 0;
+        }
+    
         /*
          * Создаем объект для сохранения, передаем ему массив данных
          */
         $comment = new Comment($data);
         $commentsObj->save($comment);
-        
-        // Update count of new comments for photo's owner
-        $image->album()->owner()->incrementNewComments();
         
         /*
          * Формируем массив данных для вывода нового комментария с помощью AJAX

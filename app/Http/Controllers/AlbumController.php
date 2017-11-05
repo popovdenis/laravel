@@ -87,6 +87,7 @@ class AlbumController extends Controller
             if ($newComments) {
                 $album->owner()->decreaseNewComments($album->getCountComments($newComments));
                 $album->markCommentsAsRead($newComments);
+                $currentUser = $this->getCurrentUser(true);
             }
         }
         

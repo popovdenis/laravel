@@ -14,9 +14,9 @@ class Controller extends BaseController
     
     private $_currentUser = null;
     
-    public function getCurrentUser()
+    public function getCurrentUser($force = false)
     {
-        if ($this->_currentUser === null) {
+        if ($this->_currentUser === null || $force === true) {
             $this->_currentUser = Auth::getUser();
         }
         

@@ -53,7 +53,7 @@ class User extends Authenticatable
         return $this->commentsToImages()
             ->where('is_new', true)
             ->orderBy('id', 'DESC')
-            ->groupBy('user_id')
+            ->groupBy('image_id')
             ->get()
             ->all();
     }

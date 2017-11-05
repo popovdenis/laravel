@@ -53,9 +53,11 @@ class UsersController extends Controller
             ]
         );
     
-        $request->merge(['password' => Hash::make($request->password)]);
+        $data = $request->all();
         
-        User::create($request->all());
+        $data['password'] = Hash::make($request->password);
+        
+        User::create($data);
         
         return redirect()->route('admin.index')
             ->with('success', 'User has been created successfully');

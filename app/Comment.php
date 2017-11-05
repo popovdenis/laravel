@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    public $fillable = ['name', 'email', 'text', 'image_id', 'user_id', 'image_owner_id', 'parent_id'];
+    public $fillable = ['name', 'email', 'text', 'is_new', 'image_id', 'user_id', 'image_owner_id', 'parent_id'];
     
     public function photo()
     {
