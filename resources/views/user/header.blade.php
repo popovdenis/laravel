@@ -6,7 +6,7 @@
     @include('user/account.edit_account_popup', ['user' => $currentUser])
 
     <div class="pull-right">
-        @include('user/account.my_comments', ['user' => $currentUser])
+        @include('user/account.my_comments', ['currentUser' => $currentUser])
     </div>
 </div>
 <script type="text/javascript">

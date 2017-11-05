@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->new_comments > 0;
     }
     
+    public function getNewCommentCount()
+    {
+        return $this->new_comments;
+    }
+    
     public function newComments()
     {
         return $this->commentsToImages()
@@ -66,8 +71,11 @@ class User extends Authenticatable
     
     public function decreaseNewComments($commentsCount = 0)
     {
-        $this->new_comments -= $commentsCount;
+        $commentsCount = $this->new_comments - $commentsCount;
+        $this->new_comments = $commentsCount > 0 ? $commentsCount : 0;
         $this->save();
+        
+        return $this;
     }
     
     /**

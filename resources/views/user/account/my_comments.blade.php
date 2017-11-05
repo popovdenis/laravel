@@ -1,16 +1,16 @@
 <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/comments.css')}}" />
 
-@if ($user->hasNewComments())
+@if ($currentUser->hasNewComments())
     <script type="text/javascript" src="{!! asset('js/comment-reply.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
 
     <div class="btn-group">
         <button data-toggle="dropdown"
-                class="btn btn-primary">{{ trans('comments.new_comments_title') }} ({{ $user->new_comments }})
+                class="btn btn-primary">{{ trans('comments.new_comments_title') }} ({{ $currentUser->getNewCommentCount() }})
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-coments-menu">
-            @foreach($user->newComments() as $comment)
+            @foreach($currentUser->newComments() as $comment)
                 <li>
                     <span>
                     <?php
@@ -25,32 +25,6 @@
             @endforeach
 
         </ul>
-    </div>
-
-
-    <div class="modal fade" id="newCommentsModal" tabindex="-1" role="dialog"
-         aria-labelledby="newCommentsModal" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="newCommentsLabel">{{ trans('comments.new_comments') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="comments-block">
-                    @foreach($user->newComments() as $comment)
-                        <div>
-                            <span><?php echo substr($comment->text, 0, 15) ?>...</span>
-                        </div>
-                    @endforeach
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default"
-                            data-dismiss="modal">{{ trans('comments.popup.close') }}</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script type="text/javascript">

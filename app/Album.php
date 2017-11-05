@@ -17,7 +17,7 @@ class Album extends Model
     
     public function owner()
     {
-        return $this->belongsTo(User::class, 'user_id')->get()->first();
+        return $this->belongsTo(User::class, 'user_id')->firstOrFail();
     }
     
     public function images(Album $album, array $imagesIds = [])
