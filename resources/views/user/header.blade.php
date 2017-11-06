@@ -1,3 +1,8 @@
+@if ($currentUser->isAdmin())
+<div class="row">
+    <a class="btn btn-danger" href="{{ route('admin.index') }}">{{ trans('messages.to_admin') }}</a>
+</div>
+@endif
 <div class="row">
     @include('user/account.user_info', ['user' => $pageOwner])
 </div>

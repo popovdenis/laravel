@@ -32,6 +32,9 @@ Route::resource('image', 'ImageController');
 Route::resource('comment', 'CommentController');
 Route::post('/comment/getNewComments', 'CommentController@getNewComments');
 
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
