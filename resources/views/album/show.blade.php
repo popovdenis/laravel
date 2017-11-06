@@ -11,7 +11,7 @@
 
     <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
 
-    @include('user.header', ['currentUser' => $album->owner()])
+    @include('user.header', ['currentUser' => $currentUser])
 
     <div class="row">
         <?php if ($album->owner()->id === $currentUser->id): ?>
@@ -83,6 +83,10 @@
             albumObject.uploadPhotoAlbumUrl = "{{ route('image.store') }}";
             albumObject.init();
             albumObject.initDropzone();
+
+            commentObject.getComentsModalName = '#newCommentsModal';
+            commentObject.getNewCommentsUrl = "{{ url('/') }}" + '/comment/getNewComments';
+            commentObject.init();
         });
     </script>
 @endsection

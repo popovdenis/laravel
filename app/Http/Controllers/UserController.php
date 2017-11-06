@@ -36,8 +36,9 @@ class UserController extends Controller
             ->orderBy('lastname', 'ASC')
             ->paginate($usersOnPage);
         $currentUser = Auth::getUser();
+        $pageOwner = $currentUser;
         
-        return view('user.index', compact('users', 'currentUser'))
+        return view('user.index', compact('users', 'currentUser', 'pageOwner'))
             ->with('i', ($request->input('page', 1) - 1) * $usersOnPage);
     }
     
@@ -87,8 +88,9 @@ class UserController extends Controller
         $user = User::find($id);
         $albums = $user->albums()->orderBy('id', 'DESC')->paginate($albumsOnPage);
         $currentUser = Auth::getUser();
+        $pageOwner = $user;
         
-        return view('user.show', compact('user', 'albums', 'currentUser'));
+        return view('user.show', compact('user', 'albums', 'currentUser', 'pageOwner'));
     }
     
     /**

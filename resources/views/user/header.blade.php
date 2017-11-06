@@ -1,5 +1,5 @@
 <div class="row">
-    @include('user/account.user_info', ['user' => $currentUser])
+    @include('user/account.user_info', ['user' => $pageOwner])
 </div>
 <div class="row">
     @include('user/account.my_account_dropdown')

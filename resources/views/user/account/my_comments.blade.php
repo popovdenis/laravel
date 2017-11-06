@@ -1,9 +1,4 @@
-<link rel="stylesheet" type="text/css" media="all" href="{{asset('css/comments.css')}}" />
-
 @if ($currentUser->hasNewComments())
-    <script type="text/javascript" src="{!! asset('js/comment-reply.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
-
     <div class="btn-group">
         <button data-toggle="dropdown"
                 class="btn btn-primary">{{ trans('comments.new_comments_title') }} ({{ $currentUser->getNewCommentCount() }})
@@ -26,14 +21,6 @@
 
         </ul>
     </div>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            commentObject.getComentsModalName = '#newCommentsModal';
-            commentObject.getNewCommentsUrl = "{{ url('/') }}" + '/comment/getNewComments';
-            commentObject.init();
-        });
-    </script>
 
 @else
     <span>{{ trans('comments.no_comments') }}</span>

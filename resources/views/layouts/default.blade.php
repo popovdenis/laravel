@@ -13,8 +13,12 @@
     <link rel="stylesheet" href="{!! asset('css/font-awesome.css') !!}">
     <link rel="stylesheet" href="{!! asset('css/style.css') !!}">
     <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('js/comment.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/user.js') !!}"></script>
+
+    <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/comments.css')}}" />
+    <script type="text/javascript" src="{!! asset('js/comment-reply.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/comment-scripts.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/comment.js') !!}"></script>
 </head>
 <body>
 
