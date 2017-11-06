@@ -103,4 +103,17 @@ class User extends Authenticatable
     {
         return (bool) $this->is_admin;
     }
+    
+    public function delete()
+    {
+        $this->hasMany(Comment::class, 'user_id')->delete();
+        
+        foreach ($this->albums()->get()->all() as $album) {
+            $album->delete();
+        }
+    
+        parent::delete();
+        
+        return $this;
+    }
 }

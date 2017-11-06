@@ -20,10 +20,4 @@
     });
 </script>
 
-@if ($message = Session::get('success'))
-<div class="row">
-    <div class="alert alert-success">
-        <p>{{ $message }}</p>
-    </div>
-</div>
-@endif
+@include('layouts.messages')

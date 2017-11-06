@@ -65,4 +65,17 @@ class Album extends Model
             }
         }
     }
+    
+    public function delete()
+    {
+        foreach ($this->images($this) as $image) {
+            $image->delete();
+        }
+    
+        $this->hasMany(AlbumImage::class, 'album_id')->delete();
+        
+        parent::delete();
+        
+        return $this;
+    }
 }

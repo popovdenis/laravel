@@ -14,16 +14,7 @@
         </div>
     </div>
 
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
-    @if ($message = Session::get('error'))
-        <div class="alert alert-error">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
+    @include('layouts.messages')
 
     <table class="table table-bordered">
         <tr>
@@ -33,15 +24,16 @@
             <th>Email</th>
             <th width="280px">Action</th>
         </tr>
-        @foreach ($users as $key => $user)
+        <?php foreach ($users as $key => $user): ?>
             <tr>
                 <td>{{ ++$i }}</td>
                 <td>{{ $user->firstname }}</td>
                 <td>{{ $user->lastname }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
-                    <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-                    <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
+                    <a class="btn btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
+                    <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
+                    <?php if (!$user->isAdmin()): ?>
                     {!! Form::open([
                         'method' => 'DELETE',
                         'route' => ['users.destroy', $user->id],
@@ -49,9 +41,10 @@
                     ]) !!}
                     {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                     {!! Form::close() !!}
+                    <?php endif; ?>
                 </td>
             </tr>
-        @endforeach
+        <?php endforeach ?>
     </table>
 
     {!! $users->render() !!}

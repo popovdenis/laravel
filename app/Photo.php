@@ -49,6 +49,7 @@ class Photo extends Model
     
     public function delete()
     {
+        $this->hasMany(Comment::class, 'image_id')->delete();
         $this->hasMany(AlbumImage::class, 'image_id')->delete();
     
         parent::delete();

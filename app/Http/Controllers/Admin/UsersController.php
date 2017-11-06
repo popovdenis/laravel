@@ -24,10 +24,12 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::orderBy('id', 'DESC')->paginate(3);
+        $usersOnPage = config('pagination.albums.items_per_page');
+        
+        $users = User::orderBy('id', 'DESC')->paginate($usersOnPage);
         
         return view('admin.user.index', compact('users'))
-            ->with('i', ($request->input('page', 1) - 1) * 3);
+            ->with('i', ($request->input('page', 1) - 1) * $usersOnPage);
     }
     
     /**
@@ -147,9 +149,15 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        User::find($id)->delete();
+        $user = User::find($id);
+        if ($user->id === $this->getCurrentUser()->id) {
+            return redirect()->route('admin.index')
+                ->with('error', __('admin.delete.admin'));
+        }
+        
+        $user->delete();
         
         return redirect()->route('admin.index')
-            ->with('success', 'User has been deleted successfully');
+            ->with('success', __('admin.user.deleted.success'));
     }
 }
