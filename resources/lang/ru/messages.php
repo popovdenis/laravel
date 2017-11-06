@@ -7,5 +7,6 @@
 return [
     'back' => 'Назад',
     'logout' => 'Выйти',
-    'You have uploaded images successfully' => 'You have uploaded images successfully'
+    'You have uploaded images successfully' => 'You have uploaded images successfully',
+    'have.no.access.to.admin.area' => 'У вас не достаточно прав для доступа в админ часть'
 ];

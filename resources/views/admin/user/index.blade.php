@@ -19,6 +19,11 @@
             <p>{{ $message }}</p>
         </div>
     @endif
+    @if ($message = Session::get('error'))
+        <div class="alert alert-error">
+            <p>{{ $message }}</p>
+        </div>
+    @endif
 
     <table class="table table-bordered">
         <tr>
