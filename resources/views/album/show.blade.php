@@ -11,7 +11,7 @@
 
     <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
 
-    @include('user.header', ['currentUser' => $currentUser])
+    @include('user.header', ['currentUser' => $album->owner()])
 
     <div class="row">
         <?php if ($album->owner()->id === $currentUser->id): ?>

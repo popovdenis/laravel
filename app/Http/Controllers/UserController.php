@@ -11,6 +11,7 @@ use App\Model\ImageLib;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -30,7 +31,10 @@ class UserController extends Controller
     {
         $usersOnPage = config('pagination.albums.items_per_page');
         
-        $users = User::where('is_admin', 0)->orderBy('id', 'DESC')->paginate($usersOnPage);
+        $users = User::where('is_admin', 0)
+            ->orderBy('firstname', 'ASC')
+            ->orderBy('lastname', 'ASC')
+            ->paginate($usersOnPage);
         $currentUser = Auth::getUser();
         
         return view('user.index', compact('users', 'currentUser'))
@@ -135,8 +139,12 @@ class UserController extends Controller
     
             $request->merge(['avatar_path' => $uploadedFile->getPath() . '/' . $uploadedFile->getFilename()]);
         }
-        
-        User::find($id)->update($request->all());
+        $requestData = $request->all();
+        if (!empty($requestData['password'])) {
+            $requestData['password'] = Hash::make($requestData['password']);
+        }
+    
+        $user->update($requestData);
         
         return redirect()->route('user.index')->with('success', __('user.updated.success'));
     }

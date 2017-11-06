@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use App\Model\ImageLib;
 
 class UsersController extends Controller
 {
+    const AVATAR_DESTINATION = 'uploads/users';
+    
     public function __construct()
     {
         $this->middleware('auth');
@@ -101,30 +104,38 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(
-            $request, [
-                'email' => 'required',
-            ]
-        );
+        $this->validate($request, ['email' => 'required']);
+        
+        $user = User::find($id);
         
         $file = $request->file('file');
         
         if (!empty($file)) {
-//            foreach ($files as $file) {
-            // Set the destination path
-            $destinationPath = 'uploads';
-            // Get the orginal filname or create the filename of your choice
-            $filename = $file->getClientOriginalName();
-            // Copy the file in our upload folder
-//                $file->move($destinationPath, $filename);
-            Storage::put($file->getClientOriginalName(), file_get_contents($file));
-//            }
+            $extension = $file->getClientOriginalExtension();
+            $fileName = 'user_avatar_' . $user->getAuthIdentifier();
+            $uploadedFile = $file->move(self::AVATAR_DESTINATION, $fileName . '.' . $extension);
+            
+            $config = [];
+            $config['image_library'] = 'gd2';
+            $config['source_image'] = $uploadedFile->getRealPath();
+            $config['create_thumb'] = false;
+            $config['maintain_ratio'] = TRUE;
+            $config['width']         = 120;
+            $config['height']       = 120;
+            
+            $imageLib = new ImageLib($config);
+            $imageLib->resize();
+            
+            $request->merge(['avatar_path' => $uploadedFile->getPath() . '/' . $uploadedFile->getFilename()]);
         }
+        $requestData = $request->all();
+        if (!empty($requestData['password'])) {
+            $requestData['password'] = Hash::make($requestData['password']);
+        }
+    
+        $user->update($requestData);
         
-        User::find($id)->update($request->all());
-        
-        return redirect()->route('admin.index')
-            ->with('success', 'User has been updated successfully');
+        return redirect()->route('admin.index')->with('success', __('user.updated.success'));
     }
     
     /**

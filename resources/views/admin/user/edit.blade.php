@@ -29,66 +29,64 @@
         ['method' => 'PATCH','route' => ['users.update', $user->id], 'enctype' => "multipart/form-data"]
     ) !!}
     <div class="row">
-
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Firstname:</strong>
+                <strong>{{ trans('user.firstname') }}:</strong>
                 {!! Form::text(
                     'firstname',
                     null,
-                    array('placeholder' => 'Firstname','class' => 'form-control'))
+                    array('placeholder' => trans('user.firstname'),'class' => 'form-control'))
                 !!}
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Lastname:</strong>
+                <strong>{{ trans('user.lastname') }}:</strong>
                 {!! Form::text(
                     'lastname',
                     null,
-                    array('placeholder' => 'Lastname','class' => 'form-control'))
+                    array('placeholder' => trans('user.lastname'),'class' => 'form-control'))
                 !!}
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Email:</strong>
+                <strong>{{ trans('user.email') }}:</strong>
                 {!! Form::text(
                     'email',
                     null,
-                    array('placeholder' => 'Email','class' => 'form-control'))
+                    array('placeholder' => trans('user.email'),'class' => 'form-control'))
                 !!}
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Password:</strong>
+                <strong>{{ trans('user.password') }}:</strong>
                 {!! Form::password(
                     'password',
                     null,
-                    array('placeholder' => 'Password','class' => 'form-control'))
+                    array('placeholder' => trans('user.password'),'class' => 'form-control'))
                  !!}
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Avatar image:</strong>
+                <strong>{{ trans('user.avatar') }}:</strong>
+                @if ($user->avatar_path)
+                    <div>
+                        <img src="{{ url('/') }}/{{ $user->avatar_path }}" />
+                    </div>
+                @endif
                 {!! Form::file(
                     'file',
                     null,
-                    array('placeholder' => 'Avatar image','class' => 'form-control', 'multiple' => 'multiple'))
+                    array('placeholder' => trans('user.avatar'), 'class' => 'form-control'))
                  !!}
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-
     </div>
     {!! Form::close() !!}
 

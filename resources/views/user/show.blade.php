@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
-    @include('user.header', ['currentUser' => $currentUser])
+    @include('user.header', ['currentUser' => $user])
 
     <div class="row">
         <div class="col-lg-12 margin-tb">
