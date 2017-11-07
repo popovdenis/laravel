@@ -104,7 +104,6 @@ CREATE TABLE `migrations` (
 --
 
 LOCK TABLES `migrations` WRITE;
-/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2017_10_15_200007_create_album_table',2),(5,'2017_10_17_204413_update_users_table',3),(7,'2017_10_20_205344_create_image_table',5),(8,'2017_10_20_212107_create_image_album_table',6),(18,'2014_10_12_000000_create_users_table',7),(19,'2014_10_12_100000_create_password_resets_table',7),(20,'2017_10_15_104211_create_items_table',7),(21,'2017_10_17_204528_update_users_table',7),(24,'2017_10_20_212250_create_albums_table',8),(25,'2017_10_20_212504_create_images_table',8),(26,'2017_10_20_212632_create_image_album_table',8),(31,'2017_06_26_095610_CreateCommentsTable',9),(32,'2017_06_26_194528_ChangeCommentsTable',9),(33,'2017_10_24_203512_add_thumb_path',10),(34,'2017_10_28_185322_create_comments_table',11),(36,'2017_10_29_195957_add_new_comments_to_user',12),(37,'2017_11_05_120137_add_avatar_user',13);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -114,8 +113,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `password_resets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `password_resets` (
   `email` varchar(255) NOT NULL,
   `token` varchar(255) NOT NULL,
