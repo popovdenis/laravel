@@ -17,9 +17,9 @@
                     <div>
                         <a href="{{ route('user.show', $currentUser->id) }}" title="{{ $currentUser->getFullname() }}">
                         @if ($currentUser->avatar_path)
-                            <img src="{{ url('/') }}/{{ $currentUser->avatar_path }}" />
+                            <img src="{{ url('/') }}/public/{{ $currentUser->avatar_path }}" />
                         @else
-                            <img src="{{ asset('images/icons/user.png') }} "/>
+                            <img src="{{ asset('public/images/icons/user.png') }} "/>
                         @endif
                         </a>
                     </div>
@@ -33,9 +33,9 @@
                     <div>
                         <a href="{{ route('user.show', $user->id) }}" title="{{ $user->getFullname() }}">
                         @if ($user->avatar_path)
-                            <img src="{{ url('/') }}/{{ $user->avatar_path }}" />
+                            <img src="{{ url('/') }}/public/{{ $user->avatar_path }}" />
                         @else
-                            <img src="{{ asset('images/icons/user.png') }} "/>
+                            <img src="{{ url('/') }}/public/images/icons/user.png"/>
                         @endif
                         </a>
                     </div>

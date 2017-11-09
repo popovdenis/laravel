@@ -1,0 +1,27 @@
+.photos-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+.lightbox {
+  display: inline-flex;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto 20px;
+  }
+}
+.gallery-item {
+  margin: 0 10px 10px;
+}
+.gallery-item-comments {
+  width: 500px;
+  max-width: 100%;
+
+  textarea {
+    font: 14px/1.25 Raleway;
+  }
+}

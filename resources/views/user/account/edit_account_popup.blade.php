@@ -61,7 +61,7 @@
                             <strong>{{ trans('user.avatar') }}:</strong>
                             @if ($user->avatar_path)
                                 <div>
-                                    <img src="{{ url('/') }}/{{ $user->avatar_path }}" />
+                                    <img src="{{ url('/') }}/public/{{ $user->avatar_path }}" />
                                 </div>
                             @endif
                             {!! Form::file(

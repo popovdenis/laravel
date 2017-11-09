@@ -15,7 +15,11 @@ body {
 
 li, ul, ol {
     color: #585555;
-    font: 14px/1.25 Raleway;
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #585555;
+    font-style: normal;
 }
 
 ol.commentlist, li.comment {
