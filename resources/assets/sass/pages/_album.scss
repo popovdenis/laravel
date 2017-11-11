@@ -17,6 +17,15 @@
 .gallery-item {
   margin: 0 10px 10px;
 }
+.gallery-item-photo {
+  position: relative;
+
+  .photo-checkbox {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+}
 .gallery-item-comments {
   width: 500px;
   max-width: 100%;
