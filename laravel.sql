@@ -13,8 +13,8 @@ CREATE TABLE `users` (
     `is_admin` tinyint(1) NOT NULL DEFAULT 0,
     `new_comments` tinyint(4) NOT NULL DEFAULT 0,
     `avatar_path` varchar(100) NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-    `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `created_at` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB;

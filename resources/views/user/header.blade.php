@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="navbar-header ">
                 <a class="navbar-brand" href="#">
-                    <img alt="PhotoLab" src="/public/images/logo.png">
+                    <img alt="PhotoLab" src="/images/logo.png">
                 </a>
             </div>
             @include('user/account.my_account_dropdown')
@@ -21,11 +21,8 @@
 </header>
 @include('user/account.user_info', ['user' => $pageOwner])
 
-<div class="row">
-    <div class="pull-right">
-        @include('user/account.my_comments', ['currentUser' => $currentUser])
-    </div>
-</div>
+@include('user/account.my_comments', ['currentUser' => $currentUser])
+
 <script type="text/javascript">
     $(document).ready(function () {
         userObject.init();

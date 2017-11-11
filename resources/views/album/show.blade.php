@@ -8,27 +8,28 @@
     {{--<script type="text/javascript" src="{!! asset('public/js/lightbox.js') !!}"></script>--}}
 
     <link rel="stylesheet" type="text/css" media="all" href="{!! asset('public/css/dropzone.css') !!}">
-    <link rel="stylesheet" type="text/css" media="all" href="{{asset('public/css/lightbox.css')}}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{asset('public/css/lightbox.css')}}"/>
 
-    <input type="hidden" name="_token" value="<?php echo csrf_token() ?>" />
+    <input type="hidden" name="_token" value="<?php echo csrf_token() ?>"/>
 
     @include('user.header', ['currentUser' => $currentUser])
 
     <div class="clearfix">
-        <?php if ($album->owner()->id === $currentUser->id): ?>
-            <div class="btn-group">
-                <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
-                    <li><a class="album-add-photo-popup" data-toggle="modal"
-                           data-target="#uploadPhotoModal">{{ trans('photo.add') }}</a></li>
-                    <li>
-                        <a class="remove-photos-btn">{{ trans('photo.delete') }}</a>
-                        <a class="cancel-photos-btn" style="display: none;">{{ trans('photo.cancel') }}</a>
-                    </li>
-                    <li><a class="remove-album-link">
+        <div class="btn-group">
+            <?php if ($album->owner()->id === $currentUser->id): ?>
+
+            <button data-toggle="dropdown" class="btn btn-primary">{{ trans('album.edit') }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a data-toggle="modal" data-target="#editAlbumModal">{{ trans('album.edit.name') }}</a></li>
+                <li><a class="album-add-photo-popup" data-toggle="modal"
+                       data-target="#uploadPhotoModal">{{ trans('photo.add') }}</a></li>
+                <li>
+                    <a class="remove-photos-btn">{{ trans('photo.delete') }}</a>
+                    <a class="cancel-photos-btn" style="display: none;">{{ trans('photo.cancel') }}</a>
+                </li>
+                <li><a class="remove-album-link">
                         {!! Form::open([
                             'method' => 'DELETE',
                             'route' => ['album.destroy', $album->id],
@@ -37,10 +38,10 @@
                         {!! Form::submit(trans('album.delete'), ['class'=>'remove-album-btn']) !!}
                         {!! Form::close() !!}
                     </a></li>
-                </ul>
-            </div>
-        <?php endif; ?>
-        <button class="btn btn-warning download-photos-btn">{{ trans('photo.download') }}</button>
+            </ul>
+            <?php endif; ?>
+            <button class="btn btn-warning download-photos-btn">{{ trans('photo.download') }}</button>
+        </div>
         <div class="pull-right">
             <a class="btn btn-primary"
                href="{{ route('user.show', $album->owner()->id) }}">{{ trans('messages.back') }}
