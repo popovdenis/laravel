@@ -3,7 +3,7 @@
         <li>
             <a href="{{ route('album.show',$album->id) }}">
                 {{ $album->title }}
-                <input class="album-checkbox hidden" type="checkbox" value="{{ $album->id }}">
+                <input class="album-checkbox" type="checkbox" value="{{ $album->id }}" style="display: none;">
             </a>
         </li>
     @endforeach

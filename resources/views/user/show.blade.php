@@ -3,14 +3,6 @@
 @section('content')
     @include('user.header', ['currentUser' => $currentUser, 'pageOwner' => $pageOwner])
 
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('user.index') }}">{{ trans('messages.back') }}</a>
-            </div>
-        </div>
-    </div>
-
     @include('album.main', ['albums' => $albums, 'user' => $user, 'currentUser' => $currentUser])
 
     <script type="text/javascript">

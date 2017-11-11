@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="navbar-header ">
                 <a class="navbar-brand" href="#">
-                    <img alt="PhotoLab" src="/images/logo.png">
+                    <img alt="PhotoLab" src="/images/logo.svg" width="62" height="67">
                 </a>
             </div>
             @include('user/account.my_account_dropdown')

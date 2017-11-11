@@ -4024,6 +4024,12 @@ x::-ms-reveal,
     }
 }@charset "UTF-8";
 
+.page-title {
+  text-align: center;
+  font: 500 35px/1.25 Raleway;
+  margin: 0 0 20px;
+}
+
 .page-subtitle {
   text-align: center;
   font: 500 30px/1.25 Raleway;
@@ -12490,12 +12496,18 @@ button.close {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  color: #000;
   text-transform: uppercase;
   background: url(/images/album-cover.jpg?4534a54a01dcfb700e15a3eaa1f6ff4b) 50% 50%;
   background-size: cover;
   padding: 10px 10px 10px 35px;
   color: #fff;
+  position: relative;
+}
+
+.albums-list input {
+  position: absolute;
+  right: 5px;
+  top: 5px;
 }
 
 .users-list {

@@ -8,7 +8,7 @@
                 <h2>Users</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('users.create') }}"> Create New User</a>
+                <a class="btn btn-primary" href="{{ route('users.create') }}"> Create New User</a>
                 @include('user.logout')
             </div>
         </div>
@@ -31,7 +31,7 @@
                 <td>{{ $user->lastname }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
-                    <a class="btn btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
+                    <a class="btn btn-primary" href="{{ route('users.show', $user->id) }}">Show</a>
                     <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
                     <?php if (!$user->isAdmin()): ?>
                     {!! Form::open([

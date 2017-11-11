@@ -40,7 +40,7 @@
                     </a></li>
             </ul>
             <?php endif; ?>
-            <button class="btn btn-warning download-photos-btn">{{ trans('photo.download') }}</button>
+            <button class="btn btn-primary download-photos-btn">{{ trans('photo.download') }}</button>
         </div>
         <div class="pull-right">
             <a class="btn btn-primary"

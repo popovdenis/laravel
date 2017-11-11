@@ -31,7 +31,7 @@ $comments = $photo->comments()->get()->all();
         <input type="hidden" id="comment_image_ID" name="comment_image_ID" value="{{ $photo->id }}">
         <input type="hidden" id="comment_parent" name="comment_parent" value="0">
         <div class="form-group">
-            <input class="btn btn-default" name="submit" type="submit" id="submit" value="Отправить"/>
+            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Отправить"/>
         </div>
         {!! Form::close() !!}
     </div>
