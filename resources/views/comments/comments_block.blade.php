@@ -16,7 +16,7 @@ $comments = $photo->comments()->get()->all();
         <?php endif ?>
     </ol>
 
-    <div id="respond-{{ $photo->id }}">
+    <div id="respond">
         <h3 id="reply-title">Написать <span>комментарий</span>
             <small>
                 <a rel="nofollow" id="cancel-comment-reply-link" href="#respond-{{ $photo->id }}" style="display:none;">Отменить ответ</a>
