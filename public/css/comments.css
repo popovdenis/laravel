@@ -33,7 +33,7 @@ ol.commentlist, li.comment {
 
 .comment-author {
     float: left;
-    margin: 25px 10px 0 15px;
+    margin: 15px 10px 0 15px;
     max-width: 85px;
 }
 
@@ -115,7 +115,7 @@ h3#comments-title span {
 
 .comment-author {
     float: left;
-    margin: 25px 10px 0 15px;
+    margin: 15px 10px 0 15px;
     max-width: 85px;
 }
 

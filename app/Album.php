@@ -78,4 +78,17 @@ class Album extends Model
         
         return $this;
     }
+    
+    public function getLogo()
+    {
+        $lastRecord = $this->getAlbumImagesRelationship()->orderBy('image_id', 'DESC')->first();
+        if ($lastRecord) {
+            $photo = Photo::find($lastRecord->image_id);
+            if ($photo) {
+                return $photo->path_thumb;
+            }
+        }
+        
+        return null;
+    }
 }

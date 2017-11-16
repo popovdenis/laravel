@@ -7,7 +7,6 @@ addComment = {
             j = m.I("comment_parent"),
             k = m.I("comment_image_ID");
         if (!h || !b || !l || !j) {
-            alert(1);
             return
         }
         m.respondId = i;

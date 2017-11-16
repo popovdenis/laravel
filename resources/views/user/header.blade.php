@@ -3,7 +3,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header ">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/">
                     <img alt="PhotoLab" src="/images/logo.svg" width="62" height="67">
                 </a>
             </div>

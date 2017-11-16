@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-    
+
     //номерация комментариев
     $('.commentlist li').each(function (i) {
         $(this).find('div.commentNumber').text('#' + (i + 1));

@@ -80,14 +80,15 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <div class="navbar-header ">
-                        <a class="navbar-brand" href="#">
+                        <a class="navbar-brand" href="/">
                             <img alt="PhotoLab" src="/images/logo.svg" width="62" height="67">
                         </a>
                     </div>
-
+                    <div class="navbar-addition">
+                        @include('user.logout')
+                    </div>
                 </div>
             </nav>
-
         </header>
     </div>
 
@@ -96,5 +97,10 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>
