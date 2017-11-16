@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="reset" class="btn btn-default" data-dismiss="modal">{{ trans('album.popup.close') }}</button>
+                <button type="reset" class="btn btn-primary" data-dismiss="modal">{{ trans('album.popup.close') }}</button>
                 <button type="button" class="btn btn-primary btn-save-album">{{ trans('album.popup.save') }}</button>
             </div>
             {!! Form::close() !!}

@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default"
+                <button type="button" class="btn btn-primary"
                         data-dismiss="modal">{{ trans('album.popup.close') }}</button>
                 <button type="button" class="btn btn-primary edit-album">{{ trans('album.popup.save') }}</button>
             </div>

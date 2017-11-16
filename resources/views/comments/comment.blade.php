@@ -2,8 +2,13 @@
     <li id="li-comment-{{$item->id}}" class="comment">
         <div id="comment-{{$item->id}}" class="comment-container">
             <div class="comment-author vcard">
-                <img alt="" src="https://www.gravatar.com/avatar/{{md5($item->email)}}?d=mm&s=75" class="avatar"
-                     height="75" width="75"/>
+                <?php $userAvatar = $item->author()->avatar_path ?>
+                @if ($userAvatar)
+                    <img src="{{ url('/') }}/{{ $userAvatar }}" />
+                @else
+                    <img alt="" src="https://www.gravatar.com/avatar/{{md5($item->email)}}?d=mm&s=75" class="avatar"
+                         height="75" width="75"/>
+                @endif
                 <cite class="fn">{{$item->name}}</cite>
             </div>
             <!-- .comment-author .vcard -->

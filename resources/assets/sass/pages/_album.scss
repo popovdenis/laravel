@@ -1,0 +1,76 @@
+.photos-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+.lightbox {
+  display: inline-flex;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto 20px;
+  }
+}
+.gallery-item {
+  margin: 0 10px 10px;
+}
+.gallery-item-photo {
+  position: relative;
+
+  .photo-checkbox {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+}
+.gallery-item-comments {
+  width: 500px;
+  max-width: 100%;
+
+  textarea {
+    font: 14px/1.25 Raleway;
+  }
+}
+.album-actions {
+  margin-bottom: 10px;
+}
+
+.albums-list {
+  margin: 0 -10px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+
+  li {
+    width: 25%;
+    padding: 0 10px 10px;
+    margin: 0 0 10px;
+    font: bold 16px/1.25 Raleway;
+  }
+  a {
+    display: flex;
+    min-height: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    background: url("../images/album-cover.jpg") 50% 50%;
+    -webkit-background-size: cover;
+    background-size: cover;
+
+    padding: 10px 10px 10px 35px;
+    color: #fff;
+    position: relative;
+  }
+
+  input {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+}

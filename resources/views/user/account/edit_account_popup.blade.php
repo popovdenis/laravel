@@ -16,9 +16,9 @@
                     ]
                 ) !!}
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12">
                         <div class="form-group">
-                            <strong>{{ trans('user.firstname') }}:</strong>
+                            {{ Form::label('firstname', trans('user.firstname') . ':') }}
                             {!! Form::text(
                                 'firstname',
                                 null,
@@ -26,9 +26,9 @@
                             !!}
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12">
                         <div class="form-group">
-                            <strong>{{ trans('user.lastname') }}:</strong>
+                            {{ Form::label('lastname', trans('user.lastname') . ':') }}
                             {!! Form::text(
                                 'lastname',
                                 null,
@@ -36,9 +36,9 @@
                             !!}
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12">
                         <div class="form-group">
-                            <strong>{{ trans('user.email') }}:</strong>
+                            {{ Form::label('email', trans('user.email') . ':') }}
                             {!! Form::text(
                                 'email',
                                 null,
@@ -46,17 +46,13 @@
                             !!}
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12">
                         <div class="form-group">
-                            <strong>{{ trans('user.password') }}:</strong>
-                            {!! Form::password(
-                                'password',
-                                null,
-                                array('placeholder' => trans('user.password'),'class' => 'form-control'))
-                             !!}
+                            {{ Form::label('password', trans('user.password') . ':') }}
+                            {{ Form::password('password', array('class' => 'form-control')) }}
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="col-xs-12">
                         <div class="form-group">
                             <strong>{{ trans('user.avatar') }}:</strong>
                             @if ($user->avatar_path)

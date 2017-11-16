@@ -1,0 +1,36 @@
+.users-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 -10px;
+
+  img {
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    object-fit: cover;
+  }
+
+  li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font: 600 20px/1.25 Raleway;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 10px 20px;
+    
+    &.current-user {
+      background: #ccc;
+      color: #000;
+    }
+  }
+}

@@ -15,11 +15,7 @@ body {
 
 li, ul, ol {
     color: #585555;
-    font-family: 'Droid Sans', sans-serif;
-    font-size: 12px;
-    font-weight: normal;
-    color: #585555;
-    font-style: normal;
+    font: 14px/1.25 Raleway;
 }
 
 ol.commentlist, li.comment {
@@ -37,7 +33,7 @@ ol.commentlist, li.comment {
 
 .comment-author {
     float: left;
-    margin: 25px 10px 0 15px;
+    margin: 15px 10px 0 15px;
     max-width: 85px;
 }
 
@@ -119,7 +115,7 @@ h3#comments-title span {
 
 .comment-author {
     float: left;
-    margin: 25px 10px 0 15px;
+    margin: 15px 10px 0 15px;
     max-width: 85px;
 }
 

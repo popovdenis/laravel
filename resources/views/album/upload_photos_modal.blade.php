@@ -11,7 +11,7 @@
                 <div class="dropzone" id="dropzoneFileUpload"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default"
+                <button type="button" class="btn btn-primary"
                         data-dismiss="modal">{{ trans('album.popup.close') }}</button>
                 <button type="button"
                         class="btn btn-primary upload-photo">{{ trans('album.popup.save') }}</button>
