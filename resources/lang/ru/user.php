@@ -12,6 +12,8 @@ return [
     'email' => 'Email',
     'password' => 'Пароль',
     'avatar' => 'Логотип',
+    'phone' => 'Телефон',
+    'date_of_birth' => 'Дата рождения',
     'list' => 'Пользователи',
     'my_account' => 'Мой Аккаунт',
     'edit.account' => 'Обновить данные',

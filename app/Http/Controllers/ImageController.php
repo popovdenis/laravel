@@ -53,8 +53,8 @@ class ImageController extends Controller
         $config['source_image'] = public_path() . '/' . $uploadedFile;
         $config['create_thumb'] = TRUE;
         $config['maintain_ratio'] = TRUE;
-        $config['width']         = 120;
-        $config['height']       = 120;
+        $config['width']         = 200;
+        $config['height']       = 200;
     
         $imageLib = new ImageLib($config);
         $imageLib->resize();

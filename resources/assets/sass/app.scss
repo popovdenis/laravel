@@ -1,9 +1,19 @@
-
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
 // Variables
 @import "variables";
+@import "base";
+
+@import "thirdparty/responsive.min.css";
 
 // Bootstrap
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+@import "layout/header";
+@import "layout/footer";
+
+@import "pages/album";
+@import "pages/users";
+
+
