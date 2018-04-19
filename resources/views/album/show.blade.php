@@ -1,14 +1,13 @@
 @extends('layouts.default')
 
 @section('content')
-    <script type="text/javascript" src="{!! asset('public/js/album.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('public/js/photo.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('public/js/dropzone.js') !!}"></script>
-    <script type="text/javascript" src="{!! asset('public/js/responsive.js') !!}"></script>
-    {{--<script type="text/javascript" src="{!! asset('public/js/lightbox.js') !!}"></script>--}}
+    <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/photo.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/dropzone.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('js/responsive.js') !!}"></script>
 
-    <link rel="stylesheet" type="text/css" media="all" href="{!! asset('public/css/dropzone.css') !!}">
-    <link rel="stylesheet" type="text/css" media="all" href="{{asset('public/css/lightbox.css')}}"/>
+    <link rel="stylesheet" type="text/css" media="all" href="{!! asset('css/dropzone.css') !!}">
+    <link rel="stylesheet" type="text/css" media="all" href="{{asset('css/lightbox.css')}}"/>
 
     <input type="hidden" name="_token" value="<?php echo csrf_token() ?>"/>
 
