@@ -52,6 +52,11 @@ class User extends Authenticatable
     {
         return $this->new_comments;
     }
+
+    public function getNewComments()
+    {
+        return $this->newComments();
+    }
     
     public function newComments()
     {

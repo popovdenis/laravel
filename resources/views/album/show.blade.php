@@ -88,6 +88,7 @@
 
             commentObject.getComentsModalName = '#newCommentsModal';
             commentObject.getNewCommentsUrl = "{{ url('/') }}" + '/comment/getNewComments';
+            commentObject.getMarkCommentsUrl = "{{ url('/') }}" + '/comment/markComments';
             commentObject.init();
         });
     </script>

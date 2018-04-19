@@ -14,7 +14,14 @@ class CommentController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
+    /**
+     * Save comment to a photo.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         /*
@@ -104,5 +111,24 @@ class CommentController extends Controller
         $comments = view('comments.comments_preview')->with('comments', $newComments)->render();
         
         return response()->json(['new_comments'=> $comments], 200);
+    }
+
+    public function markComments(Request $request)
+    {
+        $currentUser = $this->getCurrentUser();
+
+        $photoId = $request->input('photo_id');
+        $photo = Photo::find($photoId);
+        $newComments = $photo->comments(true)->get()->all();
+        if ($newComments) {
+            foreach ($newComments as $comment) {
+                $comment->is_new = false;
+                $comment->save();
+            }
+            $currentUser->decreaseNewComments(count($newComments));
+        }
+        $newCommentsCount = $currentUser->getNewCommentCount();
+
+        return response()->json(['response'=> 'success', 'new_comments_count'=> $newCommentsCount], 200);
     }
 }

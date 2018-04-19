@@ -1,14 +1,14 @@
 <div class="comments-section">
     @if ($currentUser->hasNewComments())
-        <div class="btn-group">
+        <div class="btn-group comments-block">
             <button data-toggle="dropdown"
                     class="btn btn-primary">{{ trans('comments.new_comments_title') }}
-                ({{ $currentUser->getNewCommentCount() }})
+                <span class="new-comments-count">(@include('user.account.new_comments_count'))</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-coments-menu">
                 @foreach($currentUser->newComments() as $comment)
-                    <li>
+                    <li data-photo-id="{{ $comment->photo()->id }}">
                     <span>
                     <?php
                         $commentUrl = route('album.show', $comment->photo()->album()->id);
@@ -25,6 +25,6 @@
         </div>
 
     @else
-        <span>{{ trans('comments.no_comments') }}</span>
+        <span class="no-comments-block">{{ trans('comments.no_comments') }}</span>
     @endif
 </div>
