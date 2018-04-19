@@ -15,7 +15,7 @@
                         $commentUrl .= '#comment-' . $comment->id;
                         ?>
                         <a href="<?php echo $commentUrl ?>">
-                            <img src="{{ url('/') }}/public/{{ $comment->photo()->path_thumb }}"/></a>
+                            <img src="{{ url('/') }}/{{ $comment->photo()->path_thumb }}"/></a>
                     </span>
                         <span><strong><?php echo $comment->author()->getFullname() ?></strong></span>
                     </li>
