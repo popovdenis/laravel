@@ -2,7 +2,11 @@
     @foreach ($photos as $key => $photo)
         <div class="gallery-item">
             <div class="gallery-item-photo">
-                <a href="" data-lightbox-target="#photo-item-{{ $photo->id }}" data-lightbox-fit-viewport="false" class="thumbnail" data-lightbox-group="thumbnail">
+                <a href="" data-lightbox-target="#photo-item-{{ $photo->id }}"
+                   data-photo-id="{{ $photo->id }}"
+                   data-lightbox-fit-viewport="false"
+                   class="thumbnail"
+                   data-lightbox-group="thumbnail">
                     <img src="{{ url('/') }}/{{ $photo->path_thumb }}"/>
                 </a>
                 <input class="photo-checkbox" type="checkbox" value="{{ $photo->id }}" style="display: none;">

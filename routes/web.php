@@ -31,6 +31,7 @@ Route::resource('image', 'ImageController');
 
 Route::resource('comment', 'CommentController');
 Route::post('/comment/getNewComments', 'CommentController@getNewComments');
+Route::post('/comment/markComments', 'CommentController@markComments');
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
