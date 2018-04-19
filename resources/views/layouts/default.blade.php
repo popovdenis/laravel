@@ -14,7 +14,7 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="{!! asset('js/bootstrap.js') !!}"></script>
     <link rel="stylesheet" href="{!! asset('css/font-awesome.css') !!}">
-    {{--<link rel="stylesheet" href="{!! asset('css/style.css') !!}">--}}
+    {{--<link rel="stylesheet" href="{!! asset('public/css/style.css') !!}">--}}
     <script type="text/javascript" src="{!! asset('js/album.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/user.js') !!}"></script>
 
