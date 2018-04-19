@@ -14,7 +14,7 @@
                     @if ($currentUser->avatar_path)
                         <img src="{{ url('/') }}/{{ $currentUser->avatar_path }}" />
                     @else
-                        <img src="{{ asset('public/images/icons/user.png') }} "/>
+                        <img src="{{ asset('images/icons/user.png') }} "/>
                     @endif
                 </a>
             </div>

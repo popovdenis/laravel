@@ -3,7 +3,7 @@
         @if (Auth::user()->avatar_path)
         <img src="{{ url('/') }}/{{ Auth::user()->avatar_path }}" width="50"/>
         @else
-        <img src="{{ asset('public/images/icons/user.png') }} "/>
+        <img src="{{ asset('images/icons/user.png') }} "/>
         @endif
     </a>
     <ul class="dropdown-menu">
