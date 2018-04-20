@@ -75,13 +75,12 @@ var commentObject = {
     displayPhoto: function (photoId, commentId, isRead) {
         if (isRead) {
             $('.photos-list').find("[data-photo-id='" + photoId + "']").find('a.photo-link').trigger('click');
-
-            var hash = window.location.hash;
-            $('html, body').animate({
-                scrollTop: $('#comment-' + commentId).offset().top
-            }, 800, function () {
-                window.location.hash = hash;
-            });
+            // this.scrollToAnchor(commentId);
         }
-    }
+    }/*,
+
+    scrollToAnchor: function (commentId){
+        var commentTag = $("#li-comment-"+ commentId);
+        $('html,body').animate({scrollTop: commentTag.offset().top}, 'slow');
+    }*/
 };
