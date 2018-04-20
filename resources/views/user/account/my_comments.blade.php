@@ -16,7 +16,7 @@
                             'photo' => $comment->photo()->id,
                             'comment' => $comment->id
                         ]);
-                        $commentUrl .= '/?' . $query;
+                        $commentUrl .= '?' . $query;
                         ?>
                         <a href="<?php echo $commentUrl ?>">
                             <img src="{{ url('/') }}/public/{{ $comment->photo()->path_thumb }}"/></a>

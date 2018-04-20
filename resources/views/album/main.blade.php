@@ -18,11 +18,6 @@
     </div>
 </div>
 
-
-
-
-
-
 @if ($albums->count())
     @if ($user->id === $currentUser->id)
         <button class="btn btn-primary btn-xs delete-selected-albums"

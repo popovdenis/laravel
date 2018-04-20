@@ -36,15 +36,3 @@ $comments = $photo->comments()->get()->all();
         {!! Form::close() !!}
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        if (window.location.hash) {
-            var hash = window.location.hash;
-            $('html, body').animate({
-                scrollTop: $(hash).offset().top
-            }, 800, function () {
-                window.location.hash = hash;
-            });
-        }
-    });
-</script>
