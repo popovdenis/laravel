@@ -7,6 +7,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use Illuminate\Http\Request;
 use App\Album;
 use Chumper\Zipper\Zipper;
@@ -76,14 +77,18 @@ class AlbumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $photoid = $request->get('photo', null);
+        $commentid = $request->get('comment', null);
+
         $album = Album::find($id);
+        $isRead = ($commentid) ? (Comment::find($commentid))->is_new : null;
         $photos = $album->images($album);
         $currentUser = $this->getCurrentUser();
         $pageOwner = $album->owner();
         
-        return view('album.show', compact('album', 'photos', 'currentUser', 'pageOwner'));
+        return view('album.show', compact('photoid', 'commentid', 'isRead', 'album', 'photos', 'currentUser', 'pageOwner'));
     }
     
     /**

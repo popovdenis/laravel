@@ -7,7 +7,6 @@ var commentObject = {
         $('.show-new-comments').on('click', function () {
             commentObject.getNewComments();
         });
-        // this.getNewComments();
         this.initReply();
         this.initOpenPhotoEvent();
     },
@@ -71,5 +70,11 @@ var commentObject = {
                 }
             }
         });
+    },
+
+    displayPhoto: function (photoId, commentId, isRead) {
+        if (isRead) {
+            $('.photos-list').find("[data-photo-id='" + photoId + "']").find('a.photo-link').trigger('click');
+        }
     }
 };

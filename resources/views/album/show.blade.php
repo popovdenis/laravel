@@ -90,6 +90,7 @@
             commentObject.getNewCommentsUrl = "{{ url('/') }}" + '/comment/getNewComments';
             commentObject.getMarkCommentsUrl = "{{ url('/') }}" + '/comment/markComments';
             commentObject.init();
+            commentObject.displayPhoto('{{ $photoid }}', '{{ $commentid }}', {{ $isRead }});
         });
     </script>
 @endsection

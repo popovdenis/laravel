@@ -1,8 +1,8 @@
 <div class="photos-list">
     @foreach ($photos as $key => $photo)
         <div class="gallery-item">
-            <div class="gallery-item-photo">
-                <a href="" data-lightbox-target="#photo-item-{{ $photo->id }}"
+            <div data-photo-id="{{ $photo->id }}" class="gallery-item-photo">
+                <a class="photo-link" href="" data-lightbox-target="#photo-item-{{ $photo->id }}"
                    data-photo-id="{{ $photo->id }}"
                    data-lightbox-fit-viewport="false"
                    class="thumbnail"

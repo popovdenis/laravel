@@ -12,7 +12,11 @@
                     <span>
                     <?php
                         $commentUrl = route('album.show', $comment->photo()->album()->id);
-                        $commentUrl .= '#comment-' . $comment->id;
+                        $query = http_build_query([
+                            'photo' => $comment->photo()->id,
+                            'comment' => $comment->id
+                        ]);
+                        $commentUrl .= '/?' . $query;
                         ?>
                         <a href="<?php echo $commentUrl ?>">
                             <img src="{{ url('/') }}/public/{{ $comment->photo()->path_thumb }}"/></a>
