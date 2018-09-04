@@ -12571,4 +12571,26 @@ button.close {
   background: #ccc;
   color: #000;
 }
-
+.fancybox-is-open .fancybox-stage {
+    margin-right: 350px;
+}
+.fancybox-content img {
+    max-height: calc(100vh - 115px);
+}
+.fancybox-navigation .fancybox-button--arrow_right {
+    right: 350px;
+}
+.fancybox-show-caption .fancybox-caption {
+    width: 350px;
+    background: #fff;
+    left: auto;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow: auto;
+    color: #000;
+    padding: 15px;
+}
+.fancybox-show-caption .fancybox-caption:before {
+    display: none;
+}

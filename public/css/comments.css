@@ -26,9 +26,7 @@ ol.commentlist, li.comment {
 }
 
 .comment-container {
-    /*padding: 5px;*/
-    border: 1px solid #CFCFCF;
-    margin-bottom: 1em;
+
 }
 
 .comment-author {
@@ -40,6 +38,8 @@ ol.commentlist, li.comment {
 #comments .comment-author img {
     border: 1px solid #CFCFCF;
     padding: 3px;
+    max-width: 50px;
+    border-radius: 100%;
 }
 
 #comments .fn {
