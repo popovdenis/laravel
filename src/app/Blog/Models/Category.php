@@ -50,10 +50,10 @@ class Category extends Node
         }
     }
 
-//    public function parent()
-//    {
-//        return $this->belongsTo('Blog\Models\Category', 'parent_id');
-//    }
+    public function parent()
+    {
+        return $this->belongsTo(\App\Blog\Models\Category::class, 'parent_id');
+    }
 //
 //    public function children()
 //    {
@@ -68,11 +68,5 @@ class Category extends Node
 //
 //    public function loadChildren(){
 //        $this->childrenCat = $this->childrenRecursive();
-//    }
-
-//    public function scopeApproved($query)
-//    {
-//        dd("A");
-//        return $query->where("approved", true);
 //    }
 }
