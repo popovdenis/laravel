@@ -20,36 +20,36 @@ class CategoryResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            Forms\Components\TextInput::make('slug')
-                ->label('Slug')
-                ->required()
-                ->unique(ignoreRecord: true),
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('categoryTranslation.category_name')
+                    ->label('Category Name')
+                    ->required()
+                    ->maxLength(255),
 
-            Forms\Components\TextInput::make('categoryTranslations.0.category_name')
-                ->label('Category Name')
-                ->required(),
+                Forms\Components\TextInput::make('categoryTranslation.slug')
+                    ->label('Slug')
+                    ->required()
+                    ->maxLength(100)
+                    ->helperText('Letters, numbers, dash only. Must be unique.'),
 
-            Forms\Components\Textarea::make('categoryTranslations.0.category_description')
-                ->label('Description'),
+//                Forms\Components\Select::make('parent_id')
+//                    ->label('Parent Category')
+//                    ->relationship('parent', 'categoryTranslation.category_name')
+//                    ->default(0),
 
-            Forms\Components\Select::make('parent_id')
-                ->label('Parent Category')
-                ->relationship('parent', 'categoryTranslations.0.category_name')
-                ->searchable()
-                ->preload()
-                ->default(0)
-                ->nullable(),
-        ]);
+                Forms\Components\Textarea::make('categoryTranslation.category_description')
+                    ->label('Description'),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('categoryTranslations.0.category_name')
-                    ->label('Name'),
-                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\TextColumn::make('categoryTranslations.category_name')->label('Name'),
+                Tables\Columns\TextColumn::make('categoryTranslations.slug')->label('Slug'),
+                Tables\Columns\IconColumn::make('is_published')->boolean()->label('Published'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

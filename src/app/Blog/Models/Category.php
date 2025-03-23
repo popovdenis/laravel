@@ -29,6 +29,16 @@ class Category extends Node
         return $this->hasMany(CategoryTranslation::class,"category_id");
     }
 
+    public function categoryTranslation()
+    {
+        return $this->hasOne(CategoryTranslation::class, 'category_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(\App\Blog\Models\Category::class, 'parent_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -48,11 +58,6 @@ class Category extends Node
                 self::loadSiblingsWithList($node_list[$i]->siblings);
             }
         }
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(\App\Blog\Models\Category::class, 'parent_id');
     }
 //
 //    public function children()
