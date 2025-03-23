@@ -18,20 +18,24 @@ class UploadImageResource extends Resource
 
     public static function form(Forms\Form $form): Forms\Form
     {
-        return $form->schema([
-            Forms\Components\FileUpload::make('uploaded_images')
-                ->multiple()
-                ->required()
-                ->directory('blog_images'),
-        ]);
+        return $form
+            ->schema([
+                Forms\Components\FileUpload::make('uploaded_images')
+                    ->multiple()
+                    ->disk('public')
+                    ->directory('blog_images')
+                    ->preserveFilenames()
+                    ->required(),
+            ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('source'),
-            Tables\Columns\TextColumn::make('created_at')->dateTime(),
-        ])
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('source')->label('Source'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime(),
+            ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
             ]);
