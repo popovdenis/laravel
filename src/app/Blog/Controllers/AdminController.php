@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Blog\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -59,7 +58,7 @@ class AdminController extends Controller
         $posts = PostTranslation::orderBy("post_id", "desc")->where('lang_id', $language_id)
             ->paginate(10);
 
-        return view("blog_admin::index", [
+        return view("blog_admin.index", [
             'post_translations'=>$posts,
             'language_id' => $language_id
         ]);
@@ -494,7 +493,7 @@ class AdminController extends Controller
 
         $language_id = $request->get('language_id');
 
-        return view("blog_admin::index", [
+        return view("blog_admin.index", [
             'search' => true,
             'post_translations'=>$search_results,
             'language_id' => $language_id
