@@ -5,6 +5,9 @@ namespace App\Filament\Resources;
 use App\Blog\Models\UploadedPhoto;
 use App\Filament\Resources\UploadImageResource\Pages;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
 
@@ -20,12 +23,24 @@ class UploadImageResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\FileUpload::make('uploaded_images')
+                TextInput::make('source')
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('image_title')
+                    ->required()
+                    ->maxLength(255),
+                Hidden::make('uploader_id')
+                    ->default(auth()->id()),
+                FileUpload::make('uploaded_images')
+                    ->required()
                     ->multiple()
+                    ->image()
                     ->disk('public')
                     ->directory('blog_images')
                     ->preserveFilenames()
-                    ->required(),
+                    ->reorderable()
+                    ->maxFiles(5)
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -33,7 +48,14 @@ class UploadImageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('source')->label('Source'),
+                Tables\Columns\ImageColumn::make('uploaded_images.0')
+                    ->label('Image')
+                    ->disk('public')
+                    ->circular(),
+
+                Tables\Columns\TextColumn::make('image_title'),
+                Tables\Columns\TextColumn::make('source'),
+                Tables\Columns\TextColumn::make('uploader_id'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
             ->actions([
