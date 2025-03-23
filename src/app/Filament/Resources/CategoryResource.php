@@ -49,7 +49,6 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('categoryTranslations.category_name')->label('Name'),
                 Tables\Columns\TextColumn::make('categoryTranslations.slug')->label('Slug'),
-                Tables\Columns\IconColumn::make('is_published')->boolean()->label('Published'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
