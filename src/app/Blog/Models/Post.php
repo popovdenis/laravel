@@ -45,6 +45,12 @@ class Post extends Model
         return $this->hasMany(PostTranslation::class, "post_id");
     }
 
+    public function currentTranslation()
+    {
+        // пока хардкодим язык, потом можно сделать динамически
+        return $this->hasOne(PostTranslation::class, 'post_id')->where('lang_id', 1);
+    }
+
     /**
      * The "booting" method of the model.
      *

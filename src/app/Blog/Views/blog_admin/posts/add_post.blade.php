@@ -1,7 +1,5 @@
 @extends("binshopsblog_admin::layouts.admin_layout")
 @section("content")
-
-
     <h5>Admin - Add post</h5>
     <p>Change language option to translate your post in different language</p>
     <form id="add-post-form" method='post' action='{{route("blog.admin.store_post")}}'  enctype="multipart/form-data" >
@@ -13,9 +11,7 @@
     ])
         <input id="post_id" name="post_id" type="number" value="{{$post_id}}" hidden>
         <input type='submit' name="submit_btn" class='btn btn-primary' value='Add new post' >
-
     </form>
-
     <script>
         //multi language
         var store_toggle_url = '{{route("blog.admin.store_post_toggle")}}';
