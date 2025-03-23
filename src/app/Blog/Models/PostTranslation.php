@@ -2,14 +2,12 @@
 
 namespace App\Blog\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use App\Blog\FulltextSearch\Indexable;
 use Illuminate\Database\Eloquent\Model;
 use App\Blog\Interfaces\SearchResultInterface;
 
 class PostTranslation extends Model implements SearchResultInterface
 {
-    use Sluggable;
     use Indexable;
 
     protected $indexContentColumns = ['post_body', 'short_description', 'meta_desc',];
@@ -24,6 +22,8 @@ class PostTranslation extends Model implements SearchResultInterface
         'meta_desc',
         'slug',
         'use_view_file',
+        'lang_id',
+        'post_id',
     ];
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 use App\Blog\Models\Language;
 use App\Blog\Models\Post;
 use Filament\Forms;
@@ -16,8 +18,6 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use App\Filament\Resources\PostResource\Pages;
 
 class PostResource extends Resource
@@ -73,20 +73,42 @@ class PostResource extends Resource
             ]);
     }
 
-    public static function table(Table $table)
-    : Table
+    public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('posted_at')->dateTime()->sortable(),
-                IconColumn::make('is_published')->boolean()->label('Published'),
+                Tables\Columns\TextColumn::make('currentTranslation.title')->label('Title'),
+                Tables\Columns\TextColumn::make('currentTranslation.slug')->label('Slug'),
+                Tables\Columns\IconColumn::make('is_published')
+                    ->boolean()
+                    ->label('Published'),
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('is_published')
+                    ->label('Published')
+                    ->options([
+                        '1' => 'Published',
+                        '0' => 'Unpublished',
+                    ]),
+
+                Tables\Filters\Filter::make('title')
+                    ->form([
+                        Forms\Components\TextInput::make('title')->label('Title contains'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->whereHas('currentTranslation', function ($q) use ($data) {
+                            $q->where('title', 'like', '%' . $data['title'] . '%');
+                        });
+                    }),
+            ])
+            ->filtersLayout(\Filament\Tables\Enums\FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

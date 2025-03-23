@@ -62,7 +62,6 @@ class Post extends Model
         /* If user is logged in and \Auth::user()->canManageBlogPosts() == true, show any/all posts.
            otherwise (which will be for most users) it should only show published posts that have a posted_at
            time <= Carbon::now(). This sets it up: */
-        static::addGlobalScope(new BlogPublishedScope());
 
         static::deleting(function ($post)
         { // before delete() method call this
