@@ -1,4 +1,4 @@
-@extends("binshopsblog_admin::layouts.admin_layout")
+@extends("blog_admin::layouts.admin_layout")
 @section("content")
 
 
@@ -37,8 +37,8 @@
             <label >Sizes to convert to</label>
 
             <div>
-                <input type='checkbox' name='sizes_to_upload[binshopsblog_full_size]' value='true' checked id='size_binshopsblog_full_size'>
-            <label for='size_binshopsblog_full_size'>Full size (no resizing)</label>
+                <input type='checkbox' name='sizes_to_upload[blog_full_size]' value='true' checked id='size_blog_full_size'>
+            <label for='size_blog_full_size'>Full size (no resizing)</label>
                 </div>
 
 

@@ -22,7 +22,7 @@ class AdminSetupController extends Controller
     {
         $this->middleware(UserCanManageBlogPosts::class);
 
-        if (!is_array(config("binshopsblog"))) {
+        if (!is_array(config("blog"))) {
             throw new \RuntimeException('The config/blog.php does not exist. Publish the vendor files for the Blog package by running the php artisan publish:vendor command');
         }
     }
@@ -34,7 +34,7 @@ class AdminSetupController extends Controller
      */
     public function setup(Request $request)
     {
-        return view("binshopsblog_admin::setup.setup");
+        return view("blog_admin::setup.setup");
     }
 
     public function setup_submit(Request $request){

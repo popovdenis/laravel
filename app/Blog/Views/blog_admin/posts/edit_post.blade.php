@@ -1,4 +1,4 @@
-@extends("binshopsblog_admin::layouts.admin_layout")
+@extends("blog_admin::layouts.admin_layout")
 @section("content")
 
 
@@ -15,7 +15,7 @@
         </p>
 
         @csrf
-        @include("binshopsblog_admin::posts.form", [
+        @include("blog_admin::posts.form", [
           'post' => $post,
           'post_translation' => $post_translation
         ])

@@ -9,7 +9,7 @@
         </span>
             @if( count($category->siblings) > 0)
                 <ul>
-                    @include("binshopsblog_admin::categories._category_partial", ['category_tree' => $category->siblings])
+                    @include("blog_admin::categories._category_partial", ['category_tree' => $category->siblings])
                 </ul>
             @endif
         </li>

@@ -132,7 +132,7 @@ class PostTranslation extends Model implements SearchResultInterface
         $url = e($this->image_url($size));
         $alt = e($this->title);
         $img = "<img src='$url' alt='$alt' class='" . e($img_class) . "' >";
-        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url(app()->getLocale()))
+        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url(app()->getLocale(), false))
             . "'>$img</a>" : $img;
 
     }
@@ -153,7 +153,7 @@ class PostTranslation extends Model implements SearchResultInterface
     {
         if (config("blog.use_custom_view_files") && $this->use_view_file) {
             // using custom view files is enabled, and this post has a use_view_file set, so render it:
-            $return = view("binshopsblog::partials.use_view_file", ['post' => $this])->render();
+            $return = view("blog::partials.use_view_file", ['post' => $this])->render();
         } else {
             // just use the plain ->post_body
             $return = $this->post_body;
@@ -231,11 +231,9 @@ class PostTranslation extends Model implements SearchResultInterface
      *
      * @return string
      */
-    public function url($loacle, $routeWithoutLocale = false)
+    public function url(): string
     {
-        return $routeWithoutLocale ? route("blog.single", ["", $this->slug]) : route("blog.single", [
-            $loacle, $this->slug
-        ]);
+        return route('blog.single', ['blogPostSlug' => $this->slug]);
     }
 
     /**

@@ -57,7 +57,10 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [],
+            "providers": [
+                "App\\Blog\\BlogServiceProvider"
+            ]
         }
     },
     "config": {

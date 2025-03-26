@@ -1,91 +1,77 @@
 <?php
-
 namespace App\Blog\Controllers;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Blog\FulltextSearch\Search;
-use App\Blog\Models\CategoryTranslation;
-use Illuminate\Http\Request;
-use App\Blog\Captcha\UsesCaptcha;
-use App\Blog\Middleware\DetectLanguage;
 use App\Blog\Models\Category;
+use App\Blog\Models\CategoryTranslation;
 use App\Blog\Models\Language;
 use App\Blog\Models\Post;
 use App\Blog\Models\PostTranslation;
+use Illuminate\Http\Request;
 
-/**
- * Class ReaderController
- * All of the main public facing methods for viewing blog content (index, single posts)
- * @package App\Blog\Controllers
- */
 class ReaderController extends Controller
 {
-    use UsesCaptcha;
-
-    public function __construct()
-    {
-        $this->middleware(DetectLanguage::class);
-    }
-
     /**
      * Show blog posts
      * If category_slug is set, then only show from that category
      *
+     * @param Request $request
      * @param null $category_slug
-     * @return mixed
+     * @return \Illuminate\View\View
      */
-    public function index($locale = null, Request $request, $category_slug = null)
+    public function index(Request $request, $category_slug = null)
     {
-        // the published_at + is_published are handled by BlogPublishedScope, and don't take effect if the logged in user can manageb log posts
-
-        //todo
         $title = 'Blog Page'; // default title...
 
         $categoryChain = null;
-        $posts = array();
+        $posts = collect();
+
         if ($category_slug) {
-            $category = CategoryTranslation::where("slug", $category_slug)->with('category')->firstOrFail()->category;
+            $category = CategoryTranslation::where('slug', $category_slug)
+                ->with('category')
+                ->firstOrFail()->category;
+
             $categoryChain = $category->getAncestorsAndSelf();
-            $posts = $category->posts()->where("binshops_post_categories.category_id", $category->id)->with([ 'postTranslations' => function($query) use ($request){
-                $query->where("lang_id" , '=' , $request->get("lang_id"));
-            }
-            ])->get();
+            $posts = $category->posts()->where('post_categories.category_id', $category->id)
+                ->with(['postTranslations' => function($query) use ($request) {
+                    $query->where('lang_id', $request->get('lang_id'));
+                }])->get();
 
-            $posts = PostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
-                ->where('lang_id', $request->get("lang_id"))
-                ->where("is_published" , '=' , true)
+            $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
+                ->where('lang_id', $request->get('lang_id'))
+                ->where('is_published', true)
                 ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-                ->orderBy("posted_at", "desc")
-                ->whereIn('binshops_posts.id', $posts->pluck('id'))
-                ->paginate(config("blog.per_page", 10));
+                ->orderBy('posted_at', 'desc')
+                ->whereIn('posts.id', $posts->pluck('id'))
+                ->paginate(config('blog.per_page', 10));
 
-            // at the moment we handle this special case (viewing a category) by hard coding in the following two lines.
-            // You can easily override this in the view files.
-            \View::share('binshopsblog_category', $category); // so the view can say "You are viewing $CATEGORYNAME category posts"
-            $title = 'Posts in ' . $category->category_name . " category"; // hardcode title here...
+            // Set category for view
+            \View::share('blog_category', $category);
+            $title = 'Posts in ' . $category->category_name . " category";
         } else {
-            $posts = PostTranslation::join('binshops_posts', 'binshops_post_translations.post_id', '=', 'binshops_posts.id')
-                ->where('lang_id', $request->get("lang_id"))
-                ->where("is_published" , '=' , true)
+            $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
+//                ->where('lang_id', $request->get('lang_id'))
+                ->where('is_published', true)
                 ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
-                ->orderBy("posted_at", "desc")
-                ->paginate(config("blog.per_page", 10));
+                ->orderBy('posted_at', 'desc')
+                ->paginate(config('blog.per_page', 10));
         }
 
-        //load category hierarchy
+        // Load category hierarchy
         $rootList = Category::roots()->get();
         Category::loadSiblingsWithList($rootList);
 
-        return view("binshopsblog::index", [
-            'lang_list' => Language::all('locale','name'),
-            'locale' => $request->get("locale"),
+        return view('blog.index', [
+            'lang_list' => Language::all(['locale', 'name']),
+            'locale' => $request->get('locale'),
             'lang_id' => $request->get('lang_id'),
             'category_chain' => $categoryChain,
             'categories' => $rootList,
             'posts' => $posts,
             'title' => $title,
-            'routeWithoutLocale' => $request->get("routeWithoutLocale")
+            'routeWithoutLocale' => $request->get('routeWithoutLocale'),
         ]);
     }
 
@@ -98,27 +84,27 @@ class ReaderController extends Controller
      */
     public function search(Request $request)
     {
-        if (!config("blog.search.search_enabled")) {
-            throw new \Exception("Search is disabled");
+        if (!config('blog.search.search_enabled')) {
+            throw new \Exception('Search is disabled');
         }
-        $query = $request->get("s");
+
+        $query = $request->get('s');
         $search = new Search();
         $search_results = $search->run($query);
 
-        \View::share("title", "Search results for " . e($query));
+        \View::share('title', 'Search results for ' . e($query));
 
         $rootList = Category::roots()->get();
         Category::loadSiblingsWithList($rootList);
 
-        return view("binshopsblog::search", [
+        return view('blog::search', [
             'lang_id' => $request->get('lang_id'),
-            'locale' => $request->get("locale"),
+            'locale' => $request->get('locale'),
             'categories' => $rootList,
             'query' => $query,
             'search_results' => $search_results,
-            'routeWithoutLocale' => $request->get("routeWithoutLocale")
-        ]
-        );
+            'routeWithoutLocale' => $request->get('routeWithoutLocale'),
+        ]);
     }
 
     /**
@@ -128,49 +114,34 @@ class ReaderController extends Controller
      * @param $category_slug
      * @return mixed
      */
-    public function view_category(Request $request)
+    public function view_category(Request $request, $category_slug)
     {
-        $hierarchy = $request->route('subcategories');
-
-        $categories = explode('/', $hierarchy);
-        return $this->index($request->get('locale'), $request, end($categories));
+        return $this->index($request, $category_slug);
     }
 
     /**
-     * View a single post and (if enabled) it's comments
+     * View a single post and (if enabled) its comments
      *
      * @param Request $request
      * @param $blogPostSlug
-     * @return mixed
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function viewSinglePost(Request $request)
+    public function viewSinglePost(Request $request, $blogPostSlug)
     {
-        $blogPostSlug = $request->route('blogPostSlug');
+        $blog_post = PostTranslation::where('slug', $blogPostSlug)
+//            ->where('lang_id', $request->get('lang_id'))
+            ->firstOrFail();
 
-        // the published_at + is_published are handled by BlogPublishedScope, and don't take effect if the logged in user can manage log posts
-        $blog_post = PostTranslation::where([
-            ["slug", "=", $blogPostSlug],
-            ['lang_id', "=" , $request->get("lang_id")]
-        ])->firstOrFail();
+        $categories = $blog_post->post->categories()->with(['categoryTranslations' => function ($query) use ($request) {
+            $query->where('lang_id', '=', $request->get('lang_id'));
+        }])->get();
 
-        if ($captcha = $this->getCaptchaObject()) {
-            $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
-        }
-
-        $categories = $blog_post->post->categories()->with([ 'categoryTranslations' => function($query) use ($request){
-            $query->where("lang_id" , '=' , $request->get("lang_id"));
-        }
-        ])->get();
-        return view("binshopsblog::single_post", [
+        return view('blog.single_post', [
             'post' => $blog_post,
-            // the default scope only selects approved comments, ordered by id
-            'comments' => $blog_post->post->comments()
-                ->with("user")
-                ->get(),
-            'captcha' => $captcha,
+            'comments' => $blog_post->post->comments()->with('user')->get(),
+            'locale' => $request->get('locale'),
             'categories' => $categories,
-            'locale' => $request->get("locale"),
-            'routeWithoutLocale' => $request->get("routeWithoutLocale")
+            'routeWithoutLocale' => $request->get('routeWithoutLocale'),
         ]);
     }
 }

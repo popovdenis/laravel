@@ -10,7 +10,7 @@ use App\Blog\Controllers\CategoryAdminController;
 use App\Blog\Controllers\LanguageAdminController;
 
 Route::middleware(['web'])->group(function () {
-    Route::prefix("/{locale}/" . config('blog.blog_prefix', 'blog'))->group(function () {
+    Route::prefix('blog')->group(function () {
         Route::get('/', [ReaderController::class, 'index'])->name('blog.index');
         Route::get('/search', [ReaderController::class, 'search'])->name('blog.search');
         Route::get('/category{subcategories}', [ReaderController::class, 'view_category'])
@@ -23,18 +23,18 @@ Route::middleware(['web'])->group(function () {
         });
     });
 
-    Route::prefix(config('blog.blog_prefix', 'blog'))->group(function () {
-        Route::get('/', [ReaderController::class, 'index'])->name('blognolocale.index');
-        Route::get('/search', [ReaderController::class, 'search'])->name('blognolocale.search');
-        Route::get('/category{subcategories}', [ReaderController::class, 'view_category'])
-            ->where('subcategories', '^[a-zA-Z0-9-_\/]+$')->name('blognolocale.view_category');
-        Route::get('/{blogPostSlug}', [ReaderController::class, 'viewSinglePost'])->name('blognolocale.single');
-
-        Route::middleware('throttle:10,3')->group(function () {
-            Route::post('save_comment/{blogPostSlug}', [CommentWriterController::class, 'addNewComment'])
-                ->name('blognolocale.comments.add_new_comment');
-        });
-    });
+//    Route::prefix(config('blog.blog_prefix', 'blog'))->group(function () {
+//        Route::get('/', [ReaderController::class, 'index'])->name('blognolocale.index');
+//        Route::get('/search', [ReaderController::class, 'search'])->name('blognolocale.search');
+//        Route::get('/category{subcategories}', [ReaderController::class, 'view_category'])
+//            ->where('subcategories', '^[a-zA-Z0-9-_\/]+$')->name('blognolocale.view_category');
+//        Route::get('/{blogPostSlug}', [ReaderController::class, 'viewSinglePost'])->name('blognolocale.single');
+//
+//        Route::middleware('throttle:10,3')->group(function () {
+//            Route::post('save_comment/{blogPostSlug}', [CommentWriterController::class, 'addNewComment'])
+//                ->name('blognolocale.comments.add_new_comment');
+//        });
+//    });
 
     Route::prefix(config('blog.admin_prefix', 'blog_admin'))->group(function () {
         Route::get('/search', [AdminController::class, 'searchBlog'])->name('blog.admin.searchblog');

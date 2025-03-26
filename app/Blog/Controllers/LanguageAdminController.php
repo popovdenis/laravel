@@ -25,19 +25,19 @@ class LanguageAdminController extends Controller
 
     public function index(){
         $language_list = Language::all();
-        return view("binshopsblog_admin::languages.index",[
+        return view("blog_admin::languages.index",[
             'language_list' => $language_list
         ]);
     }
 
     public function create_language(){
-        return view("binshopsblog_admin::languages.add_language");
+        return view("blog_admin::languages.add_language");
     }
 
     public function store_language(Request $request){
         if ($request['locale'] == null){
             Helpers::flash_message("Select a language!");
-            return view("binshopsblog_admin::languages.add_language");
+            return view("blog_admin::languages.add_language");
         }
         $language = new Language();
         $language->active = $request['active'];

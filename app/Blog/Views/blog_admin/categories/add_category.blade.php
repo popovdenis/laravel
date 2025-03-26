@@ -1,4 +1,4 @@
-@extends("binshopsblog_admin::layouts.admin_layout")
+@extends("blog_admin::layouts.admin_layout")
 @section("content")
 
     <h5>Admin - Add Category</h5>
@@ -60,7 +60,7 @@
         <div class="form-group">
             <label for="category_slug">Category Tree</label>
             <ul class="wtree">
-                @include("binshopsblog_admin::categories._category_partial", ['category_tree' => $cat_roots])
+                @include("blog_admin::categories._category_partial", ['category_tree' => $cat_roots])
             </ul>
         </div>
 

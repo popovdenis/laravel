@@ -20,15 +20,14 @@ use App\Blog\Requests\AddNewCommentRequest;
  */
 class CommentWriterController extends Controller
 {
+//    use UsesCaptcha;
 
-    use UsesCaptcha;
-
-    public function __construct()
-    {
-        $this->middleware(UserCanManageBlogPosts::class);
-        $this->middleware(LoadLanguage::class);
-
-    }
+//    public function __construct()
+//    {
+////        $this->middleware(UserCanManageBlogPosts::class);
+////        $this->middleware(LoadLanguage::class);
+//
+//    }
 
     /**
      * Let a guest (or logged in user) submit a new comment for a blog post
@@ -38,9 +37,8 @@ class CommentWriterController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function addNewComment(AddNewCommentRequest $request, $locale, $blog_post_slug)
+    public function addNewComment(AddNewCommentRequest $request, $blog_post_slug)
     {
-
         if (config("blog.comments.type_of_comments_to_show", "built_in") !== 'built_in') {
             throw new \RuntimeException("Built in comments are disabled");
         }
@@ -50,20 +48,19 @@ class CommentWriterController extends Controller
             ->firstOrFail();
         $blog_post = $post_translation->post;
 
-        /** @var CaptchaAbstract $captcha */
-        $captcha = $this->getCaptchaObject();
-        if ($captcha) {
-            $captcha->runCaptchaBeforeAddingComment($request, $blog_post);
-        }
+//        /** @var CaptchaAbstract $captcha */
+//        $captcha = $this->getCaptchaObject();
+//        if ($captcha) {
+//            $captcha->runCaptchaBeforeAddingComment($request, $blog_post);
+//        }
 
         $new_comment = $this->createNewComment($request, $blog_post);
 
-        return view("binshopsblog::saved_comment", [
-            'captcha' => $captcha,
+        return view("blog::saved_comment", [
+//            'captcha' => $captcha,
             'blog_post' => $post_translation,
             'new_comment' => $new_comment
         ]);
-
     }
 
     /**
@@ -96,5 +93,4 @@ class CommentWriterController extends Controller
 
         return $new_comment;
     }
-
 }

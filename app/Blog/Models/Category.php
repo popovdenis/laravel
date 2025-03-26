@@ -44,7 +44,7 @@ class Category extends Node
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class, 'binshops_post_categories','category_id', 'post_id');
+        return $this->belongsToMany(Post::class, 'post_categories','category_id', 'post_id');
     }
 
     public function loadSiblings(){

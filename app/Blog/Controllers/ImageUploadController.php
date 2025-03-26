@@ -28,7 +28,7 @@ class ImageUploadController extends Controller
         $this->middleware(UserCanManageBlogPosts::class);
         $this->middleware(LoadLanguage::class);
 
-        if (!is_array(config("binshopsblog"))) {
+        if (!is_array(config("blog"))) {
             throw new \RuntimeException('The config/blog.php does not exist. Publish the vendor files for the Blog package by running the php artisan publish:vendor command');
         }
 
@@ -48,7 +48,7 @@ class ImageUploadController extends Controller
 
     public function index()
     {
-        return view("binshopsblog_admin::imageupload.index", ['uploaded_photos' => UploadedPhoto::orderBy("id", "desc")->paginate(10)]);
+        return view("blog_admin::imageupload.index", ['uploaded_photos' => UploadedPhoto::orderBy("id", "desc")->paginate(10)]);
     }
 
     /**
@@ -58,7 +58,7 @@ class ImageUploadController extends Controller
      */
     public function create()
     {
-        return view("binshopsblog_admin::imageupload.create", []);
+        return view("blog_admin::imageupload.create", []);
     }
 
     /**
@@ -72,7 +72,7 @@ class ImageUploadController extends Controller
     {
         $processed_images = $this->processUploadedImages($request);
 
-        return view("binshopsblog_admin::imageupload.uploaded", ['images' => $processed_images]);
+        return view("blog_admin::imageupload.uploaded", ['images' => $processed_images]);
     }
 
     /**
@@ -95,9 +95,9 @@ class ImageUploadController extends Controller
         $sizes_to_upload = $request->get("sizes_to_upload");
 
         // now upload a full size - this is a special case, not in the config file. We only store full size images in this class, not as part of the featured blog image uploads.
-        if (isset($sizes_to_upload['binshopsblog_full_size']) && $sizes_to_upload['binshopsblog_full_size'] === 'true') {
+        if (isset($sizes_to_upload['blog_full_size']) && $sizes_to_upload['blog_full_size'] === 'true') {
 
-            $uploaded_image_details['binshopsblog_full_size'] = $this->UploadAndResize(null, $request->get("image_title"), 'fullsize', $photo);
+            $uploaded_image_details['blog_full_size'] = $this->UploadAndResize(null, $request->get("image_title"), 'fullsize', $photo);
 
         }
 

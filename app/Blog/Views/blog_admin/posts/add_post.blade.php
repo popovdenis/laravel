@@ -1,11 +1,11 @@
-@extends("binshopsblog_admin::layouts.admin_layout")
+@extends("blog_admin::layouts.admin_layout")
 @section("content")
     <h5>Admin - Add post</h5>
     <p>Change language option to translate your post in different language</p>
     <form id="add-post-form" method='post' action='{{route("blog.admin.store_post")}}'  enctype="multipart/form-data" >
 
         @csrf
-        @include("binshopsblog_admin::posts.form", [
+        @include("blog_admin::posts.form", [
     'post' => $post,
     'post_translation' => $post_translation
     ])

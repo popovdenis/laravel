@@ -3,7 +3,6 @@
 namespace App\Blog\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Blog\Scopes\BlogPublishedScope;
 
 /**
  * Class Post
@@ -100,7 +99,7 @@ class Post extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'binshops_post_categories', 'post_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'post_categories', 'post_id', 'category_id');
     }
 
     /**

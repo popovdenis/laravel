@@ -2,19 +2,19 @@
 
 @case("built_in")
 {{-- default - show our own comments--}}
-@include("binshopsblog::partials.built_in_comments")
-@include("binshopsblog::partials.add_comment_form")
+@include("blog::partials.built_in_comments")
+@include("blog::partials.add_comment_form")
 @break
 
 @case("disqus")
 {{--use disqus--}}
-@include("binshopsblog::partials.disqus_comments")
+@include("blog::partials.disqus_comments")
 @break
 
 
 @case("custom")
 {{--use custom - you should create the custom_comments in your vendor view dir and customise it--}}
-@include("binshopsblog::partials.custom_comments")
+@include("blog::partials.custom_comments")
 @break
 
 @case("disabled")

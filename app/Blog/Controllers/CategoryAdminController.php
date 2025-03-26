@@ -41,7 +41,7 @@ class CategoryAdminController extends Controller
     public function index(Request $request){
         $language_id = $request->get('language_id');
         $categories = CategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->paginate(25);
-        return view("binshopsblog_admin::categories.index",[
+        return view("blog_admin::categories.index",[
             'categories' => $categories,
             'language_id' => $language_id
         ]);
@@ -63,7 +63,7 @@ class CategoryAdminController extends Controller
         Category::loadSiblingsWithList($rootList);
 
 
-        return view("binshopsblog_admin::categories.add_category",[
+        return view("blog_admin::categories.add_category",[
             'category' => new \App\Blog\Models\Category(),
             'category_translation' => new \App\Blog\Models\CategoryTranslation(),
             'category_tree' => $cat_list,
@@ -139,7 +139,7 @@ class CategoryAdminController extends Controller
             ]
         )->first();
 
-        return view("binshopsblog_admin::categories.edit_category",[
+        return view("blog_admin::categories.edit_category",[
             'category' => $category,
             'category_translation' => $cat_trans,
             'categories_list' => CategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->get(),
