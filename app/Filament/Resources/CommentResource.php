@@ -20,7 +20,7 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('author')->label('Author'),
+//                Tables\Columns\TextColumn::make('author')->label('Author'),
                 Tables\Columns\TextColumn::make('comment')->limit(80)->label('Comment'),
                 Tables\Columns\TextColumn::make('post.title')->label('Post'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),

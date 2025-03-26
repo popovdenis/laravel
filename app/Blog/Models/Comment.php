@@ -2,9 +2,7 @@
 
 namespace App\Blog\Models;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
-use App\Blog\Scopes\BlogCommentApprovedAndDefaultOrderScope;
 
 class Comment extends Model
 {
@@ -19,15 +17,17 @@ class Comment extends Model
 
     /**
      * The associated Post
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function post()
     {
-        return $this->belongsTo(Post::class,"post_id");
+        return $this->belongsTo(Post::class, "post_id");
     }
 
     /**
      * Comment author user (if set)
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -43,7 +43,7 @@ class Comment extends Model
     public function author()
     {
         if ($this->user_id) {
-            $field = config("blog.comments.user_field_for_author_name","name");
+            $field = config("blog.comments.user_field_for_author_name", "name");
             return optional($this->user)->$field;
         }
 

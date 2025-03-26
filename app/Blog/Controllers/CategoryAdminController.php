@@ -19,6 +19,7 @@ use App\Blog\Requests\UpdateBlogCategoryRequest;
 
 /**
  * Class CategoryAdminController
+ *
  * @package App\Blog\Controllers
  */
 class CategoryAdminController extends Controller
@@ -29,8 +30,7 @@ class CategoryAdminController extends Controller
     public function __construct()
     {
         $this->middleware(UserCanManageBlogPosts::class);
-        $this->middleware(LoadLanguage::class);
-
+//        $this->middleware(LoadLanguage::class);
     }
 
     /**
@@ -38,10 +38,11 @@ class CategoryAdminController extends Controller
      *
      * @return mixed
      */
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $language_id = $request->get('language_id');
-        $categories = CategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->paginate(25);
-        return view("blog_admin::categories.index",[
+        $categories = CategoryTranslation::orderBy("category_id")->paginate(25);
+        return view("blog_admin::categories.index", [
             'categories' => $categories,
             'language_id' => $language_id
         ]);
@@ -49,13 +50,16 @@ class CategoryAdminController extends Controller
 
     /**
      * Show the form for creating new category
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create_category(Request $request){
+    public function create_category(Request $request)
+    {
         $language_id = $request->get('language_id');
-        $language_list = Language::where('active',true)->get();
+        $language_list = Language::where('active', true)->get();
 
-        $cat_list = Category::whereHas('categoryTranslations', function ($query) use ($language_id) {
+        $cat_list = Category::whereHas('categoryTranslations', function ($query) use ($language_id)
+        {
             return $query->where('lang_id', '=', $language_id);
         })->get();
 
@@ -63,7 +67,7 @@ class CategoryAdminController extends Controller
         Category::loadSiblingsWithList($rootList);
 
 
-        return view("blog_admin::categories.add_category",[
+        return view("blog_admin::categories.add_category", [
             'category' => new \App\Blog\Models\Category(),
             'category_translation' => new \App\Blog\Models\CategoryTranslation(),
             'category_tree' => $cat_list,
@@ -77,15 +81,17 @@ class CategoryAdminController extends Controller
      * Store a new category
      *
      * @param StoreBlogCategoryRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *
      * This controller is totally REST controller
      */
-    public function store_category(Request $request){
+    public function store_category(Request $request)
+    {
         $language_id = $request->get('language_id');
         $language_list = $request['data'];
 
-        if ($request['parent_id']== 0){
+        if ($request['parent_id'] == 0) {
             $request['parent_id'] = null;
         }
         $new_category = Category::create([
@@ -93,10 +99,10 @@ class CategoryAdminController extends Controller
         ]);
 
         foreach ($language_list as $key => $value) {
-            if ($value['lang_id'] != -1 && $value['category_name'] !== null){
+            if ($value['lang_id'] != -1 && $value['category_name'] !== null) {
                 //check for slug availability
-                $obj = CategoryTranslation::where('slug',$value['slug'])->first();
-                if ($obj){
+                $obj = CategoryTranslation::where('slug', $value['slug'])->first();
+                if ($obj) {
                     Category::destroy($new_category->id);
                     return response()->json([
                         'code' => 403,
@@ -124,12 +130,15 @@ class CategoryAdminController extends Controller
 
     /**
      * Show the edit form for category
+     *
      * @param $categoryId
+     *
      * @return mixed
      */
-    public function edit_category($categoryId, Request $request){
+    public function edit_category($categoryId, Request $request)
+    {
         $language_id = $request->get('language_id');
-        $language_list = Language::where('active',true)->get();
+        $language_list = Language::where('active', true)->get();
 
         $category = Category::findOrFail($categoryId);
         $cat_trans = CategoryTranslation::where(
@@ -139,7 +148,7 @@ class CategoryAdminController extends Controller
             ]
         )->first();
 
-        return view("blog_admin::categories.edit_category",[
+        return view("blog_admin::categories.edit_category", [
             'category' => $category,
             'category_translation' => $cat_trans,
             'categories_list' => CategoryTranslation::orderBy("category_id")->where('lang_id', $language_id)->get(),
@@ -152,10 +161,12 @@ class CategoryAdminController extends Controller
      * Save submitted changes
      *
      * @param UpdateBlogCategoryRequest $request
-     * @param $categoryId
+     * @param                           $categoryId
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update_category(UpdateBlogCategoryRequest $request, $categoryId){
+    public function update_category(UpdateBlogCategoryRequest $request, $categoryId)
+    {
         /** @var Category $category */
         $category = Category::findOrFail($categoryId);
         $language_id = $request->get('language_id');
@@ -185,13 +196,15 @@ class CategoryAdminController extends Controller
      * Delete the category
      *
      * @param DeleteBlogCategoryRequest $request
-     * @param $categoryId
+     * @param                           $categoryId
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function destroy_category(DeleteBlogCategoryRequest $request, $categoryId){
+    public function destroy_category(DeleteBlogCategoryRequest $request, $categoryId)
+    {
 
         /* Please keep this in, so code inspectiwons don't say $request was unused. Of course it might now get marked as left/right parts are equal */
-        $request=$request;
+        $request = $request;
 
         $category = Category::findOrFail($categoryId);
         $children = $category->children()->get();
@@ -204,7 +217,7 @@ class CategoryAdminController extends Controller
         $category->delete();
 
         Helpers::flash_message("Category successfully deleted!");
-        return redirect( route('blog.admin.categories.index') );
+        return redirect(route('blog.admin.categories.index'));
     }
 
 }

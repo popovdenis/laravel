@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Blog\Interfaces\BaseRequestInterface;
 use App\Blog\Events\BlogPostAdded;
-use App\Blog\Events\BlogPostEdited;
 use App\Blog\Events\BlogPostWillBeDeleted;
 use App\Blog\Helpers;
 use App\Blog\Middleware\LoadLanguage;
