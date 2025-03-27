@@ -9,7 +9,8 @@ class Category extends Node
     public $siblings = array();
 
     public $fillable = [
-        'parent_id'
+        'parent_id',
+        'category_name'
     ];
 
     public static function boot() {

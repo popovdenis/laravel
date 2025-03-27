@@ -1,8 +1,10 @@
-<h5>Post Categories</h5>
-<ul class="nav">
+<h5 class="text-lg font-semibold mb-3">Post Categories</h5>
+<ul class="space-y-2">
     @foreach(\App\Blog\Models\Category::orderBy("category_name")->limit(200)->get() as $category)
-        <li class="nav-item">
-            <a class='nav-link' href='{{$category->url()}}'>{{$category->category_name}}</a>
+        <li>
+            <a href="{{ $category->url() }}" class="text-blue-600 hover:underline block">
+                {{ $category->category_name }}
+            </a>
         </li>
     @endforeach
 </ul>
