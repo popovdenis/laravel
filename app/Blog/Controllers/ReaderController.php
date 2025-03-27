@@ -24,12 +24,13 @@ class ReaderController extends Controller
         $title = 'Blog Page'; // default title...
 
         $categoryChain = null;
-        $posts = collect();
 
         if ($category_slug) {
-            $category = CategoryTranslation::where('slug', $category_slug)
+            $categoryTranslation = CategoryTranslation::where('slug', $category_slug)
                 ->with('category')
-                ->firstOrFail()->category;
+                ->firstOrFail();
+
+            $category = $categoryTranslation->category;
 
             $categoryChain = $category->getAncestorsAndSelf();
             $posts = $category->posts()->where('post_categories.category_id', $category->id)
@@ -47,7 +48,7 @@ class ReaderController extends Controller
 
             // Set category for view
             \View::share('blog_category', $category);
-            $title = 'Posts in ' . $category->category_name . " category";
+            $title = 'Posts in ' . $categoryTranslation->category_name . ' category';
         } else {
             $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
                 ->where('lang_id', 1)
