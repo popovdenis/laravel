@@ -64,7 +64,6 @@ class ReaderController extends Controller
         Category::loadSiblingsWithList($rootList);
 
         return view('blog.index', [
-            'lang_list' => Language::all(['locale', 'name']),
             'locale' => $request->get('locale'),
             'lang_id' => 1,
             'category_chain' => $categoryChain,

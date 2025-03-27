@@ -72,12 +72,5 @@
                 @include('blog::sitewide.search_form')
             </div>
         @endif
-
-        <div class="mt-8 text-center space-x-2">
-            @foreach($lang_list as $lang)
-                <a href="{{ route('blog.index', $lang->locale) }}"
-                   class="text-sm text-blue-600 hover:underline">{{ $lang->name }}</a>
-            @endforeach
-        </div>
     </div>
 @endsection
