@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Blog\Models\CategoryTranslation;
-use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Illuminate\Database\Eloquent\Builder;
 use App\Blog\Models\Language;
@@ -34,61 +32,76 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('currentTranslation.lang_id')
-                    ->label('Language')
-                    ->options(Language::pluck('name', 'id'))
-                    ->required(),
+                Forms\Components\Grid::make(12)
+                ->schema([
+                    Select::make('currentTranslation.lang_id')
+                        ->label('Language')
+                        ->options(Language::pluck('name', 'id'))
+                        ->required()
+                        ->columnSpan(4),
 
-                TextInput::make('currentTranslation.title')
-                    ->label('Title')
-                    ->required()
-                    ->reactive()
-                    ->debounce(1000)
-                    ->afterStateUpdated(fn($state, callable $set) =>
-                        $set('currentTranslation.slug', Str::slug($state))
-                    ),
+                    TextInput::make('currentTranslation.title')
+                        ->label('Title')
+                        ->required()
+                        ->reactive()
+                        ->debounce(1000)
+                        ->afterStateUpdated(fn($state, callable $set) =>
+                            $set('currentTranslation.slug', Str::slug($state))
+                        )
+                        ->columnSpan(4),
 
-                TextInput::make('currentTranslation.subtitle')
-                    ->label('Subtitle'),
+                    TextInput::make('currentTranslation.slug')
+                        ->label('Slug')
+                        ->required()
+                        ->columnSpan(4),
 
-                TextInput::make('currentTranslation.slug')
-                    ->label('Slug')
-                    ->required(),
+                    TextInput::make('currentTranslation.subtitle')
+                        ->label('Subtitle')
+                        ->columnSpan(6),
 
-                Toggle::make('is_published')
-                    ->label('Published'),
+                    DateTimePicker::make('posted_at')
+                        ->label('Posted At')
+                        ->default(now())
+                        ->columnSpan(6),
 
-                DateTimePicker::make('posted_at')
-                    ->label('Posted At')
-                    ->default(now()),
+                    Toggle::make('is_published')
+                        ->label('Published')
+                        ->columnSpan(2),
 
-                RichEditor::make('currentTranslation.post_body')
-                    ->label('Post Body'),
+                    RichEditor::make('currentTranslation.post_body')
+                        ->label('Post Body')
+                        ->columnSpan(12),
 
-                TextInput::make('currentTranslation.seo_title')
-                    ->label('SEO Title'),
+                    TextInput::make('currentTranslation.seo_title')
+                        ->label('SEO Title')
+                        ->columnSpan(6),
 
-                Textarea::make('currentTranslation.meta_desc')
-                    ->label('Meta Description'),
+                    Textarea::make('currentTranslation.meta_desc')
+                        ->label('Meta Description')
+                        ->columnSpan(6),
 
-                Textarea::make('currentTranslation.short_description')
-                    ->label('Short Description'),
+                    Textarea::make('currentTranslation.short_description')
+                        ->label('Short Description')
+                        ->columnSpan(6),
 
-                TextInput::make('currentTranslation.use_view_file')
-                    ->label('Custom View File'),
+                    TextInput::make('currentTranslation.use_view_file')
+                        ->label('Custom View File')
+                        ->columnSpan(6),
 
-                CheckboxList::make('categories')
-                    ->label('Categories')
-                    ->relationship('categories', 'id')
-                    ->options(
-                        \App\Blog\Models\Category::with(['categoryTranslations' => fn($q) => $q->where('lang_id', 1)])
-                            ->get()
-                            ->mapWithKeys(function ($category) {
-                                $translation = $category->categoryTranslations->first();
-                                return $translation ? [$category->id => $translation->category_name] : [];
-                            })
-                    )
-                    ->columns(2)
+                    CheckboxList::make('categories')
+                        ->label('Categories')
+                        ->relationship('categories', 'id')
+                        ->options(
+                            \App\Blog\Models\Category::with(['categoryTranslations' => fn($q) => $q->where('lang_id', 1)])
+                                ->get()
+                                ->mapWithKeys(function ($category) {
+                                    $translation = $category->categoryTranslations->first();
+                                    return $translation ? [$category->id => $translation->category_name] : [];
+                                })
+                        )
+                        ->columns(2)
+                        ->columnSpan(12)
+                ])
             ]);
     }
 
