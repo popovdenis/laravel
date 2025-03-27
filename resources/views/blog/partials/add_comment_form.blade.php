@@ -1,79 +1,73 @@
-<div class="add_comment_area">
-    <h5 class="text-center">Add a comment</h5>
+<div class="max-w-3xl mx-auto p-6 bg-white rounded shadow">
+    <h2 class="text-xl font-semibold mb-6 text-center">Add a comment</h2>
 
     <form method="POST" action="{{ route('blog.comments.add_new_comment', ['blogPostSlug' => $post->slug]) }}">
         @csrf
 
-        <div class="form-group">
-            <label for="comment">Your Comment</label>
+        <div class="mb-4">
+            <label for="comment" class="block font-medium text-sm text-gray-700">Your Comment</label>
             <textarea
                 id="comment"
                 name="comment"
-                class="form-control"
-                rows="7"
+                rows="6"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Write your comment here"
                 required
             >{{ old('comment') }}</textarea>
         </div>
 
-        <div class="row">
-            @if(!auth()->check() || config('blog.comments.save_user_id_if_logged_in') === false)
-                <div class="col">
-                    <div class="form-group">
-                        <label for="author_name">Your Name</label>
-                        <input
-                            type="text"
-                            name="author_name"
-                            id="author_name"
-                            class="form-control"
-                            placeholder="Your name"
-                            value="{{ old('author_name') }}"
-                            required
-                        >
-                    </div>
+        @if(!auth()->check() || config('blog.comments.save_user_id_if_logged_in') === false)
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label for="author_name" class="block font-medium text-sm text-gray-700">Your Name</label>
+                    <input
+                        type="text"
+                        name="author_name"
+                        id="author_name"
+                        value="{{ old('author_name') }}"
+                        required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="Your name"
+                    >
                 </div>
 
                 @if(config('blog.comments.ask_for_author_email'))
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="author_email">
-                                Your Email <small>(won't be displayed publicly)</small>
-                            </label>
-                            <input
-                                type="email"
-                                name="author_email"
-                                id="author_email"
-                                class="form-control"
-                                placeholder="Your Email"
-                                value="{{ old('author_email') }}"
-                                required
-                            >
-                        </div>
-                    </div>
-                @endif
-            @endif
-
-            @if(config('blog.comments.ask_for_author_website'))
-                <div class="col">
-                    <div class="form-group">
-                        <label for="author_website">
-                            Your Website <small>(will be displayed)</small>
+                    <div>
+                        <label for="author_email" class="block font-medium text-sm text-gray-700">
+                            Your Email <small class="text-gray-500">(won't be displayed)</small>
                         </label>
                         <input
-                            type="url"
-                            name="author_website"
-                            id="author_website"
-                            class="form-control"
-                            placeholder="Your Website URL"
-                            value="{{ old('author_website') }}"
+                            type="email"
+                            name="author_email"
+                            id="author_email"
+                            value="{{ old('author_email') }}"
+                            required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            placeholder="Your email"
                         >
                     </div>
-                </div>
-            @endif
-        </div>
+                @endif
+            </div>
+        @endif
 
-        <div class="form-group mt-3">
-            <button type="submit" class="btn btn-success btn-block">
+        @if(config('blog.comments.ask_for_author_website'))
+            <div class="mt-4">
+                <label for="author_website" class="block font-medium text-sm text-gray-700">
+                    Your Website <small class="text-gray-500">(will be displayed)</small>
+                </label>
+                <input
+                    type="url"
+                    name="author_website"
+                    id="author_website"
+                    value="{{ old('author_website') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Your website URL"
+                >
+            </div>
+        @endif
+
+        <div class="mt-6">
+            <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 Add Comment
             </button>
         </div>

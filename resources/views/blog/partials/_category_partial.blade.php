@@ -1,8 +1,10 @@
-@php
-    $name_chain = $name_chain ?? '';
-    $routeWithoutLocale = $routeWithoutLocale ?? false;
-    $locale = $locale ?? app()->getLocale();
-@endphp
+{{-- resources/views/components/blog/category-list.blade.php --}}
+@props([
+    'category_tree' => [],
+    'name_chain' => '',
+    'routeWithoutLocale' => false,
+    'locale' => app()->getLocale(),
+])
 @foreach($category_tree as $category)
     @php
         $trans = $category->categoryTranslations->first();

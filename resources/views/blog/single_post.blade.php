@@ -17,21 +17,18 @@
         </div>
     @endif
 
-    <div class='container'>
-        <div class='row'>
-            <div class='col-sm-12 col-md-12 col-lg-12'>
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        @include("blog::partials.show_errors")
 
-                @include("blog::partials.show_errors")
-                @include("blog::partials.full_post_details")
+        @include("blog::partials.full_post_details")
 
-                @if(config("blog.comments.type_of_comments_to_show", "built_in") !== 'disabled')
-                    <div id='maincommentscontainer'>
-                        <h2 class='text-center' id='blogcomments'>Comments</h2>
-                        @include("blog::partials.show_comments")
-                    </div>
-                @endif
-
+        @if(config("blog.comments.type_of_comments_to_show", "built_in") !== 'disabled')
+            <div id="maincommentscontainer" class="mt-10">
+                <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6" id="blogcomments">
+                    Comments
+                </h2>
+                @include("blog::partials.show_comments")
             </div>
-        </div>
+        @endif
     </div>
 </x-app-layout>
