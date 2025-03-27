@@ -68,25 +68,21 @@ class PostResource extends Resource
                         ->label('Published')
                         ->columnSpan(2),
 
+                    Textarea::make('currentTranslation.short_description')
+                        ->label('Short Description')
+                        ->columnSpan(12),
+
                     RichEditor::make('currentTranslation.post_body')
                         ->label('Post Body')
                         ->columnSpan(12),
 
                     TextInput::make('currentTranslation.seo_title')
                         ->label('SEO Title')
-                        ->columnSpan(6),
+                        ->columnSpan(4),
 
                     Textarea::make('currentTranslation.meta_desc')
                         ->label('Meta Description')
-                        ->columnSpan(6),
-
-                    Textarea::make('currentTranslation.short_description')
-                        ->label('Short Description')
-                        ->columnSpan(6),
-
-                    TextInput::make('currentTranslation.use_view_file')
-                        ->label('Custom View File')
-                        ->columnSpan(6),
+                        ->columnSpan(4),
 
                     CheckboxList::make('categories')
                         ->label('Categories')
@@ -100,7 +96,7 @@ class PostResource extends Resource
                                 })
                         )
                         ->columns(2)
-                        ->columnSpan(12)
+                        ->columnSpan(4)
                 ])
             ]);
     }
