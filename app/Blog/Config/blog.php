@@ -19,25 +19,25 @@ return [
     'use_wysiwyg' => true, // Default: true
     'image_quality' => 80,
     'image_sizes' => [
-        'image_large' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 1000, // width in pixels
-            'h' => 700, //height
+        'large' => [ // this key must start with 'image_'. This is what the DB column must be named
+            'w' => 600, // width in pixels
+            'h' => 400, //height
             'basic_key' => "large", // same as the main key, but WITHOUT 'image_'.
             'name' => "Large", // description, used in the admin panel
             'enabled' => true, // see note above
             'crop' => true,
         ],
-        'image_medium' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 600, // width in pixels
-            'h' => 400, //height
+        'medium' => [ // this key must start with 'image_'. This is what the DB column must be named
+            'w' => 300, // width in pixels
+            'h' => 150, //height
             'basic_key' => "medium",// same as the main key, but WITHOUT 'image_'.
             'name' => "Medium",// description, used in the admin panel
             'enabled' => true, // see note above
             'crop' => true,
         ],
-        'image_thumbnail' => [ // this key must start with 'image_'. This is what the DB column must be named
-            'w' => 150, // width in pixels
-            'h' => 150, //height
+        'thumbnail' => [ // this key must start with 'image_'. This is what the DB column must be named
+            'w' => 50, // width in pixels
+            'h' => 50, //height
             'basic_key' => "thumbnail",// same as the main key, but WITHOUT 'image_'.
             'name' => "Thumbnail",// description, used in the admin panel
             'enabled' => true, // see note above
@@ -45,7 +45,7 @@ return [
     ],
     'captcha' => [
         'captcha_enabled' => true,
-        'captcha_type' => \Blog\Captcha\Basic::class,
+        'captcha_type' => \App\Blog\Captcha\Basic::class,
         'basic_question' => "What is the opposite of white?",
         'basic_answers' => "black,dark", // comma separated list of possible answers. Don't worry about case.
     ],

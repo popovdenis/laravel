@@ -99,29 +99,13 @@ class PostResource extends Resource
                         ->columns(2)
                         ->columnSpan(4),
 
-                        FileUpload::make('currentTranslation.image_large')
-                            ->label('Large Image')
-                            ->image()
-                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
-                            ->preserveFilenames()
-                            ->disk('public')
-                            ->columnSpan(4),
-
-                        FileUpload::make('currentTranslation.image_medium')
-                            ->label('Medium Image')
-                            ->image()
-                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
-                            ->preserveFilenames()
-                            ->disk('public')
-                            ->columnSpan(4),
-
-                        FileUpload::make('currentTranslation.image_thumbnail')
-                            ->label('Thumbnail Image')
-                            ->image()
-                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
-                            ->preserveFilenames()
-                            ->disk('public')
-                            ->columnSpan(4),
+                    FileUpload::make('currentTranslation.image_large')
+                        ->label('Image')
+                        ->image()
+                        ->directory(config('blog.blog_upload_dir', 'blog_images'))
+                        ->preserveFilenames()
+                        ->disk('public')
+                        ->columnSpan(4),
                 ])
             ]);
     }

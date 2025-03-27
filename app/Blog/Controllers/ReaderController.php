@@ -6,8 +6,6 @@ use Carbon\Carbon;
 use App\Blog\FulltextSearch\Search;
 use App\Blog\Models\Category;
 use App\Blog\Models\CategoryTranslation;
-use App\Blog\Models\Language;
-use App\Blog\Models\Post;
 use App\Blog\Models\PostTranslation;
 use Illuminate\Http\Request;
 

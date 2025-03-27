@@ -123,6 +123,12 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'image_sizes' => [
+        'large' => [1200, 800],
+        'medium' => [800, 600],
+        'thumbnail' => [400, 300],
+    ],
+
     'providers' => [
 
         /*

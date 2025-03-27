@@ -12,6 +12,7 @@ class UploadedPhoto extends Model
     public $fillable = [
         'image_title',
         'uploader_id',
-        'source', 'uploaded_images',
+        'source',
+        'uploaded_images',
     ];
 }

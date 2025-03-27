@@ -2,7 +2,7 @@
     <div class="blog-item">
 
         <div class="text-center blog-image">
-            {!! $post->image_tag('medium', true, '') !!}
+            <img src="{{ $post->getImage('medium') }}" alt="{{ $post->title }}">
         </div>
 
         <div class="blog-inner-item">

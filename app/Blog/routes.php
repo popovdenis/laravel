@@ -50,7 +50,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/edit_post/{blogPostId}', [AdminController::class, 'edit_post'])->name('blog.admin.edit_post');
         Route::post('/edit_post_toggle/{blogPostId}', [AdminController::class, 'edit_post_toggle'])->name('blog.admin.edit_post_toggle');
         Route::post('/edit_post/{blogPostId}', [AdminController::class, 'update_post'])->name('blog.admin.update_post');
-        Route::get('/remove_photo/{slug}/{lang_id}', [AdminController::class, 'remove_photo'])->name('blog.admin.remove_photo');
+        Route::get('/remove_photo/{slug}', [AdminController::class, 'remove_photo'])->name('blog.admin.remove_photo');
 
         Route::prefix("image_uploads")->group(function () {
             Route::get("/", [ImageUploadController::class, 'index'])->name("blog.admin.images.all");

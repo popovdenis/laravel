@@ -1,11 +1,9 @@
 <?php
-
 namespace App\Blog\Traits;
 
 use Illuminate\Http\UploadedFile;
 use App\Blog\Events\UploadedImage;
 use App\Blog\Models\Post;
-use File;
 use App\Blog\Models\PostTranslation;
 
 trait UploadFileTrait
@@ -66,12 +64,8 @@ trait UploadFileTrait
             }
 
         }
-
-        // too many attempts...
         throw new \RuntimeException("Unable to find a free filename after $i attempts - aborting now.");
-
     }
-
 
     /**
      * @return string
@@ -83,7 +77,6 @@ trait UploadFileTrait
         $this->check_image_destination_path_is_writable($path);
         return $path;
     }
-
 
     /**
      * @param Post $new_blog_post
@@ -209,5 +202,4 @@ trait UploadFileTrait
         }
         return $base;
     }
-
 }

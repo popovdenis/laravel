@@ -5,6 +5,9 @@ namespace App\Blog\Models;
 use App\Blog\FulltextSearch\Indexable;
 use Illuminate\Database\Eloquent\Model;
 use App\Blog\Interfaces\SearchResultInterface;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class PostTranslation extends Model implements SearchResultInterface
 {
@@ -25,8 +28,6 @@ class PostTranslation extends Model implements SearchResultInterface
         'lang_id',
         'post_id',
         'image_large',
-        'image_medium',
-        'image_thumbnail',
     ];
 
     /**
@@ -108,12 +109,16 @@ class PostTranslation extends Model implements SearchResultInterface
      *
      * @return string
      */
-    public function image_url($size = 'medium')
+    public function image_url($size = 'medium'): string
     {
-        $this->check_valid_image_size($size);
-        $filename = $this->{"image_" . $size};
+        $sizes = config('blog.image_sizes', []);
+        $filename = $this->image;
+        if (! $filename || ! isset($sizes[$size])) {
+            return '';
+        }
 
-        return asset('storage' . "/" . $filename);
+        [$width, $height] = $sizes[$size];
+        return route('image.resize', ['size' => $size, 'filename' => $filename, 'w' => $width, 'h' => $height]);
     }
 
     /**
@@ -128,16 +133,48 @@ class PostTranslation extends Model implements SearchResultInterface
      */
     public function image_tag($size = 'medium', $auto_link = true, $img_class = null, $anchor_class = null)
     {
-        if (!$this->has_image($size)) {
-            // return an empty string if this image does not exist.
+        if (! $this->image) {
             return '';
         }
         $url = e($this->image_url($size));
         $alt = e($this->title);
         $img = "<img src='$url' alt='$alt' class='" . e($img_class) . "' >";
-        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url(app()->getLocale(), false))
-            . "'>$img</a>" : $img;
+        return $auto_link ? "<a class='" . e($anchor_class) . "' href='" . e($this->url(app()->getLocale(), false)) . "'>$img</a>" : $img;
+    }
 
+    public function getImage(string $size = null): string
+    {
+        $original = $this->image_large;
+
+        $config = config("blog.image_sizes");
+
+        if (empty($config) || ! isset($config[$size])) {
+            return $original;
+        }
+
+        $imageConfig = $config[$size];
+
+        if (!$imageConfig || !isset($imageConfig['w'], $imageConfig['h'])) {
+            return Storage::url("blog_images/{$original}");
+        }
+
+        if (Storage::disk('public')->exists($original)) {
+            $ext = pathinfo($original, PATHINFO_EXTENSION);
+            $base = pathinfo($original, PATHINFO_FILENAME);
+            $resizedFilename = sprintf('%s-%s-%s.%s', $this->post_id, $base, $size, $ext);
+            $resizedPath = dirname($original) . '/' . $resizedFilename;
+
+            if (!Storage::disk('public')->exists($resizedPath)) {
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read(Storage::disk('public')->path($original));
+                $image->scaleDown($imageConfig['w'], $imageConfig['h']);
+                $image->save(Storage::disk('public')->path($resizedPath), quality: config('blog.image_quality', 80));
+            }
+
+            return Storage::url($resizedPath);
+        }
+
+        return Storage::url($original);
     }
 
     public function generate_introduction($max_len = 500)

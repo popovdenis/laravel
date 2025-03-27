@@ -3,11 +3,9 @@
 namespace App\Blog\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Blog\Middleware\LoadLanguage;
 use App\Blog\Middleware\UserCanManageBlogPosts;
 use App\Blog\Models\UploadedPhoto;
-use File;
 use App\Blog\Requests\UploadImageRequest;
 use App\Blog\Traits\UploadFileTrait;
 
@@ -26,7 +24,6 @@ class ImageUploadController extends Controller
     public function __construct()
     {
         $this->middleware(UserCanManageBlogPosts::class);
-        $this->middleware(LoadLanguage::class);
 
         if (!is_array(config("blog"))) {
             throw new \RuntimeException('The config/blog.php does not exist. Publish the vendor files for the Blog package by running the php artisan publish:vendor command');
