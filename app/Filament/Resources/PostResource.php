@@ -43,7 +43,9 @@ class PostResource extends Resource
                     ->label('Title')
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn($state, callable $set) => $set('currentTranslation.slug', Str::slug($state))
+                    ->debounce(1000)
+                    ->afterStateUpdated(fn($state, callable $set) =>
+                        $set('currentTranslation.slug', Str::slug($state))
                     ),
 
                 TextInput::make('currentTranslation.subtitle')
