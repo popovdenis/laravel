@@ -13,11 +13,11 @@ use App\Blog\Traits\UploadFileTrait;
 
 /**
  * Class AdminController
+ *
  * @package App\Blog\Controllers
  */
 class ImageUploadController extends Controller
 {
-
     use UploadFileTrait;
 
     /**
@@ -36,19 +36,18 @@ class ImageUploadController extends Controller
         if (!config("blog.image_upload_enabled")) {
             throw new \RuntimeException("The blog.php config option has not enabled image uploading");
         }
-
-
     }
 
     /**
      * Show the main listing of uploaded images
+     *
      * @return mixed
      */
-
-
     public function index()
     {
-        return view("blog_admin::imageupload.index", ['uploaded_photos' => UploadedPhoto::orderBy("id", "desc")->paginate(10)]);
+        return view("blog_admin::imageupload.index", [
+            'uploaded_photos' => UploadedPhoto::orderBy("id", "desc")->paginate(10)
+        ]);
     }
 
     /**
@@ -65,6 +64,7 @@ class ImageUploadController extends Controller
      * Save a new uploaded image
      *
      * @param UploadImageRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
@@ -82,38 +82,28 @@ class ImageUploadController extends Controller
      *
      * @return array returns an array of details about each file resized.
      * @throws \Exception
-     * @todo - This class was added after the other main features, so this duplicates some code from the main blog post admin controller (AdminController). For next full release this should be tided up.
      */
     protected function processUploadedImages(UploadImageRequest $request)
     {
         $this->increaseMemoryLimit();
         $photo = $request->file('upload');
 
-        // to save in db later
         $uploaded_image_details = [];
-
         $sizes_to_upload = $request->get("sizes_to_upload");
 
-        // now upload a full size - this is a special case, not in the config file. We only store full size images in this class, not as part of the featured blog image uploads.
         if (isset($sizes_to_upload['blog_full_size']) && $sizes_to_upload['blog_full_size'] === 'true') {
-
             $uploaded_image_details['blog_full_size'] = $this->UploadAndResize(null, $request->get("image_title"), 'fullsize', $photo);
-
         }
 
-        foreach ((array)config('blog.image_sizes') as $size => $image_size_details) {
-
+        foreach ((array) config('blog.image_sizes') as $size => $image_size_details) {
             if (!isset($sizes_to_upload[$size]) || !$sizes_to_upload[$size] || !$image_size_details['enabled']) {
                 continue;
             }
-
             // this image size is enabled, and
             // we have an uploaded image that we can use
             $uploaded_image_details[$size] = $this->UploadAndResize(null, $request->get("image_title"), $image_size_details, $photo);
         }
 
-
-        // store the image upload.
         UploadedPhoto::create([
             'image_title' => $request->get("image_title"),
             'source' => "ImageUpload",
@@ -121,10 +111,6 @@ class ImageUploadController extends Controller
             'uploaded_images' => $uploaded_image_details,
         ]);
 
-
         return $uploaded_image_details;
-
     }
-
-
 }

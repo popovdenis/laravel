@@ -24,6 +24,9 @@ class PostTranslation extends Model implements SearchResultInterface
         'use_view_file',
         'lang_id',
         'post_id',
+        'image_large',
+        'image_medium',
+        'image_thumbnail',
     ];
 
     /**
@@ -49,8 +52,7 @@ class PostTranslation extends Model implements SearchResultInterface
      *
      * @return array
      */
-    public function sluggable()
-    : array
+    public function sluggable(): array
     {
         return [
             'slug' => [
@@ -110,7 +112,8 @@ class PostTranslation extends Model implements SearchResultInterface
     {
         $this->check_valid_image_size($size);
         $filename = $this->{"image_" . $size};
-        return asset(config("blog.blog_upload_dir", "blog_images") . "/" . $filename);
+
+        return asset('storage' . "/" . $filename);
     }
 
     /**

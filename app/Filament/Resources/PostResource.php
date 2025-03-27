@@ -19,6 +19,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\PostResource\Pages;
+use Filament\Forms\Components\FileUpload;
 
 class PostResource extends Resource
 {
@@ -96,7 +97,31 @@ class PostResource extends Resource
                                 })
                         )
                         ->columns(2)
-                        ->columnSpan(4)
+                        ->columnSpan(4),
+
+                        FileUpload::make('currentTranslation.image_large')
+                            ->label('Large Image')
+                            ->image()
+                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
+                            ->preserveFilenames()
+                            ->disk('public')
+                            ->columnSpan(4),
+
+                        FileUpload::make('currentTranslation.image_medium')
+                            ->label('Medium Image')
+                            ->image()
+                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
+                            ->preserveFilenames()
+                            ->disk('public')
+                            ->columnSpan(4),
+
+                        FileUpload::make('currentTranslation.image_thumbnail')
+                            ->label('Thumbnail Image')
+                            ->image()
+                            ->directory(config('blog.blog_upload_dir', 'blog_images'))
+                            ->preserveFilenames()
+                            ->disk('public')
+                            ->columnSpan(4),
                 ])
             ]);
     }
