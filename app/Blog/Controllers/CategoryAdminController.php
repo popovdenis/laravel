@@ -55,7 +55,7 @@ class CategoryAdminController extends Controller
      */
     public function create_category(Request $request)
     {
-        $language_id = $request->get('language_id');
+        $language_id = 1;
         $language_list = Language::where('active', true)->get();
 
         $cat_list = Category::whereHas('categoryTranslations', function ($query) use ($language_id)
@@ -107,7 +107,7 @@ class CategoryAdminController extends Controller
                     return response()->json([
                         'code' => 403,
                         'message' => "slug is already taken",
-                        'data' => $value['lang_id']
+                        'data' => 1
                     ]);
                 }
                 $new_category_translation = $new_category->categoryTranslations()->create([
@@ -137,7 +137,7 @@ class CategoryAdminController extends Controller
      */
     public function edit_category($categoryId, Request $request)
     {
-        $language_id = $request->get('language_id');
+        $language_id = 1;
         $language_list = Language::where('active', true)->get();
 
         $category = Category::findOrFail($categoryId);
@@ -169,7 +169,7 @@ class CategoryAdminController extends Controller
     {
         /** @var Category $category */
         $category = Category::findOrFail($categoryId);
-        $language_id = $request->get('language_id');
+        $language_id = 1;
         $translation = CategoryTranslation::where(
             [
                 ['lang_id', '=', $language_id],

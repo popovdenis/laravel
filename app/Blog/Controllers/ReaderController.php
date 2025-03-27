@@ -36,11 +36,11 @@ class ReaderController extends Controller
             $categoryChain = $category->getAncestorsAndSelf();
             $posts = $category->posts()->where('post_categories.category_id', $category->id)
                 ->with(['postTranslations' => function($query) use ($request) {
-                    $query->where('lang_id', $request->get('lang_id'));
+                    $query->where('lang_id', 1);
                 }])->get();
 
             $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
-                ->where('lang_id', $request->get('lang_id'))
+                ->where('lang_id', 1)
                 ->where('is_published', true)
                 ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
                 ->orderBy('posted_at', 'desc')
@@ -52,7 +52,7 @@ class ReaderController extends Controller
             $title = 'Posts in ' . $category->category_name . " category";
         } else {
             $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
-//                ->where('lang_id', $request->get('lang_id'))
+                ->where('lang_id', 1)
                 ->where('is_published', true)
                 ->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))
                 ->orderBy('posted_at', 'desc')
@@ -66,7 +66,7 @@ class ReaderController extends Controller
         return view('blog.index', [
             'lang_list' => Language::all(['locale', 'name']),
             'locale' => $request->get('locale'),
-            'lang_id' => $request->get('lang_id'),
+            'lang_id' => 1,
             'category_chain' => $categoryChain,
             'categories' => $rootList,
             'posts' => $posts,
@@ -98,7 +98,7 @@ class ReaderController extends Controller
         Category::loadSiblingsWithList($rootList);
 
         return view('blog::search', [
-            'lang_id' => $request->get('lang_id'),
+            'lang_id' => 1,
             'locale' => $request->get('locale'),
             'categories' => $rootList,
             'query' => $query,
@@ -128,17 +128,17 @@ class ReaderController extends Controller
      */
     public function viewSinglePost(Request $request, $blogPostSlug)
     {
-        $blog_post = PostTranslation::where('slug', $blogPostSlug)
+        $posts = PostTranslation::where('slug', $blogPostSlug)
 //            ->where('lang_id', $request->get('lang_id'))
             ->firstOrFail();
 
-        $categories = $blog_post->post->categories()->with(['categoryTranslations' => function ($query) use ($request) {
-            $query->where('lang_id', '=', $request->get('lang_id'));
+        $categories = $posts->post->categories()->with(['categoryTranslations' => function ($query) use ($request) {
+//            $query->where('lang_id', '=', $request->get('lang_id'));
         }])->get();
 
         return view('blog.single_post', [
-            'post' => $blog_post,
-            'comments' => $blog_post->post->comments()->with('user')->get(),
+            'post' => $posts,
+            'comments' => $posts->post->comments()->with('user')->get(),
             'locale' => $request->get('locale'),
             'categories' => $categories,
             'routeWithoutLocale' => $request->get('routeWithoutLocale'),

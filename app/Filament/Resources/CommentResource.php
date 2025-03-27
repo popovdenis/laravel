@@ -20,13 +20,11 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-//                Tables\Columns\TextColumn::make('author')->label('Author'),
+                Tables\Columns\TextColumn::make('author_name')->label('Author'),
                 Tables\Columns\TextColumn::make('comment')->limit(80)->label('Comment'),
                 Tables\Columns\TextColumn::make('post.title')->label('Post'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
-                Tables\Columns\IconColumn::make('approved')
-                    ->boolean()
-                    ->label('Approved'),
+                Tables\Columns\IconColumn::make('approved')->boolean()->label('Approved'),
             ])
             ->filters([
                 //

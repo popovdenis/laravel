@@ -22,11 +22,12 @@ class Category extends Node
 
     /**
      * The associated category translations
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function categoryTranslations()
     {
-        return $this->hasMany(CategoryTranslation::class,"category_id");
+        return $this->hasMany(CategoryTranslation::class, "category_id");
     }
 
     public function categoryTranslation()
@@ -59,19 +60,4 @@ class Category extends Node
             }
         }
     }
-//
-//    public function children()
-//    {
-//        return $this->hasMany('Blog\Models\Category', 'parent_id');
-//    }
-//
-//    // recursive, loads all descendants
-//    private function childrenRecursive()
-//    {
-//        return $this->children()->with('children')->get();
-//    }
-//
-//    public function loadChildren(){
-//        $this->childrenCat = $this->childrenRecursive();
-//    }
 }

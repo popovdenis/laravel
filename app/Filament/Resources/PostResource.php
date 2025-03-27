@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Blog\Models\CategoryTranslation;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Illuminate\Database\Eloquent\Builder;
 use App\Blog\Models\Language;
 use App\Blog\Models\Post;
@@ -72,6 +74,19 @@ class PostResource extends Resource
 
                 TextInput::make('currentTranslation.use_view_file')
                     ->label('Custom View File'),
+
+                CheckboxList::make('categories')
+                    ->label('Categories')
+                    ->relationship('categories', 'id')
+                    ->options(
+                        \App\Blog\Models\Category::with(['categoryTranslations' => fn($q) => $q->where('lang_id', 1)])
+                            ->get()
+                            ->mapWithKeys(function ($category) {
+                                $translation = $category->categoryTranslations->first();
+                                return $translation ? [$category->id => $translation->category_name] : [];
+                            })
+                    )
+                    ->columns(2)
             ]);
     }
 

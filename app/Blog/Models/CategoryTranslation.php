@@ -34,16 +34,18 @@ class CategoryTranslation extends Model
      * Returns the public facing URL of showing blog posts in this category
      * @return string
      */
-    public function url($locale, $routeWithoutLocale = false)
+    public function url()
     {
-        $theChainString = "";
+        $theChainString = [];
         $cat = $this->category()->get();
         $chain = $cat[0]->getAncestorsAndSelf();
-        foreach ($chain as $category){
-            $theChainString .=  "/" . $category->categoryTranslations()->where('lang_id' , $this->lang_id)->first()->slug;
-        }
 
-        return $routeWithoutLocale ? route("blog.view_category",["", $theChainString]) : route("blog.view_category",[$locale, $theChainString]);
+        foreach ($chain as $category){
+            $theChainString[] = $category->categoryTranslations()->where('lang_id' , 1)->first()->slug;
+        }
+        $theChainString = implode('/', $theChainString);
+
+        return route("blog.view_category", ['subcategories' => $theChainString]);
     }
 
     /**

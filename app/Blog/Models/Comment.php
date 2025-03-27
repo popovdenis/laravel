@@ -13,6 +13,7 @@ class Comment extends Model
     public $fillable = [
         'comment',
         'author_name',
+        'approved',
     ];
 
     /**
