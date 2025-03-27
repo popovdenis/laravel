@@ -1,10 +1,15 @@
-@extends("layouts.app", ['title' => $post->gen_seo_title()])
+<x-app-layout>
+    <x-slot name="title">
+        {{ $post->gen_seo_title() }}
+    </x-slot>
 
-@section('blog-custom-css')
-    <link type="text/css" href="{{ asset('css/blog.css') }}" rel="stylesheet">
-@endsection
+    @push('head')
+        <link type="text/css" href="{{ asset('css/blog.css') }}" rel="stylesheet">
+    @endpush
 
-@section("content")
+    @push('scripts')
+        <script src="{{ asset('js/blog.js') }}"></script>
+    @endpush
 
     @if(config("blog.reading_progress_bar"))
         <div id="scrollbar">
@@ -29,9 +34,4 @@
             </div>
         </div>
     </div>
-
-@endsection
-
-@section('blog-custom-js')
-    <script src="{{ asset('js/blog.js') }}"></script>
-@endsection
+</x-app-layout>

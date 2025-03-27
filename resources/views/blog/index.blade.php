@@ -1,10 +1,15 @@
-@extends("layouts.app", ['title' => $title])
+{{-- resources/views/vendor/blog/index.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold text-gray-800 leading-tight">
+            {{ $title ?? 'Blog' }}
+        </h2>
+    </x-slot>
 
-@section('blog-custom-css')
-    <link type="text/css" href="{{ asset('css/blog.css') }}" rel="stylesheet">
-@endsection
+    @push('head')
+        <link type="text/css" href="{{ asset('css/blog.css') }}" rel="stylesheet">
+    @endpush
 
-@section("content")
     <div class="w-full max-w-7xl mx-auto px-4 py-8">
         @auth
             @if(auth()->user()->canManageBlogPosts())
@@ -73,4 +78,4 @@
             </div>
         @endif
     </div>
-@endsection
+</x-app-layout>
