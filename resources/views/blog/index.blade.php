@@ -11,21 +11,6 @@
     @endpush
 
     <div class="w-full max-w-7xl mx-auto px-4 py-8">
-        @auth
-            @if(auth()->user()->canManageBlogPosts())
-                <div class="text-center mb-6">
-                    <p class="mb-2 text-gray-700">
-                        You are logged in as a blog admin user.
-                    </p>
-                    <a href="{{ route('blog.admin.index') }}"
-                       class="inline-flex items-center gap-2 border border-blue-500 text-blue-500 px-4 py-1 text-sm rounded hover:bg-blue-50 transition">
-                        <i class="fa fa-cogs" aria-hidden="true"></i>
-                        Go To Blog Admin Panel
-                    </a>
-                </div>
-            @endif
-        @endauth
-
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-3/4 w-full">
                 @if($category_chain)

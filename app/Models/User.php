@@ -49,6 +49,6 @@ class User extends Authenticatable
 
     public function canManageBlogPosts(): bool
     {
-        return $this->hasRole('admin');
+        return $this->hasRole('Admin');
     }
 }

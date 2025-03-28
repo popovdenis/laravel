@@ -1,12 +1,3 @@
-@if(Auth::check() && Auth::user()->canManageBlogPosts())
-    <div class="flex justify-end mb-4">
-        <a href="{{ $post->edit_url() }}"
-           class="inline-flex items-center px-4 py-1.5 border border-gray-400 text-sm rounded-md text-gray-700 hover:bg-gray-100 transition">
-            Edit Post
-        </a>
-    </div>
-@endif
-
 <h1 class="text-3xl font-bold mb-2 text-gray-900">{{ $post->title }}</h1>
 @if($post->subtitle)
     <h2 class="text-xl text-gray-600 mb-4">{{ $post->subtitle }}</h2>

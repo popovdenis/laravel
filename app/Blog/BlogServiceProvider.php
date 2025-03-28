@@ -24,7 +24,6 @@ class BlogServiceProvider extends ServiceProvider
         ]);
 
         $this->loadViewsFrom(base_path('resources/views/blog'), 'blog');
-//        $this->loadViewsFrom(base_path('resources/views/blog_admin'), 'blog_admin');
 
         $this->mergeConfigFrom(__DIR__ . '/Config/blog.php', 'blog');
     }
@@ -33,10 +32,6 @@ class BlogServiceProvider extends ServiceProvider
     {
         if (!config('blog.search.search_enabled')) {
             ModelObserver::disableSyncingFor(PostTranslation::class);
-        }
-
-        if (config('blog.include_default_routes', true)) {
-            $this->loadRoutesFrom(__DIR__ . '/routes.php');
         }
 
         $this->publishes([
