@@ -35,16 +35,16 @@ class AdminController extends Controller
     /**
      * AdminController constructor.
      */
-//    public function __construct()
-//    {
-//        $this->middleware(UserCanManageBlogPosts::class);
-//        $this->middleware(LoadLanguage::class);
-//        $this->middleware(PackageSetup::class);
-//
-//        if (!is_array(config("blog"))) {
-//            throw new \RuntimeException('The config/blog.php does not exist. Publish the vendor files for the Blog package by running the php artisan publish:vendor command');
-//        }
-//    }
+    public function __construct()
+    {
+        $this->middleware(UserCanManageBlogPosts::class);
+        $this->middleware(LoadLanguage::class);
+        $this->middleware(PackageSetup::class);
+
+        if (!is_array(config("blog"))) {
+            throw new \RuntimeException('The config/blog.php does not exist. Publish the vendor files for the Blog package by running the php artisan publish:vendor command');
+        }
+    }
 
     /**
      * View all posts
