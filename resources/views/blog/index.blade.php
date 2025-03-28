@@ -1,3 +1,6 @@
+@php
+    dd(get_class(auth()->user()));
+@endphp
 {{-- resources/views/vendor/blog/index.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
