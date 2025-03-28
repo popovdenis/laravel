@@ -31,7 +31,7 @@ class AddNewCommentRequest extends FormRequest
         ];
 
         // do we need author name?
-        if (\Auth::check() && config("blog.comments.save_user_id_if_logged_in", true)) {
+        if (auth()->user() && config("blog.comments.save_user_id_if_logged_in", true)) {
             // is logged in, so we don't need an author name (it won't get used)
             $return['author_name'][] = 'nullable';
         } else {

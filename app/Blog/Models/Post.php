@@ -58,10 +58,6 @@ class Post extends Model
     {
         parent::boot();
 
-        /* If user is logged in and \Auth::user()->canManageBlogPosts() == true, show any/all posts.
-           otherwise (which will be for most users) it should only show published posts that have a posted_at
-           time <= Carbon::now(). This sets it up: */
-
         static::deleting(function ($post)
         { // before delete() method call this
             $post->postTranslations()->delete();

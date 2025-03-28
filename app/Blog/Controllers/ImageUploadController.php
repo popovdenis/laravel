@@ -104,7 +104,7 @@ class ImageUploadController extends Controller
         UploadedPhoto::create([
             'image_title' => $request->get("image_title"),
             'source' => "ImageUpload",
-            'uploader_id' => optional(\Auth::user())->id,
+            'uploader_id' => auth()->user()->getAuthIdentifier(),
             'uploaded_images' => $uploaded_image_details,
         ]);
 

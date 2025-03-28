@@ -81,8 +81,8 @@ class CommentWriterController extends Controller
         if (config("blog.comments.ask_for_author_email")) {
             $new_comment->author_email = $request->get('author_email');
         }
-        if (config("blog.comments.save_user_id_if_logged_in", true) && Auth::check()) {
-            $new_comment->user_id = Auth::user()->id;
+        if (config("blog.comments.save_user_id_if_logged_in", true) && auth()->user()) {
+            $new_comment->user_id = auth()->user()->getAuthIdentifier();
         }
 
         $new_comment->approved = config("blog.comments.auto_approve_comments", true) ? true : false;

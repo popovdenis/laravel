@@ -120,9 +120,9 @@ class AdminController extends Controller
         $post_exists = $this->check_if_same_post_exists($request['slug'] , 1, $request['post_id']);
         if ($post_exists){
             Helpers::flash_message("Post already exists - try to change the slug for this language");
-        }else {
+        } else {
             $new_blog_post->is_published = $request['is_published'];
-            $new_blog_post->user_id = \Auth::user()->id;
+            $new_blog_post->user_id = auth()->user()->getAuthIdentifier();
             $new_blog_post->save();
 
             $translation->title = $request['title'];
@@ -180,7 +180,7 @@ class AdminController extends Controller
                 Helpers::flash_message("Post already exists - try to change the slug for this language");
             }else{
                 $new_blog_post->is_published = $request['is_published'];
-                $new_blog_post->user_id = \Auth::user()->id;
+                $new_blog_post->user_id = auth()->user()->getAuthIdentifier();
                 $new_blog_post->save();
 
                 $translation->title = $request['title'];
@@ -303,26 +303,26 @@ class AdminController extends Controller
      */
     public function update_post(UpdateBlogPostRequest $request, $blogPostId)
     {
-        $new_blog_post = Post::findOrFail($blogPostId);
+        $newBlogPost = Post::findOrFail($blogPostId);
         $translation = PostTranslation::where(
             [
-                ['post_id','=', $new_blog_post->id],
+                ['post_id','=', $newBlogPost->id],
                 ['lang_id', '=', 1]
             ]
         )->first();
 
         if (!$translation){
             $translation = new PostTranslation();
-            $new_blog_post->posted_at = Carbon::now();
+            $newBlogPost->posted_at = Carbon::now();
         }
 
         $post_exists = $this->check_if_same_post_exists($request['slug'] , 1, $blogPostId);
         if ($post_exists){
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         }else {
-            $new_blog_post->is_published = $request['is_published'];
-            $new_blog_post->user_id = \Auth::user()->id;
-            $new_blog_post->save();
+            $newBlogPost->is_published = $request['is_published'];
+            $newBlogPost->user_id = auth()->user()->getAuthIdentifier();
+            $newBlogPost->save();
 
             $translation->title = $request['title'];
             $translation->subtitle = $request['subtitle'];
@@ -334,14 +334,14 @@ class AdminController extends Controller
             $translation->use_view_file = $request['use_view_file'];
 
             $translation->lang_id = 1;
-            $translation->post_id = $new_blog_post->id;
+            $translation->post_id = $newBlogPost->id;
 
             $this->processUploadedImages($request, $translation);
             $translation->save();
 
-            $new_blog_post->categories()->sync($request->categories());
+            $newBlogPost->categories()->sync($request->categories());
             Helpers::flash_message("Post Updated");
-            event(new BlogPostAdded($new_blog_post));
+            event(new BlogPostAdded($newBlogPost));
         }
 
         return redirect( route('blog.admin.index') );
