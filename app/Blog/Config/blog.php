@@ -7,7 +7,7 @@ return [
     'reading_progress_bar' => true,
     'include_default_routes' => true,
     'blog_prefix' => "blog",
-    'admin_prefix' => "blog_admin", // similar to above, but used for the admin panel for the blog. Default: blog_admin
+//    'admin_prefix' => "blog_admin", // similar to above, but used for the admin panel for the blog. Default: blog_admin
     'use_custom_view_files' => false,
     'per_page' => 10, // how many posts to show per page on the blog index page. Default: 10
     'image_upload_enabled' => true, // true or false, if image uploading is allowed.

@@ -50,7 +50,7 @@ class BlogServiceProvider extends ServiceProvider
             __DIR__ . '/js/blog.js' => public_path('blog.js'),
             __DIR__ . '/Config/blog.php' => config_path('blog.php'),
             __DIR__ . '/views/blog' => resource_path('views/blog'),
-            __DIR__ . '/views/blog_admin' => resource_path('views/blog_admin'),
+//            __DIR__ . '/views/blog_admin' => resource_path('views/blog_admin'),
         ], 'blog-assets');
     }
 }
