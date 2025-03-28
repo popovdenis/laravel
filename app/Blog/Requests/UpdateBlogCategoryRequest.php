@@ -14,8 +14,6 @@ class UpdateBlogCategoryRequest extends BaseBlogCategoryRequest
      */
     public function rules()
     {
-        $return = $this->baseCategoryRules();
-        return $return;
-
+        return $this->baseCategoryRules();
     }
 }

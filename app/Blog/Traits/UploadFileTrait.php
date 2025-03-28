@@ -9,14 +9,14 @@ use App\Blog\Models\PostTranslation;
 trait UploadFileTrait
 {
     /** How many tries before we throw an Exception error */
-    static $num_of_attempts_to_find_filename = 100;
+    static int $attemptsFindFilename = 100;
 
     /**
      * If false, we check if the blog_images/ dir is writable, when uploading images
      *
      * @var bool
      */
-    protected $checked_blog_image_dir_is_writable = false;
+    protected bool $imageDirWritable = false;
 
     /**
      * Small method to increase memory limit.
@@ -36,28 +36,23 @@ trait UploadFileTrait
      *
      * Todo: support multiple filesystem locations.
      *
-     * @param string       $suggested_title
-     * @param              $image_size_details - either an array (with w/h attributes) or a string
+     * @param string       $suggestedTitle
+     * @param              $imageSizeDetails - either an array (with w/h attributes) or a string
      * @param UploadedFile $photo
      *
      * @return string
      * @throws \RuntimeException
      */
-    protected function getImageFilename(string $suggested_title, $image_size_details, UploadedFile $photo)
+    protected function getImageFilename(string $suggestedTitle, $imageSizeDetails, UploadedFile $photo)
     {
-        $base = $this->generate_base_filename($suggested_title);
-
+        $base = $this->generate_base_filename($suggestedTitle);
         // $wh will be something like "-1200x300"
-        $wh = $this->getWhForFilename($image_size_details);
+        $wh = $this->getWhForFilename($imageSizeDetails);
         $ext = '.' . $photo->getClientOriginalExtension();
 
-        for ($i = 1; $i <= self::$num_of_attempts_to_find_filename; $i++) {
-
-            // add suffix if $i>1
+        for ($i = 1; $i <= self::$attemptsFindFilename; $i++) {
             $suffix = $i > 1 ? '-' . str_random(5) : '';
-
             $attempt = str_slug($base . $suffix . $wh) . $ext;
-
             if (!File::exists($this->image_destination_path() . "/" . $attempt)) {
                 // filename doesn't exist, let's use it!
                 return $attempt;
@@ -80,30 +75,29 @@ trait UploadFileTrait
 
     /**
      * @param Post $new_blog_post
-     * @param      $suggested_title    - used to help generate the filename
-     * @param      $image_size_details - either an array (with 'w' and 'h') or a string (and it'll be uploaded at full
+     * @param      $suggestedTitle    - used to help generate the filename
+     * @param      $imageSizeDetails - either an array (with 'w' and 'h') or a string (and it'll be uploaded at full
      *                                 size, no size reduction, but will use this string to generate the filename)
      * @param      $photo
      *
      * @return array
      * @throws \Exception
      */
-    protected function UploadAndResize(PostTranslation $new_blog_post = null, $suggested_title, $image_size_details, $photo)
+    protected function UploadAndResize(PostTranslation $new_blog_post = null, $suggestedTitle, $imageSizeDetails, $photo)
     {
         // get the filename/filepath
-        $image_filename = $this->getImageFilename($suggested_title, $image_size_details, $photo);
+        $image_filename = $this->getImageFilename($suggestedTitle, $imageSizeDetails, $photo);
         $destinationPath = $this->image_destination_path();
 
         // make image
         $resizedImage = \Image::make($photo->getRealPath());
 
-
-        if (is_array($image_size_details)) {
+        if (is_array($imageSizeDetails)) {
             // resize to these dimensions:
-            $w = $image_size_details['w'];
-            $h = $image_size_details['h'];
+            $w = $imageSizeDetails['w'];
+            $h = $imageSizeDetails['h'];
 
-            if (isset($image_size_details['crop']) && $image_size_details['crop']) {
+            if (isset($imageSizeDetails['crop']) && $imageSizeDetails['crop']) {
                 $resizedImage = $resizedImage->fit($w, $h);
             } else {
                 $resizedImage = $resizedImage->resize($w, $h, function ($constraint)
@@ -111,7 +105,7 @@ trait UploadFileTrait
                     $constraint->aspectRatio();
                 });
             }
-        } elseif ($image_size_details === 'fullsize') {
+        } elseif ($imageSizeDetails === 'fullsize') {
             // nothing to do here - no resizing needed.
             // We just need to set $w/$h with the original w/h values
             $w = $resizedImage->width();
@@ -143,7 +137,7 @@ trait UploadFileTrait
      *
      * Example return value: -123x456
      *
-     * $image_size_details should either be an array with two items ([$width, $height]),
+     * $imageSizeDetails should either be an array with two items ([$width, $height]),
      * or a string.
      *
      * If an array is given:
@@ -152,17 +146,17 @@ trait UploadFileTrait
      * If a string is given:
      * getWhForFilename("some string") it will return -some-string". (max len: 30)
      *
-     * @param array|string $image_size_details
+     * @param array|string $imageSizeDetails
      *
      * @return string
      * @throws \RuntimeException
      */
-    protected function getWhForFilename($image_size_details)
+    protected function getWhForFilename($imageSizeDetails)
     {
-        if (is_array($image_size_details)) {
-            return '-' . $image_size_details['w'] . 'x' . $image_size_details['h'];
-        } elseif (is_string($image_size_details)) {
-            return "-" . str_slug(substr($image_size_details, 0, 30));
+        if (is_array($imageSizeDetails)) {
+            return '-' . $imageSizeDetails['w'] . 'x' . $imageSizeDetails['h'];
+        } elseif (is_string($imageSizeDetails)) {
+            return "-" . str_slug(substr($imageSizeDetails, 0, 30));
         }
 
         // was not a string or array, so error
@@ -179,22 +173,22 @@ trait UploadFileTrait
      */
     protected function check_image_destination_path_is_writable($path)
     {
-        if (!$this->checked_blog_image_dir_is_writable) {
+        if (!$this->imageDirWritable) {
             if (!is_writable($path)) {
                 throw new \RuntimeException("Image destination path is not writable ($path)");
             }
-            $this->checked_blog_image_dir_is_writable = true;
+            $this->imageDirWritable = true;
         }
     }
 
     /**
-     * @param string $suggested_title
+     * @param string $suggestedTitle
      *
      * @return string
      */
-    protected function generate_base_filename(string $suggested_title)
+    protected function generate_base_filename(string $suggestedTitle)
     {
-        $base = substr($suggested_title, 0, 100);
+        $base = substr($suggestedTitle, 0, 100);
         if (!$base) {
             // if we have an empty string then we should use a random one:
             $base = 'image-' . str_random(5);

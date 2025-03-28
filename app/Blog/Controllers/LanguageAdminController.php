@@ -24,9 +24,9 @@ class LanguageAdminController extends Controller
     }
 
     public function index(){
-        $language_list = Language::all();
+        $languageList = Language::all();
         return view("blog_admin::languages.index",[
-            'language_list' => $language_list
+            'language_list' => $languageList
         ]);
     }
 

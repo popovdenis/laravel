@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Blog\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,15 +24,17 @@ class CategoryTranslation extends Model
 
     /**
      * The associated Language
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function language()
     {
-        return $this->hasOne(Language::class,"lang_id");
+        return $this->hasOne(Language::class, "lang_id");
     }
 
     /**
      * Returns the public facing URL of showing blog posts in this category
+     *
      * @return string
      */
     public function url()
@@ -40,8 +43,8 @@ class CategoryTranslation extends Model
         $cat = $this->category()->get();
         $chain = $cat[0]->getAncestorsAndSelf();
 
-        foreach ($chain as $category){
-            $theChainString[] = $category->categoryTranslations()->where('lang_id' , 1)->first()->slug;
+        foreach ($chain as $category) {
+            $theChainString[] = $category->categoryTranslations()->where('lang_id', 1)->first()->slug;
         }
         $theChainString = implode('/', $theChainString);
 
@@ -50,6 +53,7 @@ class CategoryTranslation extends Model
 
     /**
      * Returns the URL for an admin user to edit this category
+     *
      * @return string
      */
     public function editUrl()

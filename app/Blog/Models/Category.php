@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Blog\Models;
 
 use App\Blog\Baum\Node;
@@ -13,10 +14,12 @@ class Category extends Node
         'category_name'
     ];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
-        static::deleting(function($category) { // before delete() method call this
+        static::deleting(function ($category)
+        { // before delete() method call this
             $category->categoryTranslations()->delete();
         });
     }
@@ -46,18 +49,20 @@ class Category extends Node
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class, 'post_categories','category_id', 'post_id');
+        return $this->belongsToMany(Post::class, 'post_categories', 'category_id', 'post_id');
     }
 
-    public function loadSiblings(){
+    public function loadSiblings()
+    {
         $this->siblings = $this->children()->get();
     }
 
-    public static function loadSiblingsWithList($node_list){
-        for($i = 0 ; sizeof($node_list) > $i ; $i++){
-            $node_list[$i]->loadSiblings();
-            if (sizeof($node_list[$i]->siblings) > 0){
-                self::loadSiblingsWithList($node_list[$i]->siblings);
+    public static function loadSiblingsWithList($nodeList)
+    {
+        for ($i = 0; sizeof($nodeList) > $i; $i++) {
+            $nodeList[$i]->loadSiblings();
+            if (sizeof($nodeList[$i]->siblings) > 0) {
+                self::loadSiblingsWithList($nodeList[$i]->siblings);
             }
         }
     }

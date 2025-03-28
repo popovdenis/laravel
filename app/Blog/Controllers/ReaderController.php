@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Blog\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -16,17 +17,18 @@ class ReaderController extends Controller
      * If category_slug is set, then only show from that category
      *
      * @param Request $request
-     * @param null $category_slug
+     * @param null    $categorySlug
+     *
      * @return \Illuminate\View\View
      */
-    public function index(Request $request, $category_slug = null)
+    public function index(Request $request, $categorySlug = null)
     {
         $title = 'Blog Page'; // default title...
 
         $categoryChain = null;
 
-        if ($category_slug) {
-            $categoryTranslation = CategoryTranslation::where('slug', $category_slug)
+        if ($categorySlug) {
+            $categoryTranslation = CategoryTranslation::where('slug', $categorySlug)
                 ->with('category')
                 ->firstOrFail();
 
@@ -34,9 +36,12 @@ class ReaderController extends Controller
 
             $categoryChain = $category->getAncestorsAndSelf();
             $posts = $category->posts()->where('post_categories.category_id', $category->id)
-                ->with(['postTranslations' => function($query) use ($request) {
-                    $query->where('lang_id', 1);
-                }])->get();
+                ->with([
+                    'postTranslations' => function ($query) use ($request)
+                    {
+                        $query->where('lang_id', 1);
+                    }
+                ])->get();
 
             $posts = PostTranslation::join('posts', 'post_translations.post_id', '=', 'posts.id')
                 ->where('lang_id', 1)
@@ -77,6 +82,7 @@ class ReaderController extends Controller
      * Show the search results for $_GET['s']
      *
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
@@ -88,7 +94,7 @@ class ReaderController extends Controller
 
         $query = $request->get('s');
         $search = new Search();
-        $search_results = $search->run($query);
+        $searchResults = $search->run($query);
 
         \View::share('title', 'Search results for ' . e($query));
 
@@ -100,28 +106,30 @@ class ReaderController extends Controller
             'locale' => $request->get('locale'),
             'categories' => $rootList,
             'query' => $query,
-            'search_results' => $search_results,
+            'search_results' => $searchResults,
             'routeWithoutLocale' => $request->get('routeWithoutLocale'),
         ]);
     }
 
     /**
-     * View all posts in $category_slug category
+     * View all posts in $categorySlug category
      *
      * @param Request $request
-     * @param $category_slug
+     * @param         $categorySlug
+     *
      * @return mixed
      */
-    public function view_category(Request $request, $category_slug)
+    public function view_category(Request $request, $categorySlug)
     {
-        return $this->index($request, $category_slug);
+        return $this->index($request, $categorySlug);
     }
 
     /**
      * View a single post and (if enabled) its comments
      *
      * @param Request $request
-     * @param $blogPostSlug
+     * @param         $blogPostSlug
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function viewSinglePost(Request $request, $blogPostSlug)
@@ -130,9 +138,12 @@ class ReaderController extends Controller
 //            ->where('lang_id', $request->get('lang_id'))
             ->firstOrFail();
 
-        $categories = $posts->post->categories()->with(['categoryTranslations' => function ($query) use ($request) {
+        $categories = $posts->post->categories()->with([
+            'categoryTranslations' => function ($query) use ($request)
+            {
 //            $query->where('lang_id', '=', $request->get('lang_id'));
-        }])->get();
+            }
+        ])->get();
 
         return view('blog.single_post', [
             'post' => $posts,

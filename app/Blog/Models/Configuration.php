@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Blog\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,17 +16,18 @@ class Configuration extends Model
         'value'
     ];
 
-    public static function get($key){
+    public static function get($key)
+    {
         $obj = Configuration::where('key', $key)->first();
-        if ($obj){
+        if ($obj) {
             return $obj->value;
-        }
-        else{
+        } else {
             return null;
         }
     }
 
-    public static function set($key, $value){
+    public static function set($key, $value)
+    {
         $config = new Configuration();
         $config->key = $key;
         $config->value = $value;

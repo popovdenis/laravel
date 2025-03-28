@@ -13,6 +13,7 @@ use App\Blog\Models\Comment;
 
 /**
  * Class CommentsAdminController
+ *
  * @package App\Blog\Controllers
  */
 class CommentsAdminController extends Controller
@@ -23,7 +24,6 @@ class CommentsAdminController extends Controller
     public function __construct()
     {
         $this->middleware(UserCanManageBlogPosts::class);
-        $this->middleware(LoadLanguage::class);
 
     }
 
@@ -31,21 +31,20 @@ class CommentsAdminController extends Controller
      * Show all comments (and show buttons with approve/delete)
      *
      * @param Request $request
+     *
      * @return mixed
      */
     public function index(Request $request)
     {
-        $comments = Comment::withoutGlobalScopes()->orderBy("created_at", "desc")
-            ->with("post");
+        $comments = Comment::withoutGlobalScopes()->orderBy("created_at", "desc")->with("post");
 
         if ($request->get("waiting_for_approval")) {
             $comments->where("approved", false);
         }
 
         $comments = $comments->paginate(100);
-        return view("blog_admin::comments.index")
-            ->withComments($comments
-            );
+
+        return view("blog_admin::comments.index")->withComments($comments);
     }
 
 
@@ -53,6 +52,7 @@ class CommentsAdminController extends Controller
      * Approve a comment
      *
      * @param $blogCommentId
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function approve($blogCommentId)
@@ -72,6 +72,7 @@ class CommentsAdminController extends Controller
      * Delete a submitted comment
      *
      * @param $blogCommentId
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($blogCommentId)

@@ -14,7 +14,6 @@ class Language extends Model
         'active'
     ];
 
-
     /**
      * The associated post (if post_id) is set
      *

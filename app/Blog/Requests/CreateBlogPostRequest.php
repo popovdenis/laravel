@@ -17,8 +17,7 @@ class CreateBlogPostRequest extends BaseBlogPostRequest
      */
     public function rules()
     {
-        $return = $this->baseBlogPostRules();
-        return $return;
+        return $this->baseBlogPostRules();
     }
 
 }

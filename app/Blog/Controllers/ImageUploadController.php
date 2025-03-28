@@ -85,29 +85,27 @@ class ImageUploadController extends Controller
         $this->increaseMemoryLimit();
         $photo = $request->file('upload');
 
-        $uploaded_image_details = [];
+        $uploadedImageDetails = [];
         $sizes_to_upload = $request->get("sizes_to_upload");
 
         if (isset($sizes_to_upload['blog_full_size']) && $sizes_to_upload['blog_full_size'] === 'true') {
-            $uploaded_image_details['blog_full_size'] = $this->UploadAndResize(null, $request->get("image_title"), 'fullsize', $photo);
+            $uploadedImageDetails['blog_full_size'] = $this->UploadAndResize(null, $request->get("image_title"), 'fullsize', $photo);
         }
 
-        foreach ((array) config('blog.image_sizes') as $size => $image_size_details) {
-            if (!isset($sizes_to_upload[$size]) || !$sizes_to_upload[$size] || !$image_size_details['enabled']) {
+        foreach ((array) config('blog.image_sizes') as $size => $imageSizeDetails) {
+            if (!isset($sizes_to_upload[$size]) || !$sizes_to_upload[$size] || !$imageSizeDetails['enabled']) {
                 continue;
             }
-            // this image size is enabled, and
-            // we have an uploaded image that we can use
-            $uploaded_image_details[$size] = $this->UploadAndResize(null, $request->get("image_title"), $image_size_details, $photo);
+            $uploadedImageDetails[$size] = $this->UploadAndResize(null, $request->get("image_title"), $imageSizeDetails, $photo);
         }
 
         UploadedPhoto::create([
             'image_title' => $request->get("image_title"),
             'source' => "ImageUpload",
             'uploader_id' => auth()->user()->getAuthIdentifier(),
-            'uploaded_images' => $uploaded_image_details,
+            'uploaded_images' => $uploadedImageDetails,
         ]);
 
-        return $uploaded_image_details;
+        return $uploadedImageDetails;
     }
 }

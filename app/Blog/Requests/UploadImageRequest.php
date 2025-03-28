@@ -18,7 +18,7 @@ class UploadImageRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'sizes_to_upload' => [
                 'required',
                 'array',
@@ -38,7 +38,5 @@ class UploadImageRequest extends BaseRequest
                 'max:150',
             ],
         ];
-
-        return $rules;
     }
 }

@@ -39,17 +39,6 @@ class AddNewCommentRequest extends FormRequest
             $return['author_name'][] = 'required';
         }
 
-        // is captcha enabled? If so, get the rules from its class.
-//        if (config("blog.captcha.captcha_enabled")) {
-//            /** @var string $captcha_class */
-//            $captcha_class = config("blog.captcha.captcha_type");
-//
-//            /** @var \App\Blog\Interfaces\CaptchaInterface $captcha */
-//            $captcha = new $captcha_class;
-//
-//            $return[$captcha->captcha_field_name()] = $captcha->rules();
-//        }
-
         // in case you need to implement something custom, you can use this...
         if (config("blog.comments.rules") && is_callable(config("blog.comments.rules"))) {
             /** @var callable $func */

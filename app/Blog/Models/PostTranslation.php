@@ -53,7 +53,8 @@ class PostTranslation extends Model implements SearchResultInterface
      *
      * @return array
      */
-    public function sluggable(): array
+    public function sluggable()
+    : array
     {
         return [
             'slug' => [
@@ -87,13 +88,14 @@ class PostTranslation extends Model implements SearchResultInterface
         return "custom_blog_posts." . $this->use_view_file;
     }
 
-    public function getImage(string $size = null): string
+    public function getImage(string $size = null)
+    : string
     {
         $original = $this->image_large;
 
         $config = config("blog.image_sizes");
 
-        if (empty($config) || ! isset($config[$size])) {
+        if (empty($config) || !isset($config[$size])) {
             return $original;
         }
 
