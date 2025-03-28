@@ -382,7 +382,7 @@ class AdminController extends Controller
 
         Helpers::flash_message("Photo removed");
 
-        return redirect($post->edit_url());
+        return redirect($post->editUrl());
     }
 
     /**

@@ -189,7 +189,8 @@ class CategoryAdminController extends Controller
 
         Helpers::flash_message("Saved category changes");
         event(new CategoryEdited($category));
-        return redirect($translation->edit_url());
+
+        return redirect($translation->editUrl());
     }
 
     /**

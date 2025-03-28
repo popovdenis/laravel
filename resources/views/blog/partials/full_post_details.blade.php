@@ -3,14 +3,12 @@
     <h2 class="text-xl text-gray-600 mb-4">{{ $post->subtitle }}</h2>
 @endif
 
-@if($post->getImage('medium'))
-    <div class="my-6 text-center">
-        {!! $post->image_tag('medium', false, 'mx-auto rounded') !!}
-    </div>
-@endif
+<div class="text-center p-4">
+    <img src="{{ $post->getImage('medium') }}" alt="{{ $post->title }}" class="mx-auto rounded">
+</div>
 
 <div class="prose max-w-none">
-    {!! $post->post_body_output() !!}
+    {!! $post->postBodyOutput() !!}
 </div>
 
 <hr class="my-8">

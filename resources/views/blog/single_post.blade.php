@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        {{ $post->gen_seo_title() }}
+        {{ $post->genSeoTitle() }}
     </x-slot>
 
     @push('head')

@@ -52,7 +52,7 @@ class CategoryTranslation extends Model
      * Returns the URL for an admin user to edit this category
      * @return string
      */
-    public function edit_url()
+    public function editUrl()
     {
         return route("blog.admin.categories.edit_category", $this->category_id);
     }

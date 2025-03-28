@@ -16,9 +16,9 @@
 
             <div class="text-gray-700 text-sm flex-grow">
                 @if (config('blog.show_full_text_at_list'))
-                    <p>{!! $post->post_body_output() !!}</p>
+                    <p>{!! $post->postBodyOutput() !!}</p>
                 @else
-                    <p>{!! mb_strimwidth($post->post_body_output(), 0, 400, '...') !!}</p>
+                    <p>{!! mb_strimwidth($post->postBodyOutput(), 0, 400, '...') !!}</p>
                 @endif
             </div>
 
