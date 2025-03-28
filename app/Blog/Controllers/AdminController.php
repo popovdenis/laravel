@@ -53,8 +53,7 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
-        $posts = PostTranslation::orderBy("post_id", "desc")->where('lang_id', 1)
-            ->paginate(10);
+        $posts = PostTranslation::orderBy("post_id", "desc")->paginate(10);
 
         return view("blog_admin.index", [
             'post_translations'=>$posts,
@@ -68,18 +67,18 @@ class AdminController extends Controller
      */
     public function create_post(Request $request)
     {
-        $language_id = $request->get('language_id');
-        $language_list = Language::where('active',true)->get();
-        $ts = CategoryTranslation::where("lang_id",$language_id)->limit(1000)->get();
+        $languageId = $request->get('language_id');
+        $languageList = Language::where('active', true)->get();
+        $ts = CategoryTranslation::where("lang_id", $languageId)->limit(1000)->get();
 
-        $new_post = new Post();
-        $new_post->is_published = true;
+        $newPost = new Post();
+        $newPost->is_published = true;
 
         return view("blog_admin::posts.add_post", [
             'cat_ts' => $ts,
-            'language_list' => $language_list,
-            'selected_lang' => $language_id,
-            'post' => $new_post,
+            'language_list' => $languageList,
+            'selected_lang' => $languageId,
+            'post' => $newPost,
             'post_translation' => new \App\Blog\Models\PostTranslation(),
             'post_id' => -1
         ]);
@@ -94,7 +93,6 @@ class AdminController extends Controller
      */
     public function store_post(CreateBlogPostRequest $request)
     {
-        $new_blog_post = null;
         $translation = PostTranslation::where(
             [
                 ['post_id','=',$request['post_id']],
@@ -107,23 +105,21 @@ class AdminController extends Controller
         }
 
         if ($request['post_id'] == -1 || $request['post_id'] == null){
-            //cretes new post
-            $new_blog_post = new Post();
+            $newBlogPost = new Post();
             $translation = new PostTranslation();
 
-            $new_blog_post->posted_at = Carbon::now();
+            $newBlogPost->posted_at = Carbon::now();
         }else{
-            //edits post
-            $new_blog_post = Post::findOrFail($request['post_id']);
+            $newBlogPost = Post::findOrFail($request['post_id']);
         }
 
-        $post_exists = $this->check_if_same_post_exists($request['slug'] , 1, $request['post_id']);
-        if ($post_exists){
+        $postExists = $this->checkSamePostExists($request['slug'] , 1, $request['post_id']);
+        if ($postExists){
             Helpers::flash_message("Post already exists - try to change the slug for this language");
         } else {
-            $new_blog_post->is_published = $request['is_published'];
-            $new_blog_post->user_id = auth()->user()->getAuthIdentifier();
-            $new_blog_post->save();
+            $newBlogPost->is_published = $request['is_published'];
+            $newBlogPost->user_id = auth()->user()->getAuthIdentifier();
+            $newBlogPost->save();
 
             $translation->title = $request['title'];
             $translation->subtitle = $request['subtitle'];
@@ -135,14 +131,14 @@ class AdminController extends Controller
             $translation->use_view_file = $request['use_view_file'];
 
             $translation->lang_id = 1;
-            $translation->post_id = $new_blog_post->id;
+            $translation->post_id = $newBlogPost->id;
 
             $this->processUploadedImages($request, $translation);
             $translation->save();
 
-            $new_blog_post->categories()->sync($request->categories());
+            $newBlogPost->categories()->sync($request->categories());
             Helpers::flash_message("Added post");
-            event(new BlogPostAdded($new_blog_post));
+            event(new BlogPostAdded($newBlogPost));
         }
 
         return redirect( route('blog.admin.index') );
@@ -152,36 +148,31 @@ class AdminController extends Controller
      *  This method is called whenever a language is selected
      */
     public function store_post_toggle(CreatePostToggleRequest $request){
-        $new_blog_post = null;
-        $translation = PostTranslation::where(
-            [
-                ['post_id','=',$request['post_id']],
-                ['lang_id', '=', 1]
-            ]
-        )->first();
+        $translation = PostTranslation::where([
+            ['post_id','=',$request['post_id']],
+            ['lang_id', '=', 1]
+        ])->first();
 
         if (!$translation){
             $translation = new PostTranslation();
         }
 
         if ($request['post_id'] == -1 || $request['post_id'] == null){
-            //cretes new post
-            $new_blog_post = new Post();
-            $new_blog_post->is_published = true;
-            $new_blog_post->posted_at = Carbon::now();
+            $newBlogPost = new Post();
+            $newBlogPost->is_published = true;
+            $newBlogPost->posted_at = Carbon::now();
         }else{
-            //edits post
-            $new_blog_post = Post::findOrFail($request['post_id']);
+            $newBlogPost = Post::findOrFail($request['post_id']);
         }
 
         if ($request['slug']){
-            $post_exists = $this->check_if_same_post_exists($request['slug'] , 1, $new_blog_post->id);
-            if ($post_exists){
+            $postExists = $this->checkSamePostExists($request['slug'] , 1, $newBlogPost->id);
+            if ($postExists){
                 Helpers::flash_message("Post already exists - try to change the slug for this language");
             }else{
-                $new_blog_post->is_published = $request['is_published'];
-                $new_blog_post->user_id = auth()->user()->getAuthIdentifier();
-                $new_blog_post->save();
+                $newBlogPost->is_published = $request['is_published'];
+                $newBlogPost->user_id = auth()->user()->getAuthIdentifier();
+                $newBlogPost->save();
 
                 $translation->title = $request['title'];
                 $translation->subtitle = $request['subtitle'];
@@ -193,40 +184,38 @@ class AdminController extends Controller
                 $translation->use_view_file = $request['use_view_file'];
 
                 $translation->lang_id = 1;
-                $translation->post_id = $new_blog_post->id;
+                $translation->post_id = $newBlogPost->id;
 
                 $this->processUploadedImages($request, $translation);
                 $translation->save();
 
-                $new_blog_post->categories()->sync($request->categories());
+                $newBlogPost->categories()->sync($request->categories());
 
-                event(new BlogPostAdded($new_blog_post));
+                event(new BlogPostAdded($newBlogPost));
             }
         }
 
         //todo: generate event
 
-        $language_id = $request->get('language_id');
-        $language_list = Language::where('active',true)->get();
-        $ts = CategoryTranslation::where("lang_id",$language_id)->limit(1000)->get();
+        $languageId = $request->get('language_id');
+        $languageList = Language::where('active', true)->get();
+        $ts = CategoryTranslation::where("lang_id", $languageId)->limit(1000)->get();
 
-        $translation = PostTranslation::where(
-            [
-                ['post_id','=',$request['post_id']],
-                ['lang_id', '=', $request['selected_lang']]
-            ]
-        )->first();
+        $translation = PostTranslation::where([
+            ['post_id','=',$request['post_id']],
+            ['lang_id', '=', $request['selected_lang']]
+        ])->first();
         if (!$translation){
             $translation = new PostTranslation();
         }
 
         return view("blog_admin::posts.add_post", [
             'cat_ts' => $ts,
-            'language_list' => $language_list,
+            'language_list' => $languageList,
             'selected_lang' => $request['selected_lang'],
             'post_translation' => $translation,
-            'post' => $new_blog_post,
-            'post_id' => $new_blog_post->id
+            'post' => $newBlogPost,
+            'post_id' => $newBlogPost->id
         ]);
     }
 
@@ -238,26 +227,23 @@ class AdminController extends Controller
      */
     public function edit_post( $blogPostId , Request $request)
     {
-        $language_id = $request->get('language_id');
-
-        $post_translation = PostTranslation::where(
-            [
-                ['lang_id', '=', $language_id],
-                ['post_id', '=', $blogPostId]
-            ]
-        )->first();
+        $languageId = $request->get('language_id');
+        $postTranslation = PostTranslation::where([
+            ['lang_id', '=', $languageId],
+            ['post_id', '=', $blogPostId]
+        ])->first();
 
         $post = Post::findOrFail($blogPostId);
-        $language_list = Language::where('active',true)->get();
-        $ts = CategoryTranslation::where("lang_id",$language_id)->limit(1000)->get();
+        $languageList = Language::where('active', true)->get();
+        $ts = CategoryTranslation::where("lang_id", $languageId)->limit(1000)->get();
 
         return view("blog_admin::posts.edit_post", [
             'cat_ts' => $ts,
-            'language_list' => $language_list,
-            'selected_lang' => $language_id,
-            'selected_locale' => Language::where('id', $language_id)->first()->locale,
+            'language_list' => $languageList,
+            'selected_lang' => $languageId,
+            'selected_locale' => Language::where('id', $languageId)->first()->locale,
             'post' => $post,
-            'post_translation' => $post_translation
+            'post_translation' => $postTranslation
         ]);
     }
 
@@ -269,27 +255,25 @@ class AdminController extends Controller
      */
     public function edit_post_toggle( $blogPostId , Request $request)
     {
-        $post_translation = PostTranslation::where(
-            [
-                ['lang_id', '=', $request['selected_lang']],
-                ['post_id', '=', $blogPostId]
-            ]
-        )->first();
-        if (!$post_translation){
-            $post_translation = new PostTranslation();
+        $postTranslation = PostTranslation::where([
+            ['lang_id', '=', $request['selected_lang']],
+            ['post_id', '=', $blogPostId]
+        ])->first();
+        if (!$postTranslation){
+            $postTranslation = new PostTranslation();
         }
 
         $post = Post::findOrFail($blogPostId);
-        $language_list = Language::where('active',true)->get();
+        $languageList = Language::where('active',true)->get();
         $ts = CategoryTranslation::where("lang_id", $request['selected_lang'])->limit(1000)->get();
 
         return view("blog_admin::posts.edit_post", [
             'cat_ts' => $ts,
-            'language_list' => $language_list,
+            'language_list' => $languageList,
             'selected_lang' => $request['selected_lang'],
             'selected_locale' => Language::where('id', $request['selected_lang'])->first()->locale,
             'post' => $post,
-            'post_translation' => $post_translation
+            'post_translation' => $postTranslation
         ]);
     }
 
@@ -304,22 +288,20 @@ class AdminController extends Controller
     public function update_post(UpdateBlogPostRequest $request, $blogPostId)
     {
         $newBlogPost = Post::findOrFail($blogPostId);
-        $translation = PostTranslation::where(
-            [
-                ['post_id','=', $newBlogPost->id],
-                ['lang_id', '=', 1]
-            ]
-        )->first();
+        $translation = PostTranslation::where([
+            ['post_id','=', $newBlogPost->id],
+            ['lang_id', '=', 1]
+        ])->first();
 
         if (!$translation){
             $translation = new PostTranslation();
             $newBlogPost->posted_at = Carbon::now();
         }
 
-        $post_exists = $this->check_if_same_post_exists($request['slug'] , 1, $blogPostId);
-        if ($post_exists){
+        $postExists = $this->checkSamePostExists($request['slug'] , 1, $blogPostId);
+        if ($postExists){
             Helpers::flash_message("Post already exists - try to change the slug for this language");
-        }else {
+        } else {
             $newBlogPost->is_published = $request['is_published'];
             $newBlogPost->user_id = auth()->user()->getAuthIdentifier();
             $newBlogPost->save();
@@ -395,13 +377,8 @@ class AdminController extends Controller
     public function destroy_post(DeleteBlogPostRequest $request, $blogPostId)
     {
         $post = Post::findOrFail($blogPostId);
-        //archive deleted post
-
         $post->delete();
         event(new BlogPostWillBeDeleted($post));
-
-        // todo - delete the featured images?
-        // At the moment it just issues a warning saying the images are still on the server.
 
         Helpers::flash_message("Post successfully deleted!");
 
@@ -412,60 +389,46 @@ class AdminController extends Controller
      * Process any uploaded images (for featured image)
      *
      * @param BaseRequestInterface $request
-     * @param $new_blog_post
+     * @param $newBlogPost
      * @throws \Exception
      * @todo - next full release, tidy this up!
      */
-    protected function processUploadedImages(BaseRequestInterface $request, PostTranslation $new_blog_post)
+    protected function processUploadedImages(BaseRequestInterface $request, PostTranslation $newBlogPost)
     {
         if (!config("blog.image_upload_enabled")) {
-            // image upload was disabled
             return;
         }
 
         $this->increaseMemoryLimit();
 
         // to save in db later
-        $uploaded_image_details = [];
-
-
-        foreach ((array)config('blog.image_sizes') as $size => $image_size_details) {
-
-            if ($image_size_details['enabled'] && $photo = $request->get_image_file($size)) {
-                // this image size is enabled, and
-                // we have an uploaded image that we can use
-
-                $uploaded_image = $this->UploadAndResize($new_blog_post, $new_blog_post->slug, $image_size_details, $photo);
-
-                $new_blog_post->$size = $uploaded_image['filename'];
-                $uploaded_image_details[$size] = $uploaded_image;
+        $uploadedImageDetails = [];
+        foreach ((array)config('blog.image_sizes') as $size => $imageSizeDetails) {
+            if ($imageSizeDetails['enabled'] && $photo = $request->get_image_file($size)) {
+                $uploadedImage = $this->UploadAndResize($newBlogPost, $newBlogPost->slug, $imageSizeDetails, $photo);
+                $newBlogPost->$size = $uploadedImage['filename'];
+                $uploadedImageDetails[$size] = $uploadedImage;
             }
         }
 
         // store the image upload.
         // todo: link this to the blog_post row.
-        if (count(array_filter($uploaded_image_details))>0) {
+        if (count(array_filter($uploadedImageDetails))>0) {
             UploadedPhoto::create([
                 'source' => "BlogFeaturedImage",
-                'uploaded_images' => $uploaded_image_details,
+                'uploaded_images' => $uploadedImageDetails,
             ]);
         }
     }
 
-    //translations for the same psots are ignored
-    protected function check_if_same_post_exists($slug, $lang_id, $post_id){
-        $slg = PostTranslation::where(
-            [
-                ['slug','=', $slug],
-                ['lang_id', '=', $lang_id],
-                ['post_id', '<>', $post_id]
-            ]
-        )->first();
-        if ($slg){
-            return true;
-        }else{
-            return false;
-        }
+    protected function checkSamePostExists($slug, $langId, $postId){
+        $slg = PostTranslation::where([
+            ['slug','=', $slug],
+            ['lang_id', '=', $langId],
+            ['post_id', '<>', $postId]
+        ])->first();
+
+        return (bool) $slg;
     }
 
     /**
@@ -482,19 +445,19 @@ class AdminController extends Controller
         }
         $query = $request->get("s");
         $search = new Search();
-        $search_results = $search->run($query);
+        $searchResults = $search->run($query);
 
         \View::share("title", "Search results for " . e($query));
 
         $rootList = Category::roots()->get();
         Category::loadSiblingsWithList($rootList);
 
-        $language_id = $request->get('language_id');
+        $languageId = $request->get('language_id');
 
         return view("blog_admin.index", [
             'search' => true,
-            'post_translations'=>$search_results,
-            'language_id' => $language_id
+            'post_translations'=> $searchResults,
+            'language_id' => $languageId
         ]);
     }
 }
