@@ -7,7 +7,6 @@ class UserCanManageBlogPosts
 {
     public function handle($request, Closure $next)
     {
-        dd('method called');
         if (!auth()->check()) {
             abort(403, 'You are not logged in');
         }
