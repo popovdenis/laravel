@@ -24,7 +24,7 @@ class BlogServiceProvider extends ServiceProvider
         ]);
 
         $this->loadViewsFrom(base_path('resources/views/blog'), 'blog');
-        $this->loadViewsFrom(base_path('resources/views/blog_admin'), 'blog_admin');
+//        $this->loadViewsFrom(base_path('resources/views/blog_admin'), 'blog_admin');
 
         $this->mergeConfigFrom(__DIR__ . '/Config/blog.php', 'blog');
     }
