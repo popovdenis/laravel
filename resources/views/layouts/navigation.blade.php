@@ -11,9 +11,16 @@
                 </div>
 
                 <!-- Navigation Links -->
+                <!-- Dashboard -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
+                <!-- Blog -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('blog')" :active="request()->routeIs('blog')">
+                        {{ __('Blog') }}
                     </x-nav-link>
                 </div>
             </div>

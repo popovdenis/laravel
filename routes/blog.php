@@ -11,7 +11,7 @@ use App\Blog\Controllers\LanguageAdminController;
 
 Route::middleware(['web'])->group(function () {
     Route::prefix('blog')->group(function () {
-        Route::get('/', [ReaderController::class, 'index'])->name('blog.index');
+        Route::get('/', [ReaderController::class, 'index'])->name('blog');
         Route::get('/search', [ReaderController::class, 'search'])->name('blog.search');
 
         Route::get('/category/{subcategories}', [ReaderController::class, 'view_category'])
@@ -71,4 +71,3 @@ Route::middleware(['web'])->group(function () {
         });
     });
 });
-

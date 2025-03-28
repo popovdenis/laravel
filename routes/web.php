@@ -7,8 +7,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-require base_path('app/Blog/routes.php');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -20,3 +18,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/blog.php';
