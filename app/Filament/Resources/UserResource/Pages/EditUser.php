@@ -14,7 +14,7 @@ class EditUser extends EditRecord
     {
         return [
             Actions\Action::make('back')
-                ->label('Назад')
+                ->label('Back')
                 ->url($this->getResource()::getUrl('index')),
         ];
     }

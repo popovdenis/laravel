@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseResource extends Resource
 {
@@ -24,7 +25,6 @@ class CourseResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $options = \App\Models\User::all()->filter(fn ($user) => $user->hasRole('Teacher'))->pluck('name', 'id')->toArray();
         return $form->schema([
             TextInput::make('title')
                 ->required()
@@ -59,9 +59,12 @@ class CourseResource extends Resource
                         ->pluck('name', 'id')
                         ->toArray()
                 )
-                ->default(fn ($record) => $record?->teachers->pluck('id')->toArray())
-                ->afterStateHydrated(function ($state, $component) {
-                    $component->state($state ?? []);
+                ->afterStateHydrated(function ($component) {
+                    if (blank($component->getState()) && $component->getRecord()) {
+                        $component->state(
+                            $component->getRecord()->teachers->pluck('id')->toArray()
+                        );
+                    }
                 })
                 ->dehydrateStateUsing(fn ($state) => $state ?? [])
                 ->saveRelationshipsUsing(function (\App\Models\Course $record, $state) {
@@ -97,5 +100,10 @@ class CourseResource extends Resource
             'create' => Pages\CreateCourse::route('/create'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('teachers');
     }
 }
