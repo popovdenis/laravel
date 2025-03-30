@@ -19,4 +19,9 @@ class Course extends Model
         'duration',
         'price',
     ];
+
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class, 'course_teacher');
+    }
 }

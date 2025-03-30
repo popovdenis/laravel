@@ -13,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Forms\Components\Select;
 
 class CourseResource extends Resource
 {
@@ -23,6 +24,7 @@ class CourseResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $options = \App\Models\User::all()->filter(fn ($user) => $user->hasRole('Teacher'))->pluck('name', 'id')->toArray();
         return $form->schema([
             TextInput::make('title')
                 ->required()
@@ -46,6 +48,26 @@ class CourseResource extends Resource
             TextInput::make('price')->numeric()->prefix('$'),
             Toggle::make('is_active')->label('Active'),
             TextInput::make('sort_order')->numeric(),
+            Select::make('teachers')
+                ->label('Teachers')
+                ->multiple()
+                ->searchable()
+                ->preload()
+                ->options(
+                    \App\Models\User::all()
+                        ->filter(fn ($user) => $user->hasRole('Teacher'))
+                        ->pluck('name', 'id')
+                        ->toArray()
+                )
+                ->default(fn ($record) => $record?->teachers->pluck('id')->toArray())
+                ->afterStateHydrated(function ($state, $component) {
+                    $component->state($state ?? []);
+                })
+                ->dehydrateStateUsing(fn ($state) => $state ?? [])
+                ->saveRelationshipsUsing(function (\App\Models\Course $record, $state) {
+                    $record->teachers()->sync($state ?? []);
+                })
+                ->columnSpanFull()
         ]);
     }
 
