@@ -24,9 +24,9 @@ use Filament\Forms\Components\FileUpload;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Blog';
     protected static ?string $navigationLabel = 'Posts';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {

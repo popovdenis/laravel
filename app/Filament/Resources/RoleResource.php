@@ -22,7 +22,10 @@ class RoleResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->required()
-                    ->unique(Role::class, 'name')
+                    ->unique(Role::class, 'name'),
+                TextInput::make('guard_name')
+                    ->default('admin')
+                    ->required()
             ]);
     }
 
