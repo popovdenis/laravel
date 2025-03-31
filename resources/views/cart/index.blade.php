@@ -29,9 +29,12 @@
                 </ul>
 
                 <div class="mt-6 text-right">
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                        Proceed to Checkout
-                    </a>
+                    <form method="POST" action="{{ route('orders.store') }}">
+                        @csrf
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Place Order
+                        </button>
+                    </form>
                 </div>
             @endif
         </div>
