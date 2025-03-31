@@ -15,45 +15,53 @@
         </div>
     </x-slot>
 
-    <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white shadow sm:rounded-lg p-6 space-y-6">
-            <div>
-                <p><span class="font-semibold">Status:</span> {{ ucfirst($order->status) }}</p>
-                <p><span class="font-semibold">Date:</span> {{ $order->created_at->format('M d, Y H:i') }}</p>
-            </div>
+    <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            @include('profile.partials.sidebar')
 
-            <div>
-                <h3 class="text-lg font-medium mb-2">Items:</h3>
-                <ul class="divide-y divide-gray-200">
-                    @foreach ($order->items as $item)
-                        <li class="py-3">
-                            <div class="font-medium">{{ $item->itemable->title ?? 'Course' }}</div>
-                            <div class="text-sm text-gray-500">Quantity: {{ $item->quantity }}</div>
-                            <div class="text-sm text-gray-500">Price: {{ $item->itemable->getFormattedPrice() }}</div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+            <!-- Main Content -->
+            <div class="md:col-span-3 space-y-6">
+                <div class="bg-white shadow sm:rounded-lg p-6 space-y-6">
+                    <div>
+                        <p><span class="font-semibold">Status:</span> {{ ucfirst($order->status) }}</p>
+                        <p><span class="font-semibold">Date:</span> {{ $order->created_at->format('M d, Y H:i') }}</p>
+                    </div>
 
-            @php
-                $total = $order->items->sum(fn($i) => ($i->itemable->price ?? 0) * $i->quantity);
-            @endphp
+                    <div>
+                        <h3 class="text-lg font-medium mb-2">Items:</h3>
+                        <ul class="divide-y divide-gray-200">
+                            @foreach ($order->items as $item)
+                                <li class="py-3">
+                                    <div class="font-medium">{{ $item->itemable->title ?? 'Course' }}</div>
+                                    <div class="text-sm text-gray-500">Quantity: {{ $item->quantity }}</div>
+                                    <div class="text-sm text-gray-500">Price: {{ $item->itemable->getFormattedPrice() }}</div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
 
-            <div class="flex justify-between items-center">
-                <div class="text-lg font-semibold">
-                    Total: ${{ number_format($total, 2) }}
-                </div>
+                    @php
+                        $total = $order->items->sum(fn($i) => ($i->itemable->price ?? 0) * $i->quantity);
+                    @endphp
 
-                <div class="space-x-3">
-                    <a href="#" class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200 text-sm">
-                        Download Invoice
-                    </a>
+                    <div class="flex justify-between items-center">
+                        <div class="text-lg font-semibold">
+                            Total: ${{ number_format($total, 2) }}
+                        </div>
 
-                    @if ($order->status === 'pending')
-                        <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                            Pay Now
-                        </a>
-                    @endif
+                        <div class="space-x-3">
+                            <a href="#" class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200 text-sm">
+                                Download Invoice
+                            </a>
+
+                            @if ($order->status === 'pending')
+                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                                    Pay Now
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
