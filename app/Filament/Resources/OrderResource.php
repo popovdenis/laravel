@@ -73,7 +73,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\OrderResource\RelationManagers\OrderItemsRelationManager::class,
         ];
     }
 
@@ -83,6 +83,7 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'view' => Pages\ViewOrder::route('/{record}'),
         ];
     }
 }
