@@ -10,7 +10,7 @@
             <ul class="space-y-4">
                 @foreach ($courses as $course)
                     <li>
-                        <a href="{{ route('courses.show', $course->slug) }}"
+                        <a href="{{ route('courses.show', $course) }}"
                            class="block p-4 border rounded hover:bg-gray-50">
                             <div class="text-lg font-bold">{{ $course->title }}</div>
                             <div class="text-sm text-gray-600">

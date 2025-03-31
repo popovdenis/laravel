@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "binafy/laravel-cart": "^1.2",
         "filament/filament": "^3.3",
         "intervention/image": "^3.11",
         "laravel/framework": "^12.0",
