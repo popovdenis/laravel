@@ -14,9 +14,19 @@ Route::post('/cart/add/{course:slug}', function (Request $request, Course $cours
         return redirect()->route('login');
     }
     $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
-    $cart->storeItem($course);
 
-    return back()->with('success', 'The course has been added to the cart');
+    $existing = $cart->items()
+        ->where('itemable_id', $course->id)
+        ->where('itemable_type', get_class($course))
+        ->first();
+
+    if ($existing) {
+        $existing->increment('quantity');
+    } else {
+        $cart->storeItem($course);
+    }
+
+    return back()->with('success', 'Course added to cart');
 })->name('cart.add');
 
 
