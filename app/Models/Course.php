@@ -35,4 +35,9 @@ class Course extends Model implements Cartable
     {
         return $this->price;
     }
+
+    public function getFormattedPrice(): string
+    {
+        return '$' . number_format($this->price, 2);
+    }
 }

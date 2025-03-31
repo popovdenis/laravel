@@ -45,7 +45,10 @@ class CourseResource extends Resource
             Textarea::make('description')->required(),
             TextInput::make('level')->maxLength(100),
             TextInput::make('duration')->maxLength(100),
-            TextInput::make('price')->numeric()->prefix('$'),
+            TextInput::make('price')
+                ->numeric()
+                ->prefix('$')
+                ->required(),
             Toggle::make('is_active')->label('Active'),
             TextInput::make('sort_order')->numeric(),
             Select::make('teachers')
