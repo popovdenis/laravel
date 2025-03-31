@@ -25,6 +25,7 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::delete('/account-information', [ProfileController::class, 'destroy'])->name('profile.account-information.destroy');
 
     // My Orders
+    Route::post('/orders', [OrderController::class, 'store'])->name('profile.orders.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
 

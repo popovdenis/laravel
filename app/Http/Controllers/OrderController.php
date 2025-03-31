@@ -44,7 +44,7 @@ class OrderController extends Controller
 
         $cart->emptyCart();
 
-        return redirect()->route('orders.show', $order)->with('success', 'Order placed successfully');
+        return redirect()->route('profile.orders.show', $order)->with('success', 'Order placed successfully');
     }
 
     public function show(Order $order)
