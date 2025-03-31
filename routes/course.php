@@ -34,5 +34,6 @@ Route::post('/cart/add/{course:slug}', function (Request $request, Course $cours
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::delete('/cart/remove/{item}', [CartController::class, 'destroy'])->name('cart.remove');
 
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

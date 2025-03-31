@@ -12,6 +12,16 @@ class OrderController extends Controller
 {
     use AuthorizesRequests;
 
+    public function index()
+    {
+        $orders = \App\Models\Order::where('user_id', auth()->id())
+            ->latest()
+            ->withCount('items')
+            ->get();
+
+        return view('orders.index', compact('orders'));
+    }
+
     public function store()
     {
         $user = Auth::user();

@@ -1,8 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">
-            Order #{{ $order->id }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-800">
+                Order #{{ $order->id }}
+            </h2>
+            <a href="{{ route('orders.index') }}" class="text-sm text-blue-600 hover:underline">
+                Back to Orders
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8">
