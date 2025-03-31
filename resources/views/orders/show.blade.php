@@ -5,7 +5,7 @@
                 Order #{{ $order->id }}
             </h2>
 
-            <a href="{{ route('orders.index') }}" class="inline-flex items-center text-sm text-blue-600 hover:underline">
+            <a href="{{ route('profile.orders.index') }}" class="inline-flex items-center text-sm text-blue-600 hover:underline">
                 <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
                      viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M15 19l-7-7 7-7" />

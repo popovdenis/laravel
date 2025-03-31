@@ -26,7 +26,7 @@
                             <td class="py-2">{{ $order->created_at->format('M d, Y') }}</td>
                             <td class="py-2">{{ $order->items_count }}</td>
                             <td class="py-2 text-right">
-                                <a href="{{ route('orders.show', $order) }}" class="text-blue-600 hover:underline text-sm">
+                                <a href="{{ route('profile.orders.show', $order) }}" class="text-blue-600 hover:underline text-sm">
                                     View
                                 </a>
                             </td>
