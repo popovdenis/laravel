@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use App\Models\OrderItem;
+use Binafy\LaravelCart\Models\Cart;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+class OrderController extends Controller
+{
+    use AuthorizesRequests;
+
+    public function store()
+    {
+        $user = Auth::user();
+        $cart = Cart::firstOrCreate(['user_id' => $user->getAuthIdentifier()]);
+
+        if ($cart->items->isEmpty()) {
+            return back()->with('error', 'Your cart is empty');
+        }
+
+        $order = Order::create(['user_id' => $user->getAuthIdentifier(), 'status' => 'pending']);
+
+        foreach ($cart->items as $cartItem) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'itemable_id' => $cartItem->itemable_id,
+                'itemable_type' => $cartItem->itemable_type,
+                'quantity' => $cartItem->quantity,
+            ]);
+        }
+
+        $cart->emptyCart();
+
+        return redirect()->route('orders.show', $order)->with('success', 'Order placed successfully');
+    }
+
+    public function show(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        return view('orders.show', compact('order'));
+    }
+}
