@@ -40,15 +40,27 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('user.name')->label('Customer')->sortable()->searchable(),
-                TextColumn::make('status')->searchable()->sortable(),
-                TextColumn::make('created_at')->dateTime('M d, Y H:i')->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')->dateTime('M d, Y H:i')->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')
+                    ->label('Customer')
+                    ->sortable()
+                    ->searchable()
+                    ->placeholder('-'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

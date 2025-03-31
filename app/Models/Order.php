@@ -9,10 +9,11 @@ class Order extends Model
     /**
      * @var array
      */
-    public $casts = [
-        'status' => 'boolean',
-        'created_at' => 'date',
-        'updated_at' => 'date',
+    protected $casts = [
+        'status' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'is_active' => 'boolean',
     ];
 
     protected $fillable = ['user_id', 'status'];
@@ -20,5 +21,10 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
