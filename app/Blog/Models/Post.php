@@ -33,6 +33,7 @@ class Post extends Model
     public $fillable = [
         'is_published',
         'posted_at',
+        'content_blocks',
     ];
 
     /**

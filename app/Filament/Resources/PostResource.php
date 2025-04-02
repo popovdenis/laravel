@@ -21,6 +21,7 @@ use App\Filament\Resources\PostResource\Pages;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class PostResource extends Resource
 {
@@ -195,7 +196,7 @@ class PostResource extends Resource
                     ->form([
                         Forms\Components\TextInput::make('title')->label('Title contains'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
+                    ->query(function (EloquentBuilder $query, array $data): EloquentBuilder {
                         return $query->whereHas('currentTranslation', function ($q) use ($data) {
                             $q->where('title', 'like', '%' . $data['title'] . '%');
                         });
