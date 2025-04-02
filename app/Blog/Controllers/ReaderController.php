@@ -134,14 +134,11 @@ class ReaderController extends Controller
      */
     public function viewSinglePost(Request $request, $blogPostSlug)
     {
-        $posts = PostTranslation::where('slug', $blogPostSlug)
-//            ->where('lang_id', $request->get('lang_id'))
-            ->firstOrFail();
+        $posts = PostTranslation::where('slug', $blogPostSlug)->firstOrFail();
 
         $categories = $posts->post->categories()->with([
             'categoryTranslations' => function ($query) use ($request)
             {
-//            $query->where('lang_id', '=', $request->get('lang_id'));
             }
         ])->get();
 
@@ -151,6 +148,7 @@ class ReaderController extends Controller
             'locale' => $request->get('locale'),
             'categories' => $categories,
             'routeWithoutLocale' => $request->get('routeWithoutLocale'),
+            'blocks' => $posts->post->content_blocks ?? []
         ]);
     }
 }
