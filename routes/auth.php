@@ -29,7 +29,7 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
 
-    // Email Verification & Password routes (если нужны)
+    // Email Verification & Password routes
     Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
@@ -42,7 +42,6 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 });
 
-// Перенаправление после логина
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);

@@ -26,11 +26,6 @@ return [
         Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
     ),
 
-    'admin_cookie' => env(
-        'SESSION_COOKIE_ADMIN',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_admin_session'
-    ),
-
     'path' => env('SESSION_PATH', '/'),
 
     'domain' => env('SESSION_DOMAIN'),

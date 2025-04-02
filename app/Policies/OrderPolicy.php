@@ -13,7 +13,7 @@ class OrderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;//$user->hasRole('Admin');
+        return $user->hasRole('Admin');
     }
 
     /**
@@ -21,7 +21,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        return true;//$user->hasRole('Admin');
+        return $user->hasRole('Admin');
     }
 
     /**
