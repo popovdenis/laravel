@@ -24,7 +24,10 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::patch('/account-information', [ProfileController::class, 'update'])->name('profile.account-information.update');
     Route::delete('/account-information', [ProfileController::class, 'destroy'])->name('profile.account-information.destroy');
 
+    // Schedule
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('profile.schedule.index');
+    Route::post('/schedule/{schedule}/create-meeting', [\App\Http\Controllers\ZoomMeetingController::class, 'create'])
+        ->name('profile.schedule.create-meeting');
 
     // My Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
