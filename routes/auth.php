@@ -24,9 +24,11 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::patch('/account-information', [ProfileController::class, 'update'])->name('profile.account-information.update');
     Route::delete('/account-information', [ProfileController::class, 'destroy'])->name('profile.account-information.destroy');
 
+    Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('profile.schedule.index');
+
     // My Orders
-    Route::post('/orders', [OrderController::class, 'store'])->name('profile.orders.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('profile.orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
 
     // Email Verification & Password routes
@@ -56,5 +58,5 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
 
-// Logout отдельно
+// Logout
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
