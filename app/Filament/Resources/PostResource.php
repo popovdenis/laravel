@@ -111,48 +111,16 @@ class PostResource extends Resource
                         Builder::make('content_blocks')
                             ->label('Content Blocks')
                             ->blocks([
-                                Block::make('heading')
-                                    ->label('Heading')
-                                    ->schema([
-                                        TextInput::make('text')->label('Heading Text')->required(),
-                                    ]),
-
                                 Block::make('text')
                                     ->label('Text')
                                     ->schema([
                                         RichEditor::make('content')->label('Text')->required(),
                                     ]),
-
-                                Block::make('image')
-                                    ->label('Image')
+                                Block::make('heading')
+                                    ->label('Heading')
                                     ->schema([
-                                        FileUpload::make('url')->image()->required(),
-                                        TextInput::make('caption')->label('Caption')->nullable(),
+                                        TextInput::make('text')->label('Heading Text')->required(),
                                     ]),
-
-                                Block::make('script')
-                                    ->label('Custom Code Block')
-                                    ->schema([
-                                        Textarea::make('code')->label('Raw HTML/JS')->rows(6),
-                                    ]),
-
-                                Block::make('quote')
-                                    ->label('Quote')
-                                    ->schema([
-                                        Textarea::make('quote')->label('Quote Text')->required(),
-                                        TextInput::make('author')->label('Author')->nullable(),
-                                    ]),
-
-                                Block::make('video')
-                                    ->label('Video Embed')
-                                    ->schema([
-                                        TextInput::make('url')
-                                            ->label('Video URL')
-                                            ->required()
-                                            ->placeholder('https://www.youtube.com/watch?v=...')
-                                            ->url(),
-                                    ]),
-
                                 Block::make('button')
                                     ->label('Button')
                                     ->schema([
@@ -167,6 +135,47 @@ class PostResource extends Resource
                                             ])
                                             ->default('primary')
                                             ->required(),
+                                    ]),
+                                Block::make('divider')
+                                    ->label('Divider')
+                                    ->schema([]),
+                                Block::make('script')
+                                    ->label('Custom Code Block')
+                                    ->schema([
+                                        Textarea::make('code')->label('HTML Code')->rows(6),
+                                    ]),
+
+                                Block::make('image')
+                                    ->label('Image')
+                                    ->schema([
+                                        FileUpload::make('url')->image()->required(),
+                                        TextInput::make('caption')->label('Caption')->nullable(),
+                                    ]),
+                                Block::make('gallery')
+                                    ->label('Gallery')
+                                    ->schema([
+                                        FileUpload::make('images')
+                                            ->label('Images')
+                                            ->image()
+                                            ->multiple()
+                                            ->directory('gallery')
+                                            ->disk('public')
+                                            ->preserveFilenames(),
+                                    ]),
+                                Block::make('video')
+                                    ->label('Video Embed')
+                                    ->schema([
+                                        TextInput::make('url')
+                                            ->label('Video URL')
+                                            ->required()
+                                            ->placeholder('https://www.youtube.com/watch?v=...')
+                                            ->url(),
+                                    ]),
+                                Block::make('quote')
+                                    ->label('Quote')
+                                    ->schema([
+                                        Textarea::make('quote')->label('Quote Text')->required(),
+                                        TextInput::make('author')->label('Author')->nullable(),
                                     ]),
                             ])
                             ->columnSpan(12),
