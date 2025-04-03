@@ -68,14 +68,6 @@ class PostResource extends Resource
 
                         Toggle::make('is_published')
                             ->label('Published')
-                            ->columnSpan(2),
-
-                        Textarea::make('currentTranslation.short_description')
-                            ->label('Short Description')
-                            ->columnSpan(12),
-
-                        RichEditor::make('currentTranslation.post_body')
-                            ->label('Post Body')
                             ->columnSpan(12),
 
                         TextInput::make('currentTranslation.seo_title')
@@ -84,7 +76,7 @@ class PostResource extends Resource
 
                         Textarea::make('currentTranslation.meta_desc')
                             ->label('Meta Description')
-                            ->columnSpan(4),
+                            ->columnSpan(8),
 
                         CheckboxList::make('categories')
                             ->label('Categories')
@@ -98,7 +90,7 @@ class PostResource extends Resource
                                     })
                             )
                             ->columns(2)
-                            ->columnSpan(4),
+                            ->columnSpan(6),
 
                         FileUpload::make('currentTranslation.image_large')
                             ->label('Image')
@@ -106,7 +98,26 @@ class PostResource extends Resource
                             ->directory(config('blog.blog_upload_dir', 'blog_images'))
                             ->preserveFilenames()
                             ->disk('public')
+                            ->columnSpan(12),
+
+                        Textarea::make('currentTranslation.short_description')
+                            ->label('Short Description')
+                            ->columnSpan(12),
+
+                        Select::make('content_mode')
+                            ->label('Content Mode')
+                            ->options([
+                                'rich_text' => 'Rich Text',
+                                'blocks' => 'Page Builder',
+                            ])
+                            ->default('rich_text')
+                            ->reactive()
                             ->columnSpan(4),
+
+                        RichEditor::make('currentTranslation.post_body')
+                            ->label('Post Body')
+                            ->visible(fn (\Filament\Forms\Get $get) => $get('content_mode') === 'rich_text')
+                            ->columnSpan(12),
 
                         Builder::make('content_blocks')
                             ->label('Content Blocks')
@@ -178,6 +189,7 @@ class PostResource extends Resource
                                         TextInput::make('author')->label('Author')->nullable(),
                                     ]),
                             ])
+                            ->visible(fn (\Filament\Forms\Get $get) => $get('content_mode') === 'blocks')
                             ->columnSpan(12),
                     ])
             ]);

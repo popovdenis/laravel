@@ -18,6 +18,7 @@ class Post extends Model
         'is_published' => 'boolean',
         'posted_at' => 'date',
         'content_blocks' => 'array',
+        'content_mode' => 'string',
     ];
 
     /**
@@ -34,6 +35,7 @@ class Post extends Model
         'is_published',
         'posted_at',
         'content_blocks',
+        'content_mode',
     ];
 
     /**

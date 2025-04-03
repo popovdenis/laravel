@@ -148,7 +148,9 @@ class ReaderController extends Controller
             'locale' => $request->get('locale'),
             'categories' => $categories,
             'routeWithoutLocale' => $request->get('routeWithoutLocale'),
-            'blocks' => $posts->post->content_blocks ?? []
+            'description' => $posts->post->currentTranslation->post_body,
+            'contentMode' => $posts->post->content_mode ?? 'rich_text',
+            'blocks' => $posts->post->content_blocks ?? [],
         ]);
     }
 }

@@ -8,7 +8,11 @@
 </div>
 
 <div class="prose max-w-none">
-    {!! $post->postBodyOutput() !!}
+    @if ($contentMode === 'blocks' && filled($blocks))
+        <x-page-builder :blocks="$blocks" />
+    @else
+        {!! $description !!}
+    @endif
 </div>
 
 <hr class="my-8">

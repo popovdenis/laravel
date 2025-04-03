@@ -31,10 +31,4 @@
             </div>
         @endif
     </div>
-
-    <div class="py-8 max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-        @foreach ($blocks as $block)
-            @includeIf('blog::blocks.' . $block['type'], ['data' => $block['data']])
-        @endforeach
-    </div>
 </x-app-layout>
