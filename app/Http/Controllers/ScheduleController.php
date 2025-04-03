@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Services\ZoomService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
 
@@ -22,5 +24,20 @@ class ScheduleController extends Controller
         }
 
         return view('schedule.index', compact('schedules'));
+    }
+
+    public function join(Schedule $schedule): RedirectResponse
+    {
+        $user = auth()->user();
+
+        if ($user->hasRole('Teacher')) {
+            $url = app(ZoomService::class)->getStartUrl($schedule);
+        } elseif ($user->hasRole('Student')) {
+            $url = app(ZoomService::class)->getJoinUrl($schedule);
+        } else {
+            abort(403);
+        }
+
+        return redirect()->away($url);
     }
 }

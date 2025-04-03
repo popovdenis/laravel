@@ -26,27 +26,12 @@
                                                 {{ __('Create Meeting') }}
                                             </button>
                                         </form>
-                                    @else
-                                        <a href="{{ $schedule->zoom_start_url }}" target="_blank"
-                                           class="inline-block mt-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
-                                            {{ __('Join Meeting') }}
-                                        </a>
-                                    @endif
-                                @elseif (auth()->user()->hasRole('Student'))
-                                    @if ($schedule->zoom_join_url)
-                                        <a href="{{ $schedule->zoom_join_url }}" target="_blank"
-                                           class="inline-block mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                                            Join Meeting
-                                        </a>
-                                    @elseif ($schedule->custom_link)
-                                        <a href="{{ $schedule->custom_link }}" target="_blank"
-                                           class="inline-block mt-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm">
-                                            {{ __('Join Meeting') }}
-                                        </a>
-                                    @else
-                                        <span class="text-sm text-gray-500 mt-2">{{ __('Meeting not available') }}</span>
                                     @endif
                                 @endif
+                                <a href="{{ route('schedule.join', $schedule) }}" target="_blank"
+                                   class="inline-block mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                                    {{ __('Join Meeting') }}
+                                </a>
                             </div>
                         </li>
                     @endforeach

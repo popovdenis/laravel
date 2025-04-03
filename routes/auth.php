@@ -28,6 +28,7 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('profile.schedule.index');
     Route::post('/schedule/{schedule}/create-meeting', [\App\Http\Controllers\ZoomMeetingController::class, 'create'])
         ->name('profile.schedule.create-meeting');
+    Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])->name('schedule.join');
 
     // My Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
