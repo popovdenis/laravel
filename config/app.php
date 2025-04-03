@@ -63,5 +63,10 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         App\Blog\BlogServiceProvider::class,
+        Jubaer\Zoom\ZoomServiceProvider::class,
     ],
+
+    'aliases' => [
+        'Zoom' => Jubaer\Zoom\Facades\Zoom::class,
+    ]
 ];

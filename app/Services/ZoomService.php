@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Schedule;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Zoom;
 
 class ZoomService
 {
@@ -23,6 +25,37 @@ class ZoomService
         }
 
         return $response->json('access_token');
+    }
+
+    public function create(Schedule $schedule, string $topic, int $duration): array
+    {
+        $response = Zoom::createMeeting([
+            'topic' => $topic,
+            'type' => 2,
+            'start_time' => Carbon::parse($schedule->start_time)->toIso8601String(),
+            'duration' => $duration,
+            'pre_schedule' => true,
+//            'schedule_for' => 'denispopov2112@gmail.com',
+            'timezone' => 'Europe/Warsaw',
+            'password' => $data['password'] ?? '123456',
+            'settings' => [
+                'join_before_host' => false,
+                'host_video' => true,
+                'participant_video' => true,
+            ],
+        ]);
+
+        if ($response['status'] && $response['data']) {
+            return [
+                'zoom_meeting_id' => $response['data']['id'],
+                'zoom_join_url' => $response['data']['join_url'],
+                'zoom_start_url' => $response['data']['start_url'],
+                'passcode' => $response['data']['password'],
+                'custom_link' => null,
+            ];
+        }
+
+        return [];
     }
 
     public function createMeeting(Schedule $schedule): bool

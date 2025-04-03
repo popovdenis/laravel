@@ -26,7 +26,7 @@ Route::middleware('auth')->prefix('profile')->group(function () {
 
     // Schedule
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('profile.schedule.index');
-    Route::post('/schedule/{schedule}/create-meeting', [\App\Http\Controllers\ZoomMeetingController::class, 'create'])
+    Route::post('/schedule/{schedule}/create-meeting', [\App\Http\Controllers\ScheduleController::class, 'create'])
         ->name('profile.schedule.create-meeting');
     Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])->name('schedule.join');
 
