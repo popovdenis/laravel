@@ -6,6 +6,7 @@ use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
 use App\Models\Schedule;
 use Filament\Forms\Form;
+use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,34 +23,56 @@ class ScheduleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('teacher_id')
-                ->label('Teacher')
-                ->relationship(
-                    name: 'teacher',
-                    titleAttribute: 'name',
-                    modifyQueryUsing: fn ($query) => $query->role('Teacher')
-                )
-                ->required()
-                ->searchable(),
+            Forms\Components\Grid::make(12)->schema([
+                Select::make('teacher_id')
+                    ->label('Teacher')
+                    ->relationship(
+                        name: 'teacher',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn ($query) => $query->role('Teacher')
+                    )
+                    ->required()
+                    ->searchable()
+                    ->columnSpan(6),
 
-            Select::make('student_ids')
-                ->label('Students')
-                ->relationship(
-                    name: 'students',
-                    titleAttribute: 'name',
-                    modifyQueryUsing: fn ($query) => $query->role('Student')
-                )
-                ->multiple()
-                ->required()
-                ->searchable(),
+                Select::make('student_ids')
+                    ->label('Students')
+                    ->relationship(
+                        name: 'students',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn ($query) => $query->role('Student')
+                    )
+                    ->multiple()
+                    ->required()
+                    ->searchable()
+                    ->columnSpan(6),
 
-            DateTimePicker::make('start_time')
-                ->label('Start Time')
-                ->required(),
+                DateTimePicker::make('start_time')
+                    ->label('Start Time')
+                    ->required()
+                    ->columnSpan(6),
 
-            DateTimePicker::make('end_time')
-                ->label('End Time')
-                ->required(),
+                DateTimePicker::make('end_time')
+                    ->label('End Time')
+                    ->required()
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('custom_link')
+                    ->label('Custom Link')
+                    ->url()
+                    ->columnSpan(12)
+                    ->visible(fn () => ! config('services.zoom.mode') || config('services.zoom.mode') === 'free'),
+
+                Forms\Components\TextInput::make('zoom_meeting_id')
+                    ->label('Meeting ID')
+                    ->nullable()
+                    ->columnSpan(4),
+
+                Forms\Components\TextInput::make('passcode')
+                    ->label('Passcode')
+                    ->nullable()
+                    ->columnSpan(4),
+            ])
         ]);
     }
 

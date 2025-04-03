@@ -32,8 +32,7 @@ class PostResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        return $form->schema([
                 Forms\Components\Grid::make(12)
                     ->schema([
                         Select::make('currentTranslation.lang_id')

@@ -16,6 +16,8 @@ class Schedule extends Model
         'zoom_meeting_id',
         'zoom_join_url',
         'zoom_start_url',
+        'custom_link',
+        'passcode',
     ];
 
     protected $casts = [
