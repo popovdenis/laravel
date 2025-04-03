@@ -26,18 +26,18 @@ class ScheduleController extends Controller
         return view('schedule.index', compact('schedules'));
     }
 
-    public function join(Schedule $schedule): RedirectResponse
+    public function join(Schedule $schedule, ZoomService $zoomService)
     {
         $user = auth()->user();
 
         if ($user->hasRole('Teacher')) {
-            $url = app(ZoomService::class)->getStartUrl($schedule);
-        } elseif ($user->hasRole('Student')) {
-            $url = app(ZoomService::class)->getJoinUrl($schedule);
-        } else {
-            abort(403);
+            return redirect()->away($zoomService->getStartUrl($schedule));
         }
 
-        return redirect()->away($url);
+        if ($user->hasRole('Student')) {
+            return redirect()->away($zoomService->getJoinUrl($schedule));
+        }
+
+        abort(403);
     }
 }
