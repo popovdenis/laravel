@@ -9,5 +9,11 @@
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
+  },
+  "resources/js/zoom-component.js": {
+    "file": "assets/zoom-component-CzoaCtos.js",
+    "name": "zoom-component",
+    "src": "resources/js/zoom-component.js",
+    "isEntry": true
   }
 }

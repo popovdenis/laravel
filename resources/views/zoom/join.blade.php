@@ -29,8 +29,8 @@
 <script>
     // click join meeting button
     const meetingConfig = {
-        meetingNumber: "{{ $meetingNumber }}",
-        passWord: "{{ $password }}",
+        meetingNumber: {{ $meetingNumber }},
+        password: "{{ $password }}",
         userName: "{{ $userName }}",
         userEmail: "{{ $userEmail }}",
         role: 0, // 0 — participant, 1 — host
@@ -51,7 +51,7 @@
                     signature: data.signature,
                     sdkKey: data.sdkKey,
                     meetingNumber: meetingConfig.meetingNumber,
-                    passWord: meetingConfig.passWord,
+                    passWord: meetingConfig.password,
                     userName: meetingConfig.userName,
                     userEmail: meetingConfig.userEmail,
                     success: function (res) {

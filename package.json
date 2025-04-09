@@ -18,6 +18,7 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
-        "@zoom/meetingsdk": "^3.12.0"
+        "@zoom/meetingsdk": "^3.12.0",
+        "@zoomus/websdk": "^2.18.3"
     }
 }
