@@ -19,8 +19,10 @@ return [
         ],
     ],
     'zoom' => [
-        'client_id' => env('ZOOM_CLIENT_ID'),
-        'client_secret' => env('ZOOM_CLIENT_SECRET'),
+        'client_id' => env('ZOOM_ACCOUNT_ID'),
+        'client_secret' => env('ZOOM_CLIENT_KEY'),
         'account_id' => env('ZOOM_ACCOUNT_ID'),
+        'sdk_key' => env('ZOOM_SDK_CLIENT_ID'),
+        'sdk_secret' => env('ZOOM_SDK_CLIENT_SECRET'),
     ],
 ];

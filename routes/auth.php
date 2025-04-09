@@ -30,6 +30,11 @@ Route::middleware('auth')->prefix('profile')->group(function () {
         ->name('profile.schedule.create-meeting');
     Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])->name('schedule.join');
 
+//    Route::get('/redirect', [\App\Http\Controllers\ZoomOAuthController::class, 'handleCallback']);
+    Route::get('/zoom/oauth/callback', [\App\Http\Controllers\ZoomOAuthController::class, 'handleCallback']);
+    Route::get('/zoom/join/{meetingId}', [\App\Http\Controllers\ZoomController::class, 'join'])->name('zoom.join');
+    Route::get('/zoom/signature', [\App\Http\Controllers\ZoomSignatureController::class, 'generate']);
+
     // My Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('profile.orders.store');

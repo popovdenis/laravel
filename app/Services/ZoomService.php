@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Zoom;
+use Firebase\JWT\JWT;
 
 class ZoomService
 {
@@ -101,5 +102,23 @@ class ZoomService
     public function getStartUrl(Schedule $schedule): ?string
     {
         return $schedule->zoom_start_url ?? $schedule->custom_link;
+    }
+
+    public static function generateSignature(string $sdkKey, string $sdkSecret, string|int $meetingNumber, int $role = 0): string
+    {
+        $issuedAt = time();
+        $expire = $issuedAt + 60 * 60; // 1 hour
+
+        $payload = [
+            'sdkKey' => $sdkKey,
+            'mn' => $meetingNumber,
+            'role' => $role,
+            'iat' => $issuedAt,
+            'exp' => $expire,
+            'appKey' => $sdkKey,
+            'tokenExp' => $expire,
+        ];
+
+        return JWT::encode($payload, $sdkSecret, 'HS256');
     }
 }
