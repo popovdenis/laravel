@@ -26,7 +26,6 @@ class ZoomController extends Controller
                 $sdkKey,
                 $sdkSecret,
                 $schedule->zoom_meeting_id,
-                0
             );
         }
 

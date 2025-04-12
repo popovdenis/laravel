@@ -104,7 +104,7 @@ class ZoomService
         return $schedule->zoom_start_url ?? $schedule->custom_link;
     }
 
-    public static function generateSignature(string $sdkKey, string $sdkSecret, string|int $meetingNumber, int $role = 0): string
+    public static function generateSignature(string $sdkKey, string $sdkSecret, string|int $meetingNumber, int $role = 0)
     {
         $issuedAt = time();
         $expire = $issuedAt + 60 * 60; // 1 hour
