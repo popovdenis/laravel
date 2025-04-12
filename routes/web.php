@@ -6,9 +6,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/redirect', function () {
-    return response('Zoom redirect success');
-});
+Route::get('/redirect', function () { return response('Zoom redirect success'); });
+Route::get('/policy', function () { return response('Zoom policy success'); });
+Route::get('/terms', function () { return response('Zoom terms success'); });
+Route::get('/support', function () { return response('Zoom support success'); });
+Route::get('/documentation', function () { return response('Zoom documentation success'); });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
