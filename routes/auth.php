@@ -25,15 +25,14 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::delete('/account-information', [ProfileController::class, 'destroy'])->name('profile.account-information.destroy');
 
     // Schedule
-    Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('profile.schedule.index');
+    Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])
+        ->name('profile.schedule.index');
     Route::post('/schedule/{schedule}/create-meeting', [\App\Http\Controllers\ScheduleController::class, 'create'])
         ->name('profile.schedule.create-meeting');
-    Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])->name('schedule.join');
+    Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])
+        ->name('schedule.join');
 
-//    Route::get('/redirect', [\App\Http\Controllers\ZoomOAuthController::class, 'handleCallback']);
     Route::get('/zoom/oauth/callback', [\App\Http\Controllers\ZoomOAuthController::class, 'handleCallback']);
-    Route::get('/zoom/join/{meetingId}', [\App\Http\Controllers\ZoomController::class, 'join'])->name('zoom.join');
-    Route::get('/zoom/signature', [\App\Http\Controllers\ZoomSignatureController::class, 'generate']);
 
     // My Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');

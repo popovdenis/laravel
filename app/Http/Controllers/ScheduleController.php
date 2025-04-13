@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\ZoomService;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
 
@@ -34,21 +33,14 @@ class ScheduleController extends Controller
 
         $sdkKey = config('services.zoom.sdk_key');
         $sdkSecret = config('services.zoom.sdk_secret');
+        $role = $user->hasRole('Teacher');
 
-        if ($user->hasRole('Teacher')) {
-            $signature = ZoomService::generateSignature(
-                $sdkKey,
-                $sdkSecret,
-                $schedule->zoom_meeting_id,
-                1
-            );
-        } else if ($user->hasRole('Student')) {
-            $signature = ZoomService::generateSignature(
-                $sdkKey,
-                $sdkSecret,
-                $schedule->zoom_meeting_id,
-            );
-        }
+        $signature = ZoomService::generateSignature(
+            $sdkKey,
+            $sdkSecret,
+            $schedule->zoom_meeting_id,
+            $role
+        );
 
         return view('zoom.join', [
             'signature' => $signature,
