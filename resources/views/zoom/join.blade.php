@@ -24,7 +24,7 @@
         password: "{{ $password }}",
         userName: "{{ $userName }}",
         userEmail: "{{ $userEmail }}",
-        role: 0, // 0 — participant, 1 — host
+        role: {{auth()->user()->hasRole('Teacher') ? 1 : 0}}, // 0 — participant, 1 — host
         lang: "en-US",
         signature: "",
         china: false,

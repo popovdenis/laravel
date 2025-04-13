@@ -47,19 +47,15 @@ class ScheduleResource extends Resource
                     ->searchable()
                     ->columnSpan(6),
 
-                DateTimePicker::make('start_time')
+                DateTimePicker::make('start_time')->seconds(false)->native(false)
                     ->label('Start Time')
                     ->required()
                     ->reactive()
-//                    ->afterStateUpdated(function (\Filament\Forms\Set $set, $state) {
-//                        if ($state) {
-//                            $newEnd = \Carbon\Carbon::parse($state)->addHour();
-//                            $set('end_time', $newEnd);
-//                        }
-//                    })
                     ->columnSpan(6),
 
                 DateTimePicker::make('end_time')
+                    ->seconds(false)
+                    ->native(false)
                     ->label('End Time')
                     ->required()
                     ->reactive()
