@@ -168,7 +168,7 @@
                     <x-responsive-nav-link :href="route('login')">
                         {{ __('Log in') }}
                     </x-responsive-nav-link>
-                    @if (Route::has('register'))
+                    @if (request()->routeIs('register'))
                         <x-responsive-nav-link :href="route('register')">
                             {{ __('Register') }}
                         </x-responsive-nav-link>
