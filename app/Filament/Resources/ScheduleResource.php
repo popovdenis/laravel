@@ -49,6 +49,33 @@ class ScheduleResource extends Resource
                     ->searchable()
                     ->columnSpan(6),
 
+                Forms\Components\Toggle::make('reschedule')
+                    ->label('Re-schedule the meeting')
+                    ->inline(false)
+                    ->default(false)
+                    ->columnSpan(12),
+
+                Select::make('duration')
+                    ->label('Time Slot')
+                    ->options([
+                        '30' => '30 minutes',
+                        '45' => '45 minutes',
+                        '60' => '60 minutes',
+                    ])
+                    ->dehydrated(false)
+                    ->reactive()
+                    ->afterStateHydrated(function (callable $set, $state) {
+                        if (blank($state)) {
+                            $set('duration', '60');
+                        }
+                    })
+                    ->afterStateUpdated(function (Set $set, $state, callable $get) {
+                        if ($start = $get('start_time')) {
+                            $set('end_time', \Carbon\Carbon::parse($start)->addMinutes((int) $state)->toDateTimeString());
+                        }
+                    })
+                    ->columnSpan(4),
+
                 DateTimePicker::make('start_time')
                     ->seconds(false)
                     ->native(false)
@@ -61,7 +88,7 @@ class ScheduleResource extends Resource
                             $set('end_time', Carbon::parse($state)->addHour()->toDateTimeString());
                         }
                     })
-                    ->columnSpan(6),
+                    ->columnSpan(4),
 
                 DateTimePicker::make('end_time')
                     ->seconds(false)
@@ -70,7 +97,7 @@ class ScheduleResource extends Resource
                     ->required()
                     ->reactive()
                     ->default(Carbon::now()->addHour())
-                    ->columnSpan(6),
+                    ->columnSpan(4),
 
                 Forms\Components\TextInput::make('custom_link')
                     ->label('Custom Link')

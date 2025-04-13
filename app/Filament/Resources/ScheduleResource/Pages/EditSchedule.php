@@ -21,6 +21,15 @@ class EditSchedule extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
+            $data = array_merge($data, $this->createMeeting($data));
+        }
+
+        return $data;
+    }
+
+    protected function createMeeting(array $data): array
+    {
         $teacher = \App\Models\User::find($data['teacher_id']);
         if ($teacher) {
             $meetingData = new \App\Data\MeetingData(
@@ -30,14 +39,10 @@ class EditSchedule extends EditRecord
                 topic: 'Lesson with ' . $teacher->name,
             );
 
-            $zoomDetails = app(ZoomService::class)->create($meetingData);
-
-            if ($zoomDetails) {
-                $data = array_merge($data, $zoomDetails);
-            }
+            return app(ZoomService::class)->create($meetingData);
         }
 
-        return $data;
+        return [];
     }
 
     protected function getRedirectUrl(): ?string
