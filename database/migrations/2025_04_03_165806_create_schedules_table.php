@@ -17,8 +17,8 @@ return new class extends Migration
             $table->timestamp('start_time');
             $table->timestamp('end_time')->nullable();
             $table->string('zoom_meeting_id')->nullable();
-            $table->string('zoom_join_url')->nullable(); // for host only (teacher)
-            $table->string('zoom_start_url')->nullable(); // for students
+            $table->text('zoom_join_url')->nullable(); // for host only (teacher)
+            $table->text('zoom_start_url')->nullable(); // for students
             $table->timestamps();
         });
     }
