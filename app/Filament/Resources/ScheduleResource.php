@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Filament\Forms\Form;
 use Filament\Forms;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -47,10 +49,18 @@ class ScheduleResource extends Resource
                     ->searchable()
                     ->columnSpan(6),
 
-                DateTimePicker::make('start_time')->seconds(false)->native(false)
+                DateTimePicker::make('start_time')
+                    ->seconds(false)
+                    ->native(false)
                     ->label('Start Time')
                     ->required()
                     ->reactive()
+                    ->default(Carbon::now())
+                    ->afterStateUpdated(function (Set $set, $state) {
+                        if ($state) {
+                            $set('end_time', Carbon::parse($state)->addHour()->toDateTimeString());
+                        }
+                    })
                     ->columnSpan(6),
 
                 DateTimePicker::make('end_time')
@@ -59,6 +69,7 @@ class ScheduleResource extends Resource
                     ->label('End Time')
                     ->required()
                     ->reactive()
+                    ->default(Carbon::now()->addHour())
                     ->columnSpan(6),
 
                 Forms\Components\TextInput::make('custom_link')

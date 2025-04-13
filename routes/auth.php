@@ -32,7 +32,6 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/schedule/{schedule}/join', [\App\Http\Controllers\ScheduleController::class, 'join'])
         ->name('schedule.join');
 
-    Route::get('/zoom/oauth/callback', [\App\Http\Controllers\ZoomOAuthController::class, 'handleCallback']);
     Route::get('/zoom/signature', [\App\Http\Controllers\ZoomSignatureController::class, 'generate']);
 
     // My Orders
