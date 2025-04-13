@@ -47,7 +47,7 @@ class ZoomService
                 'duration' => $data->duration,
                 'timezone' => 'Europe/Warsaw',
                 'settings' => [
-                    'join_before_host' => false,
+                    'join_before_host' => true,
                     'host_video' => true,
                     'participant_video' => true,
                 ],
