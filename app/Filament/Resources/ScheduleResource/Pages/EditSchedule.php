@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\ScheduleResource\Pages;
 
 use App\Filament\Resources\ScheduleResource;
-use App\Models\Schedule;
+use App\Services\ScheduleNotifier;
 use App\Services\ZoomService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -23,6 +23,8 @@ class EditSchedule extends EditRecord
     {
         if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
             $data = array_merge($data, $this->createMeeting($data));
+
+            ScheduleNotifier::notifyParticipants($this->record);
         }
 
         return $data;

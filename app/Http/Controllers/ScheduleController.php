@@ -27,13 +27,13 @@ class ScheduleController extends Controller
         }
     }
 
-    public function join(Schedule $schedule)
+    public function join(Schedule $schedule, $role = null)
     {
         $user = auth()->user();
 
         $sdkKey = config('services.zoom.sdk_key');
         $sdkSecret = config('services.zoom.sdk_secret');
-        $role = $user->hasRole('Teacher') ? 1 : 0;
+        $role = $role === null ? ($user->hasRole('Teacher') ? 1 : 0) : $role;
 
         $signature = ZoomService::generateSignature(
             $sdkKey,
