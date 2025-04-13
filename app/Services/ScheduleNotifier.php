@@ -19,20 +19,39 @@ class ScheduleNotifier
             return;
         }
 
-        // teacher
-        $notification = new MeetingCreatedNotification(
-            url: route('schedule.join', ['schedule' => $schedule, 'role' => 1]),
-            startsAt: $schedule->start_time,
-        );
-        $schedule->teacher?->notify($notification);
+        self::notifyTeacher($schedule);
+        self::notifyStudent($schedule);
+    }
 
-        // students
+    private static function notifyTeacher(Schedule $schedule): void
+    {
+        if ($schedule->notify_user && !$schedule->user_notified) {
+            $notification = new MeetingCreatedNotification(
+                url: route('schedule.join', ['schedule' => $schedule, 'role' => 1]),
+                startsAt: $schedule->start_time,
+            );
+            $schedule->teacher?->notify($notification);
+            $schedule->update([
+                'user_notified' => true,
+                'notify_user' => false,
+            ]);
+        }
+    }
+
+    private static function notifyStudent(Schedule $schedule): void
+    {
         $notification = new MeetingCreatedNotification(
             url: route('schedule.join', ['schedule' => $schedule, 'role' => 0]),
             startsAt: $schedule->start_time,
         );
         foreach ($schedule->students as $student) {
-            $student->notify($notification);
+            if ($student->pivot->notify_user && !$student->pivot->user_notified) {
+                $student->notify($notification);
+                $schedule->students()->updateExistingPivot($student->id, [
+                    'user_notified' => true,
+                    'notify_user' => false,
+                ]);
+            }
         }
     }
 }

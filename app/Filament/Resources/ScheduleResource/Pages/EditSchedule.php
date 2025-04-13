@@ -23,11 +23,23 @@ class EditSchedule extends EditRecord
     {
         if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
             $data = array_merge($data, $this->createMeeting($data));
+            $data['notify_user'] = 1;
+            $data['user_notified'] = 0;
 
-            ScheduleNotifier::notifyParticipants($this->record);
+            foreach ($this->record->students as $student) {
+                $this->record->students()->updateExistingPivot($student->id, [
+                    'notify_user' => true,
+                    'user_notified' => false,
+                ]);
+            }
         }
 
         return $data;
+    }
+
+    protected function afterSave()
+    {
+        ScheduleNotifier::notifyParticipants($this->record);
     }
 
     protected function createMeeting(array $data): array

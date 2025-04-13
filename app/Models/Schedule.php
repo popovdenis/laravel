@@ -18,6 +18,8 @@ class Schedule extends Model
         'zoom_start_url',
         'custom_link',
         'passcode',
+        'notify_user',
+        'user_notified',
     ];
 
     protected $casts = [
@@ -32,6 +34,8 @@ class Schedule extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class, 'schedule_student', 'schedule_id', 'student_id');
+        return $this->belongsToMany(User::class, 'schedule_student', 'schedule_id', 'student_id')
+            ->withPivot(['notify_user', 'user_notified']);
     }
+
 }
