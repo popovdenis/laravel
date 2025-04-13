@@ -13,7 +13,7 @@ class ZoomService
     protected function getAccessToken(): ?string
     {
         $response = Http::withHeaders([
-            'Authorization' => sprintf('Basic %', config('services.zoom.basic_token')),
+            'Authorization' => sprintf('Basic %s', config('services.zoom.basic_token')),
             'Content-Type' => 'application/x-www-form-urlencoded',
         ])->asForm()->post('https://zoom.us/oauth/token', [
             'grant_type' => 'account_credentials',
