@@ -19,18 +19,29 @@ class EditSchedule extends EditRecord
         ];
     }
 
-    protected function afterSave()
+    protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->createZoomMeeting($this->record);
+        $teacher = \App\Models\User::find($data['teacher_id']);
+        if ($teacher) {
+            $meetingData = new \App\Data\MeetingData(
+                teacherEmail: $teacher->email,
+                startTime: \Illuminate\Support\Carbon::parse($data['start_time']),
+                duration: $data['duration'] ?? 60,
+                topic: 'Lesson with ' . $teacher->name,
+            );
+
+            $zoomDetails = app(ZoomService::class)->create($meetingData);
+
+            if ($zoomDetails) {
+                $data = array_merge($data, $zoomDetails);
+            }
+        }
+
+        return $data;
     }
 
-    protected function createZoomMeeting(Schedule $schedule): void
+    protected function getRedirectUrl(): ?string
     {
-        $zoom = app(ZoomService::class);
-        $topic = 'Lesson with ' . ($schedule->teacher->name ?? 'Teacher');
-
-        $meeting = $zoom->create($schedule, $topic, 60);
-
-        $schedule->update($meeting);
+        return ScheduleResource::getUrl('edit', ['record' => $this->getRecord()]);
     }
 }

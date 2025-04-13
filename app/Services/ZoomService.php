@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Data\MeetingData;
 use App\Models\Schedule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -13,32 +14,79 @@ class ZoomService
 {
     protected function getAccessToken(): ?string
     {
-        $response = Http::asForm()->withBasicAuth(
-            config('services.zoom.client_id'),
-            config('services.zoom.client_secret')
-        )->post('https://zoom.us/oauth/token', [
+        $response = Http::withHeaders([
+            'Authorization' => 'Basic YUh4c3pjWF9RRVNjTkxuV1M5YkRoZzpYTEdtWmh0Qnp4TFM0NnV5aTEyU1FrWTdBTlE4Nlc1Zg==',
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ])->asForm()->post('https://zoom.us/oauth/token', [
             'grant_type' => 'account_credentials',
             'account_id' => config('services.zoom.account_id'),
         ]);
 
         if ($response->failed()) {
+            logger()->error('Zoom token error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
             return null;
         }
 
         return $response->json('access_token');
     }
 
-    public function create(Schedule $schedule, string $topic, int $duration): array
+    public function create(MeetingData $data): ?array
     {
-        $response = Zoom::createMeeting([
-            'topic' => $topic,
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return null;
+        }
+
+        $response = Http::withToken($token)
+            ->acceptJson()
+            ->post("https://api.zoom.us/v2/users/denispopov2112@gmail.com/meetings", [
+                'topic' => $data->topic,
+                'type' => 2,
+                'start_time' => $data->startTime->toIso8601String(),
+                'duration' => $data->duration,
+                'timezone' => 'Europe/Warsaw',
+                'settings' => [
+                    'join_before_host' => false,
+                    'host_video' => true,
+                    'participant_video' => true,
+                ],
+            ]);
+
+        if ($response->failed()) {
+            logger()->error('Zoom meeting create failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return null;
+        }
+
+        $res = $response->json();
+
+        return [
+            'zoom_meeting_id' => $res['id'],
+            'zoom_join_url' => $res['join_url'] ?? null,
+            'zoom_start_url' => $res['start_url'] ?? null,
+            'passcode' => $res['password'] ?? null,
+            'custom_link' => null,
+        ];
+    }
+
+    public function createMeeting(MeetingData $data): ?array
+    {
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return null;
+        }
+
+        $response = Http::withToken($token)->post("https://api.zoom.us/v2/users/{$data->teacherEmail}/meetings", [
+            'topic' => $data->topic,
             'type' => 2,
-            'start_time' => Carbon::parse($schedule->start_time)->toIso8601String(),
-            'duration' => $duration,
-            'pre_schedule' => true,
-//            'schedule_for' => 'denispopov2112@gmail.com',
+            'start_time' => $data->startTime->toIso8601String(),
+            'duration' => $data->duration,
             'timezone' => 'Europe/Warsaw',
-            'password' => $data['password'] ?? '123456',
             'settings' => [
                 'join_before_host' => false,
                 'host_video' => true,
@@ -46,52 +94,18 @@ class ZoomService
             ],
         ]);
 
-        if ($response['status'] && $response['data']) {
-            return [
-                'zoom_meeting_id' => $response['data']['id'],
-                'zoom_join_url' => $response['data']['join_url'],
-                'zoom_start_url' => $response['data']['start_url'],
-                'passcode' => $response['data']['password'],
-                'custom_link' => null,
-            ];
-        }
-
-        return [];
-    }
-
-    public function createMeeting(Schedule $schedule): bool
-    {
-        $token = $this->getAccessToken();
-        if (!$token) {
-            return false;
-        }
-
-        $userEmail = $schedule->teacher->email ?? config('mail.from.address');
-
-        $response = Http::withToken($token)->post("https://api.zoom.us/v2/users/{$userEmail}/meetings", [
-            'topic'      => 'Scheduled Lesson',
-            'type'       => 2, // scheduled
-            'start_time' => $schedule->starts_at->toIso8601String(),
-            'duration'   => $schedule->duration ?? 60,
-            'timezone'   => 'UTC',
-            'settings'   => [
-                'join_before_host' => false,
-                'approval_type'    => 0,
-                'registration_type' => 1,
-            ],
-        ]);
-
         if ($response->failed()) {
-            return false;
+            return null;
         }
 
-        $data = $response->json();
-        $schedule->update([
-            'zoom_join_url'  => $data['join_url'],
-            'zoom_start_url' => $data['start_url'],
-        ]);
+        $json = $response->json();
 
-        return true;
+        return [
+            'zoom_meeting_id' => $json['id'],
+            'passcode' => $json['password'] ?? null,
+            'zoom_join_url' => $json['join_url'] ?? null,
+            'zoom_start_url' => $json['start_url'] ?? null,
+        ];
     }
 
     public function getJoinUrl(Schedule $schedule): ?string

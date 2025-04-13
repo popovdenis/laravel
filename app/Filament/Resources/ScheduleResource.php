@@ -50,11 +50,19 @@ class ScheduleResource extends Resource
                 DateTimePicker::make('start_time')
                     ->label('Start Time')
                     ->required()
+                    ->reactive()
+//                    ->afterStateUpdated(function (\Filament\Forms\Set $set, $state) {
+//                        if ($state) {
+//                            $newEnd = \Carbon\Carbon::parse($state)->addHour();
+//                            $set('end_time', $newEnd);
+//                        }
+//                    })
                     ->columnSpan(6),
 
                 DateTimePicker::make('end_time')
                     ->label('End Time')
                     ->required()
+                    ->reactive()
                     ->columnSpan(6),
 
                 Forms\Components\TextInput::make('custom_link')
