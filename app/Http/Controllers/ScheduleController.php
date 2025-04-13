@@ -33,7 +33,7 @@ class ScheduleController extends Controller
 
         $sdkKey = config('services.zoom.sdk_key');
         $sdkSecret = config('services.zoom.sdk_secret');
-        $role = $user->hasRole('Teacher');
+        $role = $user->hasRole('Teacher') ? 1 : 0;
 
         $signature = ZoomService::generateSignature(
             $sdkKey,
