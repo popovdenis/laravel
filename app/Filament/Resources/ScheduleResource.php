@@ -153,7 +153,14 @@ class ScheduleResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->before(function (\Illuminate\Support\Collection $records) {
+                        foreach ($records as $record) {
+                            if ($record->zoom_meeting_id) {
+                                app(\App\Services\ZoomService::class)->delete($record->zoom_meeting_id);
+                            }
+                        }
+                    }),
             ]);
     }
 
