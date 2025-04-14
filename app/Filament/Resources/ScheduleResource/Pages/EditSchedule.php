@@ -39,7 +39,7 @@ class EditSchedule extends EditRecord
 
     protected function afterSave()
     {
-        ScheduleNotifier::notifyParticipants($this->record);
+        app(ScheduleNotifier::class)->notifyParticipants($this->record);
     }
 
     protected function createMeeting(array $data): array

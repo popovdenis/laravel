@@ -26,4 +26,7 @@ return [
         'sdk_key' => env('ZOOM_SDK_CLIENT_ID'),
         'sdk_secret' => env('ZOOM_SDK_CLIENT_SECRET'),
     ],
+    'mailersend' => [
+        'token' => 'mlsn.9ba332e3c02a0736b992d6f7cedc7454d0204865facfd1fe36c668a19a16981e'
+    ]
 ];

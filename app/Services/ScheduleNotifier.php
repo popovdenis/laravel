@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Schedule;
-use App\Notifications\MeetingCreatedNotification;
+use App\Mail\MeetingCreated;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class ScheduleNotifier
@@ -13,24 +14,25 @@ use App\Notifications\MeetingCreatedNotification;
  */
 class ScheduleNotifier
 {
-    public static function notifyParticipants(Schedule $schedule): void
+    public function __construct(protected EmailNotificationService $emailNotificationService)
+    {
+    }
+
+    public function notifyParticipants(Schedule $schedule): void
     {
         if (! $schedule->zoom_join_url) {
             return;
         }
 
-        self::notifyTeacher($schedule);
-        self::notifyStudent($schedule);
+        $this->notifyTeacher($schedule);
+        $this->notifyStudent($schedule);
     }
 
-    private static function notifyTeacher(Schedule $schedule): void
+    private function notifyTeacher(Schedule $schedule): void
     {
         if ($schedule->notify_user && !$schedule->user_notified) {
-            $notification = new MeetingCreatedNotification(
-                url: route('schedule.join', ['schedule' => $schedule, 'role' => 1]),
-                startsAt: $schedule->start_time,
-            );
-            $schedule->teacher?->notify($notification);
+            $this->emailNotificationService->sendMeetingNotification($schedule, $schedule->teacher, 1);
+
             $schedule->update([
                 'user_notified' => true,
                 'notify_user' => false,
@@ -38,15 +40,12 @@ class ScheduleNotifier
         }
     }
 
-    private static function notifyStudent(Schedule $schedule): void
+    private function notifyStudent(Schedule $schedule): void
     {
-        $notification = new MeetingCreatedNotification(
-            url: route('schedule.join', ['schedule' => $schedule, 'role' => 0]),
-            startsAt: $schedule->start_time,
-        );
         foreach ($schedule->students as $student) {
             if ($student->pivot->notify_user && !$student->pivot->user_notified) {
-                $student->notify($notification);
+                $this->emailNotificationService->sendMeetingNotification($schedule, $student);
+
                 $schedule->students()->updateExistingPivot($student->id, [
                     'user_notified' => true,
                     'notify_user' => false,
