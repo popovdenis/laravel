@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ScheduleResource\Pages;
 
+use App\Data\MeetingData;
 use App\Filament\Resources\ScheduleResource;
 use App\Services\ScheduleNotifier;
 use App\Services\ZoomService;
@@ -22,7 +23,13 @@ class EditSchedule extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
-//            $data = array_merge($data, $this->createMeeting($data));
+            $meeting = $this->prepareMeetingData($data);
+            $data = array_merge(
+                $data,
+                empty($data['zoom_meeting_id']) && $meeting
+                    ? $this->createMeeting($meeting)
+                    : $this->updateMeeting($meeting)
+            );
             $data['notify_user'] = 1;
             $data['user_notified'] = 0;
 
@@ -42,25 +49,40 @@ class EditSchedule extends EditRecord
         app(ScheduleNotifier::class)->notifyParticipants($this->record);
     }
 
-    protected function createMeeting(array $data): array
+    protected function createMeeting(MeetingData $meetingData): array
+    {
+        return app(ZoomService::class)->create($meetingData);
+    }
+
+    protected function updateMeeting(MeetingData $meetingData): array
+    {
+        return app(ZoomService::class)->update($meetingData);
+    }
+
+    protected function prepareMeetingData(array $data): ?MeetingData
     {
         $teacher = \App\Models\User::find($data['teacher_id']);
         if ($teacher) {
-            $meetingData = new \App\Data\MeetingData(
+            return new \App\Data\MeetingData(
                 teacherEmail: $teacher->email,
                 startTime: \Illuminate\Support\Carbon::parse($data['start_time']),
                 duration: $data['duration'] ?? 60,
                 topic: 'Lesson with ' . $teacher->name,
             );
-
-            return app(ZoomService::class)->create($meetingData);
         }
 
-        return [];
+        return null;
     }
 
     protected function getRedirectUrl(): ?string
     {
         return ScheduleResource::getUrl('edit', ['record' => $this->getRecord()]);
+    }
+
+    protected function afterActionCalled(): void
+    {
+        if ($this->record->zoom_meeting_id) {
+            app(\App\Services\ZoomService::class)->delete($this->record->zoom_meeting_id);
+        }
     }
 }

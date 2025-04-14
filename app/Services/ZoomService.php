@@ -72,6 +72,59 @@ class ZoomService
         ];
     }
 
+    public function update(MeetingData $data, string|int $meetingId): ?bool
+    {
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return false;
+        }
+
+        $response = Http::withToken($token)
+            ->acceptJson()
+            ->patch("https://api.zoom.us/v2/meetings/{$meetingId}", [
+                'topic' => $data->topic,
+                'start_time' => $data->startTime->toIso8601String(),
+                'duration' => $data->duration,
+                'timezone' => 'Europe/Warsaw',
+                'settings' => [
+                    'join_before_host' => true,
+                    'host_video' => true,
+                    'participant_video' => true,
+                ],
+            ]);
+
+        if ($response->failed()) {
+            logger()->error('Zoom meeting update failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
+    public function delete(string|int $meetingId): bool
+    {
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return false;
+        }
+
+        $response = Http::withToken($token)
+            ->delete("https://api.zoom.us/v2/meetings/{$meetingId}");
+
+        if ($response->failed()) {
+            logger()->error('Zoom meeting delete failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
     public static function generateSignature(string $sdkKey, string $sdkSecret, string|int $meetingNumber, int $role = 0)
     {
         $issuedAt = time();

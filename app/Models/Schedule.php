@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Schedule extends Model
 {
@@ -38,4 +39,10 @@ class Schedule extends Model
             ->withPivot(['notify_user', 'user_notified']);
     }
 
+//    protected static function booted(): void
+//    {
+//        static::deleting(function ($project) {
+//            Storage::disk('public')->delete($project->thumbnail);
+//        });
+//    }
 }
