@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,7 +10,7 @@ use MailerSend\Helpers\Builder\Variable;
 use MailerSend\Helpers\Builder\Personalization;
 use MailerSend\LaravelDriver\MailerSendTrait;
 
-class MeetingCreated extends Mailable
+abstract class MailSender extends Mailable
 {
     use Queueable, SerializesModels, MailerSendTrait;
 
@@ -29,7 +28,7 @@ class MeetingCreated extends Mailable
             ->from('noreply@test-69oxl5e2jy2l785k.mlsender.net', 'English Course')
             ->view('emails.blank')
             ->mailersend(
-                template_id: 'pq3enl66vx7l2vwr',
+                template_id: $this->getTemplateId(),
                 personalization: [
                     new Personalization($to, [
                         'name' => $this->name,
@@ -39,4 +38,6 @@ class MeetingCreated extends Mailable
                 ],
             );
     }
+
+    abstract public function getTemplateId(): string;
 }

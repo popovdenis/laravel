@@ -22,7 +22,7 @@ class EditSchedule extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
-            $data = array_merge($data, $this->createMeeting($data));
+//            $data = array_merge($data, $this->createMeeting($data));
             $data['notify_user'] = 1;
             $data['user_notified'] = 0;
 

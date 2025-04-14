@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Schedule;
-use App\Mail\MeetingCreated;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * Class ScheduleNotifier

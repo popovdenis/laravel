@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Mail\MeetingCreated;
+use App\Mail\MeetingNotification;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Mail;
 
@@ -19,7 +19,7 @@ class EmailNotificationService
         $joinUrl = route('schedule.join', ['schedule' => $schedule, 'role' => $userRole]);
 
         Mail::to($user->email)->send(
-            new MeetingCreated(
+            new MeetingNotification(
                 name: $user->name,
                 meetingTime: $schedule->start_time->toDayDateTimeString(),
                 joinUrl: $joinUrl
