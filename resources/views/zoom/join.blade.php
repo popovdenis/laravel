@@ -15,17 +15,15 @@
     <script src="https://source.zoom.us/3.12.0/lib/vendor/lodash.min.js"></script>
     <script src="https://source.zoom.us/zoom-meeting-3.12.0.min.js"></script>
     <script src="https://source.zoom.us/zoom-meeting-embedded-3.12.0.min.js"></script>
+    <script src="https://widget-js.cometchat.io/v3/cometchatwidget.js"></script>
 </head>
 <body class="h-screen overflow-hidden">
 
-<div class="flex h-full">
-    <!-- Zoom (2/3 width) -->
-    <div id="zmmtg-root" class="w-4/5 h-full bg-gray-100"></div>
+<div class="flex h-screen overflow-hidden">
+    <div id="zmmtg-root" class="grow bg-gray-100"></div>
 
-    <!-- Chat (1/3 width) -->
-    <div class="w-1/5 h-full overflow-y-auto border-l p-2 bg-white">
-        {{-- Chatify --}}
-{{--        @include('chatify::pages.app')--}}
+    <div class="w-[400px] h-full overflow-y-auto border-l p-2 bg-white">
+        <x-comet-chat-widget :group-id="'schedule-' . $schedule->id" />
     </div>
 </div>
 
@@ -40,21 +38,23 @@
         signature: "",
         china: false,
     };
-
+    const zoomRoot = document.getElementById('zmmtg-root');
+    const width = zoomRoot.clientWidth;
+    const height = zoomRoot.clientHeight - 90;
     const client = ZoomMtgEmbedded.createClient();
 
     client.init({
-        zoomAppRoot: document.getElementById('zmmtg-root'),
+        zoomAppRoot: zoomRoot,
         language: 'en-US',
         customize: {
             video: {
                 isResizable: true,
                 viewSizes: {
                     default: {
-                        width: 1380,
-                        height: 800
+                        width,
+                        height,
                     },
-                }
+                },
             }
         }
     });

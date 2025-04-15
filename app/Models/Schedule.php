@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\CometChatService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -39,10 +40,33 @@ class Schedule extends Model
             ->withPivot(['notify_user', 'user_notified']);
     }
 
-//    protected static function booted(): void
-//    {
-//        static::deleting(function ($project) {
-//            Storage::disk('public')->delete($project->thumbnail);
-//        });
-//    }
+    public function syncScheduleChat(Schedule $schedule): void
+    {
+        /** @var CometChatService $chatService */
+        $chatService = app(CometChatService::class);
+
+        $guid = 'schedule-' . $schedule->id;
+        $chatService->createGroup($guid, 'Lesson #' . $schedule->id);
+        $admins = $participants = [];
+
+        // Teacher
+        $teacher = $schedule->teacher;
+        $teacherUid = 'user-' . $teacher->id;
+        $chatService->createUser($teacherUid, $teacher->name);
+
+        if (! $chatService->userInGroup($guid, $teacherUid)) {
+            $admins[] = $teacherUid;
+        }
+
+        // Students
+        foreach ($schedule->students as $student) {
+            $uid = 'user-' . $student->id;
+            $chatService->createUser($uid, $student->name);
+            if (! $chatService->userInGroup($guid, $uid)) {
+                $participants[] = $uid;
+            }
+        }
+
+        $chatService->addUsersToGroup($guid, $admins, $participants);
+    }
 }

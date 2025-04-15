@@ -28,5 +28,12 @@ return [
     ],
     'mailersend' => [
         'token' => env('MAILERSEND_API_KEY')
-    ]
+    ],
+    'cometchat' => [
+        'app_id' => env('COMETCHAT_APP_ID'),
+        'auth_key' => env('COMETCHAT_AUTH_KEY'),
+        'api_key' => env('COMETCHAT_API_KEY'),
+        'region' => env('COMETCHAT_REGION'),
+        'widget_id' => env('COMETCHAT_WIDGET_ID'),
+    ],
 ];

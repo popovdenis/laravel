@@ -42,6 +42,8 @@ class ScheduleController extends Controller
             $role
         );
 
+        $schedule->syncScheduleChat($schedule);
+
         return view('zoom.join', [
             'signature' => $signature,
             'sdkKey' => $sdkKey,
@@ -49,6 +51,7 @@ class ScheduleController extends Controller
             'password' => $schedule->passcode,
             'userName' => auth()->user()->name ?? 'Guest',
             'userEmail' => auth()->user()->email ?? 'email@example.com',
+            'schedule' => $schedule,
         ]);
     }
 }
