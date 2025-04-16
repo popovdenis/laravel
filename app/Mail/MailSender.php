@@ -14,12 +14,6 @@ abstract class MailSender extends Mailable
 {
     use Queueable, SerializesModels, MailerSendTrait;
 
-    public function __construct(
-        public string $name,
-        public string $meetingTime,
-        public string $joinUrl,
-    ) {}
-
     public function build(): self
     {
         $to = Arr::get($this->to, '0.address');
