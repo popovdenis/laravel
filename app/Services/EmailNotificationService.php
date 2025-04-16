@@ -21,7 +21,7 @@ class EmailNotificationService
             new WelcomeEmail(
                 name: $user->name,
                 email: $user->email,
-                password: $user->password,
+                password: $user->password_plaint,
             )
         );
     }
