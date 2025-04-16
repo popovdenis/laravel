@@ -15,7 +15,7 @@ abstract class MailSender extends Mailable
     public function build(): self
     {
         return $this
-            ->from('noreply@test-69oxl5e2jy2l785k.mlsender.net', 'English Course')
+            ->from('noreply@english-academy.space', 'English Course')
             ->view('emails.blank')
             ->mailersend(
                 template_id: $this->getTemplateId(),
