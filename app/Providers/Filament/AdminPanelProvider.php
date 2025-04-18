@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -63,6 +64,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                FilamentSettingsPlugin::make()
+                    ->pages([
+                        \App\Filament\Pages\System\Configuration::class,
+                    ])
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -70,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
                 'Catalog',
                 'Education',
                 'Blog',
+                'System',
             ]);
     }
 }
