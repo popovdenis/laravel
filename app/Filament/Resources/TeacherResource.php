@@ -27,7 +27,7 @@ class TeacherResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('schedule_template_id')
                             ->label('Select Template')
-                            ->options(\App\Models\ScheduleTemplate::all()->pluck('title', 'id'))
+                            ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
                             ->reactive(),
 
                         Forms\Components\Actions::make([

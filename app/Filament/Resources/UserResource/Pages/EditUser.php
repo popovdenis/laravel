@@ -5,6 +5,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Hash;
 
 class EditUser extends EditRecord
 {
@@ -22,5 +23,23 @@ class EditUser extends EditRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    protected function beforeSave(): void
+    {
+        $data = $this->form->getRawState();
+
+        if (!empty($data['change_password'])) {
+            if (!Hash::check($data['old_password'], $this->record->password)) {
+                $this->addError('old_password', 'Current password is incorrect.');
+                return;
+            }
+
+            if (!empty($data['new_password']) && $data['new_password'] === $data['new_password_confirmation']) {
+                $this->record->password = Hash::make($data['new_password']);
+            } else {
+                $this->addError('new_password_confirmation', 'New passwords do not match.');
+            }
+        }
     }
 }

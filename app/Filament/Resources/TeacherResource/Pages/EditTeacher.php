@@ -4,11 +4,13 @@ namespace App\Filament\Resources\TeacherResource\Pages;
 
 use App\Filament\Resources\TeacherResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\UserResource\Pages\EditUser;
 
-class EditTeacher extends EditRecord
+class EditTeacher extends EditUser
 {
     protected static string $resource = TeacherResource::class;
+    protected static ?string $title = 'Edit Teacher';
+    protected static ?string $breadcrumb = 'Edit Teacher';
 
     protected function getHeaderActions(): array
     {
@@ -30,5 +32,10 @@ class EditTeacher extends EditRecord
                 'end' => $slot['end'],
             ]);
         }
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('edit', ['record' => $this->record->id]);
     }
 }

@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -22,27 +23,55 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        return $form->schema([
+            Forms\Components\Grid::make(12)->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpan(6),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
+                    ->maxLength(255)
+                    ->columnSpan(6),
+
+                Forms\Components\Toggle::make('change_password')
+                    ->label('Change Password')
+                    ->reactive()
+                    ->dehydrated(false)
+                    ->columnSpan(12),
+
+                Forms\Components\TextInput::make('old_password')
                     ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('permissions')
-                    ->columnSpanFull(),
+                    ->label('Current Password')
+                    ->dehydrated(false)
+                    ->visible(fn ($get) => $get('change_password'))
+                    ->columnSpan(4),
+
+                Forms\Components\TextInput::make('new_password')
+                    ->password()
+                    ->label('New Password')
+                    ->requiredWith('change_password')
+                    ->dehydrated(false)
+                    ->visible(fn ($get) => $get('change_password'))
+                    ->columnSpan(4),
+
+                Forms\Components\TextInput::make('new_password_confirmation')
+                    ->password()
+                    ->label('Confirm New Password')
+                    ->requiredWith('change_password')
+                    ->dehydrated(false)
+                    ->same('new_password')
+                    ->visible(fn ($get) => $get('change_password'))
+                    ->columnSpan(4),
+
                 Select::make('roles')
                     ->multiple()
                     ->relationship('roles', 'name')
-                    ->preload(),
-            ]);
+                    ->preload()
+                    ->columnSpan(12),
+            ])
+        ]);
     }
 
     public static function table(Table $table): Table

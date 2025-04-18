@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTeacher extends CreateRecord
 {
     protected static string $resource = TeacherResource::class;
+    protected static ?string $title = 'Create Teacher';
+    protected static ?string $breadcrumb = 'Create Teacher';
 }
