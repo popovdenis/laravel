@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TeacherResource\Pages;
 
 use App\Filament\Resources\TeacherResource;
+use App\Models\ScheduleTimeslot;
 use Filament\Actions;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 
@@ -17,6 +18,18 @@ class EditTeacher extends EditUser
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        $this->form->fill([
+            'timesheet' => ScheduleTimeslot::query()
+                ->where('user_id', $record)
+                ->get(['day', 'start', 'end'])
+                ->toArray(),
+        ]);
     }
 
     protected function afterSave(): void

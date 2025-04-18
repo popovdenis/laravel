@@ -62,4 +62,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\ScheduleTimeslot::class, 'user_id');
     }
+
+    public function getTimesheetAttribute(): array
+    {
+        return $this->scheduleTimeslots->map(function ($slot) {
+            return [
+                'day' => $slot->day,
+                'start' => $slot->start,
+                'end' => $slot->end,
+            ];
+        })->toArray();
+    }
 }
