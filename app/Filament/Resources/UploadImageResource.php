@@ -15,6 +15,10 @@ class UploadImageResource extends Resource
 {
     protected static ?string $model = UploadedPhoto::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static ?string $navigationLabel = 'Uploaded Images';
+    protected static ?string $navigationGroup = 'Blog';
+
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
@@ -65,10 +69,5 @@ class UploadImageResource extends Resource
             'index' => Pages\ListUploadImages::route('/'),
             'create' => Pages\CreateUploadImage::route('/upload'),
         ];
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
     }
 }
