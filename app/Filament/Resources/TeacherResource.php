@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TeacherResource\Pages;
 use App\Filament\Resources\TeacherResource\RelationManagers;
 use Filament\Forms\Form;
+use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use App\Models\User;
@@ -19,7 +20,44 @@ class TeacherResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return UserResource::form($form);
+        return UserResource::form($form)
+            ->schema(array_merge(
+                UserResource::form($form)->getComponents(),
+                [
+                    Forms\Components\Section::make('Schedule Timesheet')
+                        ->schema([
+                            Forms\Components\Repeater::make('timesheet')
+                                ->label('Time Slots')
+//                                ->relationship('timesheet') // если у тебя уже есть relation
+                                ->schema([
+                                    Forms\Components\Select::make('day')
+                                        ->label('Day')
+                                        ->options([
+                                            'monday' => 'Monday',
+                                            'tuesday' => 'Tuesday',
+                                            'wednesday' => 'Wednesday',
+                                            'thursday' => 'Thursday',
+                                            'friday' => 'Friday',
+                                            'saturday' => 'Saturday',
+                                            'sunday' => 'Sunday',
+                                        ])
+                                        ->required(),
+
+                                    Forms\Components\TimePicker::make('start')
+                                        ->required(),
+
+                                    Forms\Components\TimePicker::make('end')
+                                        ->required(),
+                                ])
+                                ->default(function () {
+                                    $template = \App\Models\ScheduleTemplate::first(); // или нужный дефолт
+                                    return $template?->slots ?? [];
+                                })
+                                ->columnSpanFull(),
+                        ])
+                        ->visible(fn ($record) => $record?->hasRole('Teacher')),
+                ]
+            ));
     }
 
     public static function table(Table $table): Table
