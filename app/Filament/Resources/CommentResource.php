@@ -12,6 +12,10 @@ class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?string $navigationLabel = 'Comments';
+    protected static ?string $navigationGroup = 'Blog';
+
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table

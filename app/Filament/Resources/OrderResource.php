@@ -86,4 +86,9 @@ class OrderResource extends Resource
             'view' => Pages\ViewOrder::route('/{record}'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 }

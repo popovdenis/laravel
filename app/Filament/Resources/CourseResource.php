@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
+    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?string $navigationLabel = 'Courses';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {

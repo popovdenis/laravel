@@ -90,8 +90,8 @@ class UserResource extends Resource
         ];
     }
 
-    public static function getNavigationGroup(): ?string
+    public static function shouldRegisterNavigation(): bool
     {
-        return 'System';
+        return false;
     }
 }

@@ -66,4 +66,9 @@ class UploadImageResource extends Resource
             'create' => Pages\CreateUploadImage::route('/upload'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 }
