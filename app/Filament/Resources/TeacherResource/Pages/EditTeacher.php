@@ -16,4 +16,19 @@ class EditTeacher extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $data = $this->form->getState();
+
+        $this->record->scheduleTimeslots()->delete();
+
+        foreach ($data['timesheet'] ?? [] as $slot) {
+            $this->record->scheduleTimeslots()->create([
+                'day' => $slot['day'],
+                'start' => $slot['start'],
+                'end' => $slot['end'],
+            ]);
+        }
+    }
 }

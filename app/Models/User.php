@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Course::class, 'course_teacher');
     }
+
+    public function scheduleTimeslots()
+    {
+        return $this->hasMany(\App\Models\ScheduleTimeslot::class, 'user_id');
+    }
 }
