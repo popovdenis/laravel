@@ -60,8 +60,8 @@ class TeacherResource extends Resource
                                     ])
                                     ->required(),
 
-                                Forms\Components\TimePicker::make('start')->required(),
-                                Forms\Components\TimePicker::make('end')->required(),
+                                Forms\Components\TimePicker::make('start')->required()->seconds(false),
+                                Forms\Components\TimePicker::make('end')->required()->seconds(false),
                             ])
                             ->columnSpanFull(),
                     ])

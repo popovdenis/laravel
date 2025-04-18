@@ -24,12 +24,15 @@ class EditTeacher extends EditUser
     {
         parent::mount($record);
 
-        $this->form->fill([
-            'timesheet' => ScheduleTimeslot::query()
-                ->where('user_id', $record)
-                ->get(['day', 'start', 'end'])
-                ->toArray(),
-        ]);
+        $this->form->fill(array_merge(
+            $this->form->getState(),
+            [
+                'timesheet' => ScheduleTimeslot::query()
+                    ->where('user_id', $record)
+                    ->get(['day', 'start', 'end'])
+                    ->toArray(),
+            ]
+        ));
     }
 
     protected function afterSave(): void
