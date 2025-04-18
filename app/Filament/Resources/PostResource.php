@@ -26,9 +26,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
-    protected static ?string $navigationGroup = 'Blog';
-    protected static ?string $navigationLabel = 'Posts';
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {

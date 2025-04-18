@@ -19,9 +19,6 @@ use Filament\Forms\Components\DateTimePicker;
 class ScheduleResource extends Resource
 {
     protected static ?string $model = Schedule::class;
-    protected static ?string $navigationGroup = 'Education';
-    protected static ?string $navigationLabel = 'Schedule';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
