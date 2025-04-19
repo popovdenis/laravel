@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class CourseEnrollment extends Model
 {
@@ -37,5 +38,24 @@ class CourseEnrollment extends Model
     public function timeslots()
     {
         return $this->hasMany(CourseEnrollmentTimeslot::class);
+    }
+
+    public static function enrollWithTimeslots(int $userId, int $courseId, int $teacherId, array $slotIds): self
+    {
+        return DB::transaction(function () use ($userId, $courseId, $teacherId, $slotIds) {
+            $enrollment = self::create([
+                'user_id' => $userId,
+                'course_id' => $courseId,
+                'teacher_id' => $teacherId,
+            ]);
+
+            foreach ($slotIds as $slotId) {
+                $enrollment->timeslots()->create([
+                    'schedule_timeslot_id' => $slotId,
+                ]);
+            }
+
+            return $enrollment;
+        });
     }
 }
