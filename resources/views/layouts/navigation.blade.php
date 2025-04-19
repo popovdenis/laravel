@@ -63,7 +63,7 @@
                     </x-dropdown>
 
                     <!-- Mini Cart -->
-                    <div x-data="{ open: false }" class="relative">
+                    <div x-data="{ open: false }" x-cloak class="relative">
                         <button @click="open = !open" class="relative inline-flex items-center">
                             <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -93,9 +93,10 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="text-sm text-gray-500">Корзина пуста</div>
+                                    <div x-show="open" x-cloak class="text-sm text-gray-500">Корзина пуста</div>
                                 @endforelse
                             </div>
+
                             @if($cartCount)
                                 <div class="px-4 py-2 border-t text-right">
                                     <a href="{{ route('cart.index') }}" class="text-sm text-blue-600 hover:underline">

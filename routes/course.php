@@ -5,6 +5,10 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Binafy\LaravelCart\Models\Cart;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Flow\TeacherSelectionController;
+use App\Http\Controllers\Flow\TimeslotSelectionController;
+use App\Http\Controllers\Flow\CheckoutController;
+use App\Http\Controllers\Flow\ConfirmationController;
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
@@ -32,3 +36,14 @@ Route::post('/cart/add/{course:slug}', function (Request $request, Course $cours
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::delete('/cart/remove/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+
+Route::post('/flow/select-teacher', [TeacherSelectionController::class, 'store'])
+    ->name('flow.selectTeacher.store');
+Route::get('/flow/select-teacher', [TeacherSelectionController::class, 'index'])
+    ->name('flow.selectTeacher.index');
+Route::get('/flow/select-timeslot', [TimeslotSelectionController::class, 'index'])
+    ->name('flow.selectTimeslot.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('flow.checkout.store');
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('flow.checkout.show');
+Route::post('/checkout/process', [ConfirmationController::class, 'store'])->name('checkout.process');
+Route::get('/checkout/confirmed', [ConfirmationController::class, 'confirmed'])->name('checkout.confirmed');

@@ -14,12 +14,19 @@
                 {!! nl2br(e($course->description)) !!}
             </div>
 
-            <form method="POST" action="{{ route('cart.add', $course) }}">
+{{--            <form method="POST" action="{{ route('cart.add', $course) }}">--}}
+{{--                @csrf--}}
+{{--                <button type="submit"--}}
+{{--                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">--}}
+{{--                    Add to Cart--}}
+{{--                </button>--}}
+{{--            </form>--}}
+            <form method="POST" action="{{ route('flow.selectTeacher.store') }}">
                 @csrf
-                <button type="submit"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Add to Cart
-                </button>
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <x-primary-button>
+                    {{ __('Select a Teacher') }}
+                </x-primary-button>
             </form>
         </div>
     </div>
