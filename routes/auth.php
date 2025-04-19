@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Student\MyCoursesController;
 
 Route::middleware('auth')->prefix('profile')->group(function () {
     // Account Dashboard
@@ -23,6 +24,9 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/account-information', [ProfileController::class, 'edit'])->name('profile.account-information.edit');
     Route::patch('/account-information', [ProfileController::class, 'update'])->name('profile.account-information.update');
     Route::delete('/account-information', [ProfileController::class, 'destroy'])->name('profile.account-information.destroy');
+
+    // Lessons
+    Route::get('/my-courses', [MyCoursesController::class, 'index'])->name('profile.courses.index');
 
     // Schedule
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])

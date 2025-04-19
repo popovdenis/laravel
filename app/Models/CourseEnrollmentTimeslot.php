@@ -21,4 +21,9 @@ class CourseEnrollmentTimeslot extends Model
     {
         return $this->belongsTo(ScheduleTimeslot::class, 'schedule_timeslot_id');
     }
+
+    public function scheduleTimeslot()
+    {
+        return $this->belongsTo(ScheduleTimeslot::class);
+    }
 }

@@ -16,5 +16,9 @@
            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 {{ request()->routeIs('profile.schedule.*') ? 'bg-gray-100 font-medium text-gray-900' : '' }}">
             {{ __('My Schedule') }}
         </a>
+        <a href="{{ route('profile.courses.index') }}"
+           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 {{ request()->routeIs('profile.courses.*') ? 'bg-gray-100 font-medium text-gray-900' : '' }}">
+            {{ __('My Courses') }}
+        </a>
     </nav>
 </aside>
