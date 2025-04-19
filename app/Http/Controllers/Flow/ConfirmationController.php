@@ -8,27 +8,32 @@ use App\Models\CourseEnrollment;
 
 class ConfirmationController extends Controller
 {
-
     public function store(Request $request)
     {
-        $teacherId = session('teacher_id');
-        $slotIds = session('slot_id');
-        $courseId = session('course_id');
+        try {
+            $teacherId = session('teacher_id');
+            $slotIds = session('slot_id');
+            $courseId = session('course_id');
 
-        if (! $teacherId || ! $slotIds || ! $courseId) {
-            return redirect()->route('courses.index')->with('error', 'Missing enrollment data.');
+            if (! $teacherId || ! $slotIds || ! $courseId) {
+                return redirect()->route('courses.index')->with('error', 'Missing enrollment data.');
+            }
+
+            CourseEnrollment::enrollWithTimeslots(
+                auth()->id(),
+                $courseId,
+                $teacherId,
+                (array) $slotIds
+            );
+
+            session()->forget(['teacher_id', 'slot_id', 'course_id']);
+
+            return redirect()->route('checkout.confirmed')->with('success', 'Enrollment successful!');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->route('courses.index')->with('error', 'Something went wrong. Please try again.');
         }
-
-        CourseEnrollment::enrollWithTimeslots(
-            auth()->id(),
-            $courseId,
-            $teacherId,
-            (array) $slotIds
-        );
-
-        session()->forget(['teacher_id', 'slot_id', 'course_id']);
-
-        return redirect()->route('checkout.confirmed')->with('success', 'Enrollment successful!');
     }
 
     public function confirmed()
