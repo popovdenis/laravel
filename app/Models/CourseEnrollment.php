@@ -13,7 +13,6 @@ class CourseEnrollment extends Model
         'user_id',
         'teacher_id',
         'course_id',
-        'timeslot_ids',
     ];
 
     protected $casts = [
@@ -33,5 +32,10 @@ class CourseEnrollment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function timeslots()
+    {
+        return $this->hasMany(CourseEnrollmentTimeslot::class);
     }
 }

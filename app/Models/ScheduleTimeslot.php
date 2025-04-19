@@ -12,4 +12,9 @@ class ScheduleTimeslot extends Model
         'start',
         'end',
     ];
+
+    public function enrollments()
+    {
+        return $this->belongsToMany(CourseEnrollment::class, 'course_enrollment_timeslots');
+    }
 }
