@@ -19,6 +19,8 @@ class SendWelcomeEmail
      */
     public function handle(Registered $event): void
     {
-        $this->emailNotificationService->sendWelcomeEmail($event->user);
+        if (setting('mailsender.use_mail_sender')) {
+            $this->emailNotificationService->sendWelcomeEmail($event->user);
+        }
     }
 }
