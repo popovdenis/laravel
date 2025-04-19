@@ -23,24 +23,21 @@ class CheckoutController extends Controller
             'selected_slots' => 'required|array|min:1',
         ]);
 
-        $teacherId = session('selected_teacher_id');
+        $teacherId = session('teacher_id');
 
         if (!$teacherId) {
             return redirect()->route('flow.selectTeacher.index');
         }
 
-        session([
-            'flow.teacher_id' => $teacherId,
-            'flow.slot_id' => $request->selected_slots,
-        ]);
+        session(['slot_id' => $request->selected_slots]);
 
         return redirect()->route('flow.checkout.show');
     }
 
     public function show()
     {
-        $teacherId = session('flow.teacher_id');
-        $slotIds = session('flow.slot_id');
+        $teacherId = session('teacher_id');
+        $slotIds = session('slot_id');
 
         if (!$teacherId || !$slotIds || !is_array($slotIds)) {
             return redirect()->route('flow.selectTeacher.index');

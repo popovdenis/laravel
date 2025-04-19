@@ -14,14 +14,14 @@ class TeacherSelectionController extends Controller
             'course_id' => 'required|exists:courses,id',
         ]);
 
-        session(['selected_course_id' => $request->course_id]);
+        session(['course_id' => $request->course_id]);
 
         return redirect()->route('flow.selectTeacher.index');
     }
 
     public function index()
     {
-        $courseId = session('selected_course_id');
+        $courseId = session('course_id');
 
         if (! $courseId) {
             return redirect()->route('home')->with('error', 'No course selected.');

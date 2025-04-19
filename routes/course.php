@@ -41,6 +41,8 @@ Route::post('/flow/select-teacher', [TeacherSelectionController::class, 'store']
     ->name('flow.selectTeacher.store');
 Route::get('/flow/select-teacher', [TeacherSelectionController::class, 'index'])
     ->name('flow.selectTeacher.index');
+Route::post('/flow/select-timeslot', [TimeslotSelectionController::class, 'store'])
+    ->name('flow.selectTimeslot.store');
 Route::get('/flow/select-timeslot', [TimeslotSelectionController::class, 'index'])
     ->name('flow.selectTimeslot.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('flow.checkout.store');

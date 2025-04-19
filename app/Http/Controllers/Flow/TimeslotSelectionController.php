@@ -10,25 +10,19 @@ class TimeslotSelectionController extends Controller
 {
     public function store(Request $request)
     {
-        $teacherId = session('selected_teacher_id');
-
-        if (! $teacherId) {
-            return redirect()->route('flow.selectTeacher.index')->with('error', 'No teacher selected.');
-        }
-
         $request->validate([
-            'selected_slots' => 'required|json',
+            'teacher_id' => 'required|exists:users,id',
         ]);
 
-        session(['selected_timeslot_ids' => json_decode($request->selected_slots, true)]);
+        session(['teacher_id' => $request->teacher_id]);
 
-        return redirect()->route('flow.checkout.show');
+        return redirect()->route('flow.selectTimeslot.index');
     }
 
     public function index()
     {
-        $teacherId = session('selected_teacher_id');
-        $courseId = session('selected_course_id');
+        $teacherId = session('teacher_id');
+        $courseId = session('course_id');
 
         if (! $teacherId || ! $courseId) {
             return redirect()->route('flow.selectTeacher.index')->with('error', 'No teacher or course selected.');
