@@ -21,6 +21,9 @@ class ScheduleNotifier
         if (! $schedule->zoom_join_url) {
             return;
         }
+        if (!setting('mailsender.use_mail_sender')) {
+            return;
+        }
 
         $this->notifyTeacher($schedule);
         $this->notifyStudent($schedule);

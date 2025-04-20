@@ -47,10 +47,12 @@ class ScheduleTemplateResource extends Resource
 
                         Forms\Components\TimePicker::make('start')
                             ->label('Start Time')
+                            ->seconds(false)
                             ->required(),
 
                         Forms\Components\TimePicker::make('end')
                             ->label('End Time')
+                            ->seconds(false)
                             ->required(),
                     ])
                     ->default([])
@@ -63,7 +65,8 @@ class ScheduleTemplateResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
             ])
             ->filters([
                 //

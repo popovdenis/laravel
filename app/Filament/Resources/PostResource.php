@@ -46,7 +46,7 @@ class PostResource extends Resource
                     ->reactive()
                     ->debounce(1000)
                     ->afterStateUpdated(fn($state, callable $set) =>
-                    $set('currentTranslation.slug', Str::slug($state))
+                        $set('currentTranslation.slug', Str::slug($state))
                     )
                     ->columnSpan(4),
 
