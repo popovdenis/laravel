@@ -24,7 +24,7 @@ class TeacherSelectionController extends Controller
         $courseId = session('course_id');
 
         if (! $courseId) {
-            return redirect()->route('home')->with('error', 'No course selected.');
+            return redirect()->route('dashboard')->with('error', 'No course selected.');
         }
 
         $course = Course::with('teachers')->findOrFail($courseId);
