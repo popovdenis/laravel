@@ -17,6 +17,7 @@ class Stream extends Model
         'end_date',
         'current_subject_id',
         'current_subject_number',
+        'repeat',
     ];
 
     public function languageLevel(): BelongsTo

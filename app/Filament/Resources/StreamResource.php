@@ -75,7 +75,11 @@ class StreamResource extends Resource
                 })
                 ->searchable()
                 ->required()
-                ->reactive()
+                ->reactive(),
+
+            Forms\Components\Toggle::make('repeat')
+                ->label('Repeat')
+                ->default(false),
         ]);
     }
 
@@ -85,6 +89,7 @@ class StreamResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('languageLevel.title')->label('Level')->sortable(),
                 Tables\Columns\TextColumn::make('teacher.name')->label('Teacher')->sortable(),
+                Tables\Columns\TextColumn::make('currentSubject.title')->label('Current Subject')->sortable(),
                 Tables\Columns\TextColumn::make('start_date')->date(),
                 Tables\Columns\TextColumn::make('end_date')->date(),
                 Tables\Columns\TextColumn::make('status')->badge()
