@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Binafy\LaravelCart\Cartable;
 
-class LanguageLevel extends Model implements Cartable
+class LanguageLevel extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -16,14 +15,13 @@ class LanguageLevel extends Model implements Cartable
         'title',
         'slug',
         'description',
-        'level',
-        'duration',
-        'price',
+
     ];
 
     public function teachers()
     {
-        return $this->belongsToMany(User::class, 'language_level_teacher');
+        return $this->belongsToMany(User::class, 'language_level_teacher')
+            ->withPivot('current_subject_id');
     }
 
     public function subjects()
@@ -34,15 +32,5 @@ class LanguageLevel extends Model implements Cartable
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function getFormattedPrice(): string
-    {
-        return '$' . number_format($this->price, 2);
     }
 }

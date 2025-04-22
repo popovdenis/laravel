@@ -11,6 +11,17 @@
                 @foreach ($level->teachers as $teacher)
                     <div class="mt-4 p-4 border rounded bg-gray-50">
                         <p class="font-semibold">{{ $teacher->name }}</p>
+
+                        @php
+                            $currentSubject = $teacher->currentSubjectForLevel($level->id);
+                        @endphp
+
+                        @if ($currentSubject)
+                            <p class="text-sm text-green-600">Current subject: {{ $currentSubject->title }}</p>
+                        @else
+                            <p class="text-sm text-gray-500">No current subject selected.</p>
+                        @endif
+
                         @if ($teacher->scheduleTimeslots->isNotEmpty())
                             <ul class="list-disc list-inside text-gray-600">
                                 @foreach ($teacher->scheduleTimeslots as $slot)
@@ -18,25 +29,10 @@
                                 @endforeach
                             </ul>
                         @else
-                            <p class="text-gray-500 text-sm">{{ __('No available time slots.') }}</p>
+                            <p class="text-gray-500 text-sm">No available time slots.</p>
                         @endif
                     </div>
                 @endforeach
-
-                @if ($level->subjects->isNotEmpty())
-                    <ul class="mt-2 list-disc list-inside text-gray-700">
-                        @foreach ($level->subjects as $subject)
-                            <li>
-                                <strong>{{ $subject->title }}</strong>
-                                @if($subject->description)
-                                    — {{ $subject->description }}
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-gray-500 mt-2">{{ __('No subjects defined yet for this level.') }}</p>
-                @endif
             </div>
         @endforeach
     </div>
