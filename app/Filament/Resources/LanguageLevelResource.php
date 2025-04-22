@@ -44,12 +44,6 @@ class LanguageLevelResource extends Resource
                     $set('slug', Str::slug($state));
                 }),
             Textarea::make('description')->required(),
-            TextInput::make('level')->maxLength(100),
-            TextInput::make('duration')->maxLength(100),
-            TextInput::make('price')
-                ->numeric()
-                ->prefix('$')
-                ->required(),
             Toggle::make('is_active')->label('Active'),
             TextInput::make('sort_order')->numeric(),
             Select::make('teachers')
@@ -82,9 +76,6 @@ class LanguageLevelResource extends Resource
     {
         return $table->columns([
             TextColumn::make('title')->sortable()->searchable(),
-            TextColumn::make('level')->sortable(),
-            TextColumn::make('duration'),
-            TextColumn::make('price')->money('USD'),
             ToggleColumn::make('is_active'),
             TextColumn::make('sort_order')->sortable(),
         ]);
