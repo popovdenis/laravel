@@ -26,6 +26,11 @@ class LanguageLevel extends Model implements Cartable
         return $this->belongsToMany(User::class, 'language_level_teacher');
     }
 
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
