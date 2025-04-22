@@ -8,7 +8,8 @@ class LanguageLevelController extends Controller
 {
     public function index()
     {
-        $levels = LanguageLevel::where('is_active', true)
+        $levels = \App\Models\LanguageLevel::with('subjects')
+            ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
 

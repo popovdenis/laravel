@@ -1,25 +1,28 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Language Levels') }}
-        </h2>
+        <h2 class="text-xl font-semibold text-gray-800">{{ __('Language Levels') }}</h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <ul class="space-y-4">
-                @foreach ($levels as $level)
-                    <li>
-                        <a href="{{ route('levels.show', $level) }}"
-                           class="block p-4 border rounded hover:bg-gray-50">
-                            <div class="text-lg font-bold">{{ $level->title }}</div>
-                            <div class="text-sm text-gray-600">
-                                Level: {{ $level->level }} | Duration: {{ $level->duration }} | ${{ $level->price }}
-                            </div>
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        @foreach ($levels as $level)
+            <div class="mb-6 border rounded shadow-sm p-4 bg-white">
+                <h3 class="text-xl font-bold">{{ $level->title }}</h3>
+
+                @if ($level->subjects->isNotEmpty())
+                    <ul class="mt-2 list-disc list-inside text-gray-700">
+                        @foreach ($level->subjects as $subject)
+                            <li>
+                                <strong>{{ $subject->title }}</strong>
+                                @if($subject->description)
+                                    — {{ $subject->description }}
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-gray-500 mt-2">No subjects defined yet for this level.</p>
+                @endif
+            </div>
+        @endforeach
     </div>
 </x-app-layout>
