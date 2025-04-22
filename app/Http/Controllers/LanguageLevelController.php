@@ -10,7 +10,6 @@ class LanguageLevelController extends Controller
 {
     public function index(Request $request)
     {
-        // Получаем только потоки со статусами planned или started
         $streams = Stream::with([
             'languageLevel.subjects',
             'teacher.scheduleTimeslots',
@@ -21,20 +20,28 @@ class LanguageLevelController extends Controller
             ->orderBy('start_date')
             ->get();
 
-        // Для фильтра в сайдбаре: список уровней (levels)
         $levels = $streams->pluck('languageLevel')->unique('id')->values();
-
         $selectedLevelId = $request->input('level_id') ?? optional($levels->first())->id;
+        $selectedSubjectIds = $request->input('subject_ids', []);
 
-        // Фильтрация потоков по выбранному уровню (если выбран)
-        $filteredStreams = $streams->filter(function ($stream) use ($selectedLevelId) {
-            return $stream->language_level_id == $selectedLevelId;
+        // List of subjects
+        $subjects = $levels->firstWhere('id', $selectedLevelId)?->subjects ?? collect();
+
+        $filteredStreams = $streams->filter(function ($stream) use ($selectedLevelId, $selectedSubjectIds) {
+            $matchesLevel = $stream->language_level_id == $selectedLevelId;
+
+            $matchesSubject = empty($selectedSubjectIds)
+                || in_array($stream->current_subject_id, $selectedSubjectIds);
+
+            return $matchesLevel && $matchesSubject;
         });
 
         return view('levels.index', [
-            'levels'           => $levels,
-            'streams'          => $filteredStreams,
-            'selectedLevelId'  => $selectedLevelId,
+            'levels'              => $levels,
+            'streams'             => $filteredStreams,
+            'selectedLevelId'     => $selectedLevelId,
+            'selectedSubjectIds'  => $selectedSubjectIds,
+            'subjects'            => $subjects,
         ]);
     }
 

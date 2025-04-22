@@ -6,33 +6,50 @@
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Sidebar -->
         <aside class="bg-white border rounded shadow-sm p-4 space-y-4">
-            <form method="GET" action="{{ route('levels.index') }}">
+            <form method="GET" action="{{ route('levels.index') }}" id="filter-form">
+                <!-- Level Selection -->
                 <label for="level_id" class="block text-sm font-medium text-gray-700 mb-1">Select Level:</label>
-                <select name="level_id" id="level_id" onchange="this.form.submit()"
-                        class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                <select name="level_id" id="level_id" onchange="document.getElementById('filter-form').submit()"
+                        class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 mb-4">
                     @foreach ($levels as $level)
                         <option value="{{ $level->id }}" {{ $selectedLevelId == $level->id ? 'selected' : '' }}>
                             {{ $level->title }}
                         </option>
                     @endforeach
                 </select>
-            </form>
 
-            @if ($levels->where('id', $selectedLevelId)->first())
-                <div>
-                    <h3 class="text-md font-semibold text-gray-800 mb-2">Subjects:</h3>
-                    <ul class="space-y-1">
+                <!-- Subject Checkboxes -->
+                @if ($selectedLevelId)
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Subjects:</label>
+                    <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
                         @foreach ($levels->where('id', $selectedLevelId)->first()->subjects as $subject)
-                            <li class="text-sm text-gray-700">{{ $subject->title }}</li>
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       name="subject_ids[]"
+                                       value="{{ $subject->id }}"
+                                       {{ in_array($subject->id, request()->input('subject_ids', [])) ? 'checked' : '' }}
+                                       onchange="document.getElementById('filter-form').submit()"
+                                       class="border-gray-300 rounded text-blue-600 focus:ring-blue-500">
+                                <label class="ml-2 text-sm text-gray-700">{{ $subject->title }}</label>
+                            </div>
                         @endforeach
-                    </ul>
-                </div>
-            @endif
+                    </div>
+                @endif
+            </form>
         </aside>
 
         <!-- Main Content -->
         <div class="md:col-span-3 space-y-6">
             @forelse ($streams as $stream)
+                @php
+                    $subjectFilter = request()->input('subject_ids', []);
+                    $currentSubjectId = $stream->current_subject_id;
+                @endphp
+
+                @if (!empty($subjectFilter) && !in_array($currentSubjectId, $subjectFilter))
+                    @continue
+                @endif
+
                 <div class="border rounded shadow-sm bg-white p-4">
                     <div class="flex justify-between items-center mb-3">
                         <div>
