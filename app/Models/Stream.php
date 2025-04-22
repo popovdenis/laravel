@@ -4,6 +4,7 @@ namespace App\Models;
 
 namespace App\Models;
 
+use App\Models\Enums\StreamStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,6 +19,10 @@ class Stream extends Model
         'current_subject_id',
         'current_subject_number',
         'repeat',
+    ];
+
+    protected $casts = [
+        'status' => StreamStatus::class,
     ];
 
     public function languageLevel(): BelongsTo

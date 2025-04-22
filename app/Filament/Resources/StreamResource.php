@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StreamResource\Pages;
 use App\Filament\Resources\StreamResource\RelationManagers;
+use App\Models\Enums\StreamStatus;
 use App\Models\Stream;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -55,13 +56,10 @@ class StreamResource extends Resource
                 ->default(Carbon::now()),
 
             Forms\Components\Select::make('status')
-                ->options([
-                    'planned' => 'Planned',
-                    'started' => 'Started',
-                    'paused' => 'Paused',
-                    'finished' => 'Finished',
-                ])
-                ->default('planned')
+                ->options(collect(StreamStatus::cases())->mapWithKeys(fn($status) => [
+                    $status->value => $status->label()
+                ]))
+                ->default(StreamStatus::PLANNED)
                 ->required(),
 
             Forms\Components\Select::make('current_subject_id')
@@ -94,10 +92,10 @@ class StreamResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')->date(),
                 Tables\Columns\TextColumn::make('status')->badge()
                     ->colors([
-                        'primary' => 'planned',
-                        'success' => 'started',
-                        'warning' => 'paused',
-                        'danger' => 'finished',
+                        'primary' => StreamStatus::PLANNED,
+                        'success' => StreamStatus::STARTED,
+                        'warning' => StreamStatus::PAUSED,
+                        'danger' => StreamStatus::FINISHED,
                     ]),
             ])
             ->filters([])
