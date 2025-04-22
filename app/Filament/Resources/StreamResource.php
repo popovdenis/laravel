@@ -64,10 +64,18 @@ class StreamResource extends Resource
                 ->default('planned')
                 ->required(),
 
-            Forms\Components\TextInput::make('current_subject_number')
-                ->numeric()
-                ->default(1)
-                ->minValue(1),
+            Forms\Components\Select::make('current_subject_id')
+                ->label('Current Subject')
+                ->options(function (Forms\Get $get) {
+                    $levelId = $get('language_level_id');
+                    if (! $levelId) {
+                        return [];
+                    }
+                    return \App\Models\Subject::where('language_level_id', $levelId)->pluck('title', 'id');
+                })
+                ->searchable()
+                ->required()
+                ->reactive()
         ]);
     }
 

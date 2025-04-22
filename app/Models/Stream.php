@@ -12,10 +12,11 @@ class Stream extends Model
     protected $fillable = [
         'language_level_id',
         'teacher_id',
-        'current_subject_number',
         'status',
         'start_date',
         'end_date',
+        'current_subject_id',
+        'current_subject_number',
     ];
 
     public function languageLevel(): BelongsTo
@@ -26,5 +27,26 @@ class Stream extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function currentSubject()
+    {
+        return $this->belongsTo(Subject::class, 'current_subject_id');
+    }
+
+    public function getCurrentSubjectNumberAttribute(): ?int
+    {
+        if (! $this->current_subject_id || ! $this->languageLevel) {
+            return null;
+        }
+
+        $subjects = $this->languageLevel->subjects()
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
+
+        return array_search($this->current_subject_id, $subjects) !== false
+            ? array_search($this->current_subject_id, $subjects) + 1
+            : null;
     }
 }

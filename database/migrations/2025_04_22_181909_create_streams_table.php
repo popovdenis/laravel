@@ -15,8 +15,10 @@ return new class extends Migration {
             $table->enum('status', ['planned', 'started', 'paused', 'finished'])->default('planned'); // status
             $table->date('start_date');
             $table->date('end_date')->nullable();
+            $table->boolean('repeat')->default(false);
             $table->timestamps();
         });
+
     }
 
     public function down(): void
