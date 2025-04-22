@@ -28,8 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (session()->has('redirect_course_id')) {
-            $slug = session()->pull('redirect_course_id');
+        if (session()->has('redirect_level_id')) {
+            $slug = session()->pull('redirect_level_id');
             $course = \App\Models\LanguageLevel::where('slug', $slug)->first();
 
             if ($course) {

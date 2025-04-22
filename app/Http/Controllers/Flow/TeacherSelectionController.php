@@ -11,17 +11,17 @@ class TeacherSelectionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'course_id' => 'required|exists:language_levels,id',
+            'level_id' => 'required|exists:language_levels,id',
         ]);
 
-        session(['course_id' => $request->course_id]);
+        session(['level_id' => $request->level_id]);
 
         return redirect()->route('flow.selectTeacher.index');
     }
 
     public function index()
     {
-        $courseId = session('course_id');
+        $courseId = session('level_id');
 
         if (! $courseId) {
             return redirect()->route('dashboard')->with('error', 'No course selected.');

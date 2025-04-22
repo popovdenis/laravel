@@ -22,7 +22,7 @@ class TimeslotSelectionController extends Controller
     public function index()
     {
         $teacherId = session('teacher_id');
-        $courseId = session('course_id');
+        $courseId = session('level_id');
 
         if (! $teacherId || ! $courseId) {
             return redirect()->route('flow.selectTeacher.index')->with('error', 'No teacher or course selected.');

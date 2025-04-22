@@ -16,7 +16,7 @@
 
             <form method="POST" action="{{ route('flow.selectTeacher.store') }}">
                 @csrf
-                <input type="hidden" name="course_id" value="{{ $level->id }}">
+                <input type="hidden" name="level_id" value="{{ $level->id }}">
                 <x-primary-button>
                     {{ __('Select a Teacher') }}
                 </x-primary-button>

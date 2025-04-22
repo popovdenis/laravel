@@ -13,7 +13,7 @@ class ConfirmationController extends Controller
         try {
             $teacherId = session('teacher_id');
             $slotIds = session('slot_id');
-            $courseId = session('course_id');
+            $courseId = session('level_id');
 
             if (! $teacherId || ! $slotIds || ! $courseId) {
                 return redirect()->route('levels.index')->with('error', 'Missing enrollment data.');
@@ -30,7 +30,7 @@ class ConfirmationController extends Controller
                 (array) $slotIds
             );
 
-            session()->forget(['teacher_id', 'slot_id', 'course_id']);
+            session()->forget(['teacher_id', 'slot_id', 'level_id']);
 
             return redirect()->route('checkout.confirmed')->with('success', 'Enrollment successful!');
         } catch (\Throwable $e) {
