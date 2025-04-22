@@ -3,21 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubjectResource\Pages;
-use App\Filament\Resources\SubjectResource\RelationManagers;
 use App\Models\Subject;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Resources\Resource;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Study';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationLabel = 'Subjects';
 
     public static function form(Form $form): Form
     {
@@ -32,7 +30,8 @@ class SubjectResource extends Resource
                 ->maxLength(255),
 
             Forms\Components\Textarea::make('description')
-                ->maxLength(1000),
+                ->maxLength(1000)
+                ->columnSpanFull(),
         ]);
     }
 
@@ -41,7 +40,8 @@ class SubjectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('languageLevel.title')->label('Language Level'),
+                Tables\Columns\TextColumn::make('languageLevel.title')->label('Language Level')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
                 //
@@ -56,19 +56,12 @@ class SubjectResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSubjects::route('/'),
+            'index'  => Pages\ListSubjects::route('/'),
             'create' => Pages\CreateSubject::route('/create'),
-            'edit' => Pages\EditSubject::route('/{record}/edit'),
+            'edit'   => Pages\EditSubject::route('/{record}/edit'),
         ];
     }
 }
