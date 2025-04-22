@@ -26,15 +26,20 @@ class StreamResource extends Resource
             Forms\Components\Select::make('language_level_id')
                 ->label('Language Level')
                 ->relationship('languageLevel', 'title')
-                ->required(),
+                ->required()
+                ->reactive(),
 
             Forms\Components\Select::make('teacher_id')
                 ->label('Teacher')
-                ->relationship(
-                    'teacher',
-                    'name',
-                    modifyQueryUsing: fn ($query) => $query->role('teacher')
-                )
+                ->options(function (Forms\Get $get) {
+                    $levelId = $get('language_level_id');
+                    if (!$levelId) {
+                        return [];
+                    }
+                    return \App\Models\User::whereHas('languageLevels', function ($query) use ($levelId) {
+                        $query->where('language_level_id', $levelId);
+                    })->role('teacher')->pluck('name', 'id');
+                })
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
