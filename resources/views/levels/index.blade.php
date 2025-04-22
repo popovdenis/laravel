@@ -12,7 +12,14 @@
                         class="w-full flex items-center justify-between px-4 py-3 bg-gray-100 hover:bg-gray-200 focus:outline-none"
                         @click="open === {{ $index }} ? open = null : open = {{ $index }}"
                     >
-                        <h3 class="text-lg font-bold">{{ $level->title }}</h3>
+                        <h3
+                            :class="open === {{ $index }}
+                                ? 'text-blue-600 font-extrabold'
+                                : 'text-gray-800 font-bold'"
+                            class="text-lg transition-colors duration-300"
+                        >
+                            {{ $level->title }}
+                        </h3>
                         <svg :class="{'transform rotate-180': open === {{ $index }}}" class="h-5 w-5 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
