@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CourseResource\Pages;
-use App\Filament\Resources\CourseResource\RelationManagers;
+use App\Filament\Resources\LanguageLevelResource\Pages;
+use App\Filament\Resources\LanguageLevelResource\RelationManagers;
 use App\Models\LanguageLevel;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,11 +15,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
-class CourseResource extends Resource
+class LanguageLevelResource extends Resource
 {
     protected static ?string $model = LanguageLevel::class;
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?string $navigationGroup = 'Study';
     protected static ?string $navigationLabel = 'Levels';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,7 +32,7 @@ class CourseResource extends Resource
                 ->maxLength(255)
                 ->live(onBlur: true)
                 ->afterStateUpdated(function ($state, callable $set) {
-                    $set('slug', \Str::slug($state));
+                    $set('slug', Str::slug($state));
                 }),
             TextInput::make('slug')
                 ->required()
@@ -40,7 +41,7 @@ class CourseResource extends Resource
                 ->lazy()
                 ->dehydrated()
                 ->afterStateUpdated(function ($state, callable $set) {
-                    $set('slug', \Str::slug($state));
+                    $set('slug', Str::slug($state));
                 }),
             Textarea::make('description')->required(),
             TextInput::make('level')->maxLength(100),
@@ -99,9 +100,9 @@ class CourseResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCourses::route('/'),
-            'create' => Pages\CreateCourse::route('/create'),
-            'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'index' => Pages\ListLevel::route('/'),
+            'create' => Pages\CreateLevel::route('/create'),
+            'edit' => Pages\EditLevel::route('/{record}/edit'),
         ];
     }
 
