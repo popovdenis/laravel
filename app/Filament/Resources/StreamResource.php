@@ -83,7 +83,6 @@ class StreamResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('languageLevel.title')->label('Level')->sortable(),
                 Tables\Columns\TextColumn::make('teacher.name')->label('Teacher')->sortable(),
                 Tables\Columns\TextColumn::make('start_date')->date(),
