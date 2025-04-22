@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stream;
 use App\Models\LanguageLevel;
 
 class LanguageLevelController extends Controller
 {
     public function index()
     {
-        $levels = \App\Models\LanguageLevel::with(['subjects', 'teachers.scheduleTimeslots'])
-            ->where('is_active', true)
-            ->orderBy('sort_order')
+        $streams = Stream::with([
+            'languageLevel',
+            'teacher.scheduleTimeslots',
+            'languageLevel.subjects',
+        ])
+            ->whereIn('status', ['planned', 'started'])
+            ->orderBy('start_date')
             ->get();
 
-        return view('levels.index', compact('levels'));
+        return view('levels.index', compact('streams'));
     }
 
     public function show(string $slug)

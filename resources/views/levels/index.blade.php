@@ -49,18 +49,39 @@
                                     @endif
 
                                     @if ($teacher->scheduleTimeslots->isNotEmpty())
-                                        <div class="flex flex-wrap gap-2 mt-2">
-                                            @foreach ($teacher->scheduleTimeslots as $slot)
+                                        <div x-data="{ selectedSlots: [] }" class="mt-4">
+                                            <div class="flex flex-wrap gap-2">
+                                                @foreach ($teacher->scheduleTimeslots as $slot)
+                                                    <button
+                                                        type="button"
+                                                        @click="selectedSlots.includes({{ $slot->id }})
+                                                            ? selectedSlots = selectedSlots.filter(id => id !== {{ $slot->id }})
+                                                            : selectedSlots.push({{ $slot->id }})"
+                                                        :class="selectedSlots.includes({{ $slot->id }})
+                                                            ? 'bg-blue-500 text-white border-blue-500'
+                                                            : 'bg-white text-gray-700 border-gray-300'"
+                                                        class="px-3 py-1 border rounded text-sm hover:bg-blue-500 hover:text-white transition"
+                                                    >
+                                                        {{ ucfirst($slot->day) }}
+                                                        {{ \Carbon\Carbon::parse($slot->start)->format('H:i') }} -
+                                                        {{ \Carbon\Carbon::parse($slot->end)->format('H:i') }}
+                                                    </button>
+                                                @endforeach
+                                            </div>
+
+                                            <form method="POST" action="{{ route('booking.store') }}" class="mt-4">
+                                                @csrf
+                                                <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
+                                                <input type="hidden" name="level_id" value="{{ $level->id }}">
+                                                <input type="hidden" name="selected_slots" :value="JSON.stringify(selectedSlots)">
                                                 <button
-                                                    type="button"
-                                                    class="px-3 py-1 border rounded text-sm bg-white text-gray-700 border-gray-300 hover:bg-blue-500 hover:text-white transition"
+                                                    type="submit"
+                                                    class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+                                                    :disabled="selectedSlots.length === 0"
                                                 >
-                                                    {{ ucfirst($slot->day) }}
-                                                    {{ \Carbon\Carbon::parse($slot->start)->format('H:i') }}
-                                                    -
-                                                    {{ \Carbon\Carbon::parse($slot->end)->format('H:i') }}
+                                                    Book Selected Slots
                                                 </button>
-                                            @endforeach
+                                            </form>
                                         </div>
                                     @else
                                         <p class="text-gray-500 text-sm">No available time slots.</p>
