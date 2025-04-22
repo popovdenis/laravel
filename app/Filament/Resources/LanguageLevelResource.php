@@ -84,7 +84,7 @@ class LanguageLevelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\SubjectRelationManager::class,
         ];
     }
 
