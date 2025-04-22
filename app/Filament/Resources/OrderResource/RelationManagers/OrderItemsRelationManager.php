@@ -12,8 +12,8 @@ class OrderItemsRelationManager extends RelationManager
 {
     protected static string $relationship = 'items';
     protected static ?string $title = 'Purchased Courses';
-    protected static ?string $label = 'Course';
-    protected static ?string $pluralLabel = 'Courses';
+    protected static ?string $label = 'Level';
+    protected static ?string $pluralLabel = 'Levels';
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {

@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function teachingCourses()
     {
-        return $this->belongsToMany(Course::class, 'course_teacher');
+        return $this->belongsToMany(LanguageLevel::class, 'language_level_teacher');
     }
 
     public function scheduleTimeslots()

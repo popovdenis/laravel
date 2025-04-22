@@ -29,7 +29,7 @@ class TimeslotSelectionController extends Controller
         }
 
         $teacher = User::with('scheduleTimeslots')->findOrFail($teacherId);
-        $course = \App\Models\Course::findOrFail($courseId);
+        $course = \App\Models\LanguageLevel::findOrFail($courseId);
 
         return view('flow.select-timeslot', [
             'teacher' => $teacher,

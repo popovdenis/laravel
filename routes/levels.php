@@ -1,7 +1,7 @@
 <?php
-use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LanguageLevelController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Course;
+use App\Models\LanguageLevel;
 use Illuminate\Http\Request;
 use Binafy\LaravelCart\Models\Cart;
 use App\Http\Controllers\CartController;
@@ -10,9 +10,9 @@ use App\Http\Controllers\Flow\TimeslotSelectionController;
 use App\Http\Controllers\Flow\CheckoutController;
 use App\Http\Controllers\Flow\ConfirmationController;
 
-Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
-Route::post('/cart/add/{course:slug}', function (Request $request, Course $course) {
+Route::get('/levels', [LanguageLevelController::class, 'index'])->name('levels.index');
+Route::get('/levels/{level:slug}', [LanguageLevelController::class, 'show'])->name('levels.show');
+Route::post('/cart/add/{level:slug}', function (Request $request, LanguageLevel $course) {
     if (!auth()->check()) {
         session()->put('redirect_course_id', $course->slug);
         return redirect()->route('login');

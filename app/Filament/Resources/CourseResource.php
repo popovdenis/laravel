@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers;
-use App\Models\Course;
+use App\Models\LanguageLevel;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -18,9 +18,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CourseResource extends Resource
 {
-    protected static ?string $model = Course::class;
+    protected static ?string $model = LanguageLevel::class;
     protected static ?string $navigationGroup = 'Catalog';
-    protected static ?string $navigationLabel = 'Courses';
+    protected static ?string $navigationLabel = 'Levels';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -70,7 +70,7 @@ class CourseResource extends Resource
                     }
                 })
                 ->dehydrateStateUsing(fn ($state) => $state ?? [])
-                ->saveRelationshipsUsing(function (\App\Models\Course $record, $state) {
+                ->saveRelationshipsUsing(function (\App\Models\LanguageLevel $record, $state) {
                     $record->teachers()->sync($state ?? []);
                 })
                 ->columnSpanFull()

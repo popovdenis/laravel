@@ -16,7 +16,11 @@ class ConfirmationController extends Controller
             $courseId = session('course_id');
 
             if (! $teacherId || ! $slotIds || ! $courseId) {
-                return redirect()->route('courses.index')->with('error', 'Missing enrollment data.');
+                return redirect()->route('levels.index')->with('error', 'Missing enrollment data.');
+            }
+
+            if (!auth()->user()) {
+                return redirect()->route('login')->with('error', 'You should be logged in first.');
             }
 
             CourseEnrollment::enrollWithTimeslots(
@@ -32,7 +36,7 @@ class ConfirmationController extends Controller
         } catch (\Throwable $e) {
             report($e);
 
-            return redirect()->route('courses.index')->with('error', 'Something went wrong. Please try again.');
+            return redirect()->route('levels.index')->with('error', 'Something went wrong. Please try again.');
         }
     }
 

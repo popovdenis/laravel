@@ -32,7 +32,7 @@ class CourseEnrollment extends Model
 
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(LanguageLevel::class);
     }
 
     public function timeslots()

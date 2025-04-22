@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Binafy\LaravelCart\Cartable;
 
-class Course extends Model implements Cartable
+class LanguageLevel extends Model implements Cartable
 {
     /**
      * The attributes that are mass assignable.
@@ -23,7 +23,7 @@ class Course extends Model implements Cartable
 
     public function teachers()
     {
-        return $this->belongsToMany(User::class, 'course_teacher');
+        return $this->belongsToMany(User::class, 'language_level_teacher');
     }
 
     public function getRouteKeyName(): string
