@@ -6,7 +6,7 @@
         <h2 class="text-xl font-semibold text-gray-800">{{ __('Book Your Lesson') }}</h2>
     </x-slot>
 
-    <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Sidebar -->
         <aside class="bg-white border rounded shadow-sm p-4 space-y-6">
             <form method="GET" action="{{ route('levels.index') }}">
@@ -68,7 +68,7 @@
 
                     <!-- Date range -->
                     <div>
-                        <p class="text-xs text-gray-700 font-semibold mb-1">Date and Time</p>
+                        <p class="text-sm text-gray-700 font-semibold mb-1">Date and Time</p>
                         <input
                             id="datetime-range"
                             type="text"
@@ -82,7 +82,7 @@
 
                     <!-- Group or Private (toggle buttons, non-functional for now) -->
                     <div>
-                        <p class="text-xs text-gray-700 font-semibold mb-1">Group or Private</p>
+                        <p class="text-sm text-gray-700 font-semibold mb-1">Group or Private</p>
                         <div class="flex space-x-2">
                             <button type="button" class="border rounded-md px-3 py-2 text-sm text-blue-600 border-blue-600 bg-blue-100">Group</button>
                             <button type="button" class="border rounded-md px-3 py-2 text-sm text-gray-700 border-gray-300">Private</button>
@@ -100,12 +100,12 @@
             <!-- Slots grouped by date -->
             @forelse ($groupedSlots as $date => $slots)
                 <div>
-                    <h3 class="text-md font-semibold text-gray-800 bg-gray-100 px-4 py-2 rounded">
+                    <h3 class="text-md font-medium text-gray-600 bg-gray-100 rounded">
                         {{ \Carbon\Carbon::parse($date)->format('l, d M Y') }}
                     </h3>
                     <div class="mt-4">
                         @foreach ($slots as $item)
-                            <div class="flex items-center justify-between border border-gray-200 rounded-md bg-white px-6 py-5">
+                            <div class="flex items-center justify-between border border-gray-200 rounded-md bg-white px-6 py-4">
                                 <!-- Time -->
                                 <div class="w-24 text-blue-700 font-bold text-sm uppercase">
                                     {{ $item['time'] }}
@@ -124,11 +124,11 @@
                                 </div>
 
                                 <!-- Teacher -->
-                                <div class="flex items-center justify-center w-64 space-x-2 mr-16">
+                                <div class="flex items-center justify-center w-64 space-x-2 mr-20">
                                     <img src="https://ui-avatars.com/api/?name={{ urlencode($item['teacher']->name) }}&size=32"
                                          alt="{{ $item['teacher']->name }}"
                                          class="w-8 h-8 rounded-full">
-                                    <span class="text-xs text-gray-500 uppercase tracking-wide">
+                                    <span class="text-sm text-gray-500 uppercase tracking-wide">
                                         {{ __('Group Class with :name', ['name' => $item['teacher']->name]) }}
                                     </span>
                                 </div>
