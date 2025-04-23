@@ -6,11 +6,10 @@
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Sidebar -->
         <aside class="bg-white border rounded shadow-sm p-4 space-y-4">
-            <form method="GET" action="{{ route('levels.index') }}" id="filter-form">
-                <!-- Level Selection -->
-                <label for="level_id" class="block text-sm font-medium text-gray-700 mb-1">Select Level:</label>
-                <select name="level_id" id="level_id" onchange="document.getElementById('filter-form').submit()"
-                        class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 mb-4">
+            <form method="GET" action="{{ route('levels.index') }}">
+                <!-- Level selection -->
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select Level:</label>
+                <select name="level_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 mb-4">
                     @foreach ($levels as $level)
                         <option value="{{ $level->id }}" {{ $selectedLevelId == $level->id ? 'selected' : '' }}>
                             {{ $level->title }}
@@ -18,71 +17,58 @@
                     @endforeach
                 </select>
 
-                <!-- Subject Checkboxes -->
+                <!-- Subject checkboxes -->
                 @if ($selectedLevelId)
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Subjects:</label>
-                    <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
-                        @foreach ($levels->where('id', $selectedLevelId)->first()->subjects as $subject)
-                            <div class="flex items-center">
-                                <input type="checkbox"
-                                       name="subject_ids[]"
-                                       value="{{ $subject->id }}"
-                                       {{ in_array($subject->id, request()->input('subject_ids', [])) ? 'checked' : '' }}
-                                       onchange="document.getElementById('filter-form').submit()"
-                                       class="border-gray-300 rounded text-blue-600 focus:ring-blue-500">
-                                <label class="ml-2 text-sm text-gray-700">{{ $subject->title }}</label>
-                            </div>
-                        @endforeach
-                    </div>
+                    <p class="text-sm font-medium text-gray-700 mb-1">Filter by Subjects:</p>
+                    @foreach ($levels->where('id', $selectedLevelId)->first()->subjects as $subject)
+                        <div class="flex items-center mb-1">
+                            <input
+                                type="checkbox"
+                                name="subject_ids[]"
+                                value="{{ $subject->id }}"
+                                id="subject-{{ $subject->id }}"
+                                {{ in_array($subject->id, $selectedSubjectIds ?? []) ? 'checked' : '' }}
+                                onchange="this.form.submit()"
+                            >
+                            <label for="subject-{{ $subject->id }}" class="ml-2 text-sm text-gray-700">{{ $subject->title }}</label>
+                        </div>
+                    @endforeach
                 @endif
             </form>
         </aside>
 
-        <!-- Main Content -->
-        <div class="md:col-span-3 space-y-6">
-            @forelse ($streams as $stream)
-                @php
-                    $subjectFilter = request()->input('subject_ids', []);
-                    $currentSubjectId = $stream->current_subject_id;
-                @endphp
-
-                @if (!empty($subjectFilter) && !in_array($currentSubjectId, $subjectFilter))
-                    @continue
-                @endif
-
-                <div class="border rounded shadow-sm bg-white p-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <h3 class="text-lg font-bold">{{ $stream->languageLevel->title }} — Stream #{{ $stream->id }}</h3>
-                            <p class="text-sm text-gray-600">Teacher: {{ $stream->teacher->name }}</p>
-                            <p class="text-sm text-green-600">
-                                Current subject: {{ $stream->currentSubject->title ?? 'No subject selected' }}
-                                ({{ $stream->current_subject_number }})
-                            </p>
-                        </div>
+        <!-- Central part: grouped time slots -->
+        <div class="md:col-span-3 space-y-8">
+            @forelse ($groupedSlots as $date => $slots)
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">{{ \Carbon\Carbon::parse($date)->format('l, d M Y') }}</h3>
+                    <div class="space-y-4">
+                        @foreach ($slots as $item)
+                            <div class="flex items-center justify-between border rounded p-4 bg-white shadow-sm">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        <strong>{{ $item['time'] }}</strong>
+                                        — {{ $item['stream']->languageLevel->title }}
+                                        .{{ $item['current_subject_number'] }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Group Class with {{ $item['teacher']->name }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $item['subject']->title ?? 'No subject selected' }}
+                                    </p>
+                                    <!-- Здесь можешь вставить количество участников -->
+                                </div>
+                                <div class="space-x-2">
+                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Book</button>
+                                    <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300">Details</button>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-
-                    @if ($stream->teacher->scheduleTimeslots->isNotEmpty())
-                        <h4 class="text-md font-semibold text-gray-800 mb-2">Available Time Slots:</h4>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach ($stream->teacher->scheduleTimeslots as $slot)
-                                <button
-                                    type="button"
-                                    class="px-3 py-1 border rounded text-sm bg-white text-gray-700 border-gray-300 hover:bg-blue-500 hover:text-white transition"
-                                >
-                                    {{ ucfirst($slot->day) }}
-                                    {{ \Carbon\Carbon::parse($slot->start)->format('H:i') }}
-                                    -
-                                    {{ \Carbon\Carbon::parse($slot->end)->format('H:i') }}
-                                </button>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-500 mt-2">No available slots.</p>
-                    @endif
                 </div>
             @empty
-                <p class="text-gray-500">No available streams for this level.</p>
+                <p class="text-gray-500">No available streams for the selected filters.</p>
             @endforelse
         </div>
     </div>

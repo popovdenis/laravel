@@ -14,28 +14,28 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'stream_id' => 'required|exists:streams,id',
-            'timeslot_id' => 'required|exists:schedule_timeslots,id',
+            'stream_id'       => 'required|exists:streams,id',
+            'selected_slots'  => 'required|json',
         ]);
 
+        $slotIds = json_decode($request->selected_slots, true);
         $studentId = Auth::id();
 
-        // Check the duplicate
-        $exists = Booking::where('student_id', $studentId)
-            ->where('stream_id', $request->stream_id)
-            ->where('schedule_timeslot_id', $request->timeslot_id)
-            ->exists();
+        foreach ($slotIds as $slotId) {
+            $exists = Booking::where('student_id', $studentId)
+                ->where('stream_id', $request->stream_id)
+                ->where('schedule_timeslot_id', $slotId)
+                ->exists();
 
-        if ($exists) {
-            return back()->with('error', 'You have already booked this lesson.');
+            if (! $exists) {
+                Booking::create([
+                    'student_id'           => $studentId,
+                    'stream_id'            => $request->stream_id,
+                    'schedule_timeslot_id' => $slotId,
+                    'status'               => BookingStatus::PENDING,
+                ]);
+            }
         }
-
-        Booking::create([
-            'student_id'           => $studentId,
-            'stream_id'            => $request->stream_id,
-            'schedule_timeslot_id' => $request->timeslot_id,
-            'status'               => BookingStatus::PENDING,
-        ]);
 
         return back()->with('success', 'Booking successful!');
     }
