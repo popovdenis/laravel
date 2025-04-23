@@ -7,6 +7,14 @@
         <!-- Sidebar -->
         <aside class="bg-white border rounded shadow-sm p-4 space-y-4">
             <form method="GET" action="{{ route('levels.index') }}">
+                <!-- Сохраняем start_date и end_date -->
+                @if (request('start_date'))
+                    <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+                @endif
+                @if (request('end_date'))
+                    <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+                @endif
+
                 <!-- Level selection -->
                 <label class="block text-sm font-medium text-gray-700 mb-1">Select Level:</label>
                 <select name="level_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 mb-4">
@@ -37,8 +45,29 @@
             </form>
         </aside>
 
-        <!-- Central part: grouped time slots -->
-        <div class="md:col-span-3 space-y-8">
+        <!-- Central part -->
+        <div class="md:col-span-3 space-y-6">
+            <!-- Date filter -->
+            <form method="GET" action="{{ route('levels.index') }}" class="flex items-center space-x-4 mb-6">
+                <input type="hidden" name="level_id" value="{{ $selectedLevelId }}">
+                @foreach ($selectedSubjectIds as $subjectId)
+                    <input type="hidden" name="subject_ids[]" value="{{ $subjectId }}">
+                @endforeach
+                <div>
+                    <label for="start_date" class="block text-sm text-gray-700 mb-1">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ $filterStartDate }}" class="border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="end_date" class="block text-sm text-gray-700 mb-1">End Date:</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ $filterEndDate }}" class="border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="self-end">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Apply Filters</button>
+                    <a href="{{ route('levels.index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="ml-2 text-sm text-gray-700 underline">Clear</a>
+                </div>
+            </form>
+
+            <!-- Slots grouped by date -->
             @forelse ($groupedSlots as $date => $slots)
                 <div>
                     <h3 class="text-lg font-bold text-gray-800 mb-4">{{ \Carbon\Carbon::parse($date)->format('l, d M Y') }}</h3>
@@ -57,7 +86,7 @@
                                     <p class="text-xs text-gray-500">
                                         {{ $item['subject']->title ?? 'No subject selected' }}
                                     </p>
-                                    <!-- Здесь можешь вставить количество участников -->
+                                    <!-- Count of booked members -->
                                 </div>
                                 <div class="space-x-2">
                                     <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Book</button>
