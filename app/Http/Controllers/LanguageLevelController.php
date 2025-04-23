@@ -76,7 +76,7 @@ class LanguageLevelController extends Controller
                     if ($slotStart->between($filterStartDate, $filterEndDate)) {
                         $dateKey = $slotStart->toDateString();
                         $groupedSlots[$dateKey][] = [
-                            'time'                     => $slotStart->format('H:i A'),
+                            'time'                     => $slotStart->format('H:i'),
                             'stream'                   => $stream,
                             'teacher'                  => $stream->teacher,
                             'subject'                  => $stream->currentSubject,
@@ -90,6 +90,20 @@ class LanguageLevelController extends Controller
             }
         }
         ksort($groupedSlots);
+
+        foreach ($groupedSlots as $dateKey => &$slots) {
+            usort($slots, function ($a, $b) {
+                $timeA = \Carbon\Carbon::createFromFormat('H:i', $a['time']);
+                $timeB = \Carbon\Carbon::createFromFormat('H:i', $b['time']);
+
+                if ($timeA->eq($timeB)) {
+                    return $a['current_subject_number'] <=> $b['current_subject_number'];
+                }
+
+                return $timeA->lt($timeB) ? -1 : 1;
+            });
+        }
+        unset($slots);
 
         return view('levels.index', [
             'levels'             => $levels,
