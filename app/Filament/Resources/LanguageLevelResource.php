@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LanguageLevelResource\Pages;
 use App\Filament\Resources\LanguageLevelResource\RelationManagers;
 use App\Models\LanguageLevel;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -26,14 +27,14 @@ class LanguageLevelResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
+        return $form->schema([Forms\Components\Grid::make(12)->schema([
             TextInput::make('title')
                 ->required()
                 ->maxLength(255)
                 ->live(onBlur: true)
                 ->afterStateUpdated(function ($state, callable $set) {
                     $set('slug', Str::slug($state));
-                }),
+                })->columnSpan(6),
             TextInput::make('slug')
                 ->required()
                 ->maxLength(255)
@@ -42,10 +43,10 @@ class LanguageLevelResource extends Resource
                 ->dehydrated()
                 ->afterStateUpdated(function ($state, callable $set) {
                     $set('slug', Str::slug($state));
-                }),
-            Textarea::make('description')->required(),
-            Toggle::make('is_active')->label('Active'),
-            TextInput::make('sort_order')->numeric(),
+                })->columnSpan(6),
+            Textarea::make('description')->required()->columnSpan(12),
+            Toggle::make('is_active')->label('Active')->columnSpan(2),
+            TextInput::make('sort_order')->numeric()->columnSpan(2),
             Select::make('teachers')
                 ->label('Teachers')
                 ->multiple()
@@ -68,7 +69,8 @@ class LanguageLevelResource extends Resource
                 ->saveRelationshipsUsing(function (\App\Models\LanguageLevel $record, $state) {
                     $record->teachers()->sync($state ?? []);
                 })
-                ->columnSpanFull()
+                ->columnSpan(12)
+            ])
         ]);
     }
 

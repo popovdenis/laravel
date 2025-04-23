@@ -52,7 +52,7 @@ class LanguageLevelController extends Controller
         foreach ($filteredStreams as $stream) {
             $subjectId = $stream->current_subject_id;
 
-            // Фильтр по subject (если выбран)
+            // Subject filter, if selected
             if (!empty($selectedSubjectIds) && !in_array($subjectId, $selectedSubjectIds)) {
                 continue;
             }
