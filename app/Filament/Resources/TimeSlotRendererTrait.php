@@ -50,8 +50,7 @@ trait TimeSlotRendererTrait
                             ->columnSpan(6),
                     ])
                     ->columns(12)
-                    ->reorderable()
-                    /*->default([])*/,
+                    ->reorderable(),
             ])
             ->collapsible()->collapsed();
     }
