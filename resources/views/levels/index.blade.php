@@ -1,4 +1,7 @@
 <x-app-layout>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800">{{ __('Book Your Lesson') }}</h2>
     </x-slot>
@@ -55,24 +58,45 @@
         <!-- Central part -->
         <div class="md:col-span-3 space-y-6">
             <!-- Date filter -->
-            <form method="GET" action="{{ route('levels.index') }}" class="flex items-center space-x-4 mb-6">
-                <input type="hidden" name="level_id" value="{{ $selectedLevelId }}">
-                @foreach ($selectedSubjectIds as $subjectId)
-                    <input type="hidden" name="subject_ids[]" value="{{ $subjectId }}">
-                @endforeach
-                <div>
-                    <label for="start_date" class="block text-sm text-gray-700 mb-1">Start Date:</label>
-                    <input type="date" name="start_date" id="start_date" value="{{ $filterStartDate }}" class="border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label for="end_date" class="block text-sm text-gray-700 mb-1">End Date:</label>
-                    <input type="date" name="end_date" id="end_date" value="{{ $filterEndDate }}" class="border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div class="self-end">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Apply Filters</button>
-                    <a href="{{ route('levels.index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="ml-2 text-sm text-gray-700 underline">Clear</a>
-                </div>
-            </form>
+            <div class="bg-white border rounded-md p-4 mb-6">
+                <form method="GET" action="{{ route('levels.index') }}" class="flex flex-wrap items-center gap-4">
+                    <!-- Preserve level_id and subject_ids -->
+                    <input type="hidden" name="level_id" value="{{ $selectedLevelId }}">
+                    @foreach ($selectedSubjectIds as $subjectId)
+                        <input type="hidden" name="subject_ids[]" value="{{ $subjectId }}">
+                    @endforeach
+
+                    <!-- Date range -->
+                    <div>
+                        <p class="text-xs text-gray-700 font-semibold mb-1">Date and Time</p>
+                        <input
+                            id="datetime-range"
+                            type="text"
+                            class="border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 w-64"
+                            placeholder="Select date and time range"
+                            readonly
+                        >
+                        <input type="hidden" name="start_date" id="start_date" value="{{ request('start_date') }}">
+                        <input type="hidden" name="end_date" id="end_date" value="{{ request('end_date') }}">
+                    </div>
+
+                    <!-- Group or Private (toggle buttons, non-functional for now) -->
+                    <div>
+                        <p class="text-xs text-gray-700 font-semibold mb-1">Group or Private</p>
+                        <div class="flex space-x-2">
+                            <button type="button" class="border rounded-md px-3 py-2 text-sm text-blue-600 border-blue-600 bg-blue-100">Group</button>
+                            <button type="button" class="border rounded-md px-3 py-2 text-sm text-gray-700 border-gray-300">Private</button>
+                        </div>
+                    </div>
+
+                    <!-- Clear all -->
+                    <div class="self-end ml-auto">
+                        <a href="{{ route('levels.index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded-md hover:bg-blue-50">
+                            Clear all
+                        </a>
+                    </div>
+                </form>
+            </div>
 
             <!-- Slots grouped by date -->
             @forelse ($groupedSlots as $date => $slots)
@@ -108,4 +132,27 @@
             @endforelse
         </div>
     </div>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr("#datetime-range", {
+            mode: "range",
+            enableTime: false,
+            noCalendar: false,
+            dateFormat: "Y-m-d",
+            time_24hr: true,
+            onClose: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length === 2) {
+                    document.getElementById('start_date').value = flatpickr.formatDate(selectedDates[0], "Y-m-d H:i");
+                    document.getElementById('end_date').value = flatpickr.formatDate(selectedDates[1], "Y-m-d H:i");
+                    instance._input.form.submit();
+                }
+            },
+            defaultDate: [
+                "{{ request('start_date') }}",
+                "{{ request('end_date') }}"
+            ],
+        });
+    </script>
 </x-app-layout>
