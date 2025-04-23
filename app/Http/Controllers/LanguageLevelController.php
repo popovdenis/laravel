@@ -27,7 +27,9 @@ class LanguageLevelController extends Controller
             'teacher.scheduleTimeslots',
             'currentSubject',
             'teacher',
-        ])->whereIn('status', ['planned', 'started']);
+        ])
+            ->whereIn('status', ['planned', 'started'])
+            ->whereHas('languageLevel', fn($q) => $q->where('is_active', true));
 
         $streams = $streamsQuery->get();
 

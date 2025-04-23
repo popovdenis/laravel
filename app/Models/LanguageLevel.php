@@ -15,7 +15,10 @@ class LanguageLevel extends Model
         'title',
         'slug',
         'description',
+    ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function teachers()
