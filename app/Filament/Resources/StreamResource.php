@@ -78,7 +78,7 @@ class StreamResource extends Resource
 
             Forms\Components\Toggle::make('repeat')
                 ->label('Repeat')
-                ->default(false),
+                ->default(true),
         ]);
     }
 
