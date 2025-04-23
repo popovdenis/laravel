@@ -2,13 +2,17 @@
 
 namespace App\Filament\Resources\TeacherResource\Pages;
 
+use App\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use App\Filament\Resources\TeacherResource;
+use App\Filament\Resources\TimeSlotValidationTrait;
+use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Models\ScheduleTimeslot;
 use Filament\Actions;
-use App\Filament\Resources\UserResource\Pages\EditUser;
 
 class EditTeacher extends EditUser
 {
+    use TimeSlotValidationTrait, TimeSlotConverter;
+
     protected static string $resource = TeacherResource::class;
     protected static ?string $title = 'Edit Teacher';
     protected static ?string $breadcrumb = 'Edit Teacher';
@@ -35,9 +39,9 @@ class EditTeacher extends EditUser
         ));
     }
 
-    protected function afterSave(): void
+    protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data = $this->form->getState();
+        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet');
 
         $this->record->scheduleTimeslots()->delete();
 
@@ -48,6 +52,27 @@ class EditTeacher extends EditUser
                 'end' => $slot['end'],
             ]);
         }
+
+        return $data;
+    }
+
+    protected function beforeSave(): void
+    {
+        $this->validateOverlappingSlots($this->data, 'timesheet');
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $grouped = \App\Models\ScheduleTimeslot::query()
+            ->where('user_id', $data['id'])
+            ->get()
+            ->groupBy('day')
+            ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->map(fn ($slot) => [
+                'start' => $slot->start,
+                'end'   => $slot->end,
+            ])->values()->all()]);
+
+        return array_merge($data, $grouped->toArray());
     }
 
     protected function getRedirectUrl(): string

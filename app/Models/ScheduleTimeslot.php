@@ -17,4 +17,14 @@ class ScheduleTimeslot extends Model
     {
         return $this->belongsToMany(CourseEnrollment::class, 'course_enrollment_timeslots');
     }
+
+    public function getStartAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('H:i');
+    }
+
+    public function getEndAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('H:i');
+    }
 }

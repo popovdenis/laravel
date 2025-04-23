@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
+namespace App\Filament\Resources;
 
 use Filament\Notifications\Notification;
 
@@ -11,11 +11,11 @@ use Filament\Notifications\Notification;
  */
 trait TimeSlotValidationTrait
 {
-    protected function validateOverlappingSlots(array $data): void
+    protected function validateOverlappingSlots(array $data, $field): void
     {
         collect(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
-            ->each(function ($day) use ($data) {
-                $slots = collect($data["{$day}_slots"] ?? []);
+            ->each(function ($day) use ($data, $field) {
+                $slots = collect($data["{$day}_{$field}"] ?? []);
                 $this->checkOverlapsForDay($day, $slots);
             });
     }

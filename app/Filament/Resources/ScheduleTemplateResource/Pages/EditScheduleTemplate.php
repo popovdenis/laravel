@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
 
 use App\Filament\Resources\ScheduleTemplateResource;
+use App\Filament\Resources\TimeSlotValidationTrait;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -21,16 +22,16 @@ class EditScheduleTemplate extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        return $this->convertTimeSlotsBeforeSave($data);
+        return $this->convertTimeSlotsBeforeSave($data, 'slots');
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        return $this->convertTimeSlotsBeforeFill($data);
+        return $this->convertTimeSlotsBeforeFill($data, 'slots');
     }
 
     protected function beforeSave(): void
     {
-        $this->validateOverlappingSlots($this->data);
+        $this->validateOverlappingSlots($this->data, 'slots');
     }
 }

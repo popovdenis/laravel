@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
 
 use App\Filament\Resources\ScheduleTemplateResource;
+use App\Filament\Resources\TimeSlotValidationTrait;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateScheduleTemplate extends CreateRecord
@@ -13,7 +14,7 @@ class CreateScheduleTemplate extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return $this->convertTimeSlotsBeforeSave($data);
+        return $this->convertTimeSlotsBeforeSave($data, 'slots');
     }
 
     protected function beforeCreate(): void

@@ -12,6 +12,8 @@ use App\Models\User;
 
 class TeacherResource extends Resource
 {
+    use TimeSlotRendererTrait;
+
     protected static ?string $model = User::class;
     protected static ?string $navigationGroup = 'Members';
     protected static ?string $breadcrumb = 'Members';
@@ -25,47 +27,42 @@ class TeacherResource extends Resource
             [
                 Forms\Components\Section::make('Schedule Timesheet')
                     ->schema([
-                        Forms\Components\Select::make('schedule_template_id')
-                            ->label('Select Template')
-                            ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
-                            ->reactive(),
+                        Forms\Components\Grid::make(12)->schema([
+                            Forms\Components\Select::make('schedule_template_id')
+                                ->label('Select Template')
+                                ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
+                                ->reactive()
+                                ->columnSpan(6),
 
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('load_template')
-                                ->label('Load Time Slots')
-                                ->action(function (Forms\Get $get, Forms\Set $set) {
-                                    $templateId = $get('schedule_template_id');
-                                    if ($templateId) {
-                                        $template = \App\Models\ScheduleTemplate::find($templateId);
-                                        if ($template) {
-                                            $set('timesheet', $template->slots);
+                            Forms\Components\Actions::make([
+                                Forms\Components\Actions\Action::make('load_template')
+                                    ->label('Load Time Slots')
+                                    ->action(function (Forms\Get $get, Forms\Set $set) {
+                                        $templateId = $get('schedule_template_id');
+                                        if ($templateId) {
+                                            $template = \App\Models\ScheduleTemplate::find($templateId);
+                                            if ($template) {
+                                                $grouped = collect($template->slots ?? [])
+                                                    ->groupBy('day')
+                                                    ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->values()->all()]);
+                                                foreach ($grouped as $key => $value) {
+                                                    $set($key, $value);
+                                                }
+                                            }
                                         }
-                                    }
-                                }),
-                        ]),
+                                    }),
+                            ])->columnSpan(12),
 
-                        Forms\Components\Repeater::make('timesheet')
-                            ->label('Time Slots')
-                            ->schema([
-                                Forms\Components\Select::make('day')
-                                    ->label('Day')
-                                    ->options([
-                                        'monday' => 'Monday',
-                                        'tuesday' => 'Tuesday',
-                                        'wednesday' => 'Wednesday',
-                                        'thursday' => 'Thursday',
-                                        'friday' => 'Friday',
-                                        'saturday' => 'Saturday',
-                                        'sunday' => 'Sunday',
-                                    ])
-                                    ->required(),
-
-                                Forms\Components\TimePicker::make('start')->required()->seconds(false),
-                                Forms\Components\TimePicker::make('end')->required()->seconds(false),
-                            ])
-                            ->columnSpanFull(),
+                            static::makeDaySlotSection('monday', 'Monday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('tuesday', 'Tuesday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('wednesday', 'Wednesday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('thursday', 'Thursday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('friday', 'Friday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('saturday', 'Saturday', 'timesheet')->columnSpan(12),
+                            static::makeDaySlotSection('sunday', 'Sunday', 'timesheet')->columnSpan(12),
+                        ])
                     ])
-                    ->visible(fn ($record) => $record?->hasRole('Teacher')),
+                    ->visible(fn ($record) => $record?->hasRole('Teacher'))
             ]
         ));
     }

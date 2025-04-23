@@ -9,12 +9,12 @@ namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
  */
 trait TimeSlotConverter
 {
-    protected function convertTimeSlotsBeforeSave(array $data): array
+    protected function convertTimeSlotsBeforeSave(array $data, $field): array
     {
-        $data['slots'] = collect([
+        $data[$field] = collect([
             'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
-        ])->flatMap(function ($day) use ($data) {
-            return collect($data["{$day}_slots"] ?? [])->map(function ($slot) use ($day) {
+        ])->flatMap(function ($day) use ($data, $field) {
+            return collect($data["{$day}_{$field}"] ?? [])->map(function ($slot) use ($day) {
                 return [
                     'day'   => $day,
                     'start' => $slot['start'],
@@ -26,11 +26,11 @@ trait TimeSlotConverter
         return $data;
     }
 
-    protected function convertTimeSlotsBeforeFill(array $data): array
+    protected function convertTimeSlotsBeforeFill(array $data, $field): array
     {
-        $grouped = collect($data['slots'] ?? [])
+        $grouped = collect($data[$field] ?? [])
             ->groupBy('day')
-            ->mapWithKeys(fn ($slots, $day) => ["{$day}_slots" => $slots->values()->all()]);
+            ->mapWithKeys(fn ($slots, $day) => ["{$day}_{$field}" => $slots->values()->all()]);
 
         return array_merge($data, $grouped->toArray());
     }
