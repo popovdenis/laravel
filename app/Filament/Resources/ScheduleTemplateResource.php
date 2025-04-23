@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ScheduleTemplateResource extends Resource
 {
@@ -29,36 +27,55 @@ class ScheduleTemplateResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\Repeater::make('slots')
-                    ->label('Time Slots')
-                    ->schema([
-                        Forms\Components\Select::make('day')
-                            ->label('Day')
-                            ->options([
-                                'monday' => 'Monday',
-                                'tuesday' => 'Tuesday',
-                                'wednesday' => 'Wednesday',
-                                'thursday' => 'Thursday',
-                                'friday' => 'Friday',
-                                'saturday' => 'Saturday',
-                                'sunday' => 'Sunday',
-                            ])
-                            ->required(),
-
-                        Forms\Components\TimePicker::make('start')
-                            ->label('Start Time')
-                            ->seconds(false)
-                            ->required(),
-
-                        Forms\Components\TimePicker::make('end')
-                            ->label('End Time')
-                            ->seconds(false)
-                            ->required(),
-                    ])
-                    ->default([])
-                    ->reorderable()
-                    ->columnSpanFull(),
+                static::makeDaySlotSection('monday', 'Monday'),
+                static::makeDaySlotSection('tuesday', 'Tuesday'),
+                static::makeDaySlotSection('wednesday', 'Wednesday'),
+                static::makeDaySlotSection('thursday', 'Thursday'),
+                static::makeDaySlotSection('friday', 'Friday'),
+                static::makeDaySlotSection('saturday', 'Saturday'),
+                static::makeDaySlotSection('sunday', 'Sunday'),
             ]);
+    }
+
+    protected static function makeDaySlotSection(string $dayKey, string $dayLabel): \Filament\Forms\Components\Section
+    {
+        return \Filament\Forms\Components\Section::make($dayLabel)
+            ->schema([
+                \Filament\Forms\Components\Repeater::make("{$dayKey}_slots")
+                    ->label(false)
+                    ->schema([
+                        \Filament\Forms\Components\Select::make('start')
+                            ->label('Start Time')
+                            ->options(
+                                collect(range(6 * 60, 22 * 60, 30))
+                                    ->mapWithKeys(fn ($minutes) => [
+                                        sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60)
+                                        => sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60)
+                                    ])->toArray()
+                            )
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                if ($state) {
+                                    $end = \Carbon\Carbon::createFromFormat('H:i', $state)->addMinutes(60)->format('H:i');
+                                    $set('end', $end);
+                                } else {
+                                    $set('end', null);
+                                }
+                            })
+                            ->required()
+                            ->columnSpan(6),
+
+                        \Filament\Forms\Components\TextInput::make('end')
+                            ->label('End Time')
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->columnSpan(6),
+                    ])
+                    ->reorderable()
+                    ->default([]),
+            ])
+            ->collapsible();
     }
 
     public static function table(Table $table): Table
