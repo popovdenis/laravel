@@ -6,6 +6,10 @@ use App\Filament\Resources\ScheduleTemplateResource\Pages;
 use App\Filament\Resources\ScheduleTemplateResource\RelationManagers;
 use App\Models\ScheduleTemplate;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -21,30 +25,31 @@ class ScheduleTemplateResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('title')
+            ->schema([Forms\Components\Grid::make(12)->schema([
+                TextInput::make('title')
                     ->label('Template Title')
                     ->required()
-                    ->maxLength(255),
-
-                static::makeDaySlotSection('monday', 'Monday'),
-                static::makeDaySlotSection('tuesday', 'Tuesday'),
-                static::makeDaySlotSection('wednesday', 'Wednesday'),
-                static::makeDaySlotSection('thursday', 'Thursday'),
-                static::makeDaySlotSection('friday', 'Friday'),
-                static::makeDaySlotSection('saturday', 'Saturday'),
-                static::makeDaySlotSection('sunday', 'Sunday'),
-            ]);
+                    ->maxLength(255)
+                    ->columnSpan(12),
+                static::makeDaySlotSection('monday', 'Monday')->columnSpan(6),
+                static::makeDaySlotSection('tuesday', 'Tuesday')->columnSpan(6),
+                static::makeDaySlotSection('wednesday', 'Wednesday')->columnSpan(6),
+                static::makeDaySlotSection('thursday', 'Thursday')->columnSpan(6),
+                static::makeDaySlotSection('friday', 'Friday')->columnSpan(6),
+                static::makeDaySlotSection('saturday', 'Saturday')->columnSpan(6),
+                static::makeDaySlotSection('sunday', 'Sunday')->columnSpan(6),
+            ])
+        ]);
     }
 
-    protected static function makeDaySlotSection(string $dayKey, string $dayLabel): \Filament\Forms\Components\Section
+    protected static function makeDaySlotSection(string $dayKey, string $dayLabel): Section
     {
-        return \Filament\Forms\Components\Section::make($dayLabel)
+        return Section::make($dayLabel)
             ->schema([
-                \Filament\Forms\Components\Repeater::make("{$dayKey}_slots")
+                Repeater::make("{$dayKey}_slots")
                     ->label(false)
                     ->schema([
-                        \Filament\Forms\Components\Select::make('start')
+                        Select::make('start')
                             ->label('Start Time')
                             ->options(
                                 collect(range(6 * 60, 22 * 60, 30))
@@ -65,13 +70,14 @@ class ScheduleTemplateResource extends Resource
                             ->required()
                             ->columnSpan(6),
 
-                        \Filament\Forms\Components\TextInput::make('end')
+                        TextInput::make('end')
                             ->label('End Time')
                             ->disabled()
                             ->dehydrated()
                             ->required()
                             ->columnSpan(6),
                     ])
+                    ->columns(12)
                     ->reorderable()
                     ->default([]),
             ])
@@ -96,13 +102,6 @@ class ScheduleTemplateResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
