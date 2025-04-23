@@ -37,9 +37,10 @@ class StreamResource extends Resource
                     if (!$levelId) {
                         return [];
                     }
-                    return \App\Models\User::whereHas('languageLevels', function ($query) use ($levelId) {
-                        $query->where('language_level_id', $levelId);
-                    })->role('teacher')->pluck('name', 'id');
+
+                    return \App\Models\User::role('teacher')
+                        ->whereHas('streams', fn ($query) => $query->where('language_level_id', $levelId))
+                        ->pluck('name', 'id');
                 })
                 ->required(),
 

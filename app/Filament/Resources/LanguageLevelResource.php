@@ -46,32 +46,7 @@ class LanguageLevelResource extends Resource
                 })->columnSpan(6),
             Textarea::make('description')->required()->columnSpan(12),
             Toggle::make('is_active')->label('Active')->columnSpan(2),
-            TextInput::make('sort_order')->numeric()->columnSpan(2),
-            Select::make('teachers')
-                ->label('Teachers')
-                ->multiple()
-                ->searchable()
-                ->preload()
-                ->options(
-                    \App\Models\User::all()
-                        ->filter(fn ($user) => $user->hasRole('Teacher'))
-                        ->pluck('name', 'id')
-                        ->toArray()
-                )
-                ->afterStateHydrated(function ($component) {
-                    if (blank($component->getState()) && $component->getRecord()) {
-                        $component->state(
-                            $component->getRecord()->teachers->pluck('id')->toArray()
-                        );
-                    }
-                })
-                ->dehydrateStateUsing(fn ($state) => $state ?? [])
-                ->saveRelationshipsUsing(function (\App\Models\LanguageLevel $record, $state) {
-                    $record->teachers()->sync($state ?? []);
-                })
-                ->columnSpan(12)
-            ])
-        ]);
+        ])]);
     }
 
     public static function table(Table $table): Table
@@ -79,7 +54,6 @@ class LanguageLevelResource extends Resource
         return $table->columns([
             TextColumn::make('title')->sortable()->searchable(),
             ToggleColumn::make('is_active'),
-            TextColumn::make('sort_order')->sortable(),
         ]);
     }
 

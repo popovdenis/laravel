@@ -53,19 +53,9 @@ class User extends Authenticatable
         return $this->hasRole('Admin');
     }
 
-    public function languageLevels()
+    public function streams()
     {
-        return $this->belongsToMany(LanguageLevel::class, 'language_level_teacher')
-            ->withPivot('current_subject_id');
-    }
-
-    public function currentSubjectForLevel($levelId)
-    {
-        $relation = $this->languageLevels()->where('language_level_id', $levelId)->first();
-        if ($relation && $relation->pivot->current_subject_id) {
-            return Subject::find($relation->pivot->current_subject_id);
-        }
-        return null;
+        return $this->hasMany(Stream::class, 'teacher_id');
     }
 
     public function scheduleTimeslots()
