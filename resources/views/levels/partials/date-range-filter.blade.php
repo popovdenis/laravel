@@ -1,0 +1,39 @@
+<div class="bg-white border rounded-md p-4 mb-6">
+    <form method="GET" action="{{ route('levels.index') }}" class="flex flex-wrap items-center gap-4">
+        <!-- Preserve level_id and subject_ids -->
+        <input type="hidden" name="level_id" value="{{ $selectedLevelId }}">
+        @foreach ($selectedSubjectIds as $subjectId)
+            <input type="hidden" name="subject_ids[]" value="{{ $subjectId }}">
+        @endforeach
+
+        <!-- Date range -->
+        <div>
+            <p class="text-sm text-gray-700 font-semibold mb-1">Date and Time</p>
+            <input
+                id="datetime-range"
+                type="text"
+                class="border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 w-64"
+                placeholder="Select date and time range"
+                readonly
+            >
+            <input type="hidden" name="start_date" id="start_date" value="{{ request('start_date') }}">
+            <input type="hidden" name="end_date" id="end_date" value="{{ request('end_date') }}">
+        </div>
+
+        <!-- Group or Private (toggle buttons, non-functional for now) -->
+        <div>
+            <p class="text-sm text-gray-700 font-semibold mb-1">Group or Private</p>
+            <div class="flex space-x-2">
+                <button type="button" class="border rounded-md px-3 py-2 text-sm text-blue-600 border-blue-600 bg-blue-100">Group</button>
+                <button type="button" class="border rounded-md px-3 py-2 text-sm text-gray-700 border-gray-300">Private</button>
+            </div>
+        </div>
+
+        <!-- Clear all -->
+        <div class="self-end ml-auto">
+            <a href="{{ route('levels.index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded-md hover:bg-blue-50">
+                Clear all
+            </a>
+        </div>
+    </form>
+</div>
