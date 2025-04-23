@@ -5,9 +5,8 @@
 
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Sidebar -->
-        <aside class="bg-white border rounded shadow-sm p-4 space-y-4">
+        <aside class="bg-white border rounded shadow-sm p-4 space-y-6">
             <form method="GET" action="{{ route('levels.index') }}">
-                <!-- Сохраняем start_date и end_date -->
                 @if (request('start_date'))
                     <input type="hidden" name="start_date" value="{{ request('start_date') }}">
                 @endif
@@ -15,9 +14,8 @@
                     <input type="hidden" name="end_date" value="{{ request('end_date') }}">
                 @endif
 
-                <!-- Level selection -->
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select Level:</label>
-                <select name="level_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 mb-4">
+                <!-- Language Level selector (без label, placeholder через select) -->
+                <select name="level_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2">
                     @foreach ($levels as $level)
                         <option value="{{ $level->id }}" {{ $selectedLevelId == $level->id ? 'selected' : '' }}>
                             {{ $level->title }}
@@ -25,22 +23,31 @@
                     @endforeach
                 </select>
 
-                <!-- Subject checkboxes -->
+                <!-- Subjects grouped by Chapters -->
                 @if ($selectedLevelId)
-                    <p class="text-sm font-medium text-gray-700 mb-1">Filter by Subjects:</p>
-                    @foreach ($levels->where('id', $selectedLevelId)->first()->subjects as $subject)
-                        <div class="flex items-center mb-1">
-                            <input
-                                type="checkbox"
-                                name="subject_ids[]"
-                                value="{{ $subject->id }}"
-                                id="subject-{{ $subject->id }}"
-                                {{ in_array($subject->id, $selectedSubjectIds ?? []) ? 'checked' : '' }}
-                                onchange="this.form.submit()"
-                            >
-                            <label for="subject-{{ $subject->id }}" class="ml-2 text-sm text-gray-700">{{ $subject->title }}</label>
-                        </div>
-                    @endforeach
+                    <div class="space-y-4 mt-4">
+                        @foreach ($levels->where('id', $selectedLevelId)->first()->subjects->groupBy('chapter') as $chapter => $subjectsGroup)
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800 mb-2">{{ $chapter }}</p>
+                                <div class="space-y-2">
+                                    @foreach ($subjectsGroup as $subject)
+                                        <div class="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                name="subject_ids[]"
+                                                value="{{ $subject->id }}"
+                                                id="subject-{{ $subject->id }}"
+                                                {{ in_array($subject->id, $selectedSubjectIds ?? []) ? 'checked' : '' }}
+                                                onchange="this.form.submit()"
+                                                class="text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                            >
+                                            <label for="subject-{{ $subject->id }}" class="ml-2 text-sm text-gray-700">{{ $subject->title }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 @endif
             </form>
         </aside>
