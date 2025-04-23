@@ -72,9 +72,4 @@ class LanguageLevelResource extends Resource
             'edit' => Pages\EditLevel::route('/{record}/edit'),
         ];
     }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with('teachers');
-    }
 }
