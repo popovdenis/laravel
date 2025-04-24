@@ -30,7 +30,7 @@ class SubjectRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('description')->limit(50),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('M d, Y H:i')->sortable(),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

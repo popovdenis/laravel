@@ -23,7 +23,7 @@ class CommentResource extends Resource
                 Tables\Columns\TextColumn::make('author_name')->label('Author'),
                 Tables\Columns\TextColumn::make('comment')->limit(80)->label('Comment'),
                 Tables\Columns\TextColumn::make('post.title')->label('Post'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('M d, Y H:i'),
                 Tables\Columns\IconColumn::make('approved')->boolean()->label('Approved'),
             ])
             ->filters([

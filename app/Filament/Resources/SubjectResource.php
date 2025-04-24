@@ -41,7 +41,7 @@ class SubjectResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('languageLevel.title')->label('Language Level')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime('M d, Y')->sortable(),
             ])
             ->filters([
                 //

@@ -125,8 +125,8 @@ class ScheduleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('teacher.name')->label('Teacher')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('students_count')->label('Students')->counts('students'),
-                Tables\Columns\TextColumn::make('start_time')->label('Start Time')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('end_time')->label('End Time')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('start_time')->label('Start Time')->dateTime('M d, Y H:i')->sortable(),
+                Tables\Columns\TextColumn::make('end_time')->label('End Time')->dateTime('M d, Y H:i')->sortable(),
                 Tables\Columns\TextColumn::make('zoom_meeting_id')->label('Zoom ID')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('start_time', 'desc')
