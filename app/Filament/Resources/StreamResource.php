@@ -17,9 +17,9 @@ use Filament\Tables\Table;
 class StreamResource extends Resource
 {
     protected static ?string $model = Stream::class;
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationGroup = 'Education';
     protected static ?string $navigationLabel = 'Streams';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     public static function form(Form $form): Form
     {
@@ -102,12 +102,12 @@ class StreamResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

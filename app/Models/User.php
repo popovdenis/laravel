@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -73,4 +73,28 @@ class User extends Authenticatable
             ];
         })->toArray();
     }
+
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function creditHistory(): HasMany
+    {
+        return $this->hasMany(BookingCreditHistory::class);
+    }
+
+    public function getAvailableCredits(): int
+    {
+        return $this->creditHistory()->sum('credits_amount');
+    }
+    /**
+     * $user = User::find(1);
+     *
+     * // All spends:
+     * $spends = $user->creditHistory()->spend()->get();
+     *
+     * // All refunds:
+     * $refunds = $user->creditHistory()->refund()->get();
+     */
 }
