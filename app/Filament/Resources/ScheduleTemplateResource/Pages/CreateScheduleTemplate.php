@@ -19,6 +19,6 @@ class CreateScheduleTemplate extends CreateRecord
 
     protected function beforeCreate(): void
     {
-        $this->validateOverlappingSlots($this->data);
+        $this->validateOverlappingSlots($this->data, 'slots');
     }
 }

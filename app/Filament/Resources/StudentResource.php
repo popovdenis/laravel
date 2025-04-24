@@ -4,9 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\SubscriptionPlan;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Filament\Tables;
 use App\Models\User;
 
 class StudentResource extends Resource
@@ -19,17 +23,39 @@ class StudentResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return UserResource::form($form);
+        return UserResource::form($form)->schema(array_merge(
+            UserResource::form($form)->getComponents(),
+            [
+                Forms\Components\Grid::make(12)->schema([
+                    Select::make('subscription_plan_id')
+                        ->label('Subscription Plan')
+                        ->options(SubscriptionPlan::pluck('name', 'id'))
+                        ->default(fn ($record) => $record?->subscription?->plan_id)
+                        ->dehydrated(false)
+                        ->required()
+                        ->columnSpan(6)
+                ])
+            ]
+        ));
     }
 
     public static function table(Table $table): Table
     {
-        return UserResource::table($table);
+        return UserResource::table($table)->columns(array_merge(
+            UserResource::table($table)->getColumns(),
+            [
+                Tables\Columns\TextColumn::make('subscription')
+                    ->label('Subscription Plan')
+                    ->formatStateUsing(fn ($record) => $record->subscription?->plan?->name ?? 'No Plan')
+            ]
+        ));
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->role('student');
+        return parent::getEloquentQuery()
+            ->role('student')
+            ->with(['subscription.plan']);
     }
 
     public static function getPages(): array

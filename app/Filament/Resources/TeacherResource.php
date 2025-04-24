@@ -24,47 +24,52 @@ class TeacherResource extends Resource
     {
         return UserResource::form($form)->schema(array_merge(
             UserResource::form($form)->getComponents(),
-            [
-                Forms\Components\Section::make('Schedule Timesheet')
-                    ->schema([
-                        Forms\Components\Grid::make(12)->schema([
-                            Forms\Components\Select::make('schedule_template_id')
-                                ->label('Select Template')
-                                ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
-                                ->reactive()
-                                ->columnSpan(6),
+            self::getTeacherForm()
+        ));
+    }
 
-                            Forms\Components\Actions::make([
-                                Forms\Components\Actions\Action::make('load_template')
-                                    ->label('Load Time Slots')
-                                    ->action(function (Forms\Get $get, Forms\Set $set) {
-                                        $templateId = $get('schedule_template_id');
-                                        if ($templateId) {
-                                            $template = \App\Models\ScheduleTemplate::find($templateId);
-                                            if ($template) {
-                                                $grouped = collect($template->slots ?? [])
-                                                    ->groupBy('day')
-                                                    ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->values()->all()]);
-                                                foreach ($grouped as $key => $value) {
-                                                    $set($key, $value);
-                                                }
+    protected static function getTeacherForm()
+    {
+        return [
+            Forms\Components\Section::make('Schedule Timesheet')
+                ->schema([
+                    Forms\Components\Grid::make(12)->schema([
+                        Forms\Components\Select::make('schedule_template_id')
+                            ->label('Select Template')
+                            ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
+                            ->reactive()
+                            ->columnSpan(6),
+
+                        Forms\Components\Actions::make([
+                            Forms\Components\Actions\Action::make('load_template')
+                                ->label('Load Time Slots')
+                                ->action(function (Forms\Get $get, Forms\Set $set) {
+                                    $templateId = $get('schedule_template_id');
+                                    if ($templateId) {
+                                        $template = \App\Models\ScheduleTemplate::find($templateId);
+                                        if ($template) {
+                                            $grouped = collect($template->slots ?? [])
+                                                ->groupBy('day')
+                                                ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->values()->all()]);
+                                            foreach ($grouped as $key => $value) {
+                                                $set($key, $value);
                                             }
                                         }
-                                    }),
-                            ])->columnSpan(12),
+                                    }
+                                }),
+                        ])->columnSpan(12),
 
-                            static::makeDaySlotSection('monday', 'Monday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('tuesday', 'Tuesday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('wednesday', 'Wednesday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('thursday', 'Thursday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('friday', 'Friday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('saturday', 'Saturday', 'timesheet')->columnSpan(12),
-                            static::makeDaySlotSection('sunday', 'Sunday', 'timesheet')->columnSpan(12),
-                        ])
+                        static::makeDaySlotSection('monday', 'Monday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('tuesday', 'Tuesday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('wednesday', 'Wednesday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('thursday', 'Thursday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('friday', 'Friday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('saturday', 'Saturday', 'timesheet')->columnSpan(12),
+                        static::makeDaySlotSection('sunday', 'Sunday', 'timesheet')->columnSpan(12),
                     ])
-                    ->visible(fn ($record) => $record?->hasRole('Teacher'))
-            ]
-        ));
+                ])
+                ->visible(fn ($record) => $record?->hasRole('Teacher'))
+        ];
     }
 
     public static function table(Table $table): Table

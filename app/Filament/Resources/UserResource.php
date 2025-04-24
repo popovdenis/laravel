@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -29,6 +28,7 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->columnSpan(6),
+
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
@@ -39,14 +39,15 @@ class UserResource extends Resource
                     ->label('Change Password')
                     ->reactive()
                     ->dehydrated(false)
-                    ->columnSpan(12),
+                    ->columnSpan(6),
 
                 Forms\Components\TextInput::make('old_password')
                     ->password()
                     ->label('Current Password')
                     ->dehydrated(false)
                     ->visible(fn ($get) => $get('change_password'))
-                    ->columnSpan(4),
+                    ->extraAttributes(['style' => 'width: 600px'])
+                    ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('new_password')
                     ->password()
@@ -54,7 +55,8 @@ class UserResource extends Resource
                     ->requiredWith('change_password')
                     ->dehydrated(false)
                     ->visible(fn ($get) => $get('change_password'))
-                    ->columnSpan(4),
+                    ->extraAttributes(['style' => 'width: 600px'])
+                    ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('new_password_confirmation')
                     ->password()
@@ -63,13 +65,15 @@ class UserResource extends Resource
                     ->dehydrated(false)
                     ->same('new_password')
                     ->visible(fn ($get) => $get('change_password'))
-                    ->columnSpan(4),
+                    ->extraAttributes(['style' => 'width: 600px'])
+                    ->columnSpanFull(),
 
                 Select::make('roles')
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload()
-                    ->columnSpan(12),
+                    ->extraAttributes(['style' => 'width: 600px'])
+                    ->columnSpanFull(),
             ])
         ]);
     }
@@ -90,9 +94,6 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
