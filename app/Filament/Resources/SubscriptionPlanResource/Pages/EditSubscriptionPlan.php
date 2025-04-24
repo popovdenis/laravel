@@ -13,7 +13,19 @@ class EditSubscriptionPlan extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('save')->label('Save Changes')->action('save'),
+            $this->getCancelFormAction(),
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
