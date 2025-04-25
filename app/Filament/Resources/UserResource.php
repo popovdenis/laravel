@@ -35,19 +35,25 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->columnSpan(6),
 
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->extraAttributes(['style' => 'width: 200px'])
+                    ->columnSpanFull(),
+
                 Forms\Components\Toggle::make('change_password')
                     ->label('Change Password')
                     ->reactive()
                     ->dehydrated(false)
-                    ->columnSpan(6),
+                    ->columnSpan(12),
 
                 Forms\Components\TextInput::make('old_password')
                     ->password()
                     ->label('Current Password')
                     ->dehydrated(false)
                     ->visible(fn ($get) => $get('change_password'))
-                    ->extraAttributes(['style' => 'width: 600px'])
-                    ->columnSpanFull(),
+                    ->columnSpan(6),
 
                 Forms\Components\TextInput::make('new_password')
                     ->password()
@@ -55,8 +61,7 @@ class UserResource extends Resource
                     ->requiredWith('change_password')
                     ->dehydrated(false)
                     ->visible(fn ($get) => $get('change_password'))
-                    ->extraAttributes(['style' => 'width: 600px'])
-                    ->columnSpanFull(),
+                    ->columnSpan(6),
 
                 Forms\Components\TextInput::make('new_password_confirmation')
                     ->password()
@@ -65,15 +70,7 @@ class UserResource extends Resource
                     ->dehydrated(false)
                     ->same('new_password')
                     ->visible(fn ($get) => $get('change_password'))
-                    ->extraAttributes(['style' => 'width: 600px'])
-                    ->columnSpanFull(),
-
-                Select::make('roles')
-                    ->multiple()
-                    ->relationship('roles', 'name')
-                    ->preload()
-                    ->extraAttributes(['style' => 'width: 600px'])
-                    ->columnSpanFull(),
+                    ->columnSpan(6),
             ])
         ]);
     }
