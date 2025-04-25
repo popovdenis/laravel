@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionPlanResource\Pages;
 use App\Filament\Resources\SubscriptionPlanResource\RelationManagers;
+use App\Models\Enums\FrequencyUnit;
 use App\Models\SubscriptionPlan;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -30,8 +31,7 @@ class SubscriptionPlanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->columnSpan(8)
-                    ->helperText('Name your plan to easily identify it among other plans.
-                     Your customers won\'t see it. Only you will see this plan name.'),
+                    ->helperText('Name your plan to easily identify it among other plans.'),
 
                 Toggle::make('status')
                     ->label('Status')
@@ -52,13 +52,11 @@ class SubscriptionPlanResource extends Resource
 
                 Select::make('frequency_unit')
                     ->label('Frequency Unit')
-                    ->options([
-                        'day'    => 'Day',
-                        'week'   => 'Week',
-                        'month'  => 'Month',
-                        'year'   => 'Year',
-                    ])
-                    ->default('month')
+                    ->options(collect(FrequencyUnit::cases())->mapWithKeys(fn($status) => [
+                        $status->value => $status->label()
+                    ]))
+                    ->default(FrequencyUnit::MONTH)
+                    ->required()
                     ->extraAttributes(['style' => 'width: 160px'])
                     ->helperText('This is used in combination with billing frequency to define the interval of time
                      from the end of one billing, or invoice, statement date to the next billing statement date.')
@@ -111,6 +109,22 @@ class SubscriptionPlanResource extends Resource
                     ->visible(fn ($get) => $get('enable_initial_fee') === true)
                     ->helperText('Positive floating point numbers only.')
                     ->columnSpan(8),
+
+                TextInput::make('price')
+                    ->label('Price')
+                    ->required()
+                    ->numeric()
+                    ->rules(['required', 'numeric', 'min:0'])
+                    ->helperText('The subscription price charged at the start of each billing cycle.')
+                    ->columnSpan(8),
+
+                TextInput::make('credits')
+                    ->label('Credits')
+                    ->required()
+                    ->numeric()
+                    ->rules(['required', 'integer', 'min:0'])
+                    ->helperText('The number of credits added to the student’s balance each billing cycle.')
+                    ->columnSpan(8),
             ])
         ]);
     }
@@ -124,27 +138,22 @@ class SubscriptionPlanResource extends Resource
                     $unit = $record->frequency_unit;
                     $frequency = $state;
 
-                    $unitPlural = match ($unit) {
-                        'day'    => 'days',
-                        'week'   => 'weeks',
-                        'month'  => 'months',
-                        'year'   => 'years',
-                        default  => $unit,
-                    };
-
                     if ($frequency == 1) {
                         return 'Once a ' . $unit;
                     }
 
-                    return 'Every ' . $frequency . ' ' . $unitPlural;
+                    return __('Every :frequency :unit', [
+                        'frequency' => $frequency,
+                        'unit' => FrequencyUnit::getPluralUnit($unit),
+                    ]);
                 }),
             Tables\Columns\TextColumn::make('enable_trial')->label('Trial Period')
-                ->formatStateUsing(fn ($state) => $state ? 'Enabled' : 'Disabled')
+                ->formatStateUsing(fn ($state) => $state ? __('Enabled') : __('Disabled'))
                 ->sortable(),
             Tables\Columns\TextColumn::make('enable_initial_fee')->label('Initial Fee')
                 ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')->sortable(),
             Tables\Columns\TextColumn::make('status')
-                ->formatStateUsing(fn ($state) => $state ? 'Active' : 'Suspended')
+                ->formatStateUsing(fn ($state) => $state ? __('Active') : __('Suspended'))
                 ->color(fn ($state) => $state ? 'success' : 'danger')
                 ->weight('bold')
                 ->sortable(),
