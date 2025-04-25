@@ -18,22 +18,22 @@ class CreditBalanceService
         $user->update(['credit_balance' => $credits]);
     }
 
-    public function updateUserCreditBalance1(User $user): void
-    {
-        $credited = $user->creditTopUps()->sum('credits_amount');
-        $spent = $user->creditHistory()->sum('credits_amount');
-
-        $user->update(['credit_balance' => $credited - $spent]);
-    }
-
-    public function applySubscriptionPlan(User $user, SubscriptionPlan $plan): void
-    {
-        $user->creditTopUps()->create([
-            'credits_amount' => $plan->credits,
-            'source'         => 'subscription',
-            'comment'        => 'Credits assigned from subscription plan change',
-        ]);
-
-        $this->updateUserCreditBalance($user);
-    }
+//    public function updateUserCreditBalance1(User $user): void
+//    {
+//        $credited = $user->creditTopUps()->sum('credits_amount');
+//        $spent = $user->creditHistory()->sum('credits_amount');
+//
+//        $user->update(['credit_balance' => $credited - $spent]);
+//    }
+//
+//    public function applySubscriptionPlan(User $user, SubscriptionPlan $plan): void
+//    {
+//        $user->creditTopUps()->create([
+//            'credits_amount' => $plan->credits,
+//            'source'         => 'subscription',
+//            'comment'        => 'Credits assigned from subscription plan change',
+//        ]);
+//
+//        $this->updateUserCreditBalance($user);
+//    }
 }
