@@ -29,12 +29,20 @@
                              alt="{{ $item['teacher']->name }}"
                              class="w-8 h-8 rounded-full">
                         <span class="text-sm text-gray-500 uppercase tracking-wide">
-                                        {{ __('Group Class with :name', ['name' => $item['teacher']->name]) }}
-                                    </span>
+                            {{ __('Group Class with :name', ['name' => $item['teacher']->name]) }}
+                        </span>
                     </div>
 
                     <!-- Actions -->
                     <div class="flex space-x-2">
+                        <form method="POST" action="{{ route('booking.store') }}">
+                            @csrf
+                            <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
+                            <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
+                            <x-primary-button>
+                                {{ __('Book') }}
+                            </x-primary-button>
+                        </form>
                         <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">{{ __('Book') }}</button>
                         <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-md hover:bg-gray-300">{{ __('Details') }}</button>
                     </div>
