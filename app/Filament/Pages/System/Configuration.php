@@ -24,10 +24,22 @@ class Configuration extends BaseSettings
         return [
             Tabs::make('Configuration')
                 ->schema([
-                    Tabs\Tab::make('General')
+                    Tabs\Tab::make('Study')
                         ->schema([
-                            TextInput::make('general.brand_name')
+                            TextInput::make('study.group_lesson_duration')
+                                ->label('Duration of Group Lesson'),
+                            TextInput::make('study.individual_lesson_duration')
+                                ->label('Duration of Individual Lesson'),
                         ]),
+
+                    Tabs\Tab::make('Subscription')
+                        ->schema([
+                            TextInput::make('study.group_lesson_price')
+                                ->label('Price per Group Lesson (credits)'),
+                            TextInput::make('study.individual_lesson_price')
+                                ->label('Price per Individual Lesson (credits)'),
+                        ]),
+
                     Tabs\Tab::make('MailSender')
                         ->schema([
                             Toggle::make('mailsender.use_mail_sender')
