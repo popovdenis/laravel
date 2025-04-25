@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $subscriptionPlans = SubscriptionPlan::where('status', true)
+            ->orderBy('sort_order')
+            ->pluck('name', 'id');
+
+        return view('auth.register', compact('subscriptionPlans'));
     }
 
     /**
@@ -33,6 +38,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'subscription_plan_id'  => ['required', 'exists:subscription_plans,id'],
         ]);
 
         $user = User::create([
@@ -40,11 +46,12 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        event(new Registered($user, $request->input('subscription_plan_id')));
+
         $user->password_plaint = $request->password;
 
-        event(new Registered($user));
-
-        Auth::login($user);
+//        Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
     }

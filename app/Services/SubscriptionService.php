@@ -25,6 +25,9 @@ class SubscriptionService
 
     public function syncSubscriptionForUser(User $user, ?int $planId): void
     {
+        if (!$user->hasRole('Student')) {
+            throw new \Exception('Only student can subscribe to this plan.');
+        }
         $currentPlanId = $user->subscription?->plan_id;
 
         if ($planId === $currentPlanId) {
