@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'credit_balance',
     ];
 
     /**
@@ -97,4 +98,9 @@ class User extends Authenticatable
      * // All refunds:
      * $refunds = $user->creditHistory()->refund()->get();
      */
+
+    public function creditTopUps()
+    {
+        return $this->hasMany(UserCreditHistory::class);
+    }
 }

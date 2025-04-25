@@ -33,8 +33,15 @@ class StudentResource extends Resource
                         ->default(fn ($record) => $record?->subscription?->plan_id)
                         ->dehydrated(false)
                         ->required()
+                        ->columnSpan(6),
+
+                    Forms\Components\TextInput::make('credit_balance')
+                        ->label('Credit Balance')
+                        ->dehydrated(false)
+                        ->helperText('The current number of available credits for this student.')
+                        ->numeric()
                         ->columnSpan(6)
-                ])
+                ]),
             ]
         ));
     }

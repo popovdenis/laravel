@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 
 /**
@@ -12,7 +13,17 @@ use App\Models\User;
  */
 class SubscriptionService
 {
-    public function syncForUser(User $user, ?int $planId): void
+    /**
+     * @var \App\Services\CreditBalanceService
+     */
+    private CreditBalanceService $creditBalanceService;
+
+    public function __construct(\App\Services\CreditBalanceService $creditBalanceService)
+    {
+        $this->creditBalanceService = $creditBalanceService;
+    }
+
+    public function syncSubscriptionForUser(User $user, ?int $planId): void
     {
         $currentPlanId = $user->subscription?->plan_id;
 
@@ -22,7 +33,7 @@ class SubscriptionService
         }
 
         if ($planId) {
-            $plan = \App\Models\SubscriptionPlan::find($planId);
+            $plan = $this->getUserSubscriptionPlan($planId);
 
             $now = now();
             $trialEndsAt = null;
@@ -41,14 +52,32 @@ class SubscriptionService
                 default  => null,
             };
 
-            $user->subscription()->updateOrCreate([], [
-                'plan_id'       => $planId,
-                'starts_at'     => $startsAt,
-                'ends_at'       => $endsAt,
-                'trial_ends_at' => $trialEndsAt,
-            ]);
+            $this->updateUserSubscription($user, $planId, $startsAt, $endsAt, $trialEndsAt);
+            $this->updateCreditBalance($user, $plan);
         } else {
             $user->subscription()?->delete();
+        }
+    }
+
+    protected function getUserSubscriptionPlan(int $planId): SubscriptionPlan
+    {
+        return \App\Models\SubscriptionPlan::find($planId);
+    }
+
+    protected function updateUserSubscription(User $user, int $planId, $startsAt, $endsAt, $trialEndsAt): void
+    {
+        $user->subscription()->updateOrCreate([], [
+            'plan_id'       => $planId,
+            'starts_at'     => $startsAt,
+            'ends_at'       => $endsAt,
+            'trial_ends_at' => $trialEndsAt,
+        ]);
+    }
+
+    protected function updateCreditBalance(User $user, SubscriptionPlan $plan): void
+    {
+        if ($plan->credits !== $user->credit_balance) {
+            $this->creditBalanceService->updateUserCreditBalance($user, $plan->credits);
         }
     }
 }

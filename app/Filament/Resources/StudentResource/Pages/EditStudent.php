@@ -22,7 +22,13 @@ class EditStudent extends EditRecord
     {
         $subscriptionPlanId = $this->form->getRawState()['subscription_plan_id'] ?? null;
 
-        app(SubscriptionService::class)->syncForUser($this->record, $subscriptionPlanId);
+        try {
+            app(SubscriptionService::class)->syncSubscriptionForUser($this->record, $subscriptionPlanId);
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        $this->fillForm();
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
