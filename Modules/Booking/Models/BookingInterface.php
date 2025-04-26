@@ -3,8 +3,8 @@
 namespace Modules\Booking\Models;
 
 use App\Enums\PaymentMethod;
-use App\Models\User;
 use App\Services\Payment\PaymentMethodInterface;
+use Modules\User\Models\User;
 
 /**
  * Interface BookingInterface

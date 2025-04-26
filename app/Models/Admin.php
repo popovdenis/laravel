@@ -8,7 +8,7 @@ namespace App\Models;
  *
  * @package App\Models
  */
-class Admin extends \App\Models\User
+class Admin extends \Modules\User\Models\User
 {
     protected $table = 'users';
 }

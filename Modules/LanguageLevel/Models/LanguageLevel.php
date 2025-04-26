@@ -2,9 +2,9 @@
 
 namespace Modules\LanguageLevel\Models;
 
-use App\Models\Subject;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Subject\Models\Subject;
+use Modules\User\Models\User;
 
 class LanguageLevel extends Model
 {

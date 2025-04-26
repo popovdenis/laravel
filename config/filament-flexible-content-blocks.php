@@ -247,7 +247,7 @@ return [
         'publishing_dates' => 'd/m/Y G:i',
     ],
 
-    'author_model' => 'App\Models\User',
+    'author_model' => 'Modules\User\Models\User',
 
     'block_specific' => [
         /*

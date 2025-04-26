@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\ScheduleResource\Pages;
 
+use App\Data\MeetingData;
 use App\Filament\Resources\ScheduleResource;
-use Filament\Resources\Pages\CreateRecord;
 use App\Services\ZoomService;
 use Filament\Notifications\Notification;
-use App\Factories\MeetingFactory;
-use App\Data\MeetingData;
-use App\Models\User;
+use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Carbon;
+use Modules\User\Models\User;
 
 class CreateSchedule extends CreateRecord
 {
@@ -18,7 +17,7 @@ class CreateSchedule extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $teacherId = $data['teacher_id'] ?? null;
-        $teacher = \App\Models\User::find($teacherId);
+        $teacher = \Modules\User\Models\User::find($teacherId);
 
         if (! $teacher) {
             Notification::make()

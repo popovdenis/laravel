@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Flow;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Modules\User\Models\User;
 
 class TimeslotSelectionController extends Controller
 {

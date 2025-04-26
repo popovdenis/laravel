@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use App\Models\ScheduleTimeslot;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Models\BookingInterface;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 
 /**
  * Class SlotAvailabilityValidator

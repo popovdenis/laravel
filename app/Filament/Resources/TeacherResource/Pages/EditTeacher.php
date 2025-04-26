@@ -6,8 +6,8 @@ use App\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use App\Filament\Resources\TeacherResource;
 use App\Filament\Resources\TimeSlotValidationTrait;
 use App\Filament\Resources\UserResource\Pages\EditUser;
-use App\Models\ScheduleTimeslot;
 use Filament\Actions;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 
 class EditTeacher extends EditUser
 {
@@ -63,7 +63,7 @@ class EditTeacher extends EditUser
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $grouped = \App\Models\ScheduleTimeslot::query()
+        $grouped = \Modules\ScheduleTimeslot\Models\ScheduleTimeslot::query()
             ->where('user_id', $data['id'])
             ->get()
             ->groupBy('day')

@@ -37,7 +37,7 @@ class StreamResource extends Resource
                         return [];
                     }
 
-                    return \App\Models\User::role('teacher')
+                    return \Modules\User\Models\User::role('teacher')
                         ->whereHas('streams', fn ($query) => $query->where('language_level_id', $levelId))
                         ->pluck('name', 'id');
                 })
@@ -69,7 +69,7 @@ class StreamResource extends Resource
                     if (! $levelId) {
                         return [];
                     }
-                    return \App\Models\Subject::where('language_level_id', $levelId)->pluck('title', 'id');
+                    return \Modules\Subject\Models\Subject::where('language_level_id', $levelId)->pluck('title', 'id');
                 })
                 ->searchable()
                 ->required()

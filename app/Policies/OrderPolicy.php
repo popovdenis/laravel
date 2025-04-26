@@ -3,8 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Order;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use Modules\User\Models\User;
 
 class OrderPolicy
 {

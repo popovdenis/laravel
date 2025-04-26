@@ -61,7 +61,7 @@ class EditSchedule extends EditRecord
 
     protected function prepareMeetingData(array $data): ?MeetingData
     {
-        $teacher = \App\Models\User::find($data['teacher_id']);
+        $teacher = \Modules\User\Models\User::find($data['teacher_id']);
         if ($teacher) {
             return new \App\Data\MeetingData(
                 teacherEmail: $teacher->email,

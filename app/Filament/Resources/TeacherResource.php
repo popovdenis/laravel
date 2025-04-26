@@ -4,11 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TeacherResource\Pages;
 use App\Filament\Resources\TeacherResource\RelationManagers;
-use Filament\Forms\Form;
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use App\Models\User;
+use Modules\User\Models\User;
 
 class TeacherResource extends Resource
 {
@@ -36,7 +36,7 @@ class TeacherResource extends Resource
                     Forms\Components\Grid::make(12)->schema([
                         Forms\Components\Select::make('schedule_template_id')
                             ->label('Select Template')
-                            ->options(fn () => \App\Models\ScheduleTemplate::pluck('title', 'id'))
+                            ->options(fn () => \Modules\ScheduleTemplate\Models\ScheduleTemplate::pluck('title', 'id'))
                             ->reactive()
                             ->columnSpan(6),
 
@@ -46,7 +46,7 @@ class TeacherResource extends Resource
                                 ->action(function (Forms\Get $get, Forms\Set $set) {
                                     $templateId = $get('schedule_template_id');
                                     if ($templateId) {
-                                        $template = \App\Models\ScheduleTemplate::find($templateId);
+                                        $template = \Modules\ScheduleTemplate\Models\ScheduleTemplate::find($templateId);
                                         if ($template) {
                                             $grouped = collect($template->slots ?? [])
                                                 ->groupBy('day')

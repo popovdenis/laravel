@@ -2,10 +2,10 @@
 
 namespace Modules\Subscription\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
+use Modules\User\Models\User;
 
 class Subscription extends Model
 {

@@ -24,7 +24,7 @@ class SubscriptionResource extends Resource
             Forms\Components\Grid::make(12)->schema([
                 Forms\Components\Select::make('user_id')
                     ->label('Subscriber')
-                    ->options(\App\Models\User::pluck('name', 'id'))
+                    ->options(\Modules\User\Models\User::pluck('name', 'id'))
                     ->required()
                     ->disabled()
                     ->columnSpan(8),

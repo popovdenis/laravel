@@ -4,13 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScheduleTemplateResource\Pages;
 use App\Filament\Resources\ScheduleTemplateResource\RelationManagers;
-use App\Models\ScheduleTemplate;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Modules\ScheduleTemplate\Models\ScheduleTemplate;
 
 class ScheduleTemplateResource extends Resource
 {

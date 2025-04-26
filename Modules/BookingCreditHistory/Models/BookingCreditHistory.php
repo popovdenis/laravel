@@ -2,10 +2,10 @@
 
 namespace Modules\BookingCreditHistory\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Booking\Models\Booking;
+use Modules\User\Models\User;
 
 /**
  * @property int $id

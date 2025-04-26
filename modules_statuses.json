@@ -5,5 +5,9 @@
     "SubscriptionPlan": true,
     "Subscription": true,
     "BookingCreditHistory": true,
-    "Stream": true
+    "Stream": true,
+    "User": true,
+    "Subject": true,
+    "ScheduleTemplate": true,
+    "ScheduleTimeslot": true
 }

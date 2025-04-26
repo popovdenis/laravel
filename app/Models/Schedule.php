@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Services\CometChatService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Modules\User\Models\User;
 
 class Schedule extends Model
 {

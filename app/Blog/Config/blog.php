@@ -3,7 +3,7 @@
 return [
     //Your custom User model
     //Change it to \App\User::class for previous laravel versions
-    'user_model' => \App\Models\User::class,
+    'user_model' => \Modules\User\Models\User::class,
     'reading_progress_bar' => true,
     'include_default_routes' => true,
     'blog_prefix' => "blog",

@@ -3,12 +3,12 @@
 namespace Modules\Booking\Models;
 
 use App\Enums\PaymentMethod;
-use App\Models\ScheduleTimeslot;
-use Modules\Stream\Models\Stream;
-use App\Models\User;
 use App\Services\Payment\PaymentMethodInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
+use Modules\Stream\Models\Stream;
+use Modules\User\Models\User;
 
 class Booking extends Model implements BookingInterface
 {

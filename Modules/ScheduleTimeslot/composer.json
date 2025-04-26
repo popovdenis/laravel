@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/scheduletimeslot",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ScheduleTimeslot\\": "app/",
+            "Modules\\ScheduleTimeslot\\Database\\Factories\\": "database/factories/",
+            "Modules\\ScheduleTimeslot\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\ScheduleTimeslot\\Tests\\": "tests/"
+        }
+    }
+}

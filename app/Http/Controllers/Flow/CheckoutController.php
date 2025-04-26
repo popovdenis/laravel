@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Flow;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ScheduleTimeslot;
-use App\Models\User;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
+use Modules\User\Models\User;
 
 class CheckoutController extends Controller
 {
