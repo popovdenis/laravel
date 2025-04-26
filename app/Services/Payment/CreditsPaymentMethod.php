@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Services\Payment;
 
-use App\Models\Booking\BookingInterface;
 use Modules\Booking\Exceptions\NotEnoughCreditsException;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Class CreditsPaymentMethod

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Booking;
+namespace Modules\Booking\Models;
 
 use App\Enums\PaymentMethod;
 use App\Models\User;

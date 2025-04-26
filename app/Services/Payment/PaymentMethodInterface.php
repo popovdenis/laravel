@@ -2,7 +2,7 @@
 
 namespace App\Services\Payment;
 
-use App\Models\Booking\BookingInterface;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Interface PaymentMethodInterface

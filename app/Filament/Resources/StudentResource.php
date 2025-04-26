@@ -4,14 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
-use App\Models\SubscriptionPlan;
+use App\Models\User;
+use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Forms;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables;
-use App\Models\User;
+use Filament\Tables\Table;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class StudentResource extends Resource
 {

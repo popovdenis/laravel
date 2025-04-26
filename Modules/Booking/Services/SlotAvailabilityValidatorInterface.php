@@ -8,7 +8,7 @@ namespace Modules\Booking\Services;
  * @package App\Services\Booking
  */
 
-use App\Models\Booking\BookingInterface;
+use Modules\Booking\Models\BookingInterface;
 
 interface SlotAvailabilityValidatorInterface
 {

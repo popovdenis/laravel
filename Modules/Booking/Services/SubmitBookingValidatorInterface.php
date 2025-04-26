@@ -2,7 +2,7 @@
 
 namespace Modules\Booking\Services;
 
-use App\Models\Booking\BookingInterface;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Interface SubmitBookingValidatorInterface

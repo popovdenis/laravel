@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace Modules\Subscription\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class Subscription extends Model
 {

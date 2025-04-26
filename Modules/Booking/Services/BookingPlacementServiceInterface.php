@@ -28,9 +28,9 @@ interface BookingPlacementServiceInterface
     public function getStatus($id);
 
     /**
-     * @param \App\Models\Booking\BookingInterface $booking
+     * @param \Modules\Booking\Models\BookingInterface $booking
      *
-     * @return \App\Models\Booking\BookingInterface
+     * @return \Modules\Booking\Models\BookingInterface
      */
-    public function place(\App\Models\Booking\BookingInterface $booking);
+    public function place(\Modules\Booking\Models\BookingInterface $booking);
 }

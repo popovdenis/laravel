@@ -4,14 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionResource\Pages;
 use App\Filament\Resources\SubscriptionResource\RelationManagers;
-use App\Models\Subscription;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Modules\Subscription\Models\Subscription;
 
 class SubscriptionResource extends Resource
 {
@@ -33,7 +31,7 @@ class SubscriptionResource extends Resource
 
                 Forms\Components\Select::make('plan_id')
                     ->label('Subscription Plan')
-                    ->options(\App\Models\SubscriptionPlan::pluck('name', 'id'))
+                    ->options(\Modules\SubscriptionPlan\Models\SubscriptionPlan::pluck('name', 'id'))
                     ->required()
                     ->columnSpan(8),
 
@@ -44,14 +42,14 @@ class SubscriptionResource extends Resource
                 Forms\Components\DateTimePicker::make('trial_ends_at')
                     ->label('Trial Ends At')
                     ->seconds(false)->native(false)
-                    ->disabled(fn ($get) => !\App\Models\SubscriptionPlan::find($get('plan_id'))?->enable_trial)
+                    ->disabled(fn ($get) => !\Modules\SubscriptionPlan\Models\SubscriptionPlan::find($get('plan_id'))?->enable_trial)
                     ->helperText(fn ($get) =>
-                    !\App\Models\SubscriptionPlan::find($get('plan_id'))?->enable_trial
+                    !\Modules\SubscriptionPlan\Models\SubscriptionPlan::find($get('plan_id'))?->enable_trial
                         ? 'Trial is not available for the selected plan.'
                         : null
                     )
                     ->afterStateHydrated(function ($set, $get) {
-                        $plan = \App\Models\SubscriptionPlan::find($get('plan_id'));
+                        $plan = \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($get('plan_id'));
                         if (!$plan?->enable_trial) {
                             $set('trial_ends_at', null);
                         }

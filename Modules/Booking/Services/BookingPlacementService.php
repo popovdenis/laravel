@@ -23,7 +23,7 @@ class BookingPlacementService implements BookingPlacementServiceInterface
         // TODO: Implement getStatus() method.
     }
 
-    public function place(\App\Models\Booking\BookingInterface $booking)
+    public function place(\Modules\Booking\Models\BookingInterface $booking)
     {
         try {
             $booking->place();

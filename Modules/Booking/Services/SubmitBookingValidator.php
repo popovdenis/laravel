@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Modules\Booking\Services;
 
 use App\Exceptions\AlreadyExistsException;
-use App\Models\Booking\BookingInterface;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Class SubmitBookingValidator

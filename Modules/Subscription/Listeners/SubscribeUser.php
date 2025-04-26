@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Listeners;
+namespace Modules\Subscription\Listeners;
 
 use Illuminate\Auth\Events\Registered;
 

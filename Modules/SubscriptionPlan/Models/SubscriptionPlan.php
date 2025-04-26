@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace Modules\SubscriptionPlan\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Subscription\Models\Subscription;
 
 class SubscriptionPlan extends Model
 {

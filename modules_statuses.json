@@ -1,5 +1,7 @@
 {
     "Booking": true,
     "Booking2": true,
-    "LanguageLevel": true
+    "LanguageLevel": true,
+    "SubscriptionPlan": true,
+    "Subscription": true
 }

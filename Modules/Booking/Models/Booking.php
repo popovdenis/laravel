@@ -3,7 +3,6 @@
 namespace Modules\Booking\Models;
 
 use App\Enums\PaymentMethod;
-use App\Models\Booking\BookingInterface;
 use App\Models\ScheduleTimeslot;
 use App\Models\Stream;
 use App\Models\User;

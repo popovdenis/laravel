@@ -4,8 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionPlanResource\Pages;
 use App\Filament\Resources\SubscriptionPlanResource\RelationManagers;
-use App\Models\Enums\FrequencyUnit;
-use App\Models\SubscriptionPlan;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +12,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Modules\SubscriptionPlan\Models\Enums\FrequencyUnit;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionPlanResource extends Resource
 {

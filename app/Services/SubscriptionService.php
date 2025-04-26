@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\SubscriptionPlan;
 use App\Models\User;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 /**
  * Class SubscriptionService
@@ -64,7 +64,7 @@ class SubscriptionService
 
     protected function getUserSubscriptionPlan(int $planId): SubscriptionPlan
     {
-        return \App\Models\SubscriptionPlan::find($planId);
+        return \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($planId);
     }
 
     protected function updateUserSubscription(User $user, int $planId, $startsAt, $endsAt, $trialEndsAt): void

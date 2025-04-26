@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Factories;
 
-use App\Models\Booking\BookingInterface;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Class BookingFactory
