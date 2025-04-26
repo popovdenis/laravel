@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StreamResource\Pages;
 use App\Filament\Resources\StreamResource\RelationManagers;
-use App\Models\Stream;
+use Modules\Stream\Models\Stream;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;

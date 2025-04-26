@@ -10,5 +10,6 @@
     "Subject": true,
     "ScheduleTemplate": true,
     "ScheduleTimeslot": true,
-    "Payment": true
+    "Payment": true,
+    "UserCreditHistory": true
 }

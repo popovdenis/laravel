@@ -3,13 +3,13 @@
 namespace Modules\Booking\Http\Controllers;
 
 use App\Exceptions\AlreadyExistsException;
-use App\Exceptions\PaymentFailedException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Services\BookingManagementInterface;
+use Modules\Payment\Exceptions\PaymentFailedException;
 use Throwable;
 
 class BookingController extends Controller

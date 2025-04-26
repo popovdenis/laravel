@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Stream\Services;
 
-use App\Models\Stream;
+use Modules\Stream\Models\Stream;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Stream\Models\Enums\StreamStatus;

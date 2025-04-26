@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use App\Enums\PaymentMethod;
 use Modules\Booking\Models\BookingInterface;
+use Modules\Payment\Models\Enums\PaymentMethod;
 
 /**
  * Class PaymentMethodResolver

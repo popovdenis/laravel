@@ -2,7 +2,7 @@
 
 namespace Modules\Booking\Models;
 
-use App\Enums\PaymentMethod;
+use Modules\Payment\Models\Enums\PaymentMethod;
 use Modules\Payment\Services\PaymentMethodInterface;
 use Modules\User\Models\User;
 

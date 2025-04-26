@@ -1,0 +1,11 @@
+{
+    "name": "UserCreditHistory",
+    "alias": "usercredithistory",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        
+    ],
+    "files": []
+}

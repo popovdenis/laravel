@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\UserCreditHistory\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\User\Models\User;

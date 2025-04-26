@@ -2,14 +2,14 @@
 
 namespace Modules\User\Models;
 
-use App\Models\Stream;
-use App\Models\UserCreditHistory;
+use Modules\Stream\Models\Stream;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\BookingCreditHistory\Models\BookingCreditHistory;
 use Modules\Subscription\Models\Subscription;
+use Modules\UserCreditHistory\Models\UserCreditHistory;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
