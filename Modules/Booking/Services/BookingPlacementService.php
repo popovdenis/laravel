@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use App\Models\Enums\BookingStatus;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\Enums\BookingStatus;
 
 /**
  * Class BookingPlacementService

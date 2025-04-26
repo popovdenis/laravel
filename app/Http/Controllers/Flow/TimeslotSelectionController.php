@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Flow;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class TimeslotSelectionController extends Controller
 {
@@ -29,7 +29,7 @@ class TimeslotSelectionController extends Controller
         }
 
         $teacher = User::with('scheduleTimeslots')->findOrFail($teacherId);
-        $course = \App\Models\LanguageLevel::findOrFail($courseId);
+        $course = \Modules\LanguageLevel\Models\LanguageLevel::findOrFail($courseId);
 
         return view('flow.select-timeslot', [
             'teacher' => $teacher,

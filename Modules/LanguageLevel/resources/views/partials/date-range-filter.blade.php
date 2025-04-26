@@ -1,5 +1,5 @@
 <div class="bg-white border rounded-md p-4 mb-6">
-    <form method="GET" action="{{ route('levels.index') }}" class="flex flex-wrap items-center gap-4">
+    <form method="GET" action="{{ route('languagelevel::index') }}" class="flex flex-wrap items-center gap-4">
         <!-- Preserve level_id and subject_ids -->
         <input type="hidden" name="level_id" value="{{ $selectedLevelId }}">
         @foreach ($selectedSubjectIds as $subjectId)
@@ -31,7 +31,7 @@
 
         <!-- Clear all -->
         <div class="self-end ml-auto">
-            <a href="{{ route('levels.index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded-md hover:bg-blue-50">
+            <a href="{{ route('languagelevel::index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded-md hover:bg-blue-50">
                 Clear all
             </a>
         </div>

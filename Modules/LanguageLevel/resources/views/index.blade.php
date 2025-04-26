@@ -8,15 +8,15 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Sidebar -->
-        @include('levels.partials.sidebar')
+        @include('languagelevel::partials.sidebar')
 
         <!-- Central part -->
         <div class="md:col-span-3 space-y-6">
             <!-- Date filter -->
-            @include('levels.partials.date-range-filter')
+            @include('languagelevel::partials.date-range-filter')
 
             <!-- Slots grouped by date -->
-            @include('levels.partials.slots')
+            @include('languagelevel::partials.slots')
         </div>
     </div>
     <!-- Flatpickr JS -->

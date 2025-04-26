@@ -4,19 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LanguageLevelResource\Pages;
 use App\Filament\Resources\LanguageLevelResource\RelationManagers;
-use App\Models\LanguageLevel;
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Forms\Components\Select;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Modules\LanguageLevel\Models\LanguageLevel;
 
 class LanguageLevelResource extends Resource
 {

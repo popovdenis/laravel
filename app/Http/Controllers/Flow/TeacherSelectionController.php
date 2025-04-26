@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Flow;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\LanguageLevel;
+use Modules\LanguageLevel\Models\LanguageLevel;
 
 class TeacherSelectionController extends Controller
 {

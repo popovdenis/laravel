@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         if (session()->has('redirect_level_id')) {
             $slug = session()->pull('redirect_level_id');
-            $course = \App\Models\LanguageLevel::where('slug', $slug)->first();
+            $course = \Modules\LanguageLevel\Models\LanguageLevel::where('slug', $slug)->first();
 
             if ($course) {
                 $cart = \Binafy\LaravelCart\Models\Cart::firstOrCreate(['user_id' => auth()->id()]);

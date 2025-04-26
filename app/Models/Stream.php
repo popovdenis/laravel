@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Enums\StreamStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\LanguageLevel\Models\LanguageLevel;
 
 class Stream extends Model
 {

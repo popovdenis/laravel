@@ -1,0 +1,11 @@
+{
+    "name": "LanguageLevel",
+    "alias": "languagelevel",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\LanguageLevel\\Providers\\LanguageLevelServiceProvider"
+    ],
+    "files": []
+}

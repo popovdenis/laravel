@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\LanguageLevel\Http\Controllers;
 
-use App\Models\LanguageLevel;
-use App\Models\Stream;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Stream;
 use Carbon\Carbon;
+use Modules\LanguageLevel\Models\LanguageLevel;
 
 class LanguageLevelController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         $selectedLevelId = $request->input('level_id');
@@ -107,7 +111,7 @@ class LanguageLevelController extends Controller
         }
         unset($slots);
 
-        return view('levels.index', [
+        return view('languagelevel::index', [
             'levels'             => $levels,
             'subjects'           => $subjects,
             'groupedSlots'       => $groupedSlots,
@@ -118,6 +122,22 @@ class LanguageLevelController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('languagelevel::create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request) {}
+
+    /**
+     * Show the specified resource.
+     */
     public function show(string $slug)
     {
         $level = LanguageLevel::where('slug', $slug)
@@ -126,4 +146,22 @@ class LanguageLevelController extends Controller
 
         return view('levels.show', compact('level'));
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        return view('languagelevel::edit');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id) {}
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id) {}
 }

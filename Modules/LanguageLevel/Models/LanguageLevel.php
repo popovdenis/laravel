@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace Modules\LanguageLevel\Models;
 
+use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class LanguageLevel extends Model

@@ -1,5 +1,5 @@
 <aside class="bg-white border rounded shadow-sm p-4 space-y-6">
-    <form method="GET" action="{{ route('levels.index') }}">
+    <form method="GET" action="{{ route('languagelevel::index') }}">
         @if (request('start_date'))
             <input type="hidden" name="start_date" value="{{ request('start_date') }}">
         @endif

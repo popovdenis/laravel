@@ -1,17 +1,16 @@
 <?php
-use App\Http\Controllers\LanguageLevelController;
-use Illuminate\Support\Facades\Route;
-use App\Models\LanguageLevel;
-use Illuminate\Http\Request;
-use Binafy\LaravelCart\Models\Cart;
+
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\Flow\TeacherSelectionController;
-use App\Http\Controllers\Flow\TimeslotSelectionController;
 use App\Http\Controllers\Flow\CheckoutController;
 use App\Http\Controllers\Flow\ConfirmationController;
+use App\Http\Controllers\Flow\TeacherSelectionController;
+use App\Http\Controllers\Flow\TimeslotSelectionController;
+use Binafy\LaravelCart\Models\Cart;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Modules\LanguageLevel\Models\LanguageLevel;
 
-Route::get('/levels', [LanguageLevelController::class, 'index'])->name('levels.index');
-Route::get('/levels/{level:slug}', [LanguageLevelController::class, 'show'])->name('levels.show');
+
 Route::post('/cart/add/{level:slug}', function (Request $request, LanguageLevel $course) {
     if (!auth()->check()) {
         session()->put('redirect_course_id', $course->slug);
@@ -32,7 +31,6 @@ Route::post('/cart/add/{level:slug}', function (Request $request, LanguageLevel 
 
     return back()->with('success', 'Course added to cart');
 })->name('cart.add');
-
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::delete('/cart/remove/{item}', [CartController::class, 'destroy'])->name('cart.remove');
