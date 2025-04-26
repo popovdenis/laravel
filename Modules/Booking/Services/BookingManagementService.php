@@ -42,6 +42,6 @@ class BookingManagementService implements BookingManagementInterface
         $paymentMethod->authorize($booking);
 
         // Дальше создание букинга, диспатч событий и т.д.
-        $this->placementService->place($booking);
+        $booking = $this->placementService->place($booking);
     }
 }

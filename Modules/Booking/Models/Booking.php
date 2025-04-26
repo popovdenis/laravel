@@ -4,6 +4,7 @@ namespace Modules\Booking\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\BookingCreditHistory\Models\BookingCreditHistory;
 use Modules\Payment\Models\Enums\PaymentMethod;
 use Modules\Payment\Services\PaymentMethodInterface;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
@@ -109,6 +110,18 @@ class Booking extends Model implements BookingInterface
     public function getPayment(): PaymentMethodInterface
     {
         return $this->payment;
+    }
+
+    public function setLastPaymentTransaction(BookingCreditHistory $bookingCreditHistory): BookingInterface
+    {
+        $this->lastPaymentTransaction = $bookingCreditHistory;
+
+        return $this;
+    }
+
+    public function getLastPaymentTransaction(): BookingCreditHistory
+    {
+        return $this->lastPaymentTransaction;
     }
 
     public function toArray(): array

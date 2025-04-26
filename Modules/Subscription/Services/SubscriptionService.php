@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Modules\Subscription\Services;
 
-use App\Services\CreditBalanceService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
+use Modules\UserCreditHistory\Models\UserCreditHistoryInterface;
+use Modules\UserCreditHistory\Services\CreditBalanceService;
 
 /**
  * Class SubscriptionService
@@ -15,13 +16,13 @@ use Modules\User\Models\User;
 class SubscriptionService
 {
     /**
-     * @var \App\Services\CreditBalanceService
+     * @var \Modules\UserCreditHistory\Models\UserCreditHistoryInterface
      */
-    private CreditBalanceService $creditBalanceService;
+    private UserCreditHistoryInterface $userCreditHistory;
 
-    public function __construct(\App\Services\CreditBalanceService $creditBalanceService)
+    public function __construct(UserCreditHistoryInterface $userCreditHistory)
     {
-        $this->creditBalanceService = $creditBalanceService;
+        $this->userCreditHistory = $userCreditHistory;
     }
 
     public function syncSubscriptionForUser(User $user, ?int $planId): void
@@ -81,7 +82,7 @@ class SubscriptionService
     protected function updateCreditBalance(User $user, SubscriptionPlan $plan): void
     {
         if ($plan->credits !== $user->credit_balance) {
-            $this->creditBalanceService->updateUserCreditBalance($user, $plan->credits);
+            $this->userCreditHistory->calculateBalanceWithSubscription($user, $plan->credits);
         }
     }
 }

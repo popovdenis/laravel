@@ -11,5 +11,6 @@
     "ScheduleTemplate": true,
     "ScheduleTimeslot": true,
     "Payment": true,
-    "UserCreditHistory": true
+    "UserCreditHistory": true,
+    "Base": true
 }

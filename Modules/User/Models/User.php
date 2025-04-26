@@ -98,16 +98,12 @@ class User extends Authenticatable
     {
         return $this->credit_balance;
     }
+    /*$user = User::find(1);
+        // All spends:
+    $spends = $user->creditHistory()->spend()->get();
 
-    /**
-     * $user = User::find(1);
-     *
-     * // All spends:
-     * $spends = $user->creditHistory()->spend()->get();
-     *
-     * // All refunds:
-     * $refunds = $user->creditHistory()->refund()->get();
-     */
+        // All refunds:
+    $refunds = $user->creditHistory()->refund()->get();*/
 
     public function creditTopUps()
     {

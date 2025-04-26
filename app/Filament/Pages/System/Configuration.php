@@ -24,20 +24,28 @@ class Configuration extends BaseSettings
         return [
             Tabs::make('Configuration')
                 ->schema([
-                    Tabs\Tab::make('Study')
+                    Tabs\Tab::make('Booking')
                         ->schema([
-                            TextInput::make('study.group_lesson_duration')
-                                ->label('Duration of Group Lesson'),
-                            TextInput::make('study.individual_lesson_duration')
-                                ->label('Duration of Individual Lesson'),
+                            TextInput::make('booking.group_lesson_duration')
+                                ->label('Duration of Group Lesson')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric(),
+                            TextInput::make('booking.individual_lesson_duration')
+                                ->label('Duration of Individual Lesson')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric(),
                         ]),
 
                     Tabs\Tab::make('Subscription')
                         ->schema([
-                            TextInput::make('study.group_lesson_price')
-                                ->label('Price per Group Lesson (credits)'),
-                            TextInput::make('study.individual_lesson_price')
-                                ->label('Price per Individual Lesson (credits)'),
+                            TextInput::make('subscription.group_lesson_price')
+                                ->label('Price per Group Lesson (credits)')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric(),
+                            TextInput::make('subscription.individual_lesson_price')
+                                ->label('Price per Individual Lesson (credits)')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric(),
                         ]),
 
                     Tabs\Tab::make('MailSender')

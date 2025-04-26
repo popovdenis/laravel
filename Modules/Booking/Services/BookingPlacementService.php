@@ -32,12 +32,17 @@ class BookingPlacementService implements BookingPlacementServiceInterface
         }
 
         try {
-            $booking = Booking::create([
+            $newBooking = Booking::create([
                 'student_id'           => $booking->getStudent()->id,
                 'stream_id'            => $booking->getStreamId(),
                 'schedule_timeslot_id' => $booking->getSlotId(),
                 'status'               => BookingStatus::PENDING,
             ]);
+
+            $transaction = $booking->getLastPaymentTransaction();
+            if ($transaction) {
+                $transaction->update(['booking_id' => $newBooking->id]);
+            }
         } catch (\Exception $e) {
 //            $this->logger->critical(
 //                'Saving order ' . $order->getIncrementId() . ' failed: ' . $e->getMessage()

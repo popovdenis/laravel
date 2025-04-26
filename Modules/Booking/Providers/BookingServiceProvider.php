@@ -24,7 +24,6 @@ class BookingServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'Booking';
-
     protected string $nameLower = 'booking';
 
     /**
@@ -32,8 +31,6 @@ class BookingServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
@@ -59,25 +56,6 @@ class BookingServiceProvider extends ServiceProvider
 
         // PaymentMethodResolver (singleton)
         $this->app->singleton(PaymentMethodResolver::class, PaymentMethodResolver::class);
-    }
-
-    /**
-     * Register commands in the format of Command::class
-     */
-    protected function registerCommands(): void
-    {
-        // $this->commands([]);
-    }
-
-    /**
-     * Register command Schedules.
-     */
-    protected function registerCommandSchedules(): void
-    {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
     }
 
     /**

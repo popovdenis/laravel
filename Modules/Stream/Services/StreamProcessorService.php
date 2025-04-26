@@ -34,7 +34,7 @@ class StreamProcessorService
 
     private function processStartingStreams($today): void
     {
-        $streams = Stream::where('status', 'planned')
+        $streams = Stream::where('status', StreamStatus::PLANNED)
             ->whereDate('start_date', $today)
             ->get();
 

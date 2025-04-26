@@ -28,6 +28,7 @@ class BookingCreditHistory extends Model
         'user_id',
         'credits_amount',
         'action',
+        'comment',
     ];
 
     protected $casts = [
