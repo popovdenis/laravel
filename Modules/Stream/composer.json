@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/stream",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Stream\\": "app/",
+            "Modules\\Stream\\Database\\Factories\\": "database/factories/",
+            "Modules\\Stream\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Stream\\Tests\\": "tests/"
+        }
+    }
+}

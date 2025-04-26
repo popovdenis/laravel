@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace Modules\BookingCreditHistory\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Booking\Models\Booking;

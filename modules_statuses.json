@@ -3,5 +3,7 @@
     "Booking2": true,
     "LanguageLevel": true,
     "SubscriptionPlan": true,
-    "Subscription": true
+    "Subscription": true,
+    "BookingCreditHistory": true,
+    "Stream": true
 }

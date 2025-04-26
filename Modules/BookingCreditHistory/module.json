@@ -1,0 +1,11 @@
+{
+    "name": "BookingCreditHistory",
+    "alias": "bookingcredithistory",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BookingCreditHistory\\Providers\\BookingCreditHistoryServiceProvider"
+    ],
+    "files": []
+}

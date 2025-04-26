@@ -1,10 +1,9 @@
 <?php
-/**
- * @package App\Models\Enums
- */
-
 namespace Modules\SubscriptionPlan\Models\Enums;
 
+/**
+ * @package Modules\SubscriptionPlan\Models\Enums
+ */
 enum FrequencyUnit: string
 {
     case DAY = 'day';

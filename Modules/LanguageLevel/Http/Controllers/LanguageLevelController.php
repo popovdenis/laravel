@@ -4,7 +4,7 @@ namespace Modules\LanguageLevel\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Stream;
+use Modules\Stream\Models\Stream;
 use Carbon\Carbon;
 use Modules\LanguageLevel\Models\LanguageLevel;
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Stream;
-use App\Models\Enums\StreamStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Modules\Stream\Models\Enums\StreamStatus;
 use Throwable;
 
 /**
