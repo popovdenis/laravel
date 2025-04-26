@@ -89,6 +89,12 @@ class User extends Authenticatable
     {
         return $this->creditHistory()->sum('credits_amount');
     }
+
+    public function getCreditBalance(): int
+    {
+        return $this->credit_balance;
+    }
+
     /**
      * $user = User::find(1);
      *

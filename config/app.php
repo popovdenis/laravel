@@ -64,6 +64,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Blog\BlogServiceProvider::class,
         Jubaer\Zoom\ZoomServiceProvider::class,
+        App\Providers\BookingServiceProvider::class,
     ],
 
     'aliases' => [
