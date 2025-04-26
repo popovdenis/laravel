@@ -5,7 +5,13 @@
         </h3>
         <div class="mt-4">
             @foreach ($slots as $item)
-                <div class="flex items-center justify-between border border-gray-200 rounded-md bg-white px-6 py-4">
+                @php
+                    $isBooked = !empty($item['booking_id']);
+                @endphp
+                <div
+                    x-data="{ confirmBooking: false }"
+                    class="flex items-center justify-between border {{ $isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200' }} rounded-md px-6 py-4"
+                >
                     <!-- Time -->
                     <div class="w-24 text-blue-700 font-bold text-sm uppercase">
                         {{ $item['time'] }}
@@ -35,16 +41,46 @@
 
                     <!-- Actions -->
                     <div class="flex space-x-2">
-                        <form method="POST" action="{{ route('booking.store') }}">
-                            @csrf
-                            <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
-                            <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
-                            <x-primary-button>
+                        @if ($isBooked)
+{{--                            <form method="POST" action="{{ route('booking.cancel') }}">--}}
+                                @csrf
+                                <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
+                                <x-primary-button color="danger">
+                                    {{ __('Cancel Booking') }}
+                                </x-primary-button>
+{{--                            </form>--}}
+                        @else
+                            <button @click="confirmBooking = true" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
                                 {{ __('Book') }}
-                            </x-primary-button>
-                        </form>
-                        <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">{{ __('Book') }}</button>
-                        <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-md hover:bg-gray-300">{{ __('Details') }}</button>
+                            </button>
+                        @endif
+                        <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-md hover:bg-gray-300">
+                            {{ __('Details') }}
+                        </button>
+                    </div>
+
+                    <!-- Confirm Popup -->
+                    <div
+                        x-show="confirmBooking"
+                        x-cloak
+                        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    >
+                        <div class="bg-white p-6 rounded shadow-md text-center">
+                            <p class="mb-4 text-gray-800 font-medium">{{ __('Are you sure you want to book this slot?') }}</p>
+                            <div class="flex justify-center space-x-2">
+                                <button @click="confirmBooking = false" class="px-4 py-2 bg-gray-300 rounded">
+                                    {{ __('Cancel') }}
+                                </button>
+                                <form method="POST" action="{{ route('booking.store') }}">
+                                    @csrf
+                                    <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
+                                    <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
+                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
+                                        {{ __('Confirm Booking') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endforeach

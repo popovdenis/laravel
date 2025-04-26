@@ -54,6 +54,9 @@ class LanguageLevelController extends Controller
             $subjects = $selectedLevel?->subjects;
         }
 
+        // List of user's booked slots
+        $userBookedSlotIds = auth()->user()?->bookings()->pluck('id', 'schedule_timeslot_id')->toArray();
+
         $groupedSlots = [];
         foreach ($filteredStreams as $stream) {
             $subjectId = $stream->current_subject_id;
@@ -88,6 +91,7 @@ class LanguageLevelController extends Controller
                             'subject'                  => $stream->currentSubject,
                             'current_subject_number'   => $stream->current_subject_number,
                             'slot'                     => $slot,
+                            'booking_id'               => $userBookedSlotIds[$slot->id] ?? null,
                         ];
                     }
                 }

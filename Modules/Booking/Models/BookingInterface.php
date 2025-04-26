@@ -9,7 +9,7 @@ use Modules\User\Models\User;
 /**
  * Interface BookingInterface
  *
- * @package App\Models\Booking
+ * @package Modules\Booking\Models
  */
 interface BookingInterface
 {

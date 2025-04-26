@@ -2,6 +2,7 @@
 
 namespace Modules\User\Models;
 
+use Modules\Booking\Models\Booking;
 use Modules\Stream\Models\Stream;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -82,6 +83,11 @@ class User extends Authenticatable
     public function subscription()
     {
         return $this->hasOne(Subscription::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'student_id');
     }
 
     public function creditHistory(): HasMany
