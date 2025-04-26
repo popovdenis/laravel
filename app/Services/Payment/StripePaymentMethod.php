@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services\Payment;
 
-use App\Data\BookingData;
 use App\Models\Booking\BookingInterface;
 
 /**

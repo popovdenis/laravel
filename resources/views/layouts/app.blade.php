@@ -35,6 +35,19 @@
                         </div>
                     </div>
                 @endif
+
+                @if ($errors->any())
+                    <div class="max-w-7xl mx-auto mt-4 px-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                            <ul class="pl-5 space-y-1 list-none">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
                 {{ $slot }}
             </main>
         </div>
