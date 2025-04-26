@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace Modules\Subscription\Services;
 
+use App\Services\CreditBalanceService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
 

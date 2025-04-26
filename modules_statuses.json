@@ -9,5 +9,6 @@
     "User": true,
     "Subject": true,
     "ScheduleTemplate": true,
-    "ScheduleTimeslot": true
+    "ScheduleTimeslot": true,
+    "Payment": true
 }

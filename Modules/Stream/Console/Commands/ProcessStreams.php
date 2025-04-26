@@ -2,8 +2,8 @@
 
 namespace Modules\Stream\Console\Commands;
 
-use App\Services\StreamProcessorService;
 use Illuminate\Console\Command;
+use Modules\Stream\Services\StreamProcessorService;
 
 class ProcessStreams extends Command
 {

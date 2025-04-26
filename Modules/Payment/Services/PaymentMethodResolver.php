@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Payment;
+namespace Modules\Payment\Services;
 
 use App\Enums\PaymentMethod;
 use Modules\Booking\Models\BookingInterface;

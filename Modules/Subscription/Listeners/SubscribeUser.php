@@ -19,7 +19,7 @@ class SubscribeUser
     {
         $event->user->assignRole('Student');
 
-        app(\App\Services\SubscriptionService::class)
+        app(\Modules\Subscription\Services\SubscriptionService::class)
             ->syncSubscriptionForUser($event->user, (int) $event->subscriptionPlanId);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace Modules\Stream\Services;
 
 use App\Models\Stream;
 use Illuminate\Support\Facades\DB;

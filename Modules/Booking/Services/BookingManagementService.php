@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use App\Services\Payment\PaymentMethodResolver;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Factories\BookingFactoryInterface;
+use Modules\Payment\Services\PaymentMethodResolver;
 
 /**
  * Class BookingManagementService

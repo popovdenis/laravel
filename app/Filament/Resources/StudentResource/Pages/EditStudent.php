@@ -5,7 +5,7 @@ namespace App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Services\SubscriptionService;
+use Modules\Subscription\Services\SubscriptionService;
 
 class EditStudent extends EditRecord
 {

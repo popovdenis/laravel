@@ -2,7 +2,6 @@
 
 namespace Modules\Booking\Providers;
 
-use App\Services\Payment\PaymentMethodResolver;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Booking\Factories\BookingFactory;
@@ -15,6 +14,7 @@ use Modules\Booking\Services\SlotAvailabilityValidator;
 use Modules\Booking\Services\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Services\SubmitBookingValidator;
 use Modules\Booking\Services\SubmitBookingValidatorInterface;
+use Modules\Payment\Services\PaymentMethodResolver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
