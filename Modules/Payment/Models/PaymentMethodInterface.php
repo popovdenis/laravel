@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Payment\Services;
+namespace Modules\Payment\Models;
 
 use Modules\Booking\Models\BookingInterface;
 
@@ -20,4 +20,6 @@ interface PaymentMethodInterface
     public function getBooking(): BookingInterface;
 
     public function place();
+
+    public function cancel();
 }

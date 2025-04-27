@@ -19,6 +19,4 @@ interface BookingCreditHistoryInterface
     public function refund(User $user, int $amount, string $comment = null): void;
 
     public function adjust(User $user, int $amount, string $comment = null): void;
-
-    public function logTransaction(User $user, int $amount, string $comment = null): BookingCreditHistory;
 }

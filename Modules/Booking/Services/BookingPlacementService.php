@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Modules\Booking\Services;
 
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingInterface;
 use Modules\Booking\Models\Enums\BookingStatus;
+use Modules\Payment\Models\Transaction\ManagerInterface;
 
 /**
  * Class BookingPlacementService
@@ -13,9 +15,14 @@ use Modules\Booking\Models\Enums\BookingStatus;
  */
 class BookingPlacementService implements BookingPlacementServiceInterface
 {
-    public function cancel($id)
+    /**
+     * @var \Modules\Payment\Models\Transaction\ManagerInterface
+     */
+    private ManagerInterface $transactionManager;
+
+    public function __construct(ManagerInterface $transactionManager)
     {
-        // TODO: Implement cancel() method.
+        $this->transactionManager = $transactionManager;
     }
 
     public function getStatus($id)
@@ -23,15 +30,11 @@ class BookingPlacementService implements BookingPlacementServiceInterface
         // TODO: Implement getStatus() method.
     }
 
-    public function place(\Modules\Booking\Models\BookingInterface $booking)
+    public function place(BookingInterface $booking): BookingInterface
     {
         try {
             $booking->place();
-        } catch (\Exception $e) {
-            throw $e;
-        }
 
-        try {
             $newBooking = Booking::create([
                 'student_id'           => $booking->getStudent()->id,
                 'stream_id'            => $booking->getStreamId(),
@@ -39,8 +42,9 @@ class BookingPlacementService implements BookingPlacementServiceInterface
                 'status'               => BookingStatus::PENDING,
             ]);
 
-            $transaction = $booking->getLastPaymentTransaction();
-            if ($transaction) {
+            $transactionId = $booking->getTransactionId();
+            if ($transactionId) {
+                $transaction = $this->transactionManager->getTransaction($transactionId, $booking->getStudent());
                 $transaction->update(['booking_id' => $newBooking->id]);
             }
         } catch (\Exception $e) {
@@ -51,5 +55,30 @@ class BookingPlacementService implements BookingPlacementServiceInterface
         }
 
         return $booking;
+    }
+
+    public function cancel(BookingInterface $booking): bool
+    {
+        try {
+            if ($booking->canCancel()) {
+                $booking->cancel();
+                $booking->newQuery()
+                    ->where('id', $booking->id)
+                    ->update(['status' => BookingStatus::CANCELLED]);
+                // $booking->delete(); // Soft delete?
+                $transactionId = $booking->getTransactionId();
+                if ($transactionId) {
+                    $transaction = $this->transactionManager->getTransaction($transactionId, $booking->getStudent());
+                    $transaction->update(['booking_id' => $booking->id]);
+                }
+            }
+        } catch (\Exception $e) {
+//            $this->logger->critical(
+//                'Saving order ' . $order->getIncrementId() . ' failed: ' . $e->getMessage()
+//            );
+            throw $e;
+        }
+
+        return true;
     }
 }

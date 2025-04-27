@@ -6,6 +6,7 @@ namespace Modules\Booking\Services;
 use App\Exceptions\AlreadyExistsException;
 use Modules\Booking\Models\Booking;
 use Modules\Booking\Models\BookingInterface;
+use Modules\Booking\Models\Enums\BookingStatus;
 
 /**
  * Class SubmitBookingValidator
@@ -19,6 +20,7 @@ class SubmitBookingValidator implements SubmitBookingValidatorInterface
         $duplicate = Booking::where('student_id', $booking->getStudent()->id)
             ->where('stream_id', $booking->getStreamId())
             ->where('schedule_timeslot_id', $booking->getSlotId())
+            ->where('status', '!=', BookingStatus::CANCELLED)
             ->exists();
 
         if ($duplicate) {

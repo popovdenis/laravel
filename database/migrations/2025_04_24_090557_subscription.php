@@ -46,6 +46,7 @@ return new class extends Migration
             $table->foreignId('booking_id')->nullable()->constrained('bookings')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->integer('credits_amount')->default(0);
+            $table->string('payment_method', 100);
             $table->enum('action', ['spend', 'refund', 'adjustment'])->default('spend');
             $table->string('comment')->nullable();
 

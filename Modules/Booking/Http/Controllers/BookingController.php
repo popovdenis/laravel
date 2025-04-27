@@ -4,16 +4,29 @@ namespace Modules\Booking\Http\Controllers;
 
 use App\Exceptions\AlreadyExistsException;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
+use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingInterface;
 use Modules\Booking\Services\BookingManagementInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
 use Throwable;
 
 class BookingController extends Controller
 {
+    /**
+     * @var \Modules\Booking\Services\BookingManagementInterface
+     */
+    private BookingManagementInterface $bookingManagement;
+
+    public function __construct(BookingManagementInterface $bookingManagement)
+    {
+        $this->bookingManagement = $bookingManagement;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -33,12 +46,12 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, BookingManagementInterface $bookingManagement): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         try {
             $bookingData = BookingData::fromRequest($request);
 
-            $booking = $bookingManagement->submit($bookingData);
+            $booking = $this->bookingManagement->place($bookingData);
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -60,6 +73,52 @@ class BookingController extends Controller
                 ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
                 ->withInput();
         }
+    }
+
+    protected function isValidPostRequest(Request $request)
+    {
+        return $request->validate([
+            'booking_id' => 'required|exists:bookings,id',
+        ]);
+    }
+
+    protected function _initBooking(Request $request): ?BookingInterface
+    {
+        $id = $request->input('booking_id');
+        try {
+            $booking = Booking::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return null;
+        }
+
+        return $booking;
+    }
+
+    public function cancel(Request $request): RedirectResponse
+    {
+        if (!$errors = $this->isValidPostRequest($request)) {
+            redirect()->back()->withErrors($errors)->withInput();
+        }
+
+        $booking = $this->_initBooking($request);
+        if ($booking) {
+            try {
+                $this->bookingManagement->cancel($booking);
+//                $this->messageManager->addSuccessMessage(__('You canceled the order.'));
+            } catch (\Exception $exception) {
+            }
+        }
+
+//        $booking = Booking::findOrFail($request->input('booking_id'));
+
+        // Опционально: проверка, что текущий пользователь имеет право отменить
+//        if ($booking->student_id !== auth()->id()) {
+//            abort(403, 'Unauthorized');
+//        }
+//
+//        $booking->delete(); // Или ->update(['status' => 'cancelled']) если soft delete не используется
+
+        return redirect()->back()->with('success', 'Booking has been successfully cancelled.');
     }
 
     /**

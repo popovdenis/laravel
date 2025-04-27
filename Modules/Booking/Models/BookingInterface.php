@@ -3,7 +3,7 @@
 namespace Modules\Booking\Models;
 
 use Modules\Payment\Models\Enums\PaymentMethod;
-use Modules\Payment\Services\PaymentMethodInterface;
+use Modules\Payment\Models\PaymentMethodInterface;
 use Modules\User\Models\User;
 
 /**
@@ -27,9 +27,11 @@ interface BookingInterface
 
     public function setPaymentMethod(PaymentMethod $paymentMethod): BookingInterface;
 
+    public function getPaymentMethod(): ?PaymentMethod;
+
     public function setPayment(PaymentMethodInterface $payment): BookingInterface;
 
-    public function getPayment(): PaymentMethodInterface;
+    public function getPayment(): ?PaymentMethodInterface;
 
     public function toArray(): array;
 }

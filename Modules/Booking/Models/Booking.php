@@ -4,9 +4,10 @@ namespace Modules\Booking\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\BookingCreditHistory\Models\BookingCreditHistory;
+use Modules\Booking\Models\Enums\BookingStatus;
 use Modules\Payment\Models\Enums\PaymentMethod;
-use Modules\Payment\Services\PaymentMethodInterface;
+use Modules\Payment\Models\PaymentMethodInterface;
+use Modules\Payment\Services\PaymentMethodResolver;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
@@ -33,30 +34,6 @@ class Booking extends Model implements BookingInterface
     public function timeslot(): BelongsTo
     {
         return $this->belongsTo(ScheduleTimeslot::class, 'schedule_timeslot_id');
-    }
-
-    /**
-     * Place order
-     *
-     * @return $this
-     */
-    public function place()
-    {
-//        $this->_eventManager->dispatch('sales_order_place_before', ['order' => $this]);
-        $this->_placePayment();
-//        $this->_eventManager->dispatch('sales_order_place_after', ['order' => $this]);
-        return $this;
-    }
-
-    /**
-     * Place order payments
-     *
-     * @return $this
-     */
-    protected function _placePayment()
-    {
-        $this->getPayment()->place();
-        return $this;
     }
 
     public function setStreamId(int $streamId): BookingInterface
@@ -97,7 +74,14 @@ class Booking extends Model implements BookingInterface
 
     public function setPaymentMethod(PaymentMethod $paymentMethod): BookingInterface
     {
+        $this->payment_method = $paymentMethod;
+
         return $this;
+    }
+
+    public function getPaymentMethod(): ?PaymentMethod
+    {
+        return $this->payment_method;
     }
 
     public function setPayment(PaymentMethodInterface $payment): BookingInterface
@@ -109,23 +93,86 @@ class Booking extends Model implements BookingInterface
 
     public function getPayment(): PaymentMethodInterface
     {
-        return $this->payment;
+        $payment = null;
+        $paymentMethod = $this->getPaymentMethod();
+
+        if ($paymentMethod === null) {
+            // TODO: by default is credits. May be changed in the configuration to switch to Stripe.
+            // TODO: if ID is present, then try to find a booking credit history
+            $this->setPaymentMethod(PaymentMethod::CREDITS);
+
+            /** @var PaymentMethodResolver $paymentMethodResolver */
+            $paymentMethodResolver = app(PaymentMethodResolver::class);
+            $payment = $paymentMethodResolver->resolve($this->getPaymentMethod(), $this);
+            $this->setPayment($payment);
+        }
+
+        if ($payment) {
+            $payment->setBooking($this);
+        }
+
+        return $payment;
     }
 
-    public function setLastPaymentTransaction(BookingCreditHistory $bookingCreditHistory): BookingInterface
+    public function setTransactionId(int $transactionId): BookingInterface
     {
-        $this->lastPaymentTransaction = $bookingCreditHistory;
+        $this->transactionId = $transactionId;
 
         return $this;
     }
 
-    public function getLastPaymentTransaction(): BookingCreditHistory
+    public function getTransactionId(): int
     {
-        return $this->lastPaymentTransaction;
+        return $this->transactionId;
     }
 
     public function toArray(): array
     {
         return $this->attributesToArray();
+    }
+
+    /**
+     * Place order
+     *
+     * @return $this
+     */
+    public function place()
+    {
+//        $this->_eventManager->dispatch('sales_order_place_before', ['order' => $this]);
+        $this->_placePayment();
+//        $this->_eventManager->dispatch('sales_order_place_after', ['order' => $this]);
+        return $this;
+    }
+
+    /**
+     * Place order payments
+     *
+     * @return $this
+     */
+    protected function _placePayment()
+    {
+        $this->getPayment()->place();
+        return $this;
+    }
+
+    public function canCancel()
+    {
+        // TODO: check the time allowed to cancel the booking before the meeting
+        return true;
+    }
+
+    /**
+     * Cancel order
+     *
+     * @return $this
+     */
+    public function cancel()
+    {
+        if ($this->canCancel()) {
+            $this->getPayment()->cancel(); // refund the credits to the customer
+//            $this->_eventManager->dispatch('order_cancel_after', ['order' => $this]);
+        }
+
+        return $this;
     }
 }

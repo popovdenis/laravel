@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use Modules\Booking\Exceptions\NotEnoughCreditsException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Booking\Models\BookingInterface;
+use Modules\BookingCreditHistory\Models\Enums\BookingAction;
 use Modules\BookingCreditHistory\Services\BookingCreditHistoryInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
+use Modules\Payment\Models\PaymentMethodInterface;
+use Modules\Payment\Models\Transaction\ManagerInterface;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
@@ -21,6 +24,7 @@ class CreditsPaymentMethod implements PaymentMethodInterface
     public function __construct(
         protected ConfigProvider $configProvider,
         protected BookingCreditHistoryInterface $bookingCreditHistory,
+        protected ManagerInterface $transactionManager,
     )
     {}
 
@@ -57,11 +61,43 @@ class CreditsPaymentMethod implements PaymentMethodInterface
         $requiredCredits = $this->configProvider->getGroupLessonPrice();
 
         $this->bookingCreditHistory->spend($student, $requiredCredits);
-        $transaction = $this->bookingCreditHistory->logTransaction($student, $requiredCredits, 'Booking a lesson');
 
-        $booking->setLastPaymentTransaction($transaction);
+        $booking->setTransactionId(
+            $this->transactionManager->generateTransactionId(
+                $student,
+                -$requiredCredits,
+                $booking->getPaymentMethod(),
+                BookingAction::SPEND,
+                'Booking a lesson'
+            )
+        );
 
 //        $this->_eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
+        return $this;
+    }
+
+    public function cancel()
+    {
+//        $this->_eventManager->dispatch('sales_order_payment_refund_start', ['payment' => $this]);
+
+        $booking = $this->getBooking();
+        $student = $booking->getStudent();
+        $requiredCredits = $this->configProvider->getGroupLessonPrice();
+
+        $this->bookingCreditHistory->refund($student, $requiredCredits);
+
+        $booking->setTransactionId(
+            $this->transactionManager->generateTransactionId(
+                $student,
+                $requiredCredits,
+                $booking->getPaymentMethod(),
+                BookingAction::REFUND,
+                'Refund for a booking'
+            )
+        );
+
+//        $this->_eventManager->dispatch('sales_order_payment_refund_end', ['payment' => $this]);
+
         return $this;
     }
 }

@@ -42,13 +42,39 @@
                     <!-- Actions -->
                     <div class="flex space-x-2">
                         @if ($isBooked)
-{{--                            <form method="POST" action="{{ route('booking.cancel') }}">--}}
-                                @csrf
-                                <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
-                                <x-primary-button color="danger">
+                            <div x-data="{ confirmCancel: false }">
+                                <button
+                                    @click="confirmCancel = true"
+                                    class="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
+                                >
                                     {{ __('Cancel Booking') }}
-                                </x-primary-button>
-{{--                            </form>--}}
+                                </button>
+
+                                <!-- Confirm Cancel Popup -->
+                                <div
+                                    x-show="confirmCancel"
+                                    x-cloak
+                                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                                >
+                                    <div class="bg-white p-6 rounded shadow-md text-center">
+                                        <p class="mb-4 text-gray-800 font-medium">
+                                            {{ __('Are you sure you want to cancel this booking?') }}
+                                        </p>
+                                        <div class="flex justify-center space-x-2">
+                                            <button @click="confirmCancel = false" class="px-4 py-2 bg-gray-300 rounded">
+                                                {{ __('No, Keep Booking') }}
+                                            </button>
+                                            <form method="POST" action="{{ route('booking.cancel') }}">
+                                                @csrf
+                                                <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
+                                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">
+                                                    {{ __('Yes, Cancel Booking') }}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @else
                             <button @click="confirmBooking = true" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
                                 {{ __('Book') }}

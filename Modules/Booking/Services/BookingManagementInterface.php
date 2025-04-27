@@ -3,6 +3,7 @@
 namespace Modules\Booking\Services;
 
 use Modules\Booking\Data\BookingData;
+use Modules\Booking\Models\BookingInterface;
 
 /**
  * Interface BookingManagementInterface
@@ -11,5 +12,19 @@ use Modules\Booking\Data\BookingData;
  */
 interface BookingManagementInterface
 {
-    public function submit(BookingData $bookingData);
+    /**
+     * @param BookingData $bookingData
+     *
+     * @return BookingInterface
+     */
+    public function place(BookingData $bookingData): BookingInterface;
+
+    /**
+     * Cancels a specified booking.
+     *
+     * @param BookingInterface $booking.
+     *
+     * @return bool
+     */
+    public function cancel(BookingInterface $booking): bool;
 }

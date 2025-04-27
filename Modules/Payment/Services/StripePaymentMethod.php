@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Payment\Services;
 
 use Modules\Booking\Models\BookingInterface;
+use Modules\Payment\Models\PaymentMethodInterface;
 
 /**
  * Class StripePaymentMethod
@@ -37,5 +38,10 @@ class StripePaymentMethod implements PaymentMethodInterface
     public function place()
     {
         // TODO: Implement place() method.
+    }
+
+    public function cancel()
+    {
+
     }
 }

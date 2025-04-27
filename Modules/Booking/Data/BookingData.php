@@ -19,7 +19,6 @@ class BookingData extends Data
     public function __construct(
         public User $student,
         public int $slotId,
-        public PaymentMethod $paymentMethod,
         public ?int $streamId,
         public ?int $teacherId,
         public array $extra = []
@@ -40,7 +39,6 @@ class BookingData extends Data
             'student' => $request->user(),
             'streamId' => $request->input('stream_id') ?? null,
             'slotId' => $request->input('slot_id'),
-            'paymentMethod' => PaymentMethod::CREDITS,
         ]);
     }
 }

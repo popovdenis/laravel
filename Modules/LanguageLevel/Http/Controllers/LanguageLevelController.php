@@ -4,6 +4,7 @@ namespace Modules\LanguageLevel\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Booking\Models\Enums\BookingStatus;
 use Modules\Stream\Models\Stream;
 use Carbon\Carbon;
 use Modules\LanguageLevel\Models\LanguageLevel;
@@ -55,7 +56,18 @@ class LanguageLevelController extends Controller
         }
 
         // List of user's booked slots
-        $userBookedSlotIds = auth()->user()?->bookings()->pluck('id', 'schedule_timeslot_id')->toArray();
+        $userBookedSlotIds = auth()->user()?->bookings()
+            ->whereIn('status', [BookingStatus::PENDING->value, BookingStatus::CONFIRMED->value])
+            ->get(['id', 'schedule_timeslot_id', 'status'])
+            ->mapWithKeys(function($booking) {
+                return [
+                    $booking->schedule_timeslot_id => [
+                        'booking_id' => $booking->id,
+                        'status'     => $booking->status,
+                    ]
+                ];
+            })
+            ->toArray();
 
         $groupedSlots = [];
         foreach ($filteredStreams as $stream) {
@@ -91,7 +103,9 @@ class LanguageLevelController extends Controller
                             'subject'                  => $stream->currentSubject,
                             'current_subject_number'   => $stream->current_subject_number,
                             'slot'                     => $slot,
-                            'booking_id'               => $userBookedSlotIds[$slot->id] ?? null,
+                            'booking_id'               => $this->isSlotBooked($userBookedSlotIds[$slot->id] ?? null)
+                                                            ? $userBookedSlotIds[$slot->id]['booking_id']
+                                                            : null,
                         ];
                     }
                 }
@@ -124,6 +138,14 @@ class LanguageLevelController extends Controller
             'filterStartDate'    => $filterStartDate->toDateString(),
             'filterEndDate'      => $filterEndDate->toDateString(),
         ]);
+    }
+
+    private function isSlotBooked($slotStatus = null): ?bool
+    {
+        return isset($slotStatus['status']) && in_array($slotStatus['status'], [
+            BookingStatus::PENDING->value,
+            BookingStatus::CONFIRMED->value,
+        ], true);
     }
 
     /**

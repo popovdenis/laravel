@@ -5,6 +5,7 @@ namespace Modules\Booking\Services;
 
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Factories\BookingFactoryInterface;
+use Modules\Booking\Models\BookingInterface;
 use Modules\Payment\Services\PaymentMethodResolver;
 
 /**
@@ -18,30 +19,36 @@ class BookingManagementService implements BookingManagementInterface
         private BookingFactoryInterface $bookingFactory,
         private SubmitBookingValidatorInterface $bookingValidator,
         private SlotAvailabilityValidatorInterface $slotValidator,
-        private PaymentMethodResolver $paymentMethodResolver,
         private BookingPlacementServiceInterface $placementService,
     ) {}
 
-    public function submit(BookingData $bookingData)
+    public function place(BookingData $bookingData): BookingInterface
     {
         $booking = $this->bookingFactory->create();
 
         $booking->setStudent($bookingData->student);
         $booking->setStreamId($bookingData->streamId);
         $booking->setSlotId($bookingData->slotId);
-        $booking->setPaymentMethod($bookingData->paymentMethod);
 
         $this->bookingValidator->validate($booking);
         $this->slotValidator->validate($booking);
 
         // Validate and authorize payment
-        $paymentMethod = $this->paymentMethodResolver->resolve($bookingData->paymentMethod, $booking);
-        $booking->setPayment($paymentMethod);
+//        $paymentMethod = $this->paymentMethodResolver->resolve($bookingData->paymentMethod, $booking);
+//        $booking->setPayment($paymentMethod);
 
-        $paymentMethod->validate($booking);
-        $paymentMethod->authorize($booking);
+        // Todo: move to payment
+//        $paymentMethod->validate($booking);
+//        $paymentMethod->authorize($booking);
 
-        // Дальше создание букинга, диспатч событий и т.д.
+        // TODO: create a booking, dispatch an event, etc.
         $booking = $this->placementService->place($booking);
+
+        return $booking;
+    }
+
+    public function cancel(BookingInterface $booking): bool
+    {
+        return $this->placementService->cancel($booking);
     }
 }
