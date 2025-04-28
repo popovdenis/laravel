@@ -27,6 +27,11 @@ class CreditsPaymentMethod implements PaymentMethodInterface
     )
     {}
 
+    public function getTitle()
+    {
+        return setting('payment.credits.title');
+    }
+
     public function validate(BookingInterface $booking): void
     {
         $user = $booking->getStudent();
@@ -65,7 +70,7 @@ class CreditsPaymentMethod implements PaymentMethodInterface
             $this->transactionManager->generateTransactionId(
                 $student,
                 -$requiredCredits,
-                $booking->getPaymentMethod(),
+                $booking->getPayment()->getTitle(),
                 BookingAction::SPEND,
                 'Booking a lesson'
             )
@@ -89,7 +94,7 @@ class CreditsPaymentMethod implements PaymentMethodInterface
             $this->transactionManager->generateTransactionId(
                 $student,
                 $requiredCredits,
-                $booking->getPaymentMethod(),
+                $booking->getPayment()->getTitle(),
                 BookingAction::REFUND,
                 'Refund for a booking'
             )

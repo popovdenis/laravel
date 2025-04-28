@@ -14,11 +14,11 @@ use Modules\Payment\Enums\PaymentMethod;
  */
 class PaymentMethodResolver
 {
-    public function resolve(PaymentMethod $method, BookingInterface $booking): PaymentMethodInterface
+    public function resolve(string $method, BookingInterface $booking): PaymentMethodInterface
     {
         $payment = match ($method) {
-            PaymentMethod::CREDITS => app(CreditsPaymentMethod::class),
-            PaymentMethod::STRIPE  => app(StripePaymentMethod::class),
+            PaymentMethod::CREDITS->value => app(CreditsPaymentMethod::class),
+            PaymentMethod::STRIPE->value  => app(StripePaymentMethod::class),
             default                => throw new \InvalidArgumentException('Unsupported payment method.'),
         };
         $payment->setBooking($booking);

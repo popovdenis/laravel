@@ -11,6 +11,8 @@ use Modules\Booking\Contracts\BookingInterface;
  */
 interface PaymentMethodInterface
 {
+    public function getTitle();
+
     public function validate(BookingInterface $booking): void;
 
     public function authorize(BookingInterface $booking): void;

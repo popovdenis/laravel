@@ -93,25 +93,18 @@ class Booking extends Model implements BookingInterface
 
     public function getPayment(): PaymentMethodInterface
     {
-        $payment = null;
-        $paymentMethod = $this->getPaymentMethod();
-
-        if ($paymentMethod === null) {
-            // TODO: by default is credits. May be changed in the configuration to switch to Stripe.
-            // TODO: if ID is present, then try to find a booking credit history
-            $this->setPaymentMethod(PaymentMethod::CREDITS);
-
+        if ($this->payment === null) {
             /** @var PaymentMethodResolver $paymentMethodResolver */
             $paymentMethodResolver = app(PaymentMethodResolver::class);
-            $payment = $paymentMethodResolver->resolve($this->getPaymentMethod(), $this);
+            $payment = $paymentMethodResolver->resolve(setting('booking.applicable_payment_method'), $this);
             $this->setPayment($payment);
         }
 
-        if ($payment) {
-            $payment->setBooking($this);
+        if ($this->payment) {
+            $this->payment->setBooking($this);
         }
 
-        return $payment;
+        return $this->payment;
     }
 
     public function setTransactionId(int $transactionId): BookingInterface

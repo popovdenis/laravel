@@ -27,12 +27,12 @@ class Manager implements ManagerInterface
         return $transaction;
     }
 
-    public function generateTransactionId(User $user, int $amount, PaymentMethod $method, BookingAction $action, string $comment = null): int
+    public function generateTransactionId(User $user, int $amount, string $method, BookingAction $action, string $comment = null): int
     {
         $transaction = BookingCreditHistory::create([
             'user_id'        => $user->id,
             'credits_amount' => $amount,
-            'payment_method' => $method->value,
+            'payment_method' => $method,
             'action'         => $action->value,
             'comment'        => $comment,
         ]);
