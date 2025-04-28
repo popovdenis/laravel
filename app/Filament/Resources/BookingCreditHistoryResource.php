@@ -40,7 +40,7 @@ class BookingCreditHistoryResource extends Resource
                 Tables\Columns\TextColumn::make('booking_type')
                     ->label('Booking Type')->sortable()->default('group'),
                 Tables\Columns\TextColumn::make('credits_amount')
-                    ->label('Credits Amount')->sortable()
+                    ->label('Billing Amount')->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('action')
                     ->badge()
@@ -57,8 +57,8 @@ class BookingCreditHistoryResource extends Resource
                     ->label('Comment')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->dateTime('M d, Y H:i')
+                    ->label('Billing Date and Time')
+                    ->dateTime('M d, Y, H:i:s')
                     ->sortable()
                     ->toggleable(),
             ])
