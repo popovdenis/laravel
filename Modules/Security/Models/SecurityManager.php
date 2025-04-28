@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Modules\Security\Models;
 
-use Carbon\Carbon;
-use Modules\Security\Contracts\AttemptRequestFactoryInterface;
+use Illuminate\Support\Facades\RateLimiter;
+use Modules\Security\Contracts\RequestTypeInterface;
 use Modules\Security\Contracts\SecurityCheckerInterface;
+use Modules\Security\Models\Enums\RequestType;
 
 /**
  * Class SecurityManager
@@ -15,66 +16,65 @@ use Modules\Security\Contracts\SecurityCheckerInterface;
 class SecurityManager
 {
     /**
-     * Security control records time life
-     */
-    const SECURITY_CONTROL_RECORDS_LIFE_TIME =  86400;
-
-    /**
      * @var \Modules\Security\Contracts\SecurityCheckerInterface
      */
     private SecurityCheckerInterface $securityChecker;
     /**
-     * @var \Modules\Security\Contracts\AttemptRequestFactoryInterface
+     * @var \Modules\Security\Models\RequestTypeResolver
      */
-    private AttemptRequestFactoryInterface $attemptRequestFactory;
+    private RequestTypeResolver $typeResolver;
 
     public function __construct(
         SecurityCheckerInterface $securityChecker,
-        AttemptRequestFactoryInterface $attemptRequestFactory,
+        RequestTypeResolver $typeResolver,
     )
     {
         $this->securityChecker = $securityChecker;
-        $this->attemptRequestFactory = $attemptRequestFactory;
+        $this->typeResolver = $typeResolver;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function generateEventKey(array $params): string
+    {
+        return implode(':', $params);
     }
 
     /**
      * Perform security check
      *
-     * @param int         $requestType
-     * @param string|null $accountReference
+     * @param \Modules\Security\Models\Enums\RequestType $requestType
+     * @param string                                     $accountReference
      *
      * @return $this
      * @throws \Modules\Security\Exceptions\SecurityViolationException
      */
-    public function performSecurityCheck(int $requestType, string $accountReference = null): static
+    public function performSecurityCheck(RequestType $requestType, string $accountReference): static
     {
-        $this->securityChecker->check($requestType, $accountReference);
+        $requestTypeEntity = $this->typeResolver->resolve($requestType);
+        $this->securityChecker->throttleAttempt(
+            $requestTypeEntity,
+            $accountReference
+        );
 
-        $this->createNewAttemptRequestEventRecord($requestType, $accountReference);
+        $this->createNewAttemptRequestEventRecord($requestTypeEntity, $accountReference);
 
         return $this;
     }
 
     /**
-     * @return $this
-     * @throws \Exception
+     * @param \Modules\Security\Contracts\RequestTypeInterface $requestType
+     * @param                                                  $accountReference
+     *
      */
-    public function cleanExpiredRecords(): static
+    protected function createNewAttemptRequestEventRecord(RequestTypeInterface $requestType, $accountReference): void
     {
-        $this->attemptRequestFactory->create()->deleteRecordsOlderThan(
-            Carbon::now('UTC')->timestamp - self::SECURITY_CONTROL_RECORDS_LIFE_TIME
-        );
-
-        return $this;
-    }
-
-    protected function createNewAttemptRequestEventRecord($requestType, $accountReference)
-    {
-        $attemptRequest = $this->attemptRequestFactory->create();
-        $attemptRequest->setRequestType($requestType)
-            ->setAccountReference($accountReference)
-            ->save();
-
-        return $attemptRequest;
+        $limitTimeBetweenRequests = $requestType->getMinTimeBetweenRequests();
+        if ($limitTimeBetweenRequests) {
+            RateLimiter::hit($accountReference, $limitTimeBetweenRequests);
+        }
     }
 }

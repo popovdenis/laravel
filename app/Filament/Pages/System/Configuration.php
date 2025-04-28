@@ -50,11 +50,16 @@ class Configuration extends BaseSettings
 
                     Tabs\Tab::make('Security')
                         ->schema([
+                            TextInput::make('security.max_number_booking_requests')
+                                ->label('Max Number of Booking Requests')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric()
+                                ->helperText('Limit the number of booking request per hour. Use 0 to disable.'),
                             TextInput::make('security.min_time_between_booking_requests')
                                 ->label('Min Time Between Booking Requests')
                                 ->rules(['required', 'integer', 'min:0'])
                                 ->numeric()
-                                ->helperText('Delay in minutes between booking requests. Use 0 to disable.'),
+                                ->helperText('Delay in seconds between booking requests. Use 0 to disable.'),
                         ]),
 
                     Tabs\Tab::make('MailSender')

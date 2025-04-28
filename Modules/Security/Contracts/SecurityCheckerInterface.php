@@ -12,11 +12,11 @@ interface SecurityCheckerInterface
     /**
      * Perform security checks
      *
-     * @param int $securityEventType
-     * @param string|null $accountReference
+     * @param \Modules\Security\Contracts\RequestTypeInterface $requestType
+     * @param string                                           $accountReference
      *
      * @return void
      * @throws \Modules\Security\Exceptions\SecurityViolationException
      */
-    public function check($securityEventType, $accountReference = null);
+    public function throttleAttempt(RequestTypeInterface $requestType, string $accountReference): void;
 }

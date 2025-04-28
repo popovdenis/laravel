@@ -15,6 +15,7 @@ use Modules\Booking\Models\Booking;
 use Modules\Payment\Exceptions\PaymentFailedException;
 use Modules\Security\Exceptions\SecurityViolationException;
 use Modules\Security\Models\AttemptRequestEvent;
+use Modules\Security\Models\Enums\RequestType;
 use Modules\Security\Models\SecurityManager;
 use Throwable;
 
@@ -32,7 +33,7 @@ class BookingController extends Controller
     public function __construct(
         BookingManagementInterface $bookingManagement,
         SecurityManager $securityManager,
-        private $bookingRequestEvent = AttemptRequestEvent::BOOKING_ATTEMPT_REQUEST,
+        private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
         $this->bookingManagement = $bookingManagement;
@@ -63,18 +64,15 @@ class BookingController extends Controller
         try {
             $bookingData = BookingData::fromRequest($request);
 
-            $accountReference = $bookingData->student->id . ':' . $bookingData->slotId;
-
-            $this->securityManager->performSecurityCheck($this->bookingRequestEvent, $accountReference);
+            $securityKey = $this->securityManager->generateEventKey([$bookingData->student->id, $bookingData->slotId]);
+            $this->securityManager->performSecurityCheck($this->bookingRequestEvent, $securityKey);
 
             $booking = $this->bookingManagement->place($bookingData);
 
-            if ($booking) {
-//                $this->_eventManager->dispatch(
-//                    'booking_submit_all_after',
-//                    ['booking' => $booking]
-//                );
-            }
+//            $this->_eventManager->dispatch(
+//                'booking_submit_all_after',
+//                ['booking' => $booking]
+//            );
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -133,15 +131,6 @@ class BookingController extends Controller
             } catch (\Exception $exception) {
             }
         }
-
-//        $booking = Booking::findOrFail($request->input('booking_id'));
-
-        // Опционально: проверка, что текущий пользователь имеет право отменить
-//        if ($booking->student_id !== auth()->id()) {
-//            abort(403, 'Unauthorized');
-//        }
-//
-//        $booking->delete(); // Или ->update(['status' => 'cancelled']) если soft delete не используется
 
         return redirect()->back()->with('success', 'Booking has been successfully cancelled.');
     }

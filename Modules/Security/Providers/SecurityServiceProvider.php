@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace Modules\Security\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\Security\Contracts\AttemptRequestFactoryInterface;
+use Modules\Security\Contracts\RequestTypeInterface;
 use Modules\Security\Contracts\SecurityCheckerInterface;
-use Modules\Security\Factories\AttemptRequestFactory;
-use Modules\Security\Models\AttemptRequestEvent;
 use Modules\Security\Models\SecurityChecker\Frequency;
+use Modules\Security\Models\SecurityChecker\RequestType\Booking;
 use Nwidart\Modules\Traits\PathNamespace;
 
 /**
@@ -30,6 +29,6 @@ class SecurityServiceProvider extends ServiceProvider
     {
         // Management binding
         $this->app->bind(SecurityCheckerInterface::class, Frequency::class);
-        $this->app->bind(AttemptRequestFactoryInterface::class, AttemptRequestFactory::class);
+        $this->app->bind(RequestTypeInterface::class, Booking::class);
     }
 }
