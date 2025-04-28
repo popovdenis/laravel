@@ -14,11 +14,23 @@ use Modules\Security\Models\SecurityChecker\RequestType\Booking;
  */
 class RequestTypeResolver
 {
-    public function resolve(RequestType $method): RequestTypeInterface
+    public function resolve(RequestType $type): RequestTypeInterface
     {
-        return match ($method) {
+        if (!$this->has($type)) {
+            throw new \InvalidArgumentException("Unsupported request type: {$type->name}");
+        }
+
+        return match ($type) {
             RequestType::BOOKING_ATTEMPT_REQUEST => app(Booking::class),
-            default              => throw new \InvalidArgumentException('Unsupported request type.'),
         };
+    }
+
+    public function has(RequestType $type): bool
+    {
+        return in_array($type, [
+            RequestType::BOOKING_ATTEMPT_REQUEST,
+            RequestType::CUSTOMER_PASSWORD_RESET_REQUEST,
+            RequestType::ADMIN_PASSWORD_RESET_REQUEST,
+        ], true);
     }
 }

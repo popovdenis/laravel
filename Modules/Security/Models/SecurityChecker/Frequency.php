@@ -15,13 +15,16 @@ use Modules\Security\Exceptions\SecurityViolationException;
  */
 class Frequency implements SecurityCheckerInterface
 {
-    public function throttleAttempt(RequestTypeInterface $requestType, string $accountReference): void
+    public function checkAndHit(RequestTypeInterface $requestType, string $eventKey): void
     {
         $maxNumberRequests = $requestType->getMaxNumberRequests();
-        if ($maxNumberRequests) {
-            if (RateLimiter::tooManyAttempts($accountReference, $maxNumberRequests)) {
-                throw new SecurityViolationException(__('Booking limit reached. Try again in a few minutes.'));
-            }
+        if ($maxNumberRequests && RateLimiter::tooManyAttempts($eventKey, $maxNumberRequests)) {
+            throw new SecurityViolationException(__('Booking limit reached. Try again in a few minutes.'));
+        }
+
+        $limitTimeBetweenRequests = $requestType->getMinTimeBetweenRequests();
+        if ($limitTimeBetweenRequests) {
+            RateLimiter::hit($eventKey, $limitTimeBetweenRequests);
         }
     }
 }

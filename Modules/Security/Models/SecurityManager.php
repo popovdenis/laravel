@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Modules\Security\Models;
 
-use Illuminate\Support\Facades\RateLimiter;
-use Modules\Security\Contracts\RequestTypeInterface;
 use Modules\Security\Contracts\SecurityCheckerInterface;
 use Modules\Security\Models\Enums\RequestType;
 
@@ -47,34 +45,18 @@ class SecurityManager
      * Perform security check
      *
      * @param \Modules\Security\Models\Enums\RequestType $requestType
-     * @param string                                     $accountReference
+     * @param string                                     $eventKey
      *
      * @return $this
      * @throws \Modules\Security\Exceptions\SecurityViolationException
      */
-    public function performSecurityCheck(RequestType $requestType, string $accountReference): static
+    public function performSecurityCheck(RequestType $requestType, string $eventKey): static
     {
-        $requestTypeEntity = $this->typeResolver->resolve($requestType);
-        $this->securityChecker->throttleAttempt(
-            $requestTypeEntity,
-            $accountReference
+        $this->securityChecker->checkAndHit(
+            $this->typeResolver->resolve($requestType),
+            $eventKey
         );
 
-        $this->createNewAttemptRequestEventRecord($requestTypeEntity, $accountReference);
-
         return $this;
-    }
-
-    /**
-     * @param \Modules\Security\Contracts\RequestTypeInterface $requestType
-     * @param                                                  $accountReference
-     *
-     */
-    protected function createNewAttemptRequestEventRecord(RequestTypeInterface $requestType, $accountReference): void
-    {
-        $limitTimeBetweenRequests = $requestType->getMinTimeBetweenRequests();
-        if ($limitTimeBetweenRequests) {
-            RateLimiter::hit($accountReference, $limitTimeBetweenRequests);
-        }
     }
 }
