@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Booking\Models;
+namespace Modules\Booking\Contracts;
 
+use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Models\Enums\PaymentMethod;
-use Modules\Payment\Models\PaymentMethodInterface;
 use Modules\User\Models\User;
 
 /**

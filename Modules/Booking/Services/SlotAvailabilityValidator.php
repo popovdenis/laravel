@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Exceptions\SlotUnavailableException;
-use Modules\Booking\Models\BookingInterface;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 
 /**

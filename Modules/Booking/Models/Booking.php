@@ -4,9 +4,9 @@ namespace Modules\Booking\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Booking\Models\Enums\BookingStatus;
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Models\Enums\PaymentMethod;
-use Modules\Payment\Models\PaymentMethodInterface;
 use Modules\Payment\Services\PaymentMethodResolver;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\Stream\Models\Stream;

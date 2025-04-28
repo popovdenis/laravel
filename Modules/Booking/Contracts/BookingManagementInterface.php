@@ -1,9 +1,8 @@
 <?php
 
-namespace Modules\Booking\Services;
+namespace Modules\Booking\Contracts;
 
 use Modules\Booking\Data\BookingData;
-use Modules\Booking\Models\BookingInterface;
 
 /**
  * Interface BookingManagementInterface

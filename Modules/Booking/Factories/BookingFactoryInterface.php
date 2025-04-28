@@ -2,7 +2,7 @@
 
 namespace Modules\Booking\Factories;
 
-use Modules\Booking\Models\BookingInterface;
+use Modules\Booking\Contracts\BookingInterface;
 
 /**
  * Interface BookingFactoryInterface

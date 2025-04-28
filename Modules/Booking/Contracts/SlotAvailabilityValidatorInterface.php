@@ -1,15 +1,12 @@
 <?php
 
-namespace Modules\Booking\Services;
+namespace Modules\Booking\Contracts;
 
 /**
  * Interface SlotAvailabilityValidatorInterface
  *
  * @package App\Services\Booking
  */
-
-use Modules\Booking\Models\BookingInterface;
-
 interface SlotAvailabilityValidatorInterface
 {
     public function validate(BookingInterface $booking): void;

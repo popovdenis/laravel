@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\BookingCreditHistory\Services;
 
+use Modules\BookingCreditHistory\Contracts\BookingCreditHistoryInterface;
 use Modules\User\Models\User;
 use Modules\UserCreditHistory\Exceptions\InsufficientCreditsException;
 

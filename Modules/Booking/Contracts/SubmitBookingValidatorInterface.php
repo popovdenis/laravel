@@ -1,8 +1,6 @@
 <?php
 
-namespace Modules\Booking\Services;
-
-use Modules\Booking\Models\BookingInterface;
+namespace Modules\Booking\Contracts;
 
 /**
  * Interface SubmitBookingValidatorInterface

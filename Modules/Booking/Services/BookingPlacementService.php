@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\Booking\Contracts\BookingPlacementServiceInterface;
 use Modules\Booking\Models\Booking;
-use Modules\Booking\Models\BookingInterface;
 use Modules\Booking\Models\Enums\BookingStatus;
 use Modules\Payment\Models\Transaction\ManagerInterface;
 

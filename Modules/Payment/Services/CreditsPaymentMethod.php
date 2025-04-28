@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Booking\Models\BookingInterface;
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\BookingCreditHistory\Contracts\BookingCreditHistoryInterface;
 use Modules\BookingCreditHistory\Models\Enums\BookingAction;
-use Modules\BookingCreditHistory\Services\BookingCreditHistoryInterface;
+use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
-use Modules\Payment\Models\PaymentMethodInterface;
 use Modules\Payment\Models\Transaction\ManagerInterface;
 use Modules\Subscription\Models\ConfigProvider;
 

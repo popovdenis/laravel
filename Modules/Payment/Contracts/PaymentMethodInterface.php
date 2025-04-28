@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\Payment\Models;
+namespace Modules\Payment\Contracts;
 
-use Modules\Booking\Models\BookingInterface;
+use Modules\Booking\Contracts\BookingInterface;
 
 /**
  * Interface PaymentMethodInterface

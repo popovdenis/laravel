@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use Modules\Booking\Models\BookingInterface;
-use Modules\Payment\Models\PaymentMethodInterface;
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\Payment\Contracts\PaymentMethodInterface;
 
 /**
  * Class StripePaymentMethod

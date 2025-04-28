@@ -1,8 +1,7 @@
 <?php
 
-namespace Modules\BookingCreditHistory\Services;
+namespace Modules\BookingCreditHistory\Contracts;
 
-use Modules\BookingCreditHistory\Models\BookingCreditHistory;
 use Modules\User\Models\User;
 
 /**

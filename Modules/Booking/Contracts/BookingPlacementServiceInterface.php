@@ -1,8 +1,6 @@
 <?php
 
-namespace Modules\Booking\Services;
-
-use Modules\Booking\Models\BookingInterface;
+namespace Modules\Booking\Contracts;
 
 /**
  * Interface BookingPlacementServiceInterface
@@ -18,7 +16,7 @@ interface BookingPlacementServiceInterface
      *
      * @return bool
      */
-    public function cancel(\Modules\Booking\Models\BookingInterface $booking): bool;
+    public function cancel(\Modules\Booking\Contracts\BookingInterface $booking): bool;
 
     /**
      * Gets the status for a specified booking.
@@ -30,9 +28,9 @@ interface BookingPlacementServiceInterface
     public function getStatus($id);
 
     /**
-     * @param \Modules\Booking\Models\BookingInterface $booking
+     * @param \Modules\Booking\Contracts\BookingInterface $booking
      *
-     * @return \Modules\Booking\Models\BookingInterface
+     * @return \Modules\Booking\Contracts\BookingInterface
      */
-    public function place(\Modules\Booking\Models\BookingInterface $booking): BookingInterface;
+    public function place(\Modules\Booking\Contracts\BookingInterface $booking): BookingInterface;
 }

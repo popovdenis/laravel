@@ -7,18 +7,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\Booking\Contracts\BookingInterface;
+use Modules\Booking\Contracts\BookingManagementInterface;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Models\Booking;
-use Modules\Booking\Models\BookingInterface;
-use Modules\Booking\Services\BookingManagementInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
 use Throwable;
 
 class BookingController extends Controller
 {
     /**
-     * @var \Modules\Booking\Services\BookingManagementInterface
+     * @var \Modules\Booking\Contracts\BookingManagementInterface
      */
     private BookingManagementInterface $bookingManagement;
 
