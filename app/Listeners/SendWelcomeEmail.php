@@ -19,7 +19,7 @@ class SendWelcomeEmail
      */
     public function handle(Registered $event): void
     {
-        if (setting('mailsender.use_mail_sender')) {
+        if (setting('smtp.enable') && setting('smtp.transport') === 'mail_sender') {
             $this->emailNotificationService->sendWelcomeEmail($event->user);
         }
     }

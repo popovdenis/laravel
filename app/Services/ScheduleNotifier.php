@@ -21,12 +21,11 @@ class ScheduleNotifier
         if (! $schedule->zoom_join_url) {
             return;
         }
-        if (!setting('mailsender.use_mail_sender')) {
-            return;
-        }
 
-        $this->notifyTeacher($schedule);
-        $this->notifyStudent($schedule);
+        if (setting('smtp.enable') && setting('smtp.transport') === 'mail_sender') {
+            $this->notifyTeacher($schedule);
+            $this->notifyStudent($schedule);
+        }
     }
 
     private function notifyTeacher(Schedule $schedule): void
