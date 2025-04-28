@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Booking\Models\Enums;
+namespace Modules\Booking\Enums;
 
 /**
  * @package App\Models\Enums

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Stream\Models\Enums;
+namespace Modules\Stream\Enums;
 
 enum StreamStatus: string
 {

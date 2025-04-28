@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Models\Transaction;
 
-use Modules\Booking\Models\Booking;
+use Modules\BookingCreditHistory\Enums\BookingAction;
 use Modules\BookingCreditHistory\Models\BookingCreditHistory;
-use Modules\BookingCreditHistory\Models\Enums\BookingAction;
-use Modules\Payment\Models\Enums\PaymentMethod;
+use Modules\Payment\Enums\PaymentMethod;
 use Modules\User\Models\User;
 
 /**

@@ -5,7 +5,7 @@ namespace Modules\Payment\Services;
 
 use Modules\Booking\Contracts\BookingInterface;
 use Modules\Payment\Contracts\PaymentMethodInterface;
-use Modules\Payment\Models\Enums\PaymentMethod;
+use Modules\Payment\Enums\PaymentMethod;
 
 /**
  * Class PaymentMethodResolver

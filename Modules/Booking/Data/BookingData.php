@@ -5,7 +5,6 @@ namespace Modules\Booking\Data;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Exists;
-use Modules\Payment\Models\Enums\PaymentMethod;
 use Modules\User\Models\User;
 use Spatie\LaravelData\Data;
 

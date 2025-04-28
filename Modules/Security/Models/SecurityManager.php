@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Modules\Security\Models;
 
 use Modules\Security\Contracts\SecurityCheckerInterface;
-use Modules\Security\Models\Enums\RequestType;
+use Modules\Security\Enums\RequestType;
 
 /**
  * Class SecurityManager
@@ -44,8 +44,8 @@ class SecurityManager
     /**
      * Perform security check
      *
-     * @param \Modules\Security\Models\Enums\RequestType $requestType
-     * @param string                                     $eventKey
+     * @param \Modules\Security\Enums\RequestType $requestType
+     * @param string                              $eventKey
      *
      * @return $this
      * @throws \Modules\Security\Exceptions\SecurityViolationException

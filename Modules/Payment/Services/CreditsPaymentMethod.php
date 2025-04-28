@@ -5,7 +5,7 @@ namespace Modules\Payment\Services;
 
 use Modules\Booking\Contracts\BookingInterface;
 use Modules\BookingCreditHistory\Contracts\BookingCreditHistoryInterface;
-use Modules\BookingCreditHistory\Models\Enums\BookingAction;
+use Modules\BookingCreditHistory\Enums\BookingAction;
 use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
 use Modules\Payment\Models\Transaction\ManagerInterface;

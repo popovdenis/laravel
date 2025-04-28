@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Modules\Security\Models;
 
 use Modules\Security\Contracts\RequestTypeInterface;
-use Modules\Security\Models\Enums\RequestType;
+use Modules\Security\Enums\RequestType;
 use Modules\Security\Models\SecurityChecker\RequestType\Booking;
 
 /**

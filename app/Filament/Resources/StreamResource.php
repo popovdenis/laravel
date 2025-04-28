@@ -4,14 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StreamResource\Pages;
 use App\Filament\Resources\StreamResource\RelationManagers;
-use Modules\Stream\Models\Stream;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\Stream\Models\Enums\StreamStatus;
+use Modules\Stream\Enums\StreamStatus;
+use Modules\Stream\Models\Stream;
 
 class StreamResource extends Resource
 {

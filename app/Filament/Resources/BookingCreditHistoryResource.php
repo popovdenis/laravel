@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\BookingCreditHistoryResource\Pages;
+use App\Filament\Resources\BookingCreditHistoryResource\RelationManagers;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Modules\BookingCreditHistory\Enums\BookingAction;
+use Modules\BookingCreditHistory\Models\BookingCreditHistory;
+
+class BookingCreditHistoryResource extends Resource
+{
+    protected static ?string $model = BookingCreditHistory::class;
+    protected static ?string $navigationGroup = 'Reports';
+    protected static ?string $navigationLabel = 'Booking Credit History';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                //
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('booking.stream.languageLevel.title')
+                    ->label('Stream')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('booking.stream.teacher.email')
+                    ->label('Teacher')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('booking.student.email')
+                    ->label('Student')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('booking_type')
+                    ->label('Booking Type')->sortable()->default('group'),
+                Tables\Columns\TextColumn::make('credits_amount')
+                    ->label('Credits Amount')->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('action')
+                    ->badge()
+                    ->label('Action')
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
+                    ->color(fn ($state) => BookingAction::from($state)->color())
+                    ->toggleable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payment_method')
+                    ->label('Payment Method')->sortable()
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('comment')
+                    ->label('Comment')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable()
+                    ->toggleable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListBookingCreditHistories::route('/'),
+        ];
+    }
+}

@@ -5,7 +5,7 @@ namespace Modules\Stream\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\LanguageLevel\Models\LanguageLevel;
-use Modules\Stream\Models\Enums\StreamStatus;
+use Modules\Stream\Enums\StreamStatus;
 use Modules\Subject\Models\Subject;
 use Modules\User\Models\User;
 

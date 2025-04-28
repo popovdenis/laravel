@@ -1,5 +1,5 @@
 <?php
-namespace Modules\SubscriptionPlan\Models\Enums;
+namespace Modules\SubscriptionPlan\Enums;
 
 /**
  * @package Modules\SubscriptionPlan\Models\Enums

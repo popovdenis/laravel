@@ -3,7 +3,7 @@
  * @package Modules\Security\Models\Enums
  */
 
-namespace Modules\Security\Models\Enums;
+namespace Modules\Security\Enums;
 
 enum RequestType: string
 {

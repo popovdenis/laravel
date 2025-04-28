@@ -12,7 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\SubscriptionPlan\Models\Enums\FrequencyUnit;
+use Modules\SubscriptionPlan\Enums\FrequencyUnit;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionPlanResource extends Resource

@@ -3,7 +3,7 @@
 namespace Modules\Booking\Contracts;
 
 use Modules\Payment\Contracts\PaymentMethodInterface;
-use Modules\Payment\Models\Enums\PaymentMethod;
+use Modules\Payment\Enums\PaymentMethod;
 use Modules\User\Models\User;
 
 /**

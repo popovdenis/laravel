@@ -13,9 +13,9 @@ use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Models\Booking;
 use Modules\Payment\Exceptions\PaymentFailedException;
+use Modules\Security\Enums\RequestType;
 use Modules\Security\Exceptions\SecurityViolationException;
 use Modules\Security\Models\AttemptRequestEvent;
-use Modules\Security\Models\Enums\RequestType;
 use Modules\Security\Models\SecurityManager;
 use Throwable;
 

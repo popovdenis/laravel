@@ -3,7 +3,7 @@
  * @package App\Enums
  */
 
-namespace Modules\Payment\Models\Enums;
+namespace Modules\Payment\Enums;
 
 enum PaymentMethod: string
 {
