@@ -10,6 +10,9 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class CreateNewUserCommand extends Command
 {
+    /**
+     * Example: php artisan user:create "John Doe" john@example.com "securePass123" "Student"
+     */
     protected $signature = 'user:create
                             {name : The name of the user}
                             {email : The email of the user}
