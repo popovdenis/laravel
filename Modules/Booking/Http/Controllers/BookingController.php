@@ -51,6 +51,19 @@ class BookingController extends Controller
         try {
             $bookingData = BookingData::fromRequest($request);
 
+            $key = 'booking-attempt:' . $bookingData->student->id . ':' . $bookingData->slotId;
+
+            if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 1)) {
+                $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+
+                return redirect()->back()
+                    ->withErrors(['slot' => 'Too many booking attempts. Please wait ' . $seconds . ' seconds before trying again.'])
+                    ->withInput();
+            }
+
+            // Register an attempt
+            \Illuminate\Support\Facades\RateLimiter::hit($key); // 5 attempts per 60 seconds
+
             $booking = $this->bookingManagement->place($bookingData);
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
