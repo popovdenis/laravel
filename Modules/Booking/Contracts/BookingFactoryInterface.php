@@ -1,8 +1,6 @@
 <?php
 
-namespace Modules\Booking\Factories;
-
-use Modules\Booking\Contracts\BookingInterface;
+namespace Modules\Booking\Contracts;
 
 /**
  * Interface BookingFactoryInterface

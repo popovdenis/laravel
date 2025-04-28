@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
+use Modules\Booking\Contracts\BookingFactoryInterface;
 use Modules\Booking\Contracts\BookingInterface;
 use Modules\Booking\Contracts\BookingManagementInterface;
 use Modules\Booking\Contracts\BookingPlacementServiceInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Data\BookingData;
-use Modules\Booking\Factories\BookingFactoryInterface;
 
 /**
  * Class BookingManagementService
@@ -46,6 +46,13 @@ class BookingManagementService implements BookingManagementInterface
 
         // TODO: create a booking, dispatch an event, etc.
         $booking = $this->placementService->place($booking);
+
+//        $this->eventManager->dispatch(
+//            'sales_model_service_booking_submit_success',
+//            [
+//                'booking' => $booking,
+//            ]
+//        );
 
         return $booking;
     }

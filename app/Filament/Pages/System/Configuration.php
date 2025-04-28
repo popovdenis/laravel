@@ -48,6 +48,15 @@ class Configuration extends BaseSettings
                                 ->numeric(),
                         ]),
 
+                    Tabs\Tab::make('Security')
+                        ->schema([
+                            TextInput::make('security.min_time_between_booking_requests')
+                                ->label('Min Time Between Booking Requests')
+                                ->rules(['required', 'integer', 'min:0'])
+                                ->numeric()
+                                ->helperText('Delay in minutes between booking requests. Use 0 to disable.'),
+                        ]),
+
                     Tabs\Tab::make('MailSender')
                         ->schema([
                             Toggle::make('mailsender.use_mail_sender')

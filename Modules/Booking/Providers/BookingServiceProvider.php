@@ -4,12 +4,12 @@ namespace Modules\Booking\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Booking\Contracts\BookingFactoryInterface;
 use Modules\Booking\Contracts\BookingManagementInterface;
 use Modules\Booking\Contracts\BookingPlacementServiceInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Factories\BookingFactory;
-use Modules\Booking\Factories\BookingFactoryInterface;
 use Modules\Booking\Services\BookingManagementService;
 use Modules\Booking\Services\BookingPlacementService;
 use Modules\Booking\Services\SlotAvailabilityValidator;

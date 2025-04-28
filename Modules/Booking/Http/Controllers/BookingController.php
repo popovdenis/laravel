@@ -13,6 +13,9 @@ use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Models\Booking;
 use Modules\Payment\Exceptions\PaymentFailedException;
+use Modules\Security\Exceptions\SecurityViolationException;
+use Modules\Security\Models\AttemptRequestEvent;
+use Modules\Security\Models\SecurityManager;
 use Throwable;
 
 class BookingController extends Controller
@@ -21,10 +24,19 @@ class BookingController extends Controller
      * @var \Modules\Booking\Contracts\BookingManagementInterface
      */
     private BookingManagementInterface $bookingManagement;
+    /**
+     * @var \Modules\Security\Models\SecurityManager
+     */
+    private SecurityManager $securityManager;
 
-    public function __construct(BookingManagementInterface $bookingManagement)
+    public function __construct(
+        BookingManagementInterface $bookingManagement,
+        SecurityManager $securityManager,
+        private $bookingRequestEvent = AttemptRequestEvent::BOOKING_ATTEMPT_REQUEST,
+    )
     {
         $this->bookingManagement = $bookingManagement;
+        $this->securityManager = $securityManager;
     }
 
     /**
@@ -51,20 +63,18 @@ class BookingController extends Controller
         try {
             $bookingData = BookingData::fromRequest($request);
 
-            $key = 'booking-attempt:' . $bookingData->student->id . ':' . $bookingData->slotId;
+            $accountReference = $bookingData->student->id . ':' . $bookingData->slotId;
 
-            if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 1)) {
-                $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
-
-                return redirect()->back()
-                    ->withErrors(['slot' => 'Too many booking attempts. Please wait ' . $seconds . ' seconds before trying again.'])
-                    ->withInput();
-            }
-
-            // Register an attempt
-            \Illuminate\Support\Facades\RateLimiter::hit($key); // 5 attempts per 60 seconds
+            $this->securityManager->performSecurityCheck($this->bookingRequestEvent, $accountReference);
 
             $booking = $this->bookingManagement->place($bookingData);
+
+            if ($booking) {
+//                $this->_eventManager->dispatch(
+//                    'booking_submit_all_after',
+//                    ['booking' => $booking]
+//                );
+            }
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -79,6 +89,8 @@ class BookingController extends Controller
             return redirect()->back()
                 ->withErrors(['payment' => 'Payment failed: ' . $e->getMessage()])
                 ->withInput();
+        } catch (SecurityViolationException $e) {
+            return redirect()->back()->withErrors(['slot' => $e->getMessage()])->withInput();
         } catch (Throwable $e) {
             report($e);
 
