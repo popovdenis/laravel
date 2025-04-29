@@ -14,5 +14,7 @@
     "UserCreditHistory": true,
     "Base": true,
     "Security": true,
-    "Filament": true
+    "Filament": true,
+    "Stripe": true,
+    "UserSubscriptionPlan": true
 }

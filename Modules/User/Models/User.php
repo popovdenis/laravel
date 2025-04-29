@@ -9,15 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\BookingCreditHistory\Models\BookingCreditHistory;
-use Modules\Subscription\Models\Subscription;
+use Modules\UserSubscriptionPlan\Models\UserSubscriptionPlan;
 use Modules\UserCreditHistory\Models\UserCreditHistory;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     use HasRoles;
+    use Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -105,7 +107,7 @@ class User extends Authenticatable
 
     public function subscription()
     {
-        return $this->hasOne(Subscription::class);
+        return $this->hasOne(UserSubscriptionPlan::class);
     }
 
     public function bookings()

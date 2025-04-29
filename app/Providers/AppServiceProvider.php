@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Laravel\Cashier\Cashier::useCustomerModel(\Modules\User\Models\User::class);
     }
 }

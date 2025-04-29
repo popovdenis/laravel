@@ -36,4 +36,9 @@ return [
         'region' => env('COMETCHAT_REGION'),
         'widget_id' => env('COMETCHAT_WIDGET_ID'),
     ],
+    'stripe' => [
+        'model' => \Modules\User\Models\User::class,
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
 ];

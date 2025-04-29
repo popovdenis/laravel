@@ -4,7 +4,7 @@ namespace Modules\SubscriptionPlan\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Subscription\Models\Subscription;
+use Modules\UserSubscriptionPlan\Models\UserSubscriptionPlan;
 
 class SubscriptionPlan extends Model
 {

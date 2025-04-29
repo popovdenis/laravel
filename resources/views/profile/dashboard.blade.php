@@ -30,7 +30,7 @@
                                             <p>{{ __('You aren\'t subscribed to our newsletter.') }}</p>
                                         @endif
                                     </div>
-                                    <a href="{{ route('subscription::show') }}"
+                                    <a href="{{ route('usersubscription::show') }}"
                                        class="inline-flex items-center w-full mt-4 text-xm font-bold text-blue-400 hover:underline"
                                        aria-label="Edit newsletters"
                                     >

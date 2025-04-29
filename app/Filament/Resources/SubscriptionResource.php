@@ -9,11 +9,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\Subscription\Models\Subscription;
+use Modules\UserSubscriptionPlan\Models\UserSubscriptionPlan;
 
 class SubscriptionResource extends Resource
 {
-    protected static ?string $model = Subscription::class;
+    protected static ?string $model = UserSubscriptionPlan::class;
     protected static ?string $navigationGroup = 'Sales';
     protected static ?string $navigationLabel = 'Subscriptions';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
@@ -24,7 +24,7 @@ class SubscriptionResource extends Resource
             Forms\Components\Grid::make(12)->schema([
                 Forms\Components\Select::make('user_id')
                     ->label('Subscriber')
-                    ->options(\Modules\User\Models\User::pluck('name', 'id'))
+                    ->options(\Modules\User\Models\User::pluck('firstname', 'id'))
                     ->required()
                     ->disabled()
                     ->columnSpan(8),
@@ -71,8 +71,13 @@ class SubscriptionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('Subscriber')
+                Tables\Columns\TextColumn::make('user.firstname')
+                    ->label('Subscriber Firstname')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('user.lastname')
+                    ->label('Subscriber Lastname')
                     ->searchable()
                     ->sortable(),
 
