@@ -10,19 +10,10 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-use Modules\User\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Student\MyCoursesController;
 
 Route::middleware('auth')->prefix('profile')->group(function () {
-    // Account Dashboard
-    Route::get('/', [UserController::class, 'index'])->name('profile.dashboard');
-
-    // Account Information
-    Route::get('/account-information', [UserController::class, 'edit'])->name('profile.account-information.edit');
-    Route::patch('/account-information', [UserController::class, 'update'])->name('profile.account-information.update');
-    Route::delete('/account-information', [UserController::class, 'destroy'])->name('profile.account-information.destroy');
-
     // Lessons
     Route::get('/my-courses', [MyCoursesController::class, 'index'])->name('profile.courses.index');
 

@@ -20,7 +20,7 @@ class UserController extends Controller
         $user = $request->user();
         $subscriptionPlan = $request->user()->subscription->plan;
 
-        return view('profile.dashboard', compact('user', 'subscriptionPlan'));
+        return view('user::profile.dashboard', compact('user', 'subscriptionPlan'));
     }
 
     /**
@@ -49,7 +49,7 @@ class UserController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('user::profile.edit', [
             'user' => $request->user(),
         ]);
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('user::profile.edit')->with('status', 'profile-updated');
     }
 
     /**

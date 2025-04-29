@@ -5,7 +5,7 @@
 
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            @include('profile.partials.sidebar')
+            @include('user::profile.partials.sidebar')
 
             <div class="md:col-span-3">
                 <div class="bg-white shadow sm:rounded-lg p-6">
@@ -33,13 +33,13 @@
                                             {{ $course->teacher->name }}
                                         </td>
                                         <td class="px-4 py-3">
-                                            @foreach ($course->timeslots as $slot)
-                                                <div>
-                                                    {{ ucfirst($slot->scheduleTimeslot->day) }},
-                                                    {{ \Carbon\Carbon::parse($slot->scheduleTimeslot->start)->format('H:i') }} -
-                                                    {{ \Carbon\Carbon::parse($slot->scheduleTimeslot->end)->format('H:i') }}
-                                                </div>
-                                            @endforeach
+{{--                                            @foreach ($course->timeslots as $slot)--}}
+{{--                                                <div>--}}
+{{--                                                    {{ ucfirst($slot->scheduleTimeslot->day) }},--}}
+{{--                                                    {{ \Carbon\Carbon::parse($slot->scheduleTimeslot->start)->format('H:i') }} ---}}
+{{--                                                    {{ \Carbon\Carbon::parse($slot->scheduleTimeslot->end)->format('H:i') }}--}}
+{{--                                                </div>--}}
+{{--                                            @endforeach--}}
                                         </td>
                                         <td class="px-4 py-3">
                                             @php

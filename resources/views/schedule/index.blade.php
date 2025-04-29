@@ -6,7 +6,7 @@
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Sidebar -->
-            @include('profile.partials.sidebar')
+            @include('user::profile.partials.sidebar')
 
             <!-- Main Content -->
             <div class="md:col-span-3">
