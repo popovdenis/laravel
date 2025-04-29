@@ -16,7 +16,7 @@ class BookingCreditHistoryResource extends Resource
 {
     protected static ?string $model = BookingCreditHistory::class;
     protected static ?string $navigationGroup = 'Reports';
-    protected static ?string $navigationLabel = 'Booking Credit History';
+    protected static ?string $navigationLabel = 'Booking Transactions';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     public static function form(Form $form): Form
