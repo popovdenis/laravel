@@ -53,7 +53,10 @@ class StudentResource extends Resource
             [
                 Tables\Columns\TextColumn::make('subscription')
                     ->label('Subscription Plan')
-                    ->formatStateUsing(fn ($record) => $record->subscription?->plan?->name ?? __('No Plan'))
+                    ->formatStateUsing(fn ($record) => $record->subscription?->plan?->name ?? __('No Plan')),
+
+                Tables\Columns\TextColumn::make('credit_balance')
+                    ->label('Credit Balance')
             ]
         ));
     }
