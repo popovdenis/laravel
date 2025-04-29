@@ -19,6 +19,6 @@ class UserCreditHistoryProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserCreditHistoryService::class, UserCreditHistoryInterface::class);
+        $this->app->bind(UserCreditHistoryInterface::class, UserCreditHistoryService::class);
     }
 }

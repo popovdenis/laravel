@@ -4,6 +4,7 @@ namespace Modules\Subscription\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionController extends Controller
@@ -36,12 +37,9 @@ class SubscriptionController extends Controller
         $user = auth()->user();
         $newPlan = SubscriptionPlan::findOrFail($request->plan_id);
 
-        // Здесь вызываешь твой CreditBalanceService или что-то похожее:
-        // Сгорание старых кредитов + начисление новых
+        app(SubscriptionService::class)->syncSubscriptionForUser($user, $newPlan->id);
 
-//        app(CreditBalanceService::class)->applyNewPlan($user, $newPlan);
-
-        return redirect()->route('dashboard')->with('success', 'Your subscription plan has been updated.');
+        return redirect()->route('profile.dashboard')->with('success', 'Your subscription plan has been updated.');
     }
 
     /**

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto py-8 px-4">
+    <div class="max-w-7xl mx-auto py-8 px-4" x-data="{ open: false, planId: '', planName: '' }" @confirm-change.window="open = true; planId = $event.detail.id; planName = $event.detail.name">
         <h2 class="text-2xl font-bold mb-6">Change Subscription Plan</h2>
 
         <div class="mb-8">
@@ -17,7 +17,8 @@
                     <div class="text-lg font-semibold mb-4">${{ number_format($plan->price, 2) }}</div>
 
                     <button
-                        @click="confirmChange('{{ $plan->id }}', '{{ $plan->name }}')"
+                        type="button"
+                        @click="open = true; planId = '{{ $plan->id }}'; planName = '{{ $plan->name }}'"
                         class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded"
                     >
                         Choose
@@ -27,29 +28,21 @@
         </div>
 
         <!-- Modal -->
-        <div x-data="{ open: false, planId: '', planName: '' }" @confirm-change.window="open = true; planId = $event.detail.id; planName = $event.detail.name">
-            <div x-show="open" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-white p-6 rounded shadow-lg">
-                    <h2 class="text-lg font-bold mb-4">Confirm Plan Change</h2>
-                    <p class="mb-4">Are you sure you want to switch to the <strong x-text="planName"></strong> plan?</p>
+        <div x-show="open" x-cloak class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                <h2 class="text-lg font-bold mb-4">Confirm Plan Change</h2>
+                <p class="mb-4">Are you sure you want to switch to the <strong x-text="planName"></strong> plan?</p>
 
-                    <form method="POST" action="{{ route('subscription::store') }}">
-                        @csrf
-                        <input type="hidden" name="plan_id" :value="planId">
-                        <div class="flex space-x-4">
-                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Yes, Confirm</button>
-                            <button type="button" @click="open = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                <form method="POST" action="{{ route('subscription.store') }}">
+                    @csrf
+                    <input type="hidden" name="plan_id" :value="planId">
+                    <div class="flex space-x-4">
+                        <button type="button" @click="open = false" class="px-4 py-2 bg-gray-300 rounded w-full">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded w-full">Yes, Confirm</button>
+                    </div>
+                </form>
             </div>
         </div>
 
     </div>
 </x-app-layout>
-
-<script>
-    function confirmChange(id, name) {
-        window.dispatchEvent(new CustomEvent('confirm-change', { detail: { id: id, name: name } }));
-    }
-</script>

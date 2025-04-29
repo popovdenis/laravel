@@ -24,8 +24,29 @@ class UserResource extends Resource
     {
         return $form->schema([
             Forms\Components\Grid::make(12)->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('firstname')
+                    ->label('First Name')
                     ->required()
+                    ->maxLength(255)
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('middlename')
+                    ->label('Middle Name/Initial')
+                    ->maxLength(255)
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('lastname')
+                    ->label('Last Name')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('prefix')
+                    ->label('Name Prefix')
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('suffix')
+                    ->label('Name Suffix')
                     ->maxLength(255)
                     ->columnSpan(6),
 
@@ -33,6 +54,22 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255)
+                    ->columnSpan(6),
+
+                Forms\Components\DatePicker::make('dob')
+                    ->label('Date of Birth')
+                    ->native(false)
+                    ->columnSpan(6),
+
+                Select::make('gender')
+                    ->label('Gender')
+                    ->options([
+                        'male' => 'Male',
+                        'female' => 'Female',
+                        'other' => 'Not Specified',
+                    ])
+                    ->default(fn ($record) => $record?->subscription?->plan_id)
+                    ->dehydrated(false)
                     ->columnSpan(6),
 
                 Select::make('roles')

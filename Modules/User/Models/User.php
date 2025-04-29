@@ -25,12 +25,23 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'email',
+        'prefix',
         'firstname',
         'lastname',
-        'name',
-        'email',
+        'middlename',
+        'suffix',
+        'dob',
+        'gender',
+        'email_verified_at',
         'password',
+        'remember_token',
         'credit_balance',
+    ];
+
+    protected $casts = [
+        'dob'               => 'date',
+        'email_verified_at' => 'datetime',
     ];
 
     /**
@@ -102,14 +113,19 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'student_id');
     }
 
-    public function creditHistory(): HasMany
+    public function bookingCreditHistory(): HasMany
     {
         return $this->hasMany(BookingCreditHistory::class);
     }
 
     public function getAvailableCredits(): int
     {
-        return $this->creditHistory()->sum('credits_amount');
+        return $this->bookingCreditHistory()->sum('credits_amount');
+    }
+
+    public function userCreditHistory(): HasMany
+    {
+        return $this->hasMany(UserCreditHistory::class);
     }
 
     public function getCreditBalance(): int
@@ -118,10 +134,10 @@ class User extends Authenticatable
     }
     /*$user = User::find(1);
         // All spends:
-    $spends = $user->creditHistory()->spend()->get();
+    $spends = $user->bookingCreditHistory()->spend()->get();
 
         // All refunds:
-    $refunds = $user->creditHistory()->refund()->get();*/
+    $refunds = $user->bookingCreditHistory()->refund()->get();*/
 
     public function creditTopUps()
     {

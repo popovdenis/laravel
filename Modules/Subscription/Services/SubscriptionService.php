@@ -5,6 +5,7 @@ namespace Modules\Subscription\Services;
 
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
+use Modules\UserCreditHistory\Enums\CreditHistorySourceEnum;
 use Modules\UserCreditHistory\Models\UserCreditHistoryInterface;
 use Modules\UserCreditHistory\Services\CreditBalanceService;
 
@@ -58,6 +59,7 @@ class SubscriptionService
             };
 
             $this->updateUserSubscription($user, $planId, $startsAt, $endsAt, $trialEndsAt);
+            $this->updateUserSubscriptionHistory($user, $plan);
             $this->updateCreditBalance($user, $plan);
         } else {
             $user->subscription()?->delete();
@@ -79,10 +81,18 @@ class SubscriptionService
         ]);
     }
 
+    protected function updateUserSubscriptionHistory(User $user, SubscriptionPlan $plan): void
+    {
+        $user->userCreditHistory()->create([
+            'credits_amount'=> $plan->credits,
+            'source'     => CreditHistorySourceEnum::SUBSCRIPTION->value,
+        ]);
+    }
+
     protected function updateCreditBalance(User $user, SubscriptionPlan $plan): void
     {
         if ($plan->credits !== $user->credit_balance) {
-            $this->userCreditHistory->calculateBalanceWithSubscription($user, $plan->credits);
+            $this->userCreditHistory->calculateBalanceWithSubscription($user, $plan);
         }
     }
 }
