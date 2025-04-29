@@ -30,7 +30,8 @@ class WelcomeEmail extends MailSender
 
         return [
             new Personalization($to, [
-                'name' => $this->name,
+                'firstname' => $this->firstname,
+                'lastname' => $this->lastname,
                 'email' => $this->email,
                 'password' => $this->password,
             ]),

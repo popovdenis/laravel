@@ -30,7 +30,8 @@ class MeetingNotification extends MailSender
 
         return [
             new Personalization($to, [
-                'name' => $this->name,
+                'firstname' => $this->firstname,
+                'lastname' => $this->lastname,
                 'meeting_time' => $this->meetingTime,
                 'join_url' => $this->joinUrl,
             ]),

@@ -21,6 +21,9 @@ class SubscriptionPlan extends Model
         'enable_initial_fee',
         'initial_fee_type',
         'initial_fee_amount',
+        'enable_discount',
+        'discount_type',
+        'discount_amount',
         'sort_order',
     ];
 
@@ -32,6 +35,8 @@ class SubscriptionPlan extends Model
         'credits'             => 'integer',
         'enable_initial_fee'  => 'boolean',
         'initial_fee_amount'  => 'decimal:4',
+        'enable_discount'     => 'boolean',
+        'discount_amount'     => 'decimal:4',
     ];
 
     public function subscriptions(): HasMany

@@ -67,7 +67,7 @@ class EditSchedule extends EditRecord
                 teacherEmail: $teacher->email,
                 startTime: \Illuminate\Support\Carbon::parse($data['start_time']),
                 duration: $data['duration'] ?? 60,
-                topic: 'Lesson with ' . $teacher->name,
+                topic: 'Lesson with ' . $teacher->getFullNameAttribute(),
             );
         }
 

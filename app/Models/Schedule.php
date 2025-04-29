@@ -52,7 +52,7 @@ class Schedule extends Model
         // Teacher
         $teacher = $schedule->teacher;
         $teacherUid = 'user-' . $teacher->id;
-        $chatService->createUser($teacherUid, $teacher->name);
+        $chatService->createUser($teacherUid, $teacher->getFullNameAttribute());
 
         if (! $chatService->userInGroup($guid, $teacherUid)) {
             $admins[] = $teacherUid;
@@ -61,7 +61,7 @@ class Schedule extends Model
         // Students
         foreach ($schedule->students as $student) {
             $uid = 'user-' . $student->id;
-            $chatService->createUser($uid, $student->name);
+            $chatService->createUser($uid, $student->getFullNameAttribute());
             if (! $chatService->userInGroup($guid, $uid)) {
                 $participants[] = $uid;
             }

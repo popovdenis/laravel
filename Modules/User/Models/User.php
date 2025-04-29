@@ -25,6 +25,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'firstname',
+        'lastname',
         'name',
         'email',
         'password',
@@ -57,6 +59,16 @@ class User extends Authenticatable
     public function canManageBlogPosts(): bool
     {
         return $this->hasRole('Admin');
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->getFullNameAttribute();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->firstname . ' ' . $this->lastname;
     }
 
     public function streams()

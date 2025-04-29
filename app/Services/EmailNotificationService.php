@@ -19,7 +19,7 @@ class EmailNotificationService
     {
         Mail::to($user->email)->send(
             new WelcomeEmail(
-                name: $user->name,
+                name: $user->getFullNameAttribute(),
                 email: $user->email,
                 password: $user->password_plaint,
             )
@@ -32,7 +32,7 @@ class EmailNotificationService
 
         Mail::to($user->email)->send(
             new MeetingNotification(
-                name: $user->name,
+                name: $user->getFullNameAttribute(),
                 meetingTime: $schedule->start_time->toDayDateTimeString(),
                 joinUrl: $joinUrl
             )

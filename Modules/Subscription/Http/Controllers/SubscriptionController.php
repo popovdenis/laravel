@@ -4,6 +4,7 @@ namespace Modules\Subscription\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionController extends Controller
 {
@@ -26,14 +27,38 @@ class SubscriptionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(Request $request)
+    {
+        $request->validate([
+            'plan_id' => ['required', 'exists:subscription_plans,id'],
+        ]);
+
+        $user = auth()->user();
+        $newPlan = SubscriptionPlan::findOrFail($request->plan_id);
+
+        // Здесь вызываешь твой CreditBalanceService или что-то похожее:
+        // Сгорание старых кредитов + начисление новых
+
+//        app(CreditBalanceService::class)->applyNewPlan($user, $newPlan);
+
+        return redirect()->route('dashboard')->with('success', 'Your subscription plan has been updated.');
+    }
 
     /**
      * Show the specified resource.
      */
     public function show($id)
     {
-        return view('subscription::show');
+        $user = auth()->user();
+        $currentPlanId = $user->subscription?->plan_id;
+
+        $plans = SubscriptionPlan::where('status', true)
+            ->when($currentPlanId, fn($q) => $q->where('id', '!=', $currentPlanId))
+            ->where('status', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('subscription::show', compact('user', 'plans'));
     }
 
     /**

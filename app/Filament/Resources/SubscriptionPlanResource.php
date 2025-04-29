@@ -110,6 +110,34 @@ class SubscriptionPlanResource extends Resource
                     ->helperText('Positive floating point numbers only.')
                     ->columnSpan(8),
 
+                Toggle::make('enable_discount')
+                    ->label('Offer Discounted Prices to Subscribers')
+                    ->reactive()
+                    ->default(0)
+                    ->helperText('Customers would be able to get a discount when subscribing.')
+                    ->columnSpan(8),
+
+                Select::make('discount_type')
+                    ->label('Discount Type')
+                    ->options([
+                        'fixed'    => 'Fixed Amount',
+                        'percent'  => 'Percent of Subscription Price',
+                    ])
+                    ->default('fixed')
+                    ->visible(fn ($get) => $get('enable_discount') === true)
+                    ->extraAttributes(['style' => 'width: 160px'])
+                    ->helperText('Discount can be either a fixed amount or a percent of the regular price of the subscription.')
+                    ->columnSpan(8),
+
+                TextInput::make('discount_amount')
+                    ->label('Discount Amount')
+                    ->numeric()
+                    ->rules(['required', 'numeric', 'min:0'])
+                    ->minValue(1)
+                    ->visible(fn ($get) => $get('enable_discount') === true)
+                    ->helperText('Positive floating point numbers only. This amount will be deducted from the regular price of the subscription.')
+                    ->columnSpan(8),
+
                 TextInput::make('price')
                     ->label('Price')
                     ->required()
@@ -124,6 +152,12 @@ class SubscriptionPlanResource extends Resource
                     ->numeric()
                     ->rules(['required', 'integer', 'min:0'])
                     ->helperText('The number of credits added to the student’s balance each billing cycle.')
+                    ->columnSpan(8),
+
+                TextInput::make('sort_order')
+                    ->label('Sort Order')
+                    ->numeric()
+                    ->rules(['integer', 'min:0'])
                     ->columnSpan(8),
             ])
         ]);
@@ -149,15 +183,37 @@ class SubscriptionPlanResource extends Resource
                 }),
             Tables\Columns\TextColumn::make('enable_trial')->label('Trial Period')
                 ->formatStateUsing(fn ($state) => $state ? __('Enabled') : __('Disabled'))
-                ->sortable(),
+                ->sortable()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('enable_initial_fee')->label('Initial Fee')
-                ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')->sortable(),
+                ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('initial_fee_type')->label('Initial Fee Type')
+                ->sortable()
+                ->toggleable(),
             Tables\Columns\TextColumn::make('status')
                 ->formatStateUsing(fn ($state) => $state ? __('Active') : __('Suspended'))
                 ->color(fn ($state) => $state ? 'success' : 'danger')
                 ->weight('bold')
-                ->sortable(),
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('enable_discount')->label('Enable Discount')
+                ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('discount_type')->label('Discount Type')
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('discount_amount')->label('Discount Amount')
+                ->formatStateUsing(fn ($state) => $state > 0 ? '$' . $state : '')
+                ->sortable()
+                ->toggleable(),
+            Tables\Columns\TextColumn::make('sort_order')->label('Sort Order')
+                ->sortable()
+                ->toggleable(),
         ])
+        ->defaultSort('sort_order')
         ->filters([])
         ->actions([
             Tables\Actions\EditAction::make(),

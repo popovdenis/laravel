@@ -30,8 +30,10 @@
                                             <p>{{ __('You aren\'t subscribed to our newsletter.') }}</p>
                                         @endif
                                     </div>
-                                    <a class="inline-flex items-center w-full mt-4 text-xm font-bold text-blue-400 hover:underline"
-                                       href="http://au.techrentals-m2/newsletter/manage/" aria-label="Edit newsletters">
+                                    <a href="{{ route('subscription::show') }}"
+                                       class="inline-flex items-center w-full mt-4 text-xm font-bold text-blue-400 hover:underline"
+                                       aria-label="Edit newsletters"
+                                    >
                                         <span>{{ __('Edit') }}</span>
                                     </a>
                                 </div>

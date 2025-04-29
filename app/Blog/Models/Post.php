@@ -86,7 +86,7 @@ class Post extends Model
     public function author_string()
     {
         if ($this->author) {
-            return optional($this->author)->name;
+            return optional($this->author)->getFullNameAttribute();
         } else {
             return 'Unknown Author';
         }

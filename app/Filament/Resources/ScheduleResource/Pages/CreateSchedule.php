@@ -34,7 +34,7 @@ class CreateSchedule extends CreateRecord
                 teacherEmail: $teacher->email,
                 startTime: Carbon::parse($this->data['start_time']),
                 duration: $data['duration'] ?? 60,
-                topic: 'Lesson with ' . $teacher->name,
+                topic: 'Lesson with ' . $teacher->getFullNameAttribute(),
             );
 
             $zoom = app(ZoomService::class)->create($meetingData);

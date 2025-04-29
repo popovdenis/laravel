@@ -50,7 +50,7 @@ class ScheduleController extends Controller
             'sdkKey' => $sdkKey,
             'meetingNumber' => $schedule->zoom_meeting_id,
             'password' => $schedule->passcode,
-            'userName' => auth()->user()->name ?? 'Guest',
+            'userName' => auth()->user()->getFullNameAttribute() ?? 'Guest',
             'userEmail' => auth()->user()->email ?? 'email@example.com',
             'schedule' => $schedule,
         ]);
