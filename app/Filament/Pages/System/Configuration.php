@@ -39,8 +39,8 @@ class Configuration extends BaseSettings
                             Section::make('Advanced Settings')->schema([
                                 Select::make('booking.applicable_payment_method')
                                     ->options([
-                                        'credits' => setting('payment.credits.title'),
-                                        'stripe' => setting('payment.stripe.title'),
+                                        'credits' => setting('payment.credits.title', 'Credits'),
+                                        'stripe' => setting('payment.stripe.title', 'Stripe'),
                                     ])->columnSpan(6),
                             ])->columns(10)->collapsible()
                         ]),
@@ -58,8 +58,8 @@ class Configuration extends BaseSettings
                             Section::make('Advanced Settings')->schema([
                                 Select::make('subscription.applicable_payment_method')
                                     ->options([
-                                        'credits' => setting('payment.credits.title'),
-                                        'stripe' => setting('payment.stripe.title'),
+                                        'credits' => setting('payment.credits.title', 'Credits'),
+                                        'stripe' => setting('payment.stripe.title', 'Stripe'),
                                     ])->columnSpan(6),
                             ])->columns(10)->collapsible()
                         ]),

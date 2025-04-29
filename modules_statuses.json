@@ -13,5 +13,6 @@
     "Payment": true,
     "UserCreditHistory": true,
     "Base": true,
-    "Security": true
+    "Security": true,
+    "Filament": true
 }
