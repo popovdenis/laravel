@@ -14,9 +14,9 @@ class CreateStudent extends CreateRecord
     {
         $subscriptionPlanId = $this->form->getRawState()['subscription_plan_id'] ?? null;
         if ($subscriptionPlanId) {
-            $this->record->subscription()->updateOrCreate([], ['plan_id' => $subscriptionPlanId]);
+            $this->record->userSubscription()->updateOrCreate([], ['plan_id' => $subscriptionPlanId]);
         } else {
-            $this->record->subscription()?->delete();
+            $this->record->userSubscription()?->delete();
         }
     }
 }

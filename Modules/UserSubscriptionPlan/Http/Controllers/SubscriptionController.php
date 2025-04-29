@@ -54,7 +54,8 @@ class SubscriptionController extends Controller
     public function show($id)
     {
         $user = auth()->user();
-        $currentPlanId = $user->subscription?->plan_id;
+        $currentPlanId = $user->userSubscription?->plan_id;
+        $isSubscribed = $user->subscribed('default');
 
         $plans = SubscriptionPlan::where('status', true)
             ->when($currentPlanId, fn($q) => $q->where('id', '!=', $currentPlanId))
@@ -62,7 +63,7 @@ class SubscriptionController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('usersubscription::show', compact('user', 'plans'));
+        return view('usersubscription::show', compact('user', 'plans', 'isSubscribed'));
     }
 
     /**

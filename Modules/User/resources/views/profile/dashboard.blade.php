@@ -20,7 +20,7 @@
                                 <div class="grow flex flex-col md:justify-between">
                                     <div>
                                         <h5 class="mb-4 text-blue-900 font-bold">{{ __('Customer Subscription Plan') }}</h5>
-                                        @if($subscriptionPlan->name)
+                                        @if($subscriptionPlan && $subscriptionPlan->name)
                                             <p class="mt-1">{{ $subscriptionPlan->name }}</p>
                                             <p class="mt-1">
                                                 <span>{{ __('Credit Balance: ') }}</span>

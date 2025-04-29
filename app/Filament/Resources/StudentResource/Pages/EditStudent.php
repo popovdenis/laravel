@@ -33,7 +33,7 @@ class EditStudent extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['subscription_plan_id'] = $this->record->subscription?->first()->plan_id;
+        $data['subscription_plan_id'] = $this->record->userSubscription?->first()->plan_id;
 
         return $data;
     }

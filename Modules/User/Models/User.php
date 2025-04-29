@@ -105,7 +105,7 @@ class User extends Authenticatable
         })->toArray();
     }
 
-    public function subscription()
+    public function userSubscription()
     {
         return $this->hasOne(UserSubscriptionPlan::class);
     }

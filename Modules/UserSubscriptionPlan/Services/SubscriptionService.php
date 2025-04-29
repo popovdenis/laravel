@@ -30,7 +30,7 @@ class SubscriptionService
         if (!$user->hasRole('Student')) {
             throw new \Exception('Only student can subscribe to this plan.');
         }
-        $currentPlanId = $user->subscription?->plan_id;
+        $currentPlanId = $user->userSubscription?->plan_id;
 
         if ($planId === $currentPlanId) {
             // No changes, do nothing.
@@ -61,7 +61,7 @@ class SubscriptionService
             $this->updateUserSubscriptionHistory($user, $plan);
             $this->updateCreditBalance($user, $plan);
         } else {
-            $user->subscription()?->delete();
+            $user->userSubscription()?->delete();
         }
     }
 
@@ -72,7 +72,7 @@ class SubscriptionService
 
     protected function updateUserSubscription(User $user, int $planId, $startsAt, $endsAt, $trialEndsAt): void
     {
-        $user->subscription()->updateOrCreate([], [
+        $user->userSubscription()->updateOrCreate([], [
             'plan_id'       => $planId,
             'starts_at'     => $startsAt,
             'ends_at'       => $endsAt,

@@ -30,7 +30,7 @@ class StudentResource extends Resource
                     Select::make('subscription_plan_id')
                         ->label('Subscription Plan')
                         ->options(SubscriptionPlan::pluck('name', 'id'))
-                        ->default(fn ($record) => $record?->subscription?->plan_id)
+                        ->default(fn ($record) => $record?->userSubscription?->plan_id)
                         ->dehydrated(false)
                         ->required()
                         ->columnSpan(6),
@@ -53,7 +53,7 @@ class StudentResource extends Resource
             [
                 Tables\Columns\TextColumn::make('subscription')
                     ->label('Subscription Plan')
-                    ->formatStateUsing(fn ($record) => $record->subscription?->plan?->name ?? __('No Plan')),
+                    ->formatStateUsing(fn ($record) => $record->userSubscription?->plan?->name ?? __('No Plan')),
 
                 Tables\Columns\TextColumn::make('credit_balance')
                     ->label('Credit Balance')
