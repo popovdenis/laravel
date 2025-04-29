@@ -2,14 +2,13 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Blog\Events\CommentApproved;
 use App\Blog\Events\CommentWillBeDeleted;
 use App\Blog\Helpers;
-use App\Blog\Middleware\LoadLanguage;
 use App\Blog\Middleware\UserCanManageBlogPosts;
 use App\Blog\Models\Comment;
+use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class CommentsAdminController

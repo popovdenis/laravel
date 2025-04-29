@@ -1,18 +1,15 @@
 <?php
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Blog\FulltextSearch\Search;
-use App\Blog\Models\Category;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Blog\Interfaces\BaseRequestInterface;
 use App\Blog\Events\BlogPostAdded;
 use App\Blog\Events\BlogPostWillBeDeleted;
+use App\Blog\FulltextSearch\Search;
 use App\Blog\Helpers;
+use App\Blog\Interfaces\BaseRequestInterface;
 use App\Blog\Middleware\LoadLanguage;
 use App\Blog\Middleware\PackageSetup;
 use App\Blog\Middleware\UserCanManageBlogPosts;
+use App\Blog\Models\Category;
 use App\Blog\Models\CategoryTranslation;
 use App\Blog\Models\Language;
 use App\Blog\Models\Post;
@@ -23,6 +20,9 @@ use App\Blog\Requests\CreatePostToggleRequest;
 use App\Blog\Requests\DeleteBlogPostRequest;
 use App\Blog\Requests\UpdateBlogPostRequest;
 use App\Blog\Traits\UploadFileTrait;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class AdminController

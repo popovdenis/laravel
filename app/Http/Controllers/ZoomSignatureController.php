@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ZoomService;
 use Illuminate\Http\Request;
-use Firebase\JWT\JWT;
+use Modules\Base\Http\Controllers\Controller;
 
 class ZoomSignatureController extends Controller
 {

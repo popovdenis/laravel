@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Schedule;
 use App\Services\ZoomService;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Schedule;
+use Modules\Base\Http\Controllers\Controller;
 
 class ScheduleController extends Controller
 {

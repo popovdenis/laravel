@@ -2,13 +2,13 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use App\Blog\FulltextSearch\Search;
 use App\Blog\Models\Category;
 use App\Blog\Models\CategoryTranslation;
 use App\Blog\Models\PostTranslation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 class ReaderController extends Controller
 {

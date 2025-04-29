@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Models\CourseEnrollment;
+use Illuminate\Support\Facades\Auth;
+use Modules\Base\Http\Controllers\Controller;
 
 class MyCoursesController extends Controller
 {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Flow;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 use Modules\LanguageLevel\Models\LanguageLevel;
 
 class TeacherSelectionController extends Controller

@@ -2,11 +2,11 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Blog\Events\CommentAdded;
 use App\Blog\Models\Comment;
 use App\Blog\Models\PostTranslation;
 use App\Blog\Requests\AddNewCommentRequest;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class CommentWriterController

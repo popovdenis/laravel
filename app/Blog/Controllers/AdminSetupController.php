@@ -2,12 +2,11 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Blog\Helpers;
 use App\Blog\Middleware\UserCanManageBlogPosts;
 use App\Blog\Models\Configuration;
 use App\Blog\Models\Language;
+use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class AdminSetupController

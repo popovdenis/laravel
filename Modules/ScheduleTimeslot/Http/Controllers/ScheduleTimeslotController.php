@@ -2,8 +2,8 @@
 
 namespace Modules\ScheduleTimeslot\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 class ScheduleTimeslotController extends Controller
 {

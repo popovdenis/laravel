@@ -3,10 +3,10 @@
 namespace Modules\Booking\Http\Controllers;
 
 use App\Exceptions\AlreadyExistsException;
-use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 use Modules\Booking\Contracts\BookingInterface;
 use Modules\Booking\Contracts\BookingManagementInterface;
 use Modules\Booking\Data\BookingData;

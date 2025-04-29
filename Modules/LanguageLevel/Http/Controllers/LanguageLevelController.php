@@ -2,9 +2,9 @@
 
 namespace Modules\LanguageLevel\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\LanguageLevel\Models\LanguageLevel;
 use Modules\Stream\Models\Stream;

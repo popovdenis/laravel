@@ -2,8 +2,6 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Blog\Events\CategoryAdded;
 use App\Blog\Events\CategoryEdited;
 use App\Blog\Events\CategoryWillBeDeleted;
@@ -14,6 +12,8 @@ use App\Blog\Models\CategoryTranslation;
 use App\Blog\Models\Language;
 use App\Blog\Requests\DeleteBlogCategoryRequest;
 use App\Blog\Requests\UpdateBlogCategoryRequest;
+use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class CategoryAdminController

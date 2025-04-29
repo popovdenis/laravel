@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Binafy\LaravelCart\Models\Cart;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
+use Modules\Base\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {

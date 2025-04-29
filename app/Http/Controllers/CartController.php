@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Binafy\LaravelCart\Models\Cart;
 use Binafy\LaravelCart\Models\CartItem;
+use Illuminate\Support\Facades\Auth;
+use Modules\Base\Http\Controllers\Controller;
 
 class CartController extends Controller
 {

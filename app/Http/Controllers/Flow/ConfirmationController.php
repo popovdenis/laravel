@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Flow;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\CourseEnrollment;
+use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 class ConfirmationController extends Controller
 {

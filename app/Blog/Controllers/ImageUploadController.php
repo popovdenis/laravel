@@ -2,12 +2,11 @@
 
 namespace App\Blog\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Blog\Middleware\LoadLanguage;
 use App\Blog\Middleware\UserCanManageBlogPosts;
 use App\Blog\Models\UploadedPhoto;
 use App\Blog\Requests\UploadImageRequest;
 use App\Blog\Traits\UploadFileTrait;
+use Modules\Base\Http\Controllers\Controller;
 
 /**
  * Class AdminController

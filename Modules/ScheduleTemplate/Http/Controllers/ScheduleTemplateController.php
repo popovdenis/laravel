@@ -2,8 +2,8 @@
 
 namespace Modules\ScheduleTemplate\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
 
 class ScheduleTemplateController extends Controller
 {
