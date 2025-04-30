@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use Modules\Booking\Contracts\BookingInterface;
-use Modules\BookingCreditHistory\Contracts\BookingCreditHistoryInterface;
-use Modules\BookingCreditHistory\Enums\BookingAction;
+use Modules\Order\Contracts\OrderInterface;
 use Modules\Payment\Contracts\PaymentMethodInterface;
+use Modules\Payment\Contracts\TransactionServiceInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
-use Modules\Payment\Models\Transaction\ManagerInterface;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
@@ -18,12 +16,11 @@ use Modules\Subscription\Models\ConfigProvider;
  */
 class CreditsPaymentMethod implements PaymentMethodInterface
 {
-    protected BookingInterface $booking;
+    protected OrderInterface $order;
 
     public function __construct(
         protected ConfigProvider $configProvider,
-        protected BookingCreditHistoryInterface $bookingCreditHistory,
-        protected ManagerInterface $transactionManager,
+        protected TransactionServiceInterface $transactionService,
     )
     {}
 
@@ -32,9 +29,9 @@ class CreditsPaymentMethod implements PaymentMethodInterface
         return setting('payment.credits.title');
     }
 
-    public function validate(BookingInterface $booking): void
+    public function validate(OrderInterface $order): void
     {
-        $user = $booking->getStudent();
+        $user = $order->getQuote()->getUser();
         $requiredCredits = $this->configProvider->getGroupLessonPrice(); //TODO: add type
 
         if ($user->getCreditBalance() < $requiredCredits) {
@@ -42,40 +39,26 @@ class CreditsPaymentMethod implements PaymentMethodInterface
         }
     }
 
-    public function authorize(BookingInterface $booking): void
+    public function authorize(OrderInterface $order): void
     {
         // Here we could log or prepare payment but not yet deduct (like authorize in Magento)
     }
 
-    public function setBooking(BookingInterface $booking): void
+    public function setOrder(OrderInterface $order): void
     {
-        $this->booking = $booking;
+        $this->order = $order;
     }
 
-    public function getBooking(): BookingInterface
+    public function getOrder(): OrderInterface
     {
-        return $this->booking;
+        return $this->order;
     }
 
     public function place()
     {
 //        $this->_eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
-        $booking = $this->getBooking();
-        $student = $booking->getStudent();
-        $requiredCredits = $this->configProvider->getGroupLessonPrice();
-
-        $this->bookingCreditHistory->spend($student, $requiredCredits);
-
-        $booking->setTransactionId(
-            $this->transactionManager->generateTransactionId(
-                $student,
-                -$requiredCredits,
-                $booking->getPayment()->getTitle(),
-                BookingAction::SPEND,
-                'Booking a lesson'
-            )
-        );
-
+        $quote = $this->getOrder()->getQuote();
+        $this->transactionService->spend($quote->getUser(), $quote->getAmount());
 //        $this->_eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
         return $this;
     }
@@ -83,23 +66,8 @@ class CreditsPaymentMethod implements PaymentMethodInterface
     public function cancel()
     {
 //        $this->_eventManager->dispatch('sales_order_payment_refund_start', ['payment' => $this]);
-
-        $booking = $this->getBooking();
-        $student = $booking->getStudent();
-        $requiredCredits = $this->configProvider->getGroupLessonPrice();
-
-        $this->bookingCreditHistory->refund($student, $requiredCredits);
-
-        $booking->setTransactionId(
-            $this->transactionManager->generateTransactionId(
-                $student,
-                $requiredCredits,
-                $booking->getPayment()->getTitle(),
-                BookingAction::REFUND,
-                'Refund for a booking'
-            )
-        );
-
+        $student = $this->getOrder()->user;
+        $this->transactionService->refund($student, $this->getOrder()->getTotalAmount());
 //        $this->_eventManager->dispatch('sales_order_payment_refund_end', ['payment' => $this]);
 
         return $this;

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use Modules\Booking\Contracts\BookingInterface;
+use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
@@ -15,9 +15,9 @@ use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
  */
 class SlotAvailabilityValidator implements SlotAvailabilityValidatorInterface
 {
-    public function validate(BookingInterface $booking): void
+    public function validate(BookingQuoteInterface $bookingQuote): void
     {
-        $slot = ScheduleTimeslot::where('id', $booking->getSlotId())->exists();
+        $slot = ScheduleTimeslot::where('id', $bookingQuote->getSlotId())->exists();
 
         if (!$slot) {
             throw new SlotUnavailableException('Selected time slot is not available.');

@@ -4,6 +4,8 @@ namespace Modules\Subscription\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
+use Modules\Subscription\Models\SubscriptionQuote;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -14,7 +16,7 @@ class SubscriptionServiceProvider extends ServiceProvider
 
     protected string $name = 'Subscription';
 
-    protected string $nameLower = 'usersubscription';
+    protected string $nameLower = 'subscription';
 
     /**
      * Boot the application events.
@@ -36,6 +38,9 @@ class SubscriptionServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        // Management binding
+        $this->app->bind(SubscriptionQuoteInterface::class, SubscriptionQuote::class);
     }
 
     /**

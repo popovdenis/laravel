@@ -9,8 +9,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Modules\BookingCreditHistory\Enums\BookingAction;
-use Modules\BookingCreditHistory\Models\BookingCreditHistory;
+use Modules\Booking\Enums\BookingAction;
+use Modules\Booking\Models\BookingCreditHistory;
 
 class BookingCreditHistoryResource extends Resource
 {

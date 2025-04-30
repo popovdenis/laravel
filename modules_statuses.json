@@ -16,5 +16,6 @@
     "Security": true,
     "Filament": true,
     "Stripe": true,
-    "Order": true
+    "Order": true,
+    "CreditPayment": true
 }

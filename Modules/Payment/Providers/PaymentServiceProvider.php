@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Modules\Payment\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\Payment\Models\Transaction\Manager;
-use Modules\Payment\Models\Transaction\ManagerInterface;
+use Modules\Payment\Services\TransactionService;
+use Modules\Payment\Contracts\TransactionServiceInterface;
 
 /**
  * Class PaymentServiceProvider
@@ -23,6 +23,6 @@ class PaymentServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Management binding
-        $this->app->bind(ManagerInterface::class, Manager::class);
+        $this->app->bind(TransactionServiceInterface::class, TransactionService::class);
     }
 }

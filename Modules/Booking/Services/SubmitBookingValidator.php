@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Modules\Booking\Services;
 
 use App\Exceptions\AlreadyExistsException;
-use Modules\Booking\Contracts\BookingInterface;
+use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\Booking\Models\Booking;
@@ -16,11 +16,11 @@ use Modules\Booking\Models\Booking;
  */
 class SubmitBookingValidator implements SubmitBookingValidatorInterface
 {
-    public function validate(BookingInterface $booking): void
+    public function validate(BookingQuoteInterface $bookingQuote): void
     {
-        $duplicate = Booking::where('student_id', $booking->getStudent()->id)
-            ->where('stream_id', $booking->getStreamId())
-            ->where('schedule_timeslot_id', $booking->getSlotId())
+        $duplicate = Booking::where('student_id', $bookingQuote->getUser()->id)
+            ->where('stream_id', $bookingQuote->getStreamId())
+            ->where('schedule_timeslot_id', $bookingQuote->getSlotId())
             ->where('status', '!=', BookingStatus::CANCELLED)
             ->exists();
 

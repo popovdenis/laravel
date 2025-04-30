@@ -2,17 +2,17 @@
 
 namespace Modules\User\Models;
 
-use Modules\Booking\Models\Booking;
-use Modules\Stream\Models\Stream;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Modules\BookingCreditHistory\Models\BookingCreditHistory;
-use Modules\UserSubscriptionPlan\Models\UserSubscriptionPlan;
-use Modules\UserCreditHistory\Models\UserCreditHistory;
-use Spatie\Permission\Traits\HasRoles;
 use Laravel\Cashier\Billable;
+use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingCreditHistory;
+use Modules\Stream\Models\Stream;
+use Modules\Subscription\Models\Subscription;
+use Modules\Subscription\Models\SubscriptionTransaction;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -105,9 +105,9 @@ class User extends Authenticatable
         })->toArray();
     }
 
-    public function userSubscription()
+    public function userSubscriptions()
     {
-        return $this->hasOne(UserSubscriptionPlan::class);
+        return $this->hasOne(Subscription::class);
     }
 
     public function bookings()
@@ -127,7 +127,7 @@ class User extends Authenticatable
 
     public function userCreditHistory(): HasMany
     {
-        return $this->hasMany(UserCreditHistory::class);
+        return $this->hasMany(SubscriptionTransaction::class);
     }
 
     public function getCreditBalance(): int
@@ -143,6 +143,6 @@ class User extends Authenticatable
 
     public function creditTopUps()
     {
-        return $this->hasMany(UserCreditHistory::class);
+        return $this->hasMany(SubscriptionTransaction::class);
     }
 }

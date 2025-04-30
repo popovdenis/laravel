@@ -4,25 +4,37 @@ namespace Modules\Subscription\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\Order\Contracts\OrderManagerInterface;
+use Modules\Subscription\Factories\SubscriptionQuoteFactory;
 use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionController extends Controller
 {
     /**
+     * @var \Modules\Order\Contracts\OrderManagerInterface
+     */
+    private OrderManagerInterface $orderManager;
+    /**
+     * @var \Modules\Subscription\Factories\SubscriptionQuoteFactory
+     */
+    private SubscriptionQuoteFactory $quoteFactory;
+
+    public function __construct(
+        OrderManagerInterface $orderManager,
+        SubscriptionQuoteFactory $quoteFactory,
+    )
+    {
+        $this->orderManager = $orderManager;
+        $this->quoteFactory = $quoteFactory;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('usersubscription::index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('usersubscription::create');
+        return view('subscription::index');
     }
 
     /**
@@ -34,16 +46,15 @@ class SubscriptionController extends Controller
             'plan_id' => ['required', 'exists:subscription_plans,id'],
         ]);
 
-        $user = auth()->user();
-        $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
-        $user->createOrGetStripeCustomer();
-        $user->updateDefaultPaymentMethod($paymentMethod);
-
-        $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
-
         $newPlan = SubscriptionPlan::findOrFail($request->plan_id);
 
-        app(SubscriptionService::class)->syncSubscriptionForUser($user, $newPlan->id);
+        $quote = $this->quoteFactory->create(
+            auth()->user(),
+            $request->plan_id,
+            $newPlan->credits
+        );
+
+        $order = $this->orderManager->place($quote);
 
         return redirect()->route('profile.dashboard')->with('success', 'Your subscription plan has been updated.');
     }
@@ -51,10 +62,10 @@ class SubscriptionController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show()
     {
         $user = auth()->user();
-        $currentPlanId = $user->userSubscription?->plan_id;
+        $currentPlanId = $user->userSubscriptions?->plan_id;
         $isSubscribed = $user->subscribed('default');
 
         $plans = SubscriptionPlan::where('status', true)
@@ -63,7 +74,7 @@ class SubscriptionController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('usersubscription::show', compact('user', 'plans', 'isSubscribed'));
+        return view('subscription::show', compact('user', 'plans', 'isSubscribed'));
     }
 
     /**
@@ -71,7 +82,7 @@ class SubscriptionController extends Controller
      */
     public function edit($id)
     {
-        return view('usersubscription::edit');
+        return view('subscription::edit');
     }
 
     /**

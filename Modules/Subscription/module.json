@@ -1,6 +1,6 @@
 {
     "name": "Subscription",
-    "alias": "usersubscription",
+    "alias": "subscription",
     "description": "",
     "keywords": [],
     "priority": 0,

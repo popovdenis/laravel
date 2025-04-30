@@ -20,7 +20,7 @@
                                     <div>
                                         <h3 class="text-lg font-semibold text-blue-900"><span>{{ __('Current Plan') }}</span></h3>
                                         <div class="p-4 border rounded bg-gray-100 mt-2">
-                                            {{ $isSubscribed && $user->userSubscription->plan->name ? $user->userSubscription->plan->name : 'No active plan' }}
+                                            {{ $isSubscribed && $user->userSubscriptions?->plan->name ? $user->userSubscriptions->plan->name : 'No active plan' }}
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
                                             <h2 class="text-lg font-bold mb-4">Confirm Plan Change</h2>
                                             <p class="mb-4">Are you sure you want to switch to the <strong x-text="planName"></strong> plan?</p>
 
-                                            <form method="POST" action="{{ route('usersubscription::store') }}">
+                                            <form method="POST" action="{{ route('subscription::store') }}">
                                                 @csrf
                                                 <input type="hidden" name="plan_id" :value="planId">
                                                 <div class="flex space-x-4">

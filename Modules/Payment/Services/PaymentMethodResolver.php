@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Services;
 
-use Modules\Booking\Contracts\BookingInterface;
+use Modules\Order\Contracts\OrderInterface;
 use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Enums\PaymentMethod;
 
@@ -14,14 +14,14 @@ use Modules\Payment\Enums\PaymentMethod;
  */
 class PaymentMethodResolver
 {
-    public function resolve(string $method, BookingInterface $booking): PaymentMethodInterface
+    public function resolve(string $method, OrderInterface $order): PaymentMethodInterface
     {
         $payment = match ($method) {
             PaymentMethod::CREDITS->value => app(CreditsPaymentMethod::class),
             PaymentMethod::STRIPE->value  => app(StripePaymentMethod::class),
             default                => throw new \InvalidArgumentException('Unsupported payment method.'),
         };
-        $payment->setBooking($booking);
+        $payment->setOrder($order);
 
         return $payment;
     }

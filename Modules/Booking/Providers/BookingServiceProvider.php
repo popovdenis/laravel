@@ -4,14 +4,10 @@ namespace Modules\Booking\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Booking\Contracts\BookingFactoryInterface;
-use Modules\Booking\Contracts\BookingManagementInterface;
-use Modules\Booking\Contracts\BookingPlacementServiceInterface;
+use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
-use Modules\Booking\Factories\BookingFactory;
-use Modules\Booking\Services\BookingManagementService;
-use Modules\Booking\Services\BookingPlacementService;
+use Modules\Booking\Models\BookingQuote;
 use Modules\Booking\Services\SlotAvailabilityValidator;
 use Modules\Booking\Services\SubmitBookingValidator;
 use Modules\Payment\Services\PaymentMethodResolver;
@@ -45,14 +41,12 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
-        // Booking Management binding
-        $this->app->bind(BookingManagementInterface::class, BookingManagementService::class);
-        $this->app->bind(BookingFactoryInterface::class, BookingFactory::class);
+        // Management binding
+        $this->app->bind(BookingQuoteInterface::class, BookingQuote::class);
 
         // Slot Validator binding
         $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
         $this->app->bind(SubmitBookingValidatorInterface::class, SubmitBookingValidator::class);
-        $this->app->bind(BookingPlacementServiceInterface::class, BookingPlacementService::class);
 
         // PaymentMethodResolver (singleton)
         $this->app->singleton(PaymentMethodResolver::class, PaymentMethodResolver::class);

@@ -29,18 +29,6 @@ return new class extends Migration
             $table->tinyInteger('sort_order')->nullable();
             $table->timestamps();
         });
-        Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('plan_id')->constrained('subscription_plans')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['active', 'trialing', 'canceled', 'expired'])->default('active');
-            $table->boolean('canceled_immediately')->default(false);
-            $table->timestamp('trial_ends_at')->nullable();
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->timestamp('canceled_at')->nullable();
-            $table->timestamps();
-        });
         Schema::create('booking_credit_history', function (Blueprint $table) {
             $table->id();
             $table->foreignId('booking_id')->nullable()->constrained('bookings')->onDelete('cascade');

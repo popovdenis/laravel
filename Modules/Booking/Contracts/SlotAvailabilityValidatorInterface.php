@@ -9,5 +9,5 @@ namespace Modules\Booking\Contracts;
  */
 interface SlotAvailabilityValidatorInterface
 {
-    public function validate(BookingInterface $booking): void;
+    public function validate(BookingQuoteInterface $bookingQuote): void;
 }

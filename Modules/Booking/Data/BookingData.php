@@ -5,6 +5,7 @@ namespace Modules\Booking\Data;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Exists;
+use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\User\Models\User;
 use Spatie\LaravelData\Data;
 
@@ -20,6 +21,7 @@ class BookingData extends Data
         public int $slotId,
         public ?int $streamId,
         public ?int $teacherId,
+        public BookingTypeEnum $bookingType = BookingTypeEnum::BOOKING_TYPE_GROUPED,
         public array $extra = []
     ) {
     }

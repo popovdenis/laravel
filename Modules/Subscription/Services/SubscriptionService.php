@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Subscription\Services;
 
+use Modules\Payment\Contracts\TransactionServiceInterface;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
-use Modules\UserCreditHistory\Enums\CreditHistorySourceEnum;
-use Modules\UserCreditHistory\Models\UserCreditHistoryInterface;
 
 /**
  * Class SubscriptionService
@@ -16,13 +15,13 @@ use Modules\UserCreditHistory\Models\UserCreditHistoryInterface;
 class SubscriptionService
 {
     /**
-     * @var \Modules\UserCreditHistory\Models\UserCreditHistoryInterface
+     * @var \Modules\Payment\Contracts\TransactionServiceInterface
      */
-    private UserCreditHistoryInterface $userCreditHistory;
+    private TransactionServiceInterface $transactionService;
 
-    public function __construct(UserCreditHistoryInterface $userCreditHistory)
+    public function __construct(TransactionServiceInterface $transactionService)
     {
-        $this->userCreditHistory = $userCreditHistory;
+        $this->transactionService = $transactionService;
     }
 
     public function syncSubscriptionForUser(User $user, ?int $planId): void
@@ -40,58 +39,55 @@ class SubscriptionService
         if ($planId) {
             $plan = $this->getSubscriptionPlan($planId);
 
-            $now = now();
-            $trialEndsAt = null;
-
-            if ($plan?->enable_trial && $plan->trial_days) {
-                $trialEndsAt = $now->copy()->addDays($plan->trial_days);
-            }
-
-            $startsAt = $trialEndsAt ?? $now;
-
-            $endsAt = match ($plan->frequency_unit) {
-                'day'    => $startsAt->copy()->addDays($plan->frequency),
-                'week'   => $startsAt->copy()->addWeeks($plan->frequency),
-                'month'  => $startsAt->copy()->addMonths($plan->frequency),
-                'year'   => $startsAt->copy()->addYears($plan->frequency),
-                default  => null,
-            };
-
-            $this->updateUserSubscription($user, $planId, $startsAt, $endsAt, $trialEndsAt);
-            $this->updateUserSubscriptionHistory($user, $plan);
+            $this->updateUserSubscription($user, $this->getUpdateUserSubscriptionOptions($plan));
             $this->updateCreditBalance($user, $plan);
         } else {
-            $user->userSubscription()?->delete();
+            $user->subscriptions()?->delete();
         }
     }
 
-    protected function getSubscriptionPlan(int $planId): SubscriptionPlan
+    public function getUpdateUserSubscriptionOptions($plan): array
+    {
+        $now = now();
+        $trialEndsAt = null;
+
+        if ($plan?->enable_trial && $plan->trial_days) {
+            $trialEndsAt = $now->copy()->addDays($plan->trial_days);
+        }
+
+        $startsAt = $trialEndsAt ?? $now;
+
+        $endsAt = match ($plan->frequency_unit) {
+            'day'    => $startsAt->copy()->addDays($plan->frequency),
+            'week'   => $startsAt->copy()->addWeeks($plan->frequency),
+            'month'  => $startsAt->copy()->addMonths($plan->frequency),
+            'year'   => $startsAt->copy()->addYears($plan->frequency),
+            default  => null,
+        };
+
+        return [
+            'plan_id'        => $plan->id,
+            'starts_at'      => $startsAt,
+            'ends_at'        => $endsAt,
+            'trial_ends_at'  => $trialEndsAt,
+            'credits_amount' => $plan->credits
+        ];
+    }
+
+    public function getSubscriptionPlan(int $planId): SubscriptionPlan
     {
         return \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($planId);
     }
 
-    protected function updateUserSubscription(User $user, int $planId, $startsAt, $endsAt, $trialEndsAt): void
+    protected function updateUserSubscription(User $user, array $options): void
     {
-        $user->userSubscription()->updateOrCreate([], [
-            'plan_id'       => $planId,
-            'starts_at'     => $startsAt,
-            'ends_at'       => $endsAt,
-            'trial_ends_at' => $trialEndsAt,
-        ]);
+        $user->userSubscriptions()->updateOrCreate([], $options);
     }
 
-    protected function updateUserSubscriptionHistory(User $user, SubscriptionPlan $plan): void
-    {
-        $user->userCreditHistory()->create([
-            'credits_amount'=> $plan->credits,
-            'source'     => CreditHistorySourceEnum::SUBSCRIPTION->value,
-        ]);
-    }
-
-    protected function updateCreditBalance(User $user, SubscriptionPlan $plan): void
+    public function updateCreditBalance(User $user, SubscriptionPlan $plan): void
     {
         if ($plan->credits !== $user->credit_balance) {
-            $this->userCreditHistory->calculateBalanceWithSubscription($user, $plan);
+            $this->transactionService->calculateBalanceWithSubscription($user, $plan);
         }
     }
 }

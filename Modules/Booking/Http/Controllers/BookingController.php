@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
-use Modules\Booking\Contracts\BookingInterface;
-use Modules\Booking\Contracts\BookingManagementInterface;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
+use Modules\Booking\Factories\BookingQuoteFactory;
 use Modules\Booking\Models\Booking;
+use Modules\Order\Contracts\OrderManagerInterface;
+use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
 use Modules\Security\Enums\RequestType;
 use Modules\Security\Exceptions\SecurityViolationException;
@@ -22,22 +23,28 @@ use Throwable;
 class BookingController extends Controller
 {
     /**
-     * @var \Modules\Booking\Contracts\BookingManagementInterface
-     */
-    private BookingManagementInterface $bookingManagement;
-    /**
      * @var \Modules\Security\Models\SecurityManager
      */
     private SecurityManager $securityManager;
+    /**
+     * @var \Modules\Booking\Factories\BookingQuoteFactory
+     */
+    private BookingQuoteFactory $bookingQuoteFactory;
+    /**
+     * @var \Modules\Order\Contracts\OrderManagerInterface
+     */
+    private OrderManagerInterface $orderManager;
 
     public function __construct(
-        BookingManagementInterface $bookingManagement,
         SecurityManager $securityManager,
+        BookingQuoteFactory $bookingQuoteFactory,
+        OrderManagerInterface $orderManager,
         private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
-        $this->bookingManagement = $bookingManagement;
         $this->securityManager = $securityManager;
+        $this->bookingQuoteFactory = $bookingQuoteFactory;
+        $this->orderManager = $orderManager;
     }
 
     /**
@@ -67,12 +74,10 @@ class BookingController extends Controller
             $securityKey = $this->securityManager->generateEventKey([$bookingData->student->id, $bookingData->slotId]);
             $this->securityManager->performSecurityCheck($this->bookingRequestEvent, $securityKey);
 
-            $booking = $this->bookingManagement->place($bookingData);
+            $quote = $this->bookingQuoteFactory->create($bookingData);
+            $order = $this->orderManager->place($quote);
 
-//            $this->_eventManager->dispatch(
-//                'booking_submit_all_after',
-//                ['booking' => $booking]
-//            );
+//            $this->_eventManager->dispatch('booking_submit_all_after', ['booking' => $booking]);
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -98,25 +103,6 @@ class BookingController extends Controller
         }
     }
 
-    protected function isValidPostRequest(Request $request)
-    {
-        return $request->validate([
-            'booking_id' => 'required|exists:bookings,id',
-        ]);
-    }
-
-    protected function _initBooking(Request $request): ?BookingInterface
-    {
-        $id = $request->input('booking_id');
-        try {
-            $booking = Booking::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return null;
-        }
-
-        return $booking;
-    }
-
     public function cancel(Request $request): RedirectResponse
     {
         if (!$errors = $this->isValidPostRequest($request)) {
@@ -126,13 +112,33 @@ class BookingController extends Controller
         $booking = $this->_initBooking($request);
         if ($booking) {
             try {
-                $this->bookingManagement->cancel($booking);
+                $order = $this->orderManager->findOrderByEntity($booking);
+                $this->orderManager->cancel($order);
 //                $this->messageManager->addSuccessMessage(__('You canceled the order.'));
             } catch (\Exception $exception) {
             }
         }
 
         return redirect()->back()->with('success', 'Booking has been successfully cancelled.');
+    }
+
+    protected function isValidPostRequest(Request $request)
+    {
+        return $request->validate([
+            'booking_id' => 'required|exists:bookings,id',
+        ]);
+    }
+
+    protected function _initBooking(Request $request): ?PurchasableInterface
+    {
+        $id = $request->input('booking_id');
+        try {
+            $booking = Booking::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return null;
+        }
+
+        return $booking;
     }
 
     /**

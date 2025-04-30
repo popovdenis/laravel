@@ -2,7 +2,7 @@
 
 namespace Modules\Payment\Contracts;
 
-use Modules\Booking\Contracts\BookingInterface;
+use Modules\Order\Contracts\OrderInterface;
 
 /**
  * Interface PaymentMethodInterface
@@ -13,13 +13,13 @@ interface PaymentMethodInterface
 {
     public function getTitle();
 
-    public function validate(BookingInterface $booking): void;
+    public function validate(OrderInterface $order): void;
 
-    public function authorize(BookingInterface $booking): void;
+    public function authorize(OrderInterface $order): void;
 
-    public function setBooking(BookingInterface $booking): void;
+    public function setOrder(OrderInterface $order): void;
 
-    public function getBooking(): BookingInterface;
+    public function getOrder(): OrderInterface;
 
     public function place();
 
