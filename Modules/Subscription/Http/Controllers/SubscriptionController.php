@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\UserSubscriptionPlan\Http\Controllers;
+namespace Modules\Subscription\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
-use Modules\UserSubscriptionPlan\Services\SubscriptionService;
+use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionController extends Controller

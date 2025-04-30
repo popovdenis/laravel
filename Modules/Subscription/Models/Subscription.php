@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\UserSubscriptionPlan\Models;
+namespace Modules\Subscription\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
 
-class UserSubscriptionPlan extends Model
+class Subscription extends Model
 {
-    protected $table = 'user_subscription_plans';
+    protected $table = 'user_subscriptions';
 
     protected $fillable = [
         'plan_id',

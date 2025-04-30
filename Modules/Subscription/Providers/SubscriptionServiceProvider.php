@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\UserSubscriptionPlan\Providers;
+namespace Modules\Subscription\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -12,7 +12,7 @@ class SubscriptionServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'UserSubscriptionPlan';
+    protected string $name = 'Subscription';
 
     protected string $nameLower = 'usersubscription';
 

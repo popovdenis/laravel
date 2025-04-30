@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\UserSubscriptionPlan\Models;
+namespace Modules\Subscription\Models;
 
 use Modules\Base\Models\ConfigProviderAbstract;
 

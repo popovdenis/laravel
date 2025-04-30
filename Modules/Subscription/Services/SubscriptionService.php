@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\UserSubscriptionPlan\Services;
+namespace Modules\Subscription\Services;
 
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
@@ -38,7 +38,7 @@ class SubscriptionService
         }
 
         if ($planId) {
-            $plan = $this->getUserSubscriptionPlan($planId);
+            $plan = $this->getSubscriptionPlan($planId);
 
             $now = now();
             $trialEndsAt = null;
@@ -65,7 +65,7 @@ class SubscriptionService
         }
     }
 
-    protected function getUserSubscriptionPlan(int $planId): SubscriptionPlan
+    protected function getSubscriptionPlan(int $planId): SubscriptionPlan
     {
         return \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($planId);
     }

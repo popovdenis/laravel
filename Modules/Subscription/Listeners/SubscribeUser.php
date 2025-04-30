@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\UserSubscriptionPlan\Listeners;
+namespace Modules\Subscription\Listeners;
 
 use Illuminate\Auth\Events\Registered;
 
@@ -19,7 +19,7 @@ class SubscribeUser
     {
         $event->user->assignRole('Student');
 
-        app(\Modules\UserSubscriptionPlan\Services\SubscriptionService::class)
+        app(\Modules\Subscription\Services\SubscriptionService::class)
             ->syncSubscriptionForUser($event->user, (int) $event->subscriptionPlanId);
     }
 }

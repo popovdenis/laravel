@@ -16,5 +16,5 @@
     "Security": true,
     "Filament": true,
     "Stripe": true,
-    "UserSubscriptionPlan": true
+    "Order": true
 }
