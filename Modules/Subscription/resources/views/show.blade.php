@@ -20,7 +20,7 @@
                                     <div>
                                         <h3 class="text-lg font-semibold text-blue-900"><span>{{ __('Current Plan') }}</span></h3>
                                         <div class="p-4 border rounded bg-gray-100 mt-2">
-                                            {{ $isSubscribed && $user->userSubscriptions?->plan->name ? $user->userSubscriptions->plan->name : 'No active plan' }}
+                                            {{ $isSubscribed && $activePlan ? $activePlan->name : 'No active plan' }}
                                         </div>
                                     </div>
                                 </div>

@@ -2,15 +2,15 @@
 
 namespace Modules\Subscription\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Models\Order;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
+use Laravel\Cashier\Subscription as CashierSubscription;
 
-class Subscription extends Model implements PurchasableInterface
+class Subscription extends CashierSubscription implements PurchasableInterface
 {
     const PAYMENT_METHOD_CONFIG_PATH = 'subscription.applicable_payment_method';
 

@@ -81,7 +81,11 @@ class SubscriptionService
 
     protected function updateUserSubscription(User $user, array $options): void
     {
-        $user->userSubscriptions()->updateOrCreate([], $options);
+        if ($activeSubscription = $user->activeSubscription()) {
+            $activeSubscription->update($options);
+        } else {
+            $user->subscriptions()->create($options);
+        }
     }
 
     public function updateCreditBalance(User $user, SubscriptionPlan $plan): void

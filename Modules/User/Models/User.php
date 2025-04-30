@@ -107,7 +107,12 @@ class User extends Authenticatable
 
     public function userSubscriptions()
     {
-        return $this->hasOne(Subscription::class);
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->userSubscriptions()->where('stripe_status', 'active')->latest()->first();
     }
 
     public function bookings()

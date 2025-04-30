@@ -65,16 +65,22 @@ class SubscriptionController extends Controller
     public function show()
     {
         $user = auth()->user();
-        $currentPlanId = $user->userSubscriptions?->plan_id;
-        $isSubscribed = $user->subscribed('default');
 
-        $plans = SubscriptionPlan::where('status', true)
-            ->when($currentPlanId, fn($q) => $q->where('id', '!=', $currentPlanId))
+        $activeSubscription = $user->activeSubscription();
+        $currentPlanId = $activeSubscription?->plan_id;
+
+        $plans = SubscriptionPlan::query()
             ->where('status', true)
+            ->when($currentPlanId, fn($q) => $q->where('id', '!=', $currentPlanId))
             ->orderBy('sort_order')
             ->get();
 
-        return view('subscription::show', compact('user', 'plans', 'isSubscribed'));
+        return view('subscription::show', [
+            'user'            => $user,
+            'plans'           => $plans,
+            'activePlan'      => $activeSubscription?->plan,
+            'isSubscribed'    => (bool) $activeSubscription,
+        ]);
     }
 
     /**
