@@ -1,22 +1,29 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Payment\Services;
+namespace Modules\CreditPayment\Models;
 
 use Modules\Order\Contracts\OrderInterface;
-use Modules\Payment\Contracts\PaymentMethodInterface;
 use Modules\Payment\Contracts\TransactionServiceInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
+use Modules\Payment\Models\AbstractMethod;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
- * Class CreditsPaymentMethod
+ * Class Credit
  *
- * @package App\Services\Payment
+ * @package Modules\CreditPayment\Models
  */
-class CreditsPaymentMethod implements PaymentMethodInterface
+class CreditPayment extends AbstractMethod
 {
-    protected OrderInterface $order;
+    const PAYMENT_METHOD_CREDITS_CODE = 'credits';
+
+    /**
+     * Payment method code
+     *
+     * @var string
+     */
+    protected $_code = self::PAYMENT_METHOD_CREDITS_CODE;
 
     public function __construct(
         protected ConfigProvider $configProvider,
@@ -26,7 +33,9 @@ class CreditsPaymentMethod implements PaymentMethodInterface
 
     public function getTitle()
     {
-        return setting('payment.credits.title');
+        $path = 'payment.' . $this->getCode() . '.title';
+
+        return setting($path);
     }
 
     public function validate(OrderInterface $order): void
@@ -39,22 +48,7 @@ class CreditsPaymentMethod implements PaymentMethodInterface
         }
     }
 
-    public function authorize(OrderInterface $order): void
-    {
-        // Here we could log or prepare payment but not yet deduct (like authorize in Magento)
-    }
-
-    public function setOrder(OrderInterface $order): void
-    {
-        $this->order = $order;
-    }
-
-    public function getOrder(): OrderInterface
-    {
-        return $this->order;
-    }
-
-    public function place()
+    public function processAction()
     {
 //        $this->_eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
         $quote = $this->getOrder()->getQuote();

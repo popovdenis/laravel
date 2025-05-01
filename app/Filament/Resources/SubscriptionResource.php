@@ -9,11 +9,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\UserSubscriptionPlan\Models\UserSubscriptionPlan;
+use Modules\Subscription\Models\Subscription;
 
 class SubscriptionResource extends Resource
 {
-    protected static ?string $model = UserSubscriptionPlan::class;
+    protected static ?string $model = Subscription::class;
     protected static ?string $navigationGroup = 'Sales';
     protected static ?string $navigationLabel = 'Subscriptions';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
@@ -86,26 +86,12 @@ class SubscriptionResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
-                    ->formatStateUsing(function ($record) {
-                        if ($record->canceled_at) {
-                            return 'Canceled';
-                        }
-
-                        if ($record->ends_at && $record->ends_at->isPast()) {
-                            return 'Expired';
-                        }
-
-                        return 'Active';
-                    })
-                    ->badge()
-                    ->color(function ($record) {
-                        if ($record->canceled_at || ($record->ends_at && $record->ends_at->isPast())) {
-                            return 'danger';
-                        }
-                        return 'success';
-                    }),
+                Tables\Columns\TextColumn::make('stripe_status')->badge()
+                    ->colors([
+                        'success' => 'active',
+                        'warning' => 'canceled',
+//                        'danger' => StreamStatus::FINISHED,
+                    ]),
 
                 Tables\Columns\TextColumn::make('starts_at')
                     ->label('Starts At')

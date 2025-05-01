@@ -13,7 +13,7 @@ use Modules\User\Models\User;
  */
 class SubscriptionTransaction extends Model
 {
-    protected $fillable = ['user_id', 'subscription_id', 'credits_amount', 'status', 'comment'];
+    protected $fillable = ['user_id', 'subscription_id', 'credits_amount', 'comment'];
 
     public function user()
     {

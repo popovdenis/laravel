@@ -13,10 +13,14 @@ class CreateConfigurationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('configurations', function (Blueprint $table) {
-            $table->string("key")->primary();
+        Schema::create('configuration', function (Blueprint $table) {
+            $table->id();
+            $table->string("key");
             $table->string("value");
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
+
+            $table->index('key', 'configurations_key_index');
         });
     }
 
@@ -27,6 +31,6 @@ class CreateConfigurationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('configurations');
+        Schema::dropIfExists('configuration');
     }
 }

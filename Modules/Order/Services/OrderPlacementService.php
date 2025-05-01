@@ -8,6 +8,7 @@ use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\OrderPlacementServiceInterface;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Enums\OrderActionEnum;
+use Modules\Order\Enums\OrderStateEnum;
 use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Models\OrderTransactionManager;
 
@@ -71,7 +72,8 @@ class OrderPlacementService implements OrderPlacementServiceInterface
             if ($order->purchasable instanceof PurchasableInterface) {
                 $order->purchasable->markAsCancelled();
             }
-            $order->update(['status' => OrderStatusEnum::ORDER_STATUS_CANCELLED]);
+
+            $order->save();
             $this->transactionManager->handle($order, OrderActionEnum::ORDER_ACTION_CANCELLED);
         } catch (\Exception $e) {
             Log::error(__('Saving order ' . $order->id . ' failed: ' . $e->getMessage()));

@@ -10,7 +10,6 @@ use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
 use Modules\Booking\Services\SlotAvailabilityValidator;
 use Modules\Booking\Services\SubmitBookingValidator;
-use Modules\Payment\Services\PaymentMethodResolver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -47,9 +46,6 @@ class BookingServiceProvider extends ServiceProvider
         // Slot Validator binding
         $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
         $this->app->bind(SubmitBookingValidatorInterface::class, SubmitBookingValidator::class);
-
-        // PaymentMethodResolver (singleton)
-        $this->app->singleton(PaymentMethodResolver::class, PaymentMethodResolver::class);
     }
 
     /**

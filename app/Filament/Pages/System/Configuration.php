@@ -30,11 +30,11 @@ class Configuration extends BaseSettings
                         ->schema([
                             TextInput::make('booking.group_lesson_duration')
                                 ->label('Duration of Group Lesson')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric(),
                             TextInput::make('booking.individual_lesson_duration')
                                 ->label('Duration of Individual Lesson')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric(),
                             Section::make('Advanced Settings')->schema([
                                 Select::make('booking.applicable_payment_method')
@@ -49,11 +49,11 @@ class Configuration extends BaseSettings
                         ->schema([
                             TextInput::make('subscription.group_lesson_price')
                                 ->label('Price per Group Lesson (credits)')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric(),
                             TextInput::make('subscription.individual_lesson_price')
                                 ->label('Price per Individual Lesson (credits)')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric(),
                             Section::make('Advanced Settings')->schema([
                                 Select::make('subscription.applicable_payment_method')
@@ -68,12 +68,12 @@ class Configuration extends BaseSettings
                         ->schema([
                             TextInput::make('security.max_number_booking_requests')
                                 ->label('Max Number of Booking Requests')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric()
                                 ->helperText('Limit the number of booking request per hour. Use 0 to disable.'),
                             TextInput::make('security.min_time_between_booking_requests')
                                 ->label('Min Time Between Booking Requests')
-                                ->rules(['required', 'integer', 'min:0'])
+                                ->rules(['integer', 'min:0'])
                                 ->numeric()
                                 ->helperText('Delay in seconds between booking requests. Use 0 to disable.'),
                         ]),

@@ -112,7 +112,10 @@ class BookingController extends Controller
         $booking = $this->_initBooking($request);
         if ($booking) {
             try {
+                $quote = $this->bookingQuoteFactory->create(BookingData::fromModel($booking));
                 $order = $this->orderManager->findOrderByEntity($booking);
+                $order->setQuote($quote);
+                $order->setPayment($quote->getPayment());
                 $this->orderManager->cancel($order);
 //                $this->messageManager->addSuccessMessage(__('You canceled the order.'));
             } catch (\Exception $exception) {

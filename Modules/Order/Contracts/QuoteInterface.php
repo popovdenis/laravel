@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Contracts;
 
+use Modules\Payment\Contracts\PaymentInterface;
 use Modules\User\Models\User;
 
 /**
@@ -18,6 +19,9 @@ interface QuoteInterface
     public function getSourceId(): int;
 
     public function getPaymentMethodConfig(): string;
+
+    public function getPayment();
+    public function setPayment(PaymentInterface $payment);
 
     public function validate(): void;
 //    public function save(): \Illuminate\Database\Eloquent\Model;

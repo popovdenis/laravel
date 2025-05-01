@@ -23,12 +23,7 @@ class StripePaymentMethod implements PaymentMethodInterface
         // TODO: Implement validate() method.
     }
 
-    public function authorize(OrderInterface $order): void
-    {
-        // TODO: Implement authorize() method.
-    }
-
-    public function place()
+    public function processAction()
     {
 //        $user = $this->getOrder()->user;
 //
@@ -48,23 +43,6 @@ class StripePaymentMethod implements PaymentMethodInterface
         return setting('payment.stripe.title');
     }
 
-    public function pay(User $user, int $amount, string $description): Payment
-    {
-        // $this->_eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
-//        $this->bookingCreditHistory->spend($user, $amount);
-
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'method' => PaymentMethod::STRIPE->value,
-            'amount' => $amount,
-            'status' => 'paid'
-        ]);
-
-        //$this->_eventManager->dispatch('sales_order_payment_place_end', ['payment' => $payment]);
-
-        return $payment;
-    }
-
     public function setOrder(OrderInterface $order): void
     {
         $this->order = $order;
@@ -73,5 +51,10 @@ class StripePaymentMethod implements PaymentMethodInterface
     public function getOrder(): OrderInterface
     {
         return $this->order;
+    }
+
+    public function getCode()
+    {
+        // TODO: Implement getCode() method.
     }
 }

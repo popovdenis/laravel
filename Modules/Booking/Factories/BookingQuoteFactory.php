@@ -35,6 +35,7 @@ class BookingQuoteFactory
         $quote->setSlotId($bookingData->slotId);
         $quote->setStreamId($bookingData->streamId);
         $quote->setAmount($this->getBookingAmount($bookingData));
+        $quote->getPayment()->importData($bookingData);
 
         return $quote;
     }

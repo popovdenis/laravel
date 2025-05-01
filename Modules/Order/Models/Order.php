@@ -13,10 +13,7 @@ use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Contracts\QuoteInterface;
 use Modules\Order\Enums\OrderStatusEnum;
-use Modules\Payment\Contracts\PaymentMethodInterface;
-use Modules\Payment\Models\Payment;
-use Modules\Payment\Services\PaymentMethodResolver;
-use Modules\Subscription\Models\Subscription;
+use Modules\Payment\Contracts\PaymentInterface;
 use Modules\User\Models\User;
 
 /**
@@ -39,7 +36,7 @@ class Order extends Model implements OrderInterface
     ];
 
     protected QuoteInterface $quote;
-    protected ?PaymentMethodInterface $paymentMethod = null;
+    protected ?PaymentInterface $method = null;
 
     public function purchasable(): MorphTo
     {
@@ -86,29 +83,17 @@ class Order extends Model implements OrderInterface
         return $this->quote;
     }
 
-    public function setPayment(PaymentMethodInterface $method): void
+    public function setPayment(PaymentInterface $payment)
     {
-        $this->paymentMethod = $method;
+        $this->method = $payment;
+        $payment->setOrder($this);
+
+        return $payment;
     }
 
-    public function getPayment(): PaymentMethodInterface
+    public function getPayment(): PaymentInterface
     {
-        if ($this->paymentMethod === null) {
-            /** @var PaymentMethodResolver $paymentMethodResolver */
-            $paymentMethodResolver = app(PaymentMethodResolver::class);
-
-            if ($this->id && $this->purchasable instanceof PurchasableInterface) {
-                $payment = $paymentMethodResolver->resolve($this->purchasable->getPaymentMethod(), $this);
-                $this->setPayment($payment);
-            } else {
-                if ($paymentMethod = setting('subscription.applicable_payment_method')) {
-                    $payment = $paymentMethodResolver->resolve($paymentMethod, $this);
-                    $this->setPayment($payment);
-                }
-            }
-        }
-
-        return $this->paymentMethod;
+        return $this->method;
     }
 
     public function place(): void
@@ -123,5 +108,25 @@ class Order extends Model implements OrderInterface
         // $this->_eventManager->dispatch('sales_order_cancel_before', ['order' => $this]);
         $this->getPayment()->cancel();
         // $this->_eventManager->dispatch('sales_order_cancel_after', ['order' => $this]);
+    }
+
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

@@ -6,6 +6,7 @@ namespace Modules\Booking\Data;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Exists;
 use Modules\Booking\Enums\BookingTypeEnum;
+use Modules\Booking\Models\Booking;
 use Modules\User\Models\User;
 use Spatie\LaravelData\Data;
 
@@ -21,6 +22,7 @@ class BookingData extends Data
         public int $slotId,
         public ?int $streamId,
         public ?int $teacherId,
+        public ?string $method,
         public BookingTypeEnum $bookingType = BookingTypeEnum::BOOKING_TYPE_GROUPED,
         public array $extra = []
     ) {
@@ -40,6 +42,17 @@ class BookingData extends Data
             'student' => $request->user(),
             'streamId' => $request->input('stream_id') ?? null,
             'slotId' => $request->input('slot_id'),
+            'method' => setting('booking.applicable_payment_method')
+        ]);
+    }
+
+    public static function fromModel(Booking $booking): static
+    {
+        return static::from([
+            'student' => $booking->student,
+            'streamId' => $booking->stream->id,
+            'slotId' => $booking->timeslot->id,
+            'method' => setting('booking.applicable_payment_method')
         ]);
     }
 }

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('purchasable');
             $table->enum('status', ['pending', 'processing', 'complete', 'cancelled'])->default('pending');
+            $table->enum('state', ['new', 'pending', 'processing', 'complete', 'cancelled'])->default('pending');
             $table->decimal('total_amount', 15, 4)->default('0.00');
             $table->timestamps();
         });

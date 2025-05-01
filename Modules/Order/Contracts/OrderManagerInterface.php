@@ -23,5 +23,5 @@ interface OrderManagerInterface
      */
     public function cancel(OrderInterface $order): bool;
 
-    public function findOrderByEntity(Model $model);
+    public function findOrderByEntity(Model $model): OrderInterface;
 }

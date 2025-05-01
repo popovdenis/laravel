@@ -11,17 +11,27 @@ use Modules\Order\Contracts\OrderInterface;
  */
 interface PaymentMethodInterface
 {
+    /**
+     * Get payment method code
+     *
+     * @return string
+     */
+    public function getCode();
+
+    /**
+     * Get payment method title
+     *
+     * @return string
+     */
     public function getTitle();
 
     public function validate(OrderInterface $order): void;
 
-    public function authorize(OrderInterface $order): void;
-
-    public function setOrder(OrderInterface $order): void;
+    public function setOrder(OrderInterface $order);
 
     public function getOrder(): OrderInterface;
 
-    public function place();
+    public function processAction();
 
     public function cancel();
 }

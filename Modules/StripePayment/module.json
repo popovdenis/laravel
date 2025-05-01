@@ -1,0 +1,11 @@
+{
+    "name": "StripePayment",
+    "alias": "stripepayment",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        
+    ],
+    "files": []
+}

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('type');
             $table->integer('credits_amount');
             $table->enum('action', ['subscription', 'manual', 'promo', 'adjustment']);
-            $table->enum('status', ['active', 'trialing', 'canceled', 'expired'])->default('active');
             $table->boolean('canceled_immediately')->default(false);
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('starts_at')->nullable();

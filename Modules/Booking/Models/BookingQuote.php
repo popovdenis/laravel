@@ -6,6 +6,9 @@ namespace Modules\Booking\Models;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
+use Modules\Order\Models\Quote;
+use Modules\Payment\Contracts\PaymentInterface;
+use Modules\Payment\Models\Payment;
 use Modules\User\Models\User;
 
 /**
@@ -13,7 +16,7 @@ use Modules\User\Models\User;
  *
  * @package Modules\Booking\Models
  */
-class BookingQuote implements BookingQuoteInterface
+class BookingQuote extends Quote implements BookingQuoteInterface
 {
     protected User $student;
     protected int $streamId;
@@ -94,4 +97,6 @@ class BookingQuote implements BookingQuoteInterface
     {
         return $this->slotId;
     }
+
+
 }

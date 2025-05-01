@@ -2,9 +2,7 @@
 
 namespace Modules\Order\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Payment\Contracts\PaymentMethodInterface;
-use Modules\User\Models\User;
+use Modules\Payment\Contracts\PaymentInterface;
 
 /**
  * Interface OrderInterface
@@ -19,8 +17,14 @@ interface OrderInterface
     public function setQuote(QuoteInterface $quote): void;
     public function getQuote(): QuoteInterface;
 
-    public function setPayment(PaymentMethodInterface $method): void;
-    public function getPayment(): PaymentMethodInterface;
+    public function setPayment(PaymentInterface $payment);
+    public function getPayment(): PaymentInterface;
+
+    public function setState($state);
+    public function getState();
+
+    public function setStatus($status);
+    public function getStatus();
 
     public function setUserId(int $userId): void;
     public function getUserId(): int;

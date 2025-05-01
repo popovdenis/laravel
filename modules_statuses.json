@@ -17,5 +17,6 @@
     "Filament": true,
     "Stripe": true,
     "Order": true,
-    "CreditPayment": true
+    "CreditPayment": true,
+    "StripePayment": true
 }

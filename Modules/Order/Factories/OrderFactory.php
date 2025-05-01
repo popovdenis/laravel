@@ -20,6 +20,7 @@ class OrderFactory implements OrderFactoryInterface
         $order = new Order();
         $order->setUserId($quote->getUser()->id);
         $order->setTotalAmount($quote->getAmount());
+        $order->setPayment($quote->getPayment());
         $order->setQuote($quote);
 
         return $order;

@@ -30,6 +30,7 @@ class OrderManager implements OrderManagerInterface
         $this->quoteValidator->validateBeforeSubmit($quote);
 
         $order = $this->orderFactory->createFromQuote($quote);
+        $order->setPayment($quote->getPayment());
         $order = $this->placementService->place($order);
 
         return $order;
@@ -40,7 +41,7 @@ class OrderManager implements OrderManagerInterface
         return $this->placementService->cancel($order);
     }
 
-    public function findOrderByEntity(Model $model)
+    public function findOrderByEntity(Model $model): OrderInterface
     {
         return Order::where('purchasable_id', $model->id)
             ->where('purchasable_type', $model->getMorphClass())
