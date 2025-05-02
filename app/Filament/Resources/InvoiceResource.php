@@ -20,8 +20,6 @@ use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\ViewField;
-use Laravel\Cashier\Cashier;
-use NumberFormatter;
 
 class InvoiceResource extends Resource
 {
@@ -46,76 +44,92 @@ class InvoiceResource extends Resource
                     ->schema([
                         Section::make('Invoice Information')->schema([
                             Placeholder::make('invoice_status')
-                                       ->label('Invoice Status')
-                                       ->content(fn ($record) => ucfirst($record->status)),
+                                ->label('Invoice Status')
+                                ->content(fn($record) => ucfirst($record->status)),
                             Placeholder::make('invoice_date')
-                                       ->label('Invoice Date')
-                                        ->content(fn ($record) => \Carbon\Carbon::parse($record->invoice_created_at)->format('M d, Y H:i')),
+                                ->label('Invoice Date')
+                                ->content(fn($record) => \Carbon\Carbon::parse($record->invoice_created_at)->format('M d, Y H:i')),
+                            Actions::make([
+                                Action::make('openHostedLink')
+                                    ->label('Download Receipt')
+                                    ->icon('heroicon-o-arrow-top-right-on-square')
+                                    ->url(fn($record) => $record->hosted_url)
+                                    ->openUrlInNewTab()
+                                    ->visible(fn($record) => filled($record->hosted_url)),
+                            ]),
+                            Actions::make([
+                                Action::make('openPdfLink')
+                                    ->label('Download PDF')
+                                    ->icon('heroicon-o-document-arrow-down')
+                                    ->url(fn($record) => $record->pdf_url)
+                                    ->openUrlInNewTab()
+                                    ->visible(fn($record) => filled($record->pdf_url)),
+                            ])
                         ])->collapsible(),
 
                         Section::make('Order & Account Information')->schema([
                             ViewField::make('order_link')
-                                     ->label('Order')
-                                     ->view('components.filament.html-link')->columnSpanFull(),
+                                ->label('Order')
+                                ->view('components.filament.html-link')->columnSpanFull(),
                             Placeholder::make('order.created_at')
-                                       ->label('Order Date')
-                                       ->content(fn ($record) => $record->created_at->format('M d, Y H:i')),
-                            Placeholder::make('order.status')
-                                       ->label('Order Status')
-                                       ->content(fn ($record) => ucfirst($record->status)),
-                       ])->collapsible(),
+                                ->label('Order Date')
+                                ->content(fn($record) => $record->order?->created_at->format('M d, Y H:i')),
+                            Placeholder::make('order_status')
+                                ->label('Order Status')
+                                ->content(fn($record) => $record->order?->status ? ucfirst($record->order?->status->value) : '—')
+                        ])->collapsible(),
 
                         Section::make('Account Information')->schema([
                             Placeholder::make('customer_name')
-                                       ->label('Customer Name')
-                                       ->content(fn ($record) => $record->user?->name ?? '—'),
+                                ->label('Customer Name')
+                                ->content(fn($record) => $record->user?->name ?? '—'),
 
                             Placeholder::make('customer_email')
-                                       ->label('Email')
-                                       ->content(fn ($record) => $record->user?->email ?? '—'),
+                                ->label('Email')
+                                ->content(fn($record) => $record->user?->email ?? '—'),
                         ])->collapsible(),
 
                         Section::make('Invoice Totals')->schema([
                             Placeholder::make('amount_due')
-                                       ->label('Amount Due')
-                                       ->content(function ($record) {
-                                           if (!$record?->amount_due || !$record?->currency) {
-                                               return '—';
-                                           }
-                                           return self::getFormattedPrice($record->amount_due, strtoupper($record->currency));
-                                       }),
+                                ->label('Amount Due')
+                                ->content(function ($record) {
+                                    if (!$record?->amount_due || !$record?->currency) {
+                                        return '—';
+                                    }
+                                    return self::getFormattedPrice($record->amount_due, strtoupper($record->currency));
+                                }),
                             Placeholder::make('subtotal')
-                                       ->label('Subtotal')
-                                       ->content(function ($record) {
-                                           if (!$record?->subtotal || !$record?->currency) {
-                                               return '—';
-                                           }
-                                           return self::getFormattedPrice($record->subtotal, strtoupper($record->currency));
-                                       }),
+                                ->label('Subtotal')
+                                ->content(function ($record) {
+                                    if (!$record?->subtotal || !$record?->currency) {
+                                        return '—';
+                                    }
+                                    return self::getFormattedPrice($record->subtotal, strtoupper($record->currency));
+                                }),
                             Placeholder::make('tax')
-                                       ->label('Tax')
-                                       ->content(function ($record) {
-                                           if (!$record?->tax || !$record?->currency) {
-                                               return '—';
-                                           }
-                                           return self::getFormattedPrice($record->tax, strtoupper($record->currency));
-                                       }),
+                                ->label('Tax')
+                                ->content(function ($record) {
+                                    if (!$record?->tax || !$record?->currency) {
+                                        return '—';
+                                    }
+                                    return self::getFormattedPrice($record->tax, strtoupper($record->currency));
+                                }),
                             Placeholder::make('total_excl_tax')
-                                       ->label('Grand Total Excl. Tax')
-                                       ->content(function ($record) {
-                                           if (!$record?->total_excl_tax || !$record?->currency) {
-                                               return '—';
-                                           }
-                                           return self::getFormattedPrice($record->total_excl_tax, strtoupper($record->currency));
-                                       }),
+                                ->label('Grand Total Excl. Tax')
+                                ->content(function ($record) {
+                                    if (!$record?->total_excl_tax || !$record?->currency) {
+                                        return '—';
+                                    }
+                                    return self::getFormattedPrice($record->total_excl_tax, strtoupper($record->currency));
+                                }),
                             Placeholder::make('total')
-                                       ->label('Grand Total')
-                                       ->content(function ($record) {
-                                           if (!$record?->total || !$record?->currency) {
-                                               return '—';
-                                           }
-                                           return self::getFormattedPrice($record->total, strtoupper($record->currency));
-                                       }),
+                                ->label('Grand Total')
+                                ->content(function ($record) {
+                                    if (!$record?->total || !$record?->currency) {
+                                        return '—';
+                                    }
+                                    return self::getFormattedPrice($record->total, strtoupper($record->currency));
+                                }),
                         ])->collapsible(),
                     ]),
             ]);
@@ -126,13 +140,9 @@ class InvoiceResource extends Resource
         return $form
             ->schema([
                 Section::make('Invoice Details')->schema([
-                    Forms\Components\Grid::make(6)->schema([
-
                         Placeholder::make('order.user.name')
                             ->label('Customer')
-                            ->content(fn ($record) => $record->order->user->getFullNameAttribute())->columnSpan(6),
-                    ])->columnSpan(1),
-                    Forms\Components\Grid::make(6)->schema([
+                            ->content(fn ($record) => $record->order?->user->getFullNameAttribute()),
                         Placeholder::make('amount_due')
                                    ->label('Amount Due')
                                    ->content(fn ($record) => self::getFormattedPrice($record->amount_due, strtoupper($record->currency)) ?? __('None'))->columnSpan(6),
@@ -145,23 +155,7 @@ class InvoiceResource extends Resource
                         Placeholder::make('created_at')
                                    ->label('Created At')
                                    ->content(fn ($state) => \Carbon\Carbon::parse($state)->format('M d, Y H:i')),
-                        Actions::make([
-                            Action::make('openHostedLink')
-                                  ->label('Download Receipt')
-                                  ->icon('heroicon-o-arrow-top-right-on-square')
-                                  ->url(fn ($record) => $record->hosted_url)
-                                  ->openUrlInNewTab()
-                                  ->visible(fn ($record) => filled($record->hosted_url)),
-                        ]),
-                        Actions::make([
-                            Action::make('openPdfLink')
-                                  ->label('Download PDF')
-                                  ->icon('heroicon-o-document-arrow-down')
-                                  ->url(fn ($record) => $record->pdf_url)
-                                  ->openUrlInNewTab()
-                                  ->visible(fn ($record) => filled($record->pdf_url)),
-                        ]),
-                    ])->columnSpan(1),
+
                ])
             ]);
     }
