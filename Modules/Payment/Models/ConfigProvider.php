@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Models;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Modules\Base\Models\ConfigProviderAbstract;
 
 /**
@@ -31,12 +32,13 @@ class ConfigProvider extends ConfigProviderAbstract
      * @param string $code
      *
      * @return \Modules\Payment\Contracts\MethodInterface
+     * @throws BindingResolutionException
+     * TODO: Add verification. The exeption has never been caught.
      */
     public function getMethodInstance(string $code): \Modules\Payment\Contracts\MethodInterface
     {
-        $class1 = $this->getValue($this->getMethodModelConfigName('credits'));
         $class = $this->getValue($this->getMethodModelConfigName($code));
-        dd($code, $this->getMethodModelConfigName($code), $class, $class1);
+
         if (!$class) {
             throw new \UnexpectedValueException('Payment model name is not provided in config!');
         }
