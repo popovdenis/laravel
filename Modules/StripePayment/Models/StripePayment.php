@@ -31,10 +31,9 @@ class StripePayment extends AbstractMethod
 
     public function processAction()
     {
-        dd('processAction');
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
-
+        dd($quote, $user);
         $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
         $user->createOrGetStripeCustomer();
         $user->updateDefaultPaymentMethod($paymentMethod);
