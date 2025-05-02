@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-//Route::get('/', function () {
-//    return redirect('/dashboard');
-//});
+Route::get('/', function () {
+    return redirect('/profile');
+});
 
 Route::get('/redirect', function () { return response('Zoom redirect success'); });
 Route::get('/policy', function () { return response('Zoom policy success'); });
