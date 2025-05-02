@@ -42,6 +42,7 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
+        dd($user = auth()->user());
         $subscriptionData = SubscriptionData::fromRequest($request);
 
         $quote = $this->quoteFactory->create($subscriptionData);
