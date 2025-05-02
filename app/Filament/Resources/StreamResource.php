@@ -32,14 +32,7 @@ class StreamResource extends Resource
             Forms\Components\Select::make('teacher_id')
                 ->label('Teacher')
                 ->options(function (Forms\Get $get) {
-                    $levelId = $get('language_level_id');
-                    if (!$levelId) {
-                        return [];
-                    }
-
-                    return \Modules\User\Models\User::role('teacher')
-                        ->whereHas('streams', fn ($query) => $query->where('language_level_id', $levelId))
-                        ->pluck('firstname', 'id');
+                    return \Modules\User\Models\User::role('teacher')->pluck('firstname', 'id');
                 })
                 ->required(),
 
