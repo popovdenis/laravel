@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])->navigationGroups([
-                'Sales',
+                'Subscriptions',
                 'Study',
                 'Members',
                 'Education',

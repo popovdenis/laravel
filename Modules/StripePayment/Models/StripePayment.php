@@ -42,7 +42,8 @@ class StripePayment extends AbstractMethod
         if ($user->subscribed('default')) {
 //            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
             $user->subscription('default')->cancelNowAndInvoice();
-            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
+            $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
+//            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
 //            $subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
         } else {
             $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);

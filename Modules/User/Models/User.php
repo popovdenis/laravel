@@ -106,14 +106,14 @@ class User extends Authenticatable
         })->toArray();
     }
 
-    public function subscriptions(): HasMany
+    public function userSubscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
     }
 
     public function getActiveSubscription(): ?Subscription
     {
-        return $this->subscriptions()->where('stripe_status', 'active')->latest()->first();
+        return $this->userSubscriptions()->where('stripe_status', 'active')->latest()->first();
     }
 
     public function bookings()

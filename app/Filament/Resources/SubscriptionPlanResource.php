@@ -18,8 +18,8 @@ use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 class SubscriptionPlanResource extends Resource
 {
     protected static ?string $model = SubscriptionPlan::class;
-    protected static ?string $navigationGroup = 'Sales';
-    protected static ?string $navigationLabel = 'Subscription Plans';
+    protected static ?string $navigationGroup = 'Subscriptions';
+    protected static ?string $navigationLabel = 'Plans';
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
 
     public static function form(Form $form): Form

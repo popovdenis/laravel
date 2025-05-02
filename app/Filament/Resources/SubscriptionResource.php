@@ -14,8 +14,8 @@ use Modules\Subscription\Models\Subscription;
 class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
-    protected static ?string $navigationGroup = 'Sales';
-    protected static ?string $navigationLabel = 'Subscriptions';
+    protected static ?string $navigationGroup = 'Subscriptions';
+    protected static ?string $navigationLabel = 'Subscribers';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     public static function form(Form $form): Form
@@ -71,22 +71,18 @@ class SubscriptionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.firstname')
-                    ->label('Subscriber Firstname')
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('user.lastname')
-                    ->label('Subscriber Lastname')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Subscriber')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('plan.name')
-                    ->label('Plan')
+                    ->label('Subscription Plan')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('stripe_status')->badge()
+                    ->label('Subscription Status')
                     ->colors([
                         'success' => 'active',
                         'warning' => 'canceled',

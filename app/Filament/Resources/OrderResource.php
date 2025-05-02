@@ -15,7 +15,7 @@ use Modules\Order\Models\Order;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-    protected static ?string $navigationGroup = 'Sales';
+    protected static ?string $navigationGroup = 'Subscriptions';
     protected static ?string $navigationLabel = 'Orders';
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 

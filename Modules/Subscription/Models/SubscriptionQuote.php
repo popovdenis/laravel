@@ -5,7 +5,6 @@ namespace Modules\Subscription\Models;
 
 use Modules\Order\Models\Quote;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
-use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
 
