@@ -32,7 +32,6 @@ class Info implements InfoInterface
     public function getMethodInstance()
     {
         if (!$this->methodInstance) {
-            dd($this->getMethod());
             if (!$this->getMethod()) {
                 throw ValidationException::withMessages([
                     'payment' => [__('The payment method you requested is not available.')],
@@ -41,6 +40,7 @@ class Info implements InfoInterface
 
             try {
                 $instance = $this->getConfigProvider()->getMethodInstance($this->getMethod());
+                dd($instance);
             } catch (\UnexpectedValueException $e) {
                 throw ValidationException::withMessages([
                     'payment' => [__(
