@@ -34,8 +34,9 @@ class ConfigProvider extends ConfigProviderAbstract
      */
     public function getMethodInstance(string $code): \Modules\Payment\Contracts\MethodInterface
     {
+        $class1 = $this->getValue($this->getMethodModelConfigName('credits'));
         $class = $this->getValue($this->getMethodModelConfigName($code));
-        dd($code, $this->getMethodModelConfigName($code), $class);
+        dd($code, $this->getMethodModelConfigName($code), $class, $class1);
         if (!$class) {
             throw new \UnexpectedValueException('Payment model name is not provided in config!');
         }
