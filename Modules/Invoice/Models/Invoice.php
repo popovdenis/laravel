@@ -6,6 +6,7 @@ namespace Modules\Invoice\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Order\Models\Order;
+use Modules\User\Models\User;
 
 /**
  * Class Invoice
@@ -41,5 +42,10 @@ class Invoice extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
