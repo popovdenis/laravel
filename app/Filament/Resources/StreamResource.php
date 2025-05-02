@@ -39,7 +39,7 @@ class StreamResource extends Resource
 
                     return \Modules\User\Models\User::role('teacher')
                         ->whereHas('streams', fn ($query) => $query->where('language_level_id', $levelId))
-                        ->pluck('name', 'id');
+                        ->pluck('firstname', 'id');
                 })
                 ->required(),
 
