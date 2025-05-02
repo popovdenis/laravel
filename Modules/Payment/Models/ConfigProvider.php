@@ -39,7 +39,7 @@ class ConfigProvider extends ConfigProviderAbstract
         if (!$class) {
             throw new \UnexpectedValueException('Payment model name is not provided in config!');
         }
-dd($class);
+dd(app()->make($class));
         return app()->make($class);
     }
 
