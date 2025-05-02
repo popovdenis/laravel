@@ -31,6 +31,7 @@ class Info implements InfoInterface
 
     public function getMethodInstance()
     {
+        dd($this->methodInstance);
         if (!$this->methodInstance) {
             if (!$this->getMethod()) {
                 throw ValidationException::withMessages([

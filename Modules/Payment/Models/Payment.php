@@ -111,7 +111,6 @@ class Payment extends Info implements PaymentInterface
     {
         $this->eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
         $order = $this->getOrder();
-        dd($order);
         $methodInstance = $this->getMethodInstance();
         $methodInstance->setOrder($order);
         $methodInstance->processAction();
