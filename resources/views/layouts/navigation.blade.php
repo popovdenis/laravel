@@ -77,34 +77,34 @@
                             @endif
                         </button>
 
-                        <div x-show="open"
-                             x-transition
-                             @click.away="open = false"
-                             x-cloak
-                             class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 shadow-lg rounded z-50">
-                            <div class="p-4 max-h-72 overflow-y-auto">
-                                @forelse($cart?->items as $item)
-                                    <div class="border-b pb-2 mb-2">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $item->itemable->title ?? 'Курс' }}
-                                        </div>
-                                        <div class="text-xs text-gray-500">
-                                            QTY: {{ $item->quantity }}
-                                        </div>
-                                    </div>
-                                @empty
-                                    <div x-show="open" x-cloak class="text-sm text-gray-500">Корзина пуста</div>
-                                @endforelse
-                            </div>
+{{--                        <div x-show="open"--}}
+{{--                             x-transition--}}
+{{--                             @click.away="open = false"--}}
+{{--                             x-cloak--}}
+{{--                             class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 shadow-lg rounded z-50">--}}
+{{--                            <div class="p-4 max-h-72 overflow-y-auto">--}}
+{{--                                @forelse($cart->items as $item)--}}
+{{--                                    <div class="border-b pb-2 mb-2">--}}
+{{--                                        <div class="text-sm font-medium text-gray-900">--}}
+{{--                                            {{ $item->itemable->title ?? 'Course' }}--}}
+{{--                                        </div>--}}
+{{--                                        <div class="text-xs text-gray-500">--}}
+{{--                                            QTY: {{ $item->quantity }}--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @empty--}}
+{{--                                    <div x-show="open" x-cloak class="text-sm text-gray-500">Cart is empty</div>--}}
+{{--                                @endforelse--}}
+{{--                            </div>--}}
 
-                            @if($cartCount)
-                                <div class="px-4 py-2 border-t text-right">
-                                    <a href="{{ route('cart.index') }}" class="text-sm text-blue-600 hover:underline">
-                                        Shopping Cart
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
+{{--                            @if($cartCount)--}}
+{{--                                <div class="px-4 py-2 border-t text-right">--}}
+{{--                                    <a href="{{ route('cart.index') }}" class="text-sm text-blue-600 hover:underline">--}}
+{{--                                        Shopping Cart--}}
+{{--                                    </a>--}}
+{{--                                </div>--}}
+{{--                            @endif--}}
+{{--                        </div>--}}
                     </div>
                 </div>
             @endauth
