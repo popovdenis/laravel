@@ -15,8 +15,8 @@ use Modules\Booking\Models\BookingCreditHistory;
 class BookingCreditHistoryResource extends Resource
 {
     protected static ?string $model = BookingCreditHistory::class;
-    protected static ?string $navigationGroup = 'Reports';
-    protected static ?string $navigationLabel = 'Booking Transactions';
+    protected static ?string $navigationGroup = 'Booking';
+    protected static ?string $navigationLabel = 'Transactions History';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     public static function form(Form $form): Form
@@ -49,10 +49,6 @@ class BookingCreditHistoryResource extends Resource
                     ->color(fn ($state) => BookingAction::from($state)->color())
                     ->toggleable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Payment Method')->sortable()
-                    ->formatStateUsing(fn ($state) => ucfirst($state))
-                    ->toggleable(),
                 Tables\Columns\TextColumn::make('comment')
                     ->label('Comment')
                     ->toggleable(),

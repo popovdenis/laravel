@@ -73,11 +73,11 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])->navigationGroups([
                 'Subscriptions',
+                'Booking',
                 'Study',
                 'Members',
                 'Education',
                 'Marketing',
-                'Reports',
                 'Blog',
                 'System',
             ]);
