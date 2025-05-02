@@ -8,8 +8,6 @@ use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\OrderPlacementServiceInterface;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Enums\OrderActionEnum;
-use Modules\Order\Enums\OrderStateEnum;
-use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Order\Models\OrderTransactionManager;
 
 /**

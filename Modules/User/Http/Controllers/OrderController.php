@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\User\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\OrderItem;
 use Binafy\LaravelCart\Models\Cart;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\Order\Models\Order;
 
 class OrderController extends Controller
 {
@@ -15,12 +14,9 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = \App\Models\Order::where('user_id', auth()->id())
-            ->latest()
-            ->withCount('items')
-            ->get();
+        $orders = auth()->user()->orders;
 
-        return view('orders.index', compact('orders'));
+        return view('user::orders.index', compact('orders'));
     }
 
     public function store()
@@ -34,14 +30,6 @@ class OrderController extends Controller
 
         $order = Order::create(['user_id' => $user->getAuthIdentifier(), 'status' => 'pending']);
 
-        foreach ($cart->items as $cartItem) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'itemable_id' => $cartItem->itemable_id,
-                'itemable_type' => $cartItem->itemable_type,
-                'quantity' => $cartItem->quantity,
-            ]);
-        }
 
         $cart->emptyCart();
 
@@ -50,8 +38,8 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $this->authorize('view', $order);
-
-        return view('orders.show', compact('order'));
+        return view('user::orders.show', [
+            'order' => $order->load('purchasable', 'user'),
+        ]);
     }
 }

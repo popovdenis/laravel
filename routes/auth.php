@@ -9,9 +9,8 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Student\MyCoursesController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('profile')->group(function () {
     // Lessons
@@ -26,11 +25,6 @@ Route::middleware('auth')->prefix('profile')->group(function () {
         ->name('schedule.join');
 
     Route::get('/zoom/signature', [\App\Http\Controllers\ZoomSignatureController::class, 'generate']);
-
-    // My Orders
-    Route::get('/orders', [OrderController::class, 'index'])->name('profile.orders.index');
-    Route::post('/orders', [OrderController::class, 'store'])->name('profile.orders.store');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
 
     // Email Verification & Password routes
     Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');

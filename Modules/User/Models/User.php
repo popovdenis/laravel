@@ -94,17 +94,6 @@ class User extends Authenticatable
         return $this->hasMany(\Modules\ScheduleTimeslot\Models\ScheduleTimeslot::class, 'user_id');
     }
 
-    public function getTimesheetAttribute(): array
-    {
-        return $this->scheduleTimeslots->map(function ($slot) {
-            return [
-                'day' => $slot->day,
-                'start' => $slot->start,
-                'end' => $slot->end,
-            ];
-        })->toArray();
-    }
-
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
@@ -135,19 +124,29 @@ class User extends Authenticatable
         return $this->hasMany(SubscriptionTransaction::class);
     }
 
-    public function getCreditBalance(): int
-    {
-        return $this->credit_balance;
-    }
-    /*$user = User::find(1);
-        // All spends:
-    $spends = $user->bookingCreditHistory()->spend()->get();
-
-        // All refunds:
-    $refunds = $user->bookingCreditHistory()->refund()->get();*/
-
     public function creditTopUps()
     {
         return $this->hasMany(SubscriptionTransaction::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(\Modules\Order\Models\Order::class);
+    }
+
+    public function getTimesheetAttribute(): array
+    {
+        return $this->scheduleTimeslots->map(function ($slot) {
+            return [
+                'day' => $slot->day,
+                'start' => $slot->start,
+                'end' => $slot->end,
+            ];
+        })->toArray();
+    }
+
+    public function getCreditBalance(): int
+    {
+        return $this->credit_balance;
     }
 }

@@ -18,36 +18,31 @@
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Sidebar -->
-            @include('profile.partials.sidebar')
+            @include('user::profile.partials.sidebar')
 
             <!-- Main Content -->
             <div class="md:col-span-3 space-y-6">
                 <div class="bg-white shadow sm:rounded-lg p-6 space-y-6">
+                    <x-slot name="header">
+                        <h2 class="text-lg font-semibold">{{ __('Order Details') }}</h2>
+                    </x-slot>
                     <div>
-                        <p><span class="font-semibold">Status:</span> {{ ucfirst($order->status) }}</p>
-                        <p><span class="font-semibold">Date:</span> {{ $order->created_at->format('M d, Y H:i') }}</p>
+                        <p class="py-2"><span class="font-semibold">{{ __('Order ID: ') }}</span> {{ $order->id }}</p>
+                        <p class="py-2"><span class="font-semibold py-4">{{ __('Status: ') }}</span> {{ ucfirst($order->status->value) }}</p>
+                        <p class="py-2"><span class="font-semibold">{{ __('Amount: ') }}</span> {{ number_format($order->total_amount, 2) }} {{ strtoupper($order->currency ?? 'USD') }}</p>
+                        <p class="py-2"><span class="font-semibold">{{ __('Created At: ') }}</span> {{ $order->created_at->format('M d, Y H:i') }}</p>
+                        @if($order->purchasable instanceof \Modules\Subscription\Models\Subscription)
+                            <p class="py-2"><span class="font-semibold">{{ __('Type: ') }}</span>{{ __('Subscription') }}</p>
+                            <p class="py-2"><span class="font-semibold">{{ __('Plan: ') }}</span>{{ $order->purchasable->plan->name ?? 'N/A' }}</p>
+                        @elseif($order->purchasable instanceof \Modules\Booking\Models\Booking)
+                            <p class="py-2"><span class="font-semibold">{{ __('Type: ') }}</span>{{ __('Booking') }}</p>
+                            <p class="py-2"><span class="font-semibold">{{ __('Slot: ') }}</span>{{ $order->purchasable->timeslot->start ?? 'N/A' }}</p>
+                        @endif
                     </div>
-
-                    <div>
-                        <h3 class="text-lg font-medium mb-2">Items:</h3>
-                        <ul class="divide-y divide-gray-200">
-                            @foreach ($order->items as $item)
-                                <li class="py-3">
-                                    <div class="font-medium">{{ $item->itemable->title ?? 'Course' }}</div>
-                                    <div class="text-sm text-gray-500">Quantity: {{ $item->quantity }}</div>
-                                    <div class="text-sm text-gray-500">Price: {{ $item->itemable->getFormattedPrice() }}</div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-
-                    @php
-                        $total = $order->items->sum(fn($i) => ($i->itemable->price ?? 0) * $i->quantity);
-                    @endphp
 
                     <div class="flex justify-between items-center">
                         <div class="text-lg font-semibold">
-                            Total: ${{ number_format($total, 2) }}
+                            Total: ${{ number_format($order->total_amount, 2) }}
                         </div>
 
                         <div class="space-x-3">

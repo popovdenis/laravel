@@ -19,5 +19,6 @@
     "Order": true,
     "CreditPayment": true,
     "StripePayment": true,
-    "EventManager": true
+    "EventManager": true,
+    "Invoice": true
 }

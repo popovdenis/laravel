@@ -13,7 +13,6 @@ class LanguageLevelServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'LanguageLevel';
-
     protected string $nameLower = 'languagelevel';
 
     /**
