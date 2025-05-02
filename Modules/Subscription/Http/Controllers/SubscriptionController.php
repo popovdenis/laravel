@@ -43,8 +43,9 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         $subscriptionData = SubscriptionData::fromRequest($request);
-        dd($subscriptionData);
+
         $quote = $this->quoteFactory->create($subscriptionData);
+        dd($quote);
         $order = $this->orderManager->place($quote);
 
         return redirect()->route('profile.dashboard')->with('success', 'Your subscription plan has been updated.');
