@@ -24,7 +24,7 @@ abstract class Quote implements QuoteInterface
             return $this->currentPayment;
         }
 
-        $payment = new Payment();
+        $payment = app()->make(Payment::class);
         $this->addPayment($payment);
 
         return $payment;

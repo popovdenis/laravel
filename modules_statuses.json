@@ -18,5 +18,6 @@
     "Stripe": true,
     "Order": true,
     "CreditPayment": true,
-    "StripePayment": true
+    "StripePayment": true,
+    "EventManager": true
 }

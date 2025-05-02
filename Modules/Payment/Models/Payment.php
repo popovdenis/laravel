@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Payment\Models;
 
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\QuoteInterface;
 use Modules\Order\Enums\OrderStateEnum;
@@ -20,6 +21,16 @@ class Payment extends Info implements PaymentInterface
     public ?string $method;
     public ?QuoteInterface $quote = null;
     public ?OrderInterface $order = null;
+
+    /**
+     * @var \Modules\EventManager\Contracts\ManagerInterface
+     */
+    private ManagerInterface $eventManager;
+
+    public function __construct(ManagerInterface $eventManager)
+    {
+        $this->eventManager = $eventManager;
+    }
 
     public function getMethod()
     {
@@ -98,7 +109,7 @@ class Payment extends Info implements PaymentInterface
 
     public function place()
     {
-        //$this->_eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
+        $this->eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
         $order = $this->getOrder();
         $methodInstance = $this->getMethodInstance();
         $methodInstance->setOrder($order);
@@ -113,6 +124,10 @@ class Payment extends Info implements PaymentInterface
         if (!$order->getStatus()) {
             $order->setStatus($orderStatus);
         }
+
+        $this->updateOrder($order, $orderState, $orderStatus);
+
+        $this->eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
 
         return $this;
     }
@@ -129,5 +144,19 @@ class Payment extends Info implements PaymentInterface
         $order->setStatus(OrderStatusEnum::ORDER_STATUS_CANCELLED);
 
         return $this;
+    }
+
+    /**
+     * Set appropriate state to order or add status to order history
+     *
+     * @param OrderInterface $order
+     * @param string $orderState
+     * @param string $orderStatus
+     *
+     * @return void
+     */
+    protected function updateOrder(OrderInterface $order, $orderState, $orderStatus)
+    {
+
     }
 }

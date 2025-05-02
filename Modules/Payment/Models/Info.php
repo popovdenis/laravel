@@ -6,18 +6,17 @@ namespace Modules\Payment\Models;
 use Illuminate\Validation\ValidationException;
 use Modules\Payment\Contracts\InfoInterface;
 use Modules\Payment\Contracts\MethodInterface;
-use Spatie\LaravelData\Data;
 
 /**
  * Class Info
  *
  * @package Modules\Payment\Models
  */
-class Info extends Data implements InfoInterface
+class Info implements InfoInterface
 {
     public ?MethodInterface $methodInstance = null;
     /**
-     * @var \Modules\Payment\Models\ConfigProvider
+     * @var \Modules\Payment\Models\ConfigProvider|null
      */
     private static ?ConfigProvider $configProvider = null;
 

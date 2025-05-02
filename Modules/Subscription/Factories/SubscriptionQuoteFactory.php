@@ -17,7 +17,7 @@ class SubscriptionQuoteFactory
 {
     public function create(RequestDataInterface $requestData): SubscriptionQuoteInterface
     {
-        $quote = new SubscriptionQuote();
+        $quote = app()->make(SubscriptionQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSourceId($requestData->planId);
         $quote->setAmount($requestData->credits);

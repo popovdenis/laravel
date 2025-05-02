@@ -11,6 +11,7 @@ use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Factories\BookingQuoteFactory;
 use Modules\Booking\Models\Booking;
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
@@ -34,17 +35,23 @@ class BookingController extends Controller
      * @var \Modules\Order\Contracts\OrderManagerInterface
      */
     private OrderManagerInterface $orderManager;
+    /**
+     * @var \Modules\EventManager\Contracts\ManagerInterface
+     */
+    private ManagerInterface $eventManager;
 
     public function __construct(
         SecurityManager $securityManager,
         BookingQuoteFactory $bookingQuoteFactory,
         OrderManagerInterface $orderManager,
+        ManagerInterface $eventManager,
         private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
         $this->securityManager = $securityManager;
         $this->bookingQuoteFactory = $bookingQuoteFactory;
         $this->orderManager = $orderManager;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -77,7 +84,7 @@ class BookingController extends Controller
             $quote = $this->bookingQuoteFactory->create($bookingData);
             $order = $this->orderManager->place($quote);
 
-//            $this->_eventManager->dispatch('booking_submit_all_after', ['booking' => $booking]);
+            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -117,12 +124,11 @@ class BookingController extends Controller
                 $order->setQuote($quote);
                 $order->setPayment($quote->getPayment());
                 $this->orderManager->cancel($order);
-//                $this->messageManager->addSuccessMessage(__('You canceled the order.'));
             } catch (\Exception $exception) {
             }
         }
 
-        return redirect()->back()->with('success', 'Booking has been successfully cancelled.');
+        return redirect()->back()->with('success', 'You canceled the booking.');
     }
 
     protected function isValidPostRequest(Request $request)

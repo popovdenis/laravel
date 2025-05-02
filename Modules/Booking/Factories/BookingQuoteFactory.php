@@ -29,7 +29,7 @@ class BookingQuoteFactory
 
     public function create(RequestDataInterface $requestData): BookingQuoteInterface
     {
-        $quote = new BookingQuote();
+        $quote = app()->make(BookingQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSlotId($requestData->slotId);
         $quote->setStreamId($requestData->streamId);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\CreditPayment\Models;
 
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Payment\Contracts\TransactionServiceInterface;
 use Modules\Payment\Exceptions\PaymentFailedException;
@@ -28,6 +29,7 @@ class CreditPayment extends AbstractMethod
     public function __construct(
         protected ConfigProvider $configProvider,
         protected TransactionServiceInterface $transactionService,
+        protected ManagerInterface $eventManager,
     )
     {}
 
@@ -50,19 +52,20 @@ class CreditPayment extends AbstractMethod
 
     public function processAction()
     {
-//        $this->_eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
+        $this->eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
         $quote = $this->getOrder()->getQuote();
         $this->transactionService->spend($quote->getUser(), $quote->getAmount());
-//        $this->_eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
+        $this->eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
+
         return $this;
     }
 
     public function cancel()
     {
-//        $this->_eventManager->dispatch('sales_order_payment_refund_start', ['payment' => $this]);
+        $this->eventManager->dispatch('sales_order_payment_refund_start', ['payment' => $this]);
         $student = $this->getOrder()->user;
         $this->transactionService->refund($student, $this->getOrder()->getTotalAmount());
-//        $this->_eventManager->dispatch('sales_order_payment_refund_end', ['payment' => $this]);
+        $this->eventManager->dispatch('sales_order_payment_refund_end', ['payment' => $this]);
 
         return $this;
     }

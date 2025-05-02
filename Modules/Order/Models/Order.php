@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Models\Booking;
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Contracts\QuoteInterface;
@@ -37,6 +38,19 @@ class Order extends Model implements OrderInterface
 
     protected QuoteInterface $quote;
     protected ?PaymentInterface $method = null;
+    /**
+     * @var \Modules\EventManager\Contracts\ManagerInterface
+     */
+    private static ?ManagerInterface $eventManager = null;
+
+    public function getEventManager()
+    {
+        if (self::$eventManager === null) {
+            self::$eventManager = app(ManagerInterface::class);
+        }
+
+        return self::$eventManager;
+    }
 
     public function purchasable(): MorphTo
     {
@@ -98,16 +112,16 @@ class Order extends Model implements OrderInterface
 
     public function place(): void
     {
-        // $this->_eventManager->dispatch('sales_order_place_before', ['order' => $this]);
+        $this->getEventManager()->dispatch('sales_order_place_before', ['order' => $this]);
         $this->getPayment()->place();
-        // $this->_eventManager->dispatch('sales_order_place_after', ['order' => $this]);
+        $this->getEventManager()->dispatch('sales_order_place_after', ['order' => $this]);
     }
 
     public function cancel(): void
     {
-        // $this->_eventManager->dispatch('sales_order_cancel_before', ['order' => $this]);
+        $this->getEventManager()->dispatch('sales_order_cancel_before', ['order' => $this]);
         $this->getPayment()->cancel();
-        // $this->_eventManager->dispatch('sales_order_cancel_after', ['order' => $this]);
+        $this->getEventManager()->dispatch('sales_order_cancel_after', ['order' => $this]);
     }
 
     public function setState($state)
