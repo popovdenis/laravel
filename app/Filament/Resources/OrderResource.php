@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,16 +25,74 @@ class OrderResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255)
-                    ->default('pending'),
-            ]);
+        return $form->schema([
+            Forms\Components\Grid::make(2)->schema([
+                Section::make('Order & Account Information')->columns(3)->schema([
+                    Placeholder::make('id')
+                        ->label('Order #')
+                        ->content(fn ($record) => '#' . self::formatWithTemplate($record->id)),
+                    Placeholder::make('created_at')
+                        ->label('Order Date')
+                        ->content(fn($record) => $record->created_at->format('M d, Y H:i')),
+                    Placeholder::make('order_status')
+                        ->label('Order Status')
+                        ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—')
+                ])->compact()->collapsible(),
+
+                Section::make('Items Ordered')->schema([
+                    Placeholder::make('plan')
+                        ->label('Plan')
+                        ->content(fn($record) => $record->purchasable->plan->name ?? __('Unknown Plan')),
+                    Placeholder::make('stripe_id')
+                        ->label('Stripe ID')
+                        ->content(fn($record) => $record->purchasable->stripe_id ?? '—'),
+                    Placeholder::make('stripe_price')
+                        ->label('Stripe Price')
+                        ->content(fn($record) => $record->purchasable->stripe_price ?? '—'),
+                    Placeholder::make('type')
+                        ->label('Subscription Type')
+                        ->content(fn($record) => $record->purchasable->type ?? '—'),
+                    Placeholder::make('credits_amount')
+                        ->label('Credits')
+                        ->content(fn($record) => $record->purchasable->credits_amount ?? '—'),
+                    Placeholder::make('trial_ends_at')
+                        ->label('Trial End At')
+                        ->content(fn($record) => $record->purchasable->trial_ends_at?->format('M d, Y H:i') ?? '-'),
+                    Placeholder::make('starts_at')
+                        ->label('Starts At')
+                        ->content(fn($record) => $record->purchasable->starts_at?->format('M d, Y H:i') ?? '-'),
+                    Placeholder::make('ends_at')
+                        ->label('Ends At')
+                        ->content(fn($record) => $record->purchasable->ends_at?->format('M d, Y H:i') ?? '-'),
+                    Placeholder::make('canceled_at')
+                        ->label('Canceled At')
+                        ->content(fn($record) => $record->purchasable->canceled_at?->format('M d, Y H:i') ?? '-'),
+                ])->collapsible(),
+
+                Section::make('Account Information')->columns(2)->schema([
+                    Placeholder::make('user.name')
+                        ->label('Customer Name')
+                        ->content(fn($record) => $record->user?->name ?? '—'),
+                    Placeholder::make('user.email')
+                        ->label('Email')
+                        ->content(fn($record) => $record->user?->email ?? '—'),
+                ])->collapsible(),
+
+                Section::make('Order Totals')->schema([
+                    Placeholder::make('total_amount')
+                        ->label('Total Paid')
+                        ->content(function ($record) {
+                            return $record?->total_amount;
+                        })
+                        /*->content(function ($record) {
+                            if (!$record?->total_amount || !$record?->currency) {
+                                return '—';
+                            }
+                            return self::getFormattedPrice($record->total_amount, strtoupper($record->total_amount));
+                        })*/,
+                ])->compact()->collapsible(),
+            ]),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -111,5 +171,16 @@ class OrderResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('purchasable_type', \Modules\Subscription\Models\Subscription::class);
+    }
+
+    private static function formatWithTemplate(int $id, string $template = '00000000'): string
+    {
+        return substr($template, 0, -strlen((string)$id)) . $id;
+    }
+
+    protected static function getFormattedPrice($amount, $currency): bool|string
+    {
+        $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($amount, strtoupper($currency));
     }
 }
