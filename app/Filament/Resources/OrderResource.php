@@ -27,7 +27,7 @@ class OrderResource extends Resource
     {
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
-                Section::make('Order & Account Information')->columns(3)->schema([
+                Section::make('Order & Account Information')->icon('heroicon-m-check-badge')->columns(3)->schema([
                     Placeholder::make('id')
                         ->label('Order #')
                         ->content(fn ($record) => '#' . self::formatWithTemplate($record->id)),
@@ -39,7 +39,7 @@ class OrderResource extends Resource
                         ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—')
                 ])->compact()->collapsible(),
 
-                Section::make('Items Ordered')->schema([
+                Section::make('Items Ordered')->icon('heroicon-m-shopping-bag')->schema([
                     Placeholder::make('plan')
                         ->label('Plan')
                         ->content(fn($record) => $record->purchasable->plan->name ?? __('Unknown Plan')),
@@ -69,7 +69,7 @@ class OrderResource extends Resource
                         ->content(fn($record) => $record->purchasable->canceled_at?->format('M d, Y H:i') ?? '-'),
                 ])->collapsible(),
 
-                Section::make('Account Information')->columns(2)->schema([
+                Section::make('Account Information')->icon('heroicon-m-identification')->columns(2)->schema([
                     Placeholder::make('user.name')
                         ->label('Customer Name')
                         ->content(fn($record) => $record->user?->name ?? '—'),

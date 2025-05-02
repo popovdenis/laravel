@@ -34,7 +34,7 @@ class InvoiceResource extends Resource
     {
         return $form->schema([
             Forms\Components\Grid::make(2)->schema([
-                Section::make('Invoice Information')->schema([
+                Section::make('Invoice Information')->icon('heroicon-m-check-badge')->columns(4)->schema([
                     Placeholder::make('invoice_status')
                         ->label('Invoice Status')
                         ->content(fn($record) => ucfirst($record->status)),
@@ -59,10 +59,10 @@ class InvoiceResource extends Resource
                     ])
                 ])->collapsible(),
 
-                Section::make('Order & Account Information')->schema([
+                Section::make('Order & Account Information')->icon('heroicon-m-check-badge')->columns(3)->schema([
                     ViewField::make('order_link')
                         ->label('Order')
-                        ->view('components.filament.html-link')->columnSpanFull(),
+                        ->view('components.filament.order-html-link')->columnSpanFull(),
                     Placeholder::make('order.created_at')
                         ->label('Order Date')
                         ->content(fn($record) => $record->order?->created_at->format('M d, Y H:i')),
@@ -71,7 +71,7 @@ class InvoiceResource extends Resource
                         ->content(fn($record) => $record->order?->status ? ucfirst($record->order?->status->value) : '—')
                 ])->collapsible(),
 
-                Section::make('Items Invoiced')->schema([
+                Section::make('Items Invoiced')->icon('heroicon-m-shopping-bag')->schema([
                     Placeholder::make('plan')
                         ->label('Plan')
                         ->content(fn($record) => $record->order?->purchasable?->plan->name ?? __('Unknown Plan')),
@@ -83,7 +83,7 @@ class InvoiceResource extends Resource
                         ->content(fn($record) => $record->order?->purchasable?->stripe_id ?? '—'),
                 ])->collapsible(),
 
-                Section::make('Account Information')->schema([
+                Section::make('Account Information')->icon('heroicon-m-identification')->columns(2)->schema([
                     Placeholder::make('customer_name')
                         ->label('Customer Name')
                         ->content(fn($record) => $record->user?->name ?? '—'),

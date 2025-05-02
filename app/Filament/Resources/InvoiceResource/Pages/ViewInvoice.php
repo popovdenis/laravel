@@ -15,5 +15,5 @@ class ViewInvoice extends ViewRecord
 {
     protected static string $resource = InvoiceResource::class;
 
-    protected static ?string $title = 'Invoice';
+    protected static ?string $title = 'View Invoice';
 }
