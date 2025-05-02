@@ -43,7 +43,9 @@ class InvoiceServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+         $this->commands([
+             \Modules\Invoice\Console\Commands\SyncStripeInvoices::class
+         ]);
     }
 
     /**

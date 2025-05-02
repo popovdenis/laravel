@@ -15,9 +15,28 @@ use Modules\Order\Models\Order;
 class Invoice extends Model
 {
     protected $fillable = [
-        'order_id', 'stripe_invoice_id', 'status', 'amount',
-        'currency', 'hosted_url', 'pdf_url',
+        'order_id',
+        'user_id',
+        'stripe_id',
+        'amount_due',
+        'due_date',
+        'amount',
+        'is_paid',
+        'currency',
+        'hosted_url',
+        'pdf_url',
+        'increment_id',
+        'status',
+        'subtotal',
+        'total',
+        'tax',
+        'total_excl_tax',
     ];
+
+//    protected $casts = [
+//        'credits_amount' => 'integer',
+//        'created_at'     => 'datetime',
+//    ];
 
     public function order(): BelongsTo
     {
