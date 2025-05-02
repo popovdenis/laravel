@@ -17,6 +17,7 @@ class SubscriptionResource extends Resource
     protected static ?string $navigationGroup = 'Subscriptions';
     protected static ?string $navigationLabel = 'Subscribers';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

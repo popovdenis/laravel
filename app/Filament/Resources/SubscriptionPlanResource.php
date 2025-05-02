@@ -21,6 +21,7 @@ class SubscriptionPlanResource extends Resource
     protected static ?string $navigationGroup = 'Subscriptions';
     protected static ?string $navigationLabel = 'Plans';
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
