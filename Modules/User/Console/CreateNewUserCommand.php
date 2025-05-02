@@ -14,7 +14,8 @@ class CreateNewUserCommand extends Command
      * Example: php artisan user:create "John Doe" john@example.com "securePass123" "Student"
      */
     protected $signature = 'user:create
-                            {name : The name of the user}
+                            {firstname : The firstname of the user}
+                            {lastname : The lastname of the user}
                             {email : The email of the user}
                             {password? : The password}
                             {role? : The roles of the user (optional)}';
@@ -23,7 +24,8 @@ class CreateNewUserCommand extends Command
 
     public function handle(): int
     {
-        $name = $this->argument('name');
+        $firstname = $this->argument('firstname');
+        $lastname = $this->argument('lastname');
         $email = $this->argument('email');
         $password = $this->argument('password');
         $role = $this->argument('role');
@@ -34,7 +36,8 @@ class CreateNewUserCommand extends Command
         }
 
         $user = User::create([
-            'name' => $name,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
@@ -44,7 +47,7 @@ class CreateNewUserCommand extends Command
             $this->info("Role '{$role}' has been assigned to the user.");
         }
 
-        $this->info("User {$name} with email <{$email}> has been created.");
+        $this->info("User {$firstname} {$lastname} with email <{$email}> has been created.");
 
         return self::SUCCESS;
     }
