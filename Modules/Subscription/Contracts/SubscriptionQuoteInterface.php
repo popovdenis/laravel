@@ -11,6 +11,4 @@ use Modules\Order\Contracts\QuoteInterface;
  */
 interface SubscriptionQuoteInterface extends QuoteInterface
 {
-    public function setPlanId(int $planId): void;
-    public function getPlanId(): int;
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Payment\Contracts\PaymentInterface;
 use Modules\User\Models\User;
 
@@ -16,7 +17,12 @@ interface QuoteInterface
     public function getAmount(): int;
     public function getDescription(): string;
     public function getSourceType(): string;
+
     public function getSourceId(): int;
+    public function setSourceId(int $sourceId);
+
+    public function getModel(): Model;
+    public function setModel(Model $model);
 
     public function getPaymentMethodConfig(): string;
 

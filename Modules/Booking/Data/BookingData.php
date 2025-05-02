@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Exists;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Models\Booking;
+use Modules\Payment\Contracts\RequestDataInterface;
 use Modules\User\Models\User;
 use Spatie\LaravelData\Data;
 
@@ -15,7 +16,7 @@ use Spatie\LaravelData\Data;
  *
  * @package App\DTO
  */
-class BookingData extends Data
+class BookingData extends Data implements RequestDataInterface
 {
     public function __construct(
         public User $student,

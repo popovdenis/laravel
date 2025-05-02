@@ -7,8 +7,6 @@ use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Order\Models\Quote;
-use Modules\Payment\Contracts\PaymentInterface;
-use Modules\Payment\Models\Payment;
 use Modules\User\Models\User;
 
 /**
@@ -93,10 +91,13 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         return Booking::class;
     }
 
+    public function setSourceId(int $sourceId)
+    {
+        $this->slotId = $sourceId;
+    }
+
     public function getSourceId(): int
     {
         return $this->slotId;
     }
-
-
 }

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Modules\Subscription\Factories;
 
+use Modules\Payment\Contracts\RequestDataInterface;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
+use Modules\Subscription\Models\Subscription;
 use Modules\Subscription\Models\SubscriptionQuote;
-use Modules\SubscriptionPlan\Models\SubscriptionPlan;
-use Modules\User\Models\User;
 
 /**
  * Class SubscriptionQuoteFactory
@@ -15,12 +15,14 @@ use Modules\User\Models\User;
  */
 class SubscriptionQuoteFactory
 {
-    public function create(User $user, int $planId, int $credits): SubscriptionQuoteInterface
+    public function create(RequestDataInterface $requestData): SubscriptionQuoteInterface
     {
         $quote = new SubscriptionQuote();
-        $quote->setUser($user);
-        $quote->setPlanId($planId);
-        $quote->setAmount($credits);
+        $quote->setUser($requestData->student);
+        $quote->setSourceId($requestData->planId);
+        $quote->setAmount($requestData->credits);
+        $quote->getPayment()->importData($requestData);
+        $quote->setModel(app(Subscription::class));
 
         return $quote;
     }

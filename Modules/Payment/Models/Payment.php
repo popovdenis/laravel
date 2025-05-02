@@ -8,6 +8,7 @@ use Modules\Order\Contracts\QuoteInterface;
 use Modules\Order\Enums\OrderStateEnum;
 use Modules\Order\Enums\OrderStatusEnum;
 use Modules\Payment\Contracts\PaymentInterface;
+use Modules\Payment\Contracts\RequestDataInterface;
 
 /**
  * Class Payment
@@ -77,9 +78,9 @@ class Payment extends Info implements PaymentInterface
         return $this->order;
     }
 
-    public function importData(\Modules\Booking\Data\BookingData $bookingData)
+    public function importData(RequestDataInterface $requestData)
     {
-        $this->setMethod($bookingData->method);
+        $this->setMethod($requestData->method);
 //        $method = $this->getMethodInstance();
 //        $quote = $this->getQuote();
     }

@@ -5,11 +5,10 @@ namespace Modules\Booking\Factories;
 
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Enums\BookingTypeEnum;
+use Modules\Booking\Models\Booking;
 use Modules\Booking\Models\BookingQuote;
-use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
-use Modules\Stream\Models\Stream;
+use Modules\Payment\Contracts\RequestDataInterface;
 use Modules\Subscription\Models\ConfigProvider;
-use Modules\User\Models\User;
 
 /**
  * Class BookingQuoteFactory
@@ -28,14 +27,15 @@ class BookingQuoteFactory
         $this->configProvider = $configProvider;
     }
 
-    public function create(\Modules\Booking\Data\BookingData $bookingData): BookingQuoteInterface
+    public function create(RequestDataInterface $requestData): BookingQuoteInterface
     {
         $quote = new BookingQuote();
-        $quote->setUser($bookingData->student);
-        $quote->setSlotId($bookingData->slotId);
-        $quote->setStreamId($bookingData->streamId);
-        $quote->setAmount($this->getBookingAmount($bookingData));
-        $quote->getPayment()->importData($bookingData);
+        $quote->setUser($requestData->student);
+        $quote->setSlotId($requestData->slotId);
+        $quote->setStreamId($requestData->streamId);
+        $quote->setAmount($this->getBookingAmount($requestData));
+        $quote->setModel(app(Booking::class));
+        $quote->getPayment()->importData($requestData);
 
         return $quote;
     }

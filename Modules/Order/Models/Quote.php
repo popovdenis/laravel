@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Order\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Order\Contracts\QuoteInterface;
 use Modules\Payment\Contracts\PaymentInterface;
 use Modules\Payment\Models\Payment;
@@ -15,6 +16,7 @@ use Modules\Payment\Models\Payment;
 abstract class Quote implements QuoteInterface
 {
     protected ?PaymentInterface $currentPayment = null;
+    protected ?Model $model = null;
 
     public function getPayment()
     {
@@ -45,5 +47,15 @@ abstract class Quote implements QuoteInterface
     {
         $this->addPayment($payment);
         return $payment;
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
+
+    public function setModel(Model $model)
+    {
+       $this->model = $model;
     }
 }

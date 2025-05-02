@@ -16,7 +16,7 @@ class CreateConfigurationsTable extends Migration
         Schema::create('configuration', function (Blueprint $table) {
             $table->id();
             $table->string("key");
-            $table->string("value");
+            $table->string("value")->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
 

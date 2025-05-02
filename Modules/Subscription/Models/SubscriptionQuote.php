@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Subscription\Models;
 
+use Modules\Order\Models\Quote;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
 use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
@@ -13,26 +14,25 @@ use Modules\User\Models\User;
  *
  * @package Modules\Subscription\Models
  */
-class SubscriptionQuote implements SubscriptionQuoteInterface
+class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
 {
     protected User $user;
     protected int $plan_id;
     protected int $credits;
 
-    public function validate(): void
-    {
-//        if (!$this->plan->isActive()) {
-//            throw new SubscriptionValidationException('Selected plan is not available.');
-//        }
-//
-//        if ($this->user->hasActiveSubscription()) {
-//            throw new SubscriptionValidationException('User already has an active subscription.');
-//        }
-    }
-
     public function getPaymentMethodConfig(): string
     {
         return setting(Subscription::PAYMENT_METHOD_CONFIG_PATH);
+    }
+
+    public function validate(): void
+    {
+        // TODO: Implement validate() method.
+    }
+
+    public function save(): ?\Illuminate\Database\Eloquent\Model
+    {
+        return $this->getModel();
     }
 
     public function getUser(): User
@@ -43,16 +43,6 @@ class SubscriptionQuote implements SubscriptionQuoteInterface
     public function setUser(User $user): void
     {
         $this->user = $user;
-    }
-
-    public function getPlanId(): int
-    {
-        return $this->plan_id;
-    }
-
-    public function setPlanId(int $planId): void
-    {
-        $this->plan_id = $planId;
     }
 
     public function getAmount(): int
@@ -80,31 +70,8 @@ class SubscriptionQuote implements SubscriptionQuoteInterface
         return $this->plan_id;
     }
 
-    public function save(): ?\Illuminate\Database\Eloquent\Model
+    public function setSourceId(int $sourceId)
     {
-        $user = $this->getUser();
-
-        $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
-        $user->createOrGetStripeCustomer();
-        $user->updateDefaultPaymentMethod($paymentMethod);
-
-        // TODO: implement swap
-        if ($user->subscribed('default')) {
-//            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
-            $user->subscription('default')->cancelNowAndInvoice();
-            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
-//            $subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
-        } else {
-            $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
-        }
-
-        /** @var SubscriptionService $subscriptionService */
-        $subscriptionService = app(SubscriptionService::class);
-        $plan = $subscriptionService->getSubscriptionPlan($this->getPlanId());
-
-        $subscription->update($subscriptionService->getUpdateUserSubscriptionOptions($plan));
-        $subscriptionService->updateCreditBalance($user, $plan);
-
-        return $subscription;
+        $this->plan_id = $sourceId;
     }
 }

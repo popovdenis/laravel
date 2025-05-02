@@ -5,8 +5,8 @@ namespace Modules\Subscription\Http\Controllers;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Order\Contracts\OrderManagerInterface;
+use Modules\Subscription\Data\SubscriptionData;
 use Modules\Subscription\Factories\SubscriptionQuoteFactory;
-use Modules\Subscription\Services\SubscriptionService;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionController extends Controller
@@ -42,18 +42,9 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'plan_id' => ['required', 'exists:subscription_plans,id'],
-        ]);
+        $subscriptionData = SubscriptionData::fromRequest($request);
 
-        $newPlan = SubscriptionPlan::findOrFail($request->plan_id);
-
-        $quote = $this->quoteFactory->create(
-            auth()->user(),
-            $request->plan_id,
-            $newPlan->credits
-        );
-
+        $quote = $this->quoteFactory->create($subscriptionData);
         $order = $this->orderManager->place($quote);
 
         return redirect()->route('profile.dashboard')->with('success', 'Your subscription plan has been updated.');
