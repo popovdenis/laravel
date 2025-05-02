@@ -38,6 +38,7 @@ class OrderPlacementService implements OrderPlacementServiceInterface
         try {
             $order->place();
         } catch (\Exception $e) {
+            Log::error(__('Payment of an order is failed: ' . $e->getMessage()));
         }
 
         // save order

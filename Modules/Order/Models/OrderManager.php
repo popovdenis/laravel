@@ -31,7 +31,6 @@ class OrderManager implements OrderManagerInterface
 
         $order = $this->orderFactory->createFromQuote($quote);
         $order->setPayment($quote->getPayment());
-        dd($quote, $order);
         $order = $this->placementService->place($order);
 
         return $order;
