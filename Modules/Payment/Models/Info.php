@@ -31,8 +31,8 @@ class Info implements InfoInterface
 
     public function getMethodInstance()
     {
-        dd($this->methodInstance);
         if (!$this->methodInstance) {
+            dd($this->getMethod());
             if (!$this->getMethod()) {
                 throw ValidationException::withMessages([
                     'payment' => [__('The payment method you requested is not available.')],
