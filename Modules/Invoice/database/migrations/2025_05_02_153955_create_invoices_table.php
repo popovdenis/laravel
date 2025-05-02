@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('stripe_id')->unique();
             $table->timestamp('due_date')->nullable();
             $table->decimal('amount_due', 15, 4)->nullable();
-            $table->decimal('is_paid', 15, 4)->nullable();
+            $table->boolean('is_paid')->default(false);
             $table->string('currency')->default('aud');
             $table->string('hosted_url')->nullable();
             $table->string('pdf_url')->nullable();

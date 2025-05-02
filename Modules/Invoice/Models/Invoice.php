@@ -34,10 +34,9 @@ class Invoice extends Model
         'total_excl_tax',
     ];
 
-//    protected $casts = [
-//        'credits_amount' => 'integer',
-//        'created_at'     => 'datetime',
-//    ];
+    protected $casts = [
+        'is_paid'   => 'boolean',
+    ];
 
     public function order(): BelongsTo
     {
