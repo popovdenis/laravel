@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('stripe_id')->unique();
             $table->timestamp('due_date')->nullable();
+            $table->timestamp('invoice_created_at')->nullable();
+            $table->timestamp('effective_at')->nullable();
             $table->decimal('amount_due', 15, 4)->nullable();
             $table->boolean('is_paid')->default(false);
             $table->string('currency')->default('aud');
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->string('pdf_url')->nullable();
             $table->string('increment_id')->nullable();
             $table->string('status')->default('draft');
+            $table->decimal('amount_paid', 15, 4)->nullable();
             $table->decimal('subtotal', 15, 4)->nullable();
             $table->decimal('total', 15, 4)->nullable();
             $table->decimal('total_excl_tax', 15, 4)->nullable();

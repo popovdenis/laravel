@@ -14,4 +14,6 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewInvoice extends ViewRecord
 {
     protected static string $resource = InvoiceResource::class;
+
+    protected static ?string $title = 'Invoice';
 }

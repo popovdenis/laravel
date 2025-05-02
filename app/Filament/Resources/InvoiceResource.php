@@ -77,13 +77,19 @@ class InvoiceResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('Invoice')
                     ->label('ID')
                     ->sortable()
                     ->toggleable(),
 
+                TextColumn::make('invoice_created_at')
+                    ->label('Invoice Date')
+                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('M d, Y H:i'))
+                    ->sortable()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('order.id')
-                     ->label('Order')
+                     ->label('Order #')
                      ->formatStateUsing(fn ($state) => $state ? '#' . self::formatWithTemplate($state) : '—')
                      ->url(fn ($record) => $record->order
                          ? route('filament.admin.resources.orders.view', ['record' => $record->order->id])
@@ -93,53 +99,17 @@ class InvoiceResource extends Resource
                      ->toggleable()
                      ->sortable(),
 
-                TextColumn::make('increment_id')
-                          ->label('Increment ID')
-                          ->searchable()
-                          ->sortable(),
+                TextColumn::make('order.created_at')
+                    ->label('Order Date')
+                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('M d, Y H:i'))
+                    ->toggleable(),
 
                 TextColumn::make('order.user.name')
-                    ->label('Customer')
-                    ->searchable()
+                    ->label('Bill-to Name')
+                    ->toggleable()
                     ->sortable(),
 
-                TextColumn::make('amount_due')
-                    ->label('Amount Due')
-                    ->formatStateUsing(fn ($state) => number_format($state, 2))
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('subtotal')
-                    ->label('Subtotal')
-                    ->formatStateUsing(fn ($state) => number_format($state, 2))
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('total')
-                    ->label('Total')
-                    ->formatStateUsing(fn ($state) => number_format($state, 2))
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('total_excl_tax')
-                    ->label('Total Excl. Tax')
-                    ->formatStateUsing(fn ($state) => number_format($state, 2))
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('tax')
-                    ->label('Tax')
-                    ->formatStateUsing(fn ($state) => number_format($state, 2))
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('currency')
-                    ->label('Currency')
-                    ->formatStateUsing(fn ($state) => strtoupper($state))
-                    ->sortable()
-                    ->toggleable(),
-
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->label('Status')
                     ->formatStateUsing(fn ($state) => ucfirst($state))
@@ -147,9 +117,31 @@ class InvoiceResource extends Resource
                     ->toggleable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('M d, Y H:i'))
+                TextColumn::make('increment_id')
+                    ->label('Increment ID')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('order.user.name')
+                    ->label('Customer')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('total')
+                    ->label('Grand Total (Base)')
+                    ->formatStateUsing(fn($state) => number_format($state, 2))
+                    ->sortable()
+                    ->toggleable(),
+
+
+                TextColumn::make('amount_paid')
+                    ->label('Grand Total (Purchased)')
+                    ->formatStateUsing(fn ($state) => number_format($state, 2))
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('order.user.email')
+                    ->label('Customer Email')
                     ->sortable()
                     ->toggleable(),
             ])

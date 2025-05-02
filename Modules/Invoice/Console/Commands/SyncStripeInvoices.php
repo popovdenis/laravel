@@ -58,36 +58,41 @@ class SyncStripeInvoices extends Command
 
         foreach ($stripeInvoices as $invoiceData) {
             /** @var Invoice $invoiceData */
-            $invoiceId = $invoiceData->id;
+            $subscriptionId = $invoiceData->subscription;
 
-            if (LocalInvoice::where('stripe_id', $invoiceId)->exists()) {
+            if (LocalInvoice::where('stripe_id', $subscriptionId)->exists()) {
                 continue;
             }
+            $subscription = \Modules\Subscription\Models\Subscription::where('stripe_id', $subscriptionId)->first();
 
-            $order = Order::where('user_id', $user->id)
-                ->where('status', '!=', 'cancelled')
-                ->latest()
-                ->first();
+            if ($subscription && $subscription->order) {
+                $order = $subscription->order;
 
-            LocalInvoice::create([
-                'order_id'          => $order?->id,
-                'user_id'           => $user->id,
-                'stripe_id'         => $invoiceId,
-                'amount_due'        => $this->formatNumber($invoiceData->asStripeInvoice()->amount_due),
-                'due_date'          => $invoiceData->asStripeInvoice()->due_date ? now()->timestamp($invoiceData->asStripeInvoice()->due_date) : null,
-                'is_paid'           => $invoiceData->isPaid(),
-                'currency'          => $invoiceData->asStripeInvoice()->currency ?? null,
-                'hosted_url'        => $invoiceData->asStripeInvoice()->hosted_invoice_url ?? null,
-                'pdf_url'           => $invoiceData->asStripeInvoice()->invoice_pdf ?? null,
-                'increment_id'      => $invoiceData->asStripeInvoice()->number ?? null,
-                'status'            => $invoiceData->asStripeInvoice()->status,
-                'subtotal'          => $this->formatNumber($invoiceData->asStripeInvoice()->subtotal),
-                'total'             => $this->formatNumber($invoiceData->asStripeInvoice()->total),
-                'tax'               => $this->formatNumber($invoiceData->asStripeInvoice()->tax),
-                'total_excl_tax'    => $this->formatNumber($invoiceData->asStripeInvoice()->total_excluding_tax),
-            ]);
+                LocalInvoice::create([
+                    'order_id'          => $order?->id,
+                    'user_id'           => $user->id,
+                    'stripe_id'         => $subscriptionId,
+                    'amount_due'        => $this->formatNumber($invoiceData->asStripeInvoice()->amount_due),
+                    'due_date'          => $invoiceData->asStripeInvoice()->due_date ? now()->timestamp($invoiceData->asStripeInvoice()->due_date) : null,
+                    'invoice_created_at'=> $invoiceData->asStripeInvoice()->created ? now()->timestamp($invoiceData->asStripeInvoice()->created) : null,
+                    'effective_at'      => $invoiceData->asStripeInvoice()->effective_at ? now()->timestamp($invoiceData->asStripeInvoice()->effective_at) : null,
+                    'is_paid'           => $invoiceData->isPaid(),
+                    'currency'          => $invoiceData->asStripeInvoice()->currency ?? null,
+                    'hosted_url'        => $invoiceData->asStripeInvoice()->hosted_invoice_url ?? null,
+                    'pdf_url'           => $invoiceData->asStripeInvoice()->invoice_pdf ?? null,
+                    'increment_id'      => $invoiceData->asStripeInvoice()->number ?? null,
+                    'status'            => $invoiceData->asStripeInvoice()->status,
+                    'amount_paid'       => $this->formatNumber($invoiceData->asStripeInvoice()->subtotal),
+                    'subtotal'          => $this->formatNumber($invoiceData->asStripeInvoice()->subtotal),
+                    'total'             => $this->formatNumber($invoiceData->asStripeInvoice()->total),
+                    'tax'               => $this->formatNumber($invoiceData->asStripeInvoice()->tax),
+                    'total_excl_tax'    => $this->formatNumber($invoiceData->asStripeInvoice()->total_excluding_tax),
+                ]);
 
-            $this->info("Stored invoice: $invoiceId");
+                $this->info("Stored invoice: $subscriptionId");
+            } else {
+                $this->info("The order for the invoice # $subscriptionId is not found");
+            }
         }
     }
 
