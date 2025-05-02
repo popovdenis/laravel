@@ -30,8 +30,8 @@ class OrderManager implements OrderManagerInterface
         $this->quoteValidator->validateBeforeSubmit($quote);
 
         $order = $this->orderFactory->createFromQuote($quote);
-        dd($quote, $order);
         $order->setPayment($quote->getPayment());
+        dd($quote, $order);
         $order = $this->placementService->place($order);
 
         return $order;
