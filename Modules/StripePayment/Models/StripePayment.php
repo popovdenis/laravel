@@ -42,7 +42,10 @@ class StripePayment extends AbstractMethod
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
+            dd($exception->getMessage(), $exception->getTraceAsString());
         }
+
+        dd($quote, $user);
 
         // TODO: implement swap
         if ($user->subscribed('default')) {
