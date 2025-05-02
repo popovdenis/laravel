@@ -40,7 +40,7 @@ class OrderPlacementService implements OrderPlacementServiceInterface
         } catch (\Exception $e) {
             Log::error(__('Payment of an order is failed: ' . $e->getMessage()));
         }
-dd('ok');
+
         // save order
         try {
             $model = $order->getQuote()->save();
