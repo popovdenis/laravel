@@ -37,7 +37,7 @@ class StripePayment extends AbstractMethod
         $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
         $user->createOrGetStripeCustomer();
         $user->updateDefaultPaymentMethod($paymentMethod);
-
+dd($paymentMethod);
         // TODO: implement swap
         if ($user->subscribed('default')) {
 //            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
