@@ -40,7 +40,6 @@ class Info implements InfoInterface
 
             try {
                 $instance = $this->getConfigProvider()->getMethodInstance($this->getMethod());
-                dd($instance);
             } catch (\UnexpectedValueException $e) {
                 throw ValidationException::withMessages([
                     'payment' => [__(
