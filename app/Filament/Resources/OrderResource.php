@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Modules\Order\Models\Order;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderResource extends Resource
 {
@@ -37,21 +38,48 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
+                TextColumn::make('id')
+                    ->label('Order ID')
+                    ->sortable(),
+
                 TextColumn::make('user.name')
                     ->label('Customer')
                     ->sortable()
                     ->searchable()
                     ->placeholder('-'),
-//                TextColumn::make('status')
-//                    ->label('Status')
-//                    ->formatStateUsing(fn ($state) => ucfirst($state))
-//                    ->sortable()
-//                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->label('Date')
-                    ->dateTime('M d, Y H:i')
+
+                TextColumn::make('purchasable.plan.name')
+                    ->label('Subscription Plan')
+                    ->formatStateUsing(function ($record) {
+                        return $record->purchasable?->plan?->name ?? '—';
+                    })
                     ->sortable(),
+
+                TextColumn::make('purchasable')
+                    ->label('Subscription Plan')
+                    ->formatStateUsing(fn ($record) => $record->purchasable?->plan?->name ?? '—'),
+
+                TextColumn::make('status')
+                    ->badge()
+                    ->colors([
+                        'pending' => 'gray',
+                        'processing' => 'warning',
+                        'complete' => 'success',
+                        'cancelled' => 'danger',
+                    ])
+                    ->sortable(),
+
+                TextColumn::make('total_amount')
+                    ->label('Amount')
+                    ->money('usd')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime('M d, Y H:i')
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -76,5 +104,11 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
             'view' => Pages\ViewOrder::route('/{record}'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('purchasable_type', \Modules\Subscription\Models\Subscription::class);
     }
 }

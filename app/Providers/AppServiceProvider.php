@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +21,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Laravel\Cashier\Cashier::useCustomerModel(\Modules\User\Models\User::class);
+//        Relation::morphMap([
+//            'booking' => \Modules\Booking\Models\Booking::class,
+//            'subscription' => \Modules\Subscription\Models\Subscription::class,
+//            'Laravel\\Cashier\\Subscription' => \Modules\Subscription\Models\Subscription::class,
+//        ]);
     }
 }

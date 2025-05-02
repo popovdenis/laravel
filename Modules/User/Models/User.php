@@ -4,7 +4,6 @@ namespace Modules\User\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -106,14 +105,14 @@ class User extends Authenticatable
         })->toArray();
     }
 
-    public function userSubscriptions(): HasMany
+    public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
     }
 
     public function getActiveSubscription(): ?Subscription
     {
-        return $this->userSubscriptions()->where('stripe_status', 'active')->latest()->first();
+        return $this->subscriptions()->where('stripe_status', 'active')->latest()->first();
     }
 
     public function bookings()
