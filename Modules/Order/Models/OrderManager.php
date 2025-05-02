@@ -28,7 +28,7 @@ class OrderManager implements OrderManagerInterface
     public function place(QuoteInterface $quote): OrderInterface
     {
         $this->quoteValidator->validateBeforeSubmit($quote);
-
+        dd($quote);
         $order = $this->orderFactory->createFromQuote($quote);
         $order->setPayment($quote->getPayment());
         $order = $this->placementService->place($order);
