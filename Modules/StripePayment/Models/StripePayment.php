@@ -33,10 +33,16 @@ class StripePayment extends AbstractMethod
     {
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
-        dd($quote, $user);
+
         $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
-        $user->createOrGetStripeCustomer();
-        $user->updateDefaultPaymentMethod($paymentMethod);
+        try {
+            $user->createOrGetStripeCustomer();
+            $user->updateDefaultPaymentMethod($paymentMethod);
+        } catch (\Exception $exception) {
+            dd($exception->getMessage(), $exception->getTraceAsString());
+        }
+
+        dd($quote, $user);
 
         // TODO: implement swap
         if ($user->subscribed('default')) {
