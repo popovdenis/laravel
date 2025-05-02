@@ -39,6 +39,17 @@ class StripePayment extends AbstractMethod
         try {
             $user->createOrGetStripeCustomer();
             $user->updateDefaultPaymentMethod($paymentMethod);
+
+            // TODO: implement swap
+            if ($user->subscribed('default')) {
+//            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
+                $user->subscription('default')->cancelNowAndInvoice();
+                $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
+//            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
+//            $subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
+            } else {
+                $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
+            }
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
@@ -46,17 +57,6 @@ class StripePayment extends AbstractMethod
         }
 
         dd($quote, $user);
-
-        // TODO: implement swap
-        if ($user->subscribed('default')) {
-//            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
-            $user->subscription('default')->cancelNowAndInvoice();
-            $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
-//            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
-//            $subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
-        } else {
-            $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
-        }
 
         /** @var SubscriptionService $subscriptionService */
         $subscriptionService = app(SubscriptionService::class);
