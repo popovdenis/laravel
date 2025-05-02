@@ -47,7 +47,7 @@ class InvoiceResource extends Resource
                         Section::make('Invoice Information')->schema([
                             Placeholder::make('invoice_status')
                                        ->label('Invoice Status')
-                                       ->content(fn ($record) => $record->status),
+                                       ->content(fn ($record) => ucfirst($record->status)),
                             Placeholder::make('invoice_date')
                                        ->label('Invoice Date')
                                         ->content(fn ($record) => \Carbon\Carbon::parse($record->invoice_created_at)->format('M d, Y H:i')),
