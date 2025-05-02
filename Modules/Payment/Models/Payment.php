@@ -114,7 +114,7 @@ class Payment extends Info implements PaymentInterface
         $methodInstance = $this->getMethodInstance();
         $methodInstance->setOrder($order);
         $methodInstance->processAction();
-        dd($methodInstance);
+
         $orderState = OrderStateEnum::ORDER_STATE_NEW;
         $orderStatus = OrderStatusEnum::ORDER_STATUS_PENDING;
 

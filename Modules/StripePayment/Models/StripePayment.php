@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\StripePayment\Models;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Payment\Models\AbstractMethod;
 use Modules\Subscription\Services\SubscriptionService;
 
@@ -39,6 +40,8 @@ class StripePayment extends AbstractMethod
             $user->createOrGetStripeCustomer();
             $user->updateDefaultPaymentMethod($paymentMethod);
         } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::error($exception->getTraceAsString());
             dd($exception->getMessage(), $exception->getTraceAsString());
         }
 
