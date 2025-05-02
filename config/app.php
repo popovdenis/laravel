@@ -62,9 +62,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        App\Blog\BlogServiceProvider::class,
         Jubaer\Zoom\ZoomServiceProvider::class,
-//        App\Providers\BookingServiceProvider::class,
+        App\Blog\BlogServiceProvider::class,
     ],
 
     'aliases' => [

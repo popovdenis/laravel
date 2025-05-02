@@ -81,7 +81,7 @@ class SubscriptionService
 
     protected function updateUserSubscription(User $user, array $options): void
     {
-        if ($activeSubscription = $user->activeSubscription()) {
+        if ($activeSubscription = $user->getActiveSubscription()) {
             $activeSubscription->update($options);
         } else {
             $user->subscriptions()->create($options);

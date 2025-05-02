@@ -51,9 +51,9 @@ class StudentResource extends Resource
         return UserResource::table($table)->columns(array_merge(
             UserResource::table($table)->getColumns(),
             [
-                Tables\Columns\TextColumn::make('subscription')
+                Tables\Columns\TextColumn::make('subscriptions')
                     ->label('Subscription Plan')
-                    ->formatStateUsing(fn ($record) => $record->userSubscription?->plan?->name ?? __('No Plan')),
+                    ->formatStateUsing(fn ($record) => $record->getActiveSubscription()?->plan?->name ?? __('No Plan')),
 
                 Tables\Columns\TextColumn::make('credit_balance')
                     ->label('Credit Balance')
@@ -65,7 +65,7 @@ class StudentResource extends Resource
     {
         return parent::getEloquentQuery()
             ->role('student')
-            ->with(['subscription.plan']);
+            /*->with(['subscription.plan'])*/;
     }
 
     public static function getPages(): array

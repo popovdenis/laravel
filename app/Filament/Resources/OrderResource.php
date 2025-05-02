@@ -2,24 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Blog\Models\Post;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
-use App\Models\Order;
+
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Order\Models\Order;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     protected static ?string $navigationGroup = 'Sales';
     protected static ?string $navigationLabel = 'Orders';
-    protected static ?int $navigationSort = -1;
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
     public static function form(Form $form): Form
     {
@@ -45,11 +43,11 @@ class OrderResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->placeholder('-'),
-                TextColumn::make('status')
-                    ->label('Status')
-                    ->formatStateUsing(fn ($state) => ucfirst($state))
-                    ->sortable()
-                    ->searchable(),
+//                TextColumn::make('status')
+//                    ->label('Status')
+//                    ->formatStateUsing(fn ($state) => ucfirst($state))
+//                    ->sortable()
+//                    ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Date')
                     ->dateTime('M d, Y H:i')
@@ -70,13 +68,6 @@ class OrderResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            \App\Filament\Resources\OrderResource\RelationManagers\OrderItemsRelationManager::class,
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
@@ -85,10 +76,5 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
             'view' => Pages\ViewOrder::route('/{record}'),
         ];
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
     }
 }

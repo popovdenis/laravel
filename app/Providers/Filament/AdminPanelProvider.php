@@ -76,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 'Study',
                 'Members',
                 'Education',
+                'Marketing',
                 'Reports',
                 'Blog',
                 'System',

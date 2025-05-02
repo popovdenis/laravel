@@ -57,7 +57,7 @@ class SubscriptionController extends Controller
     {
         $user = auth()->user();
 
-        $activeSubscription = $user->activeSubscription();
+        $activeSubscription = $user->getActiveSubscription();
         $currentPlanId = $activeSubscription?->plan_id;
 
         $plans = SubscriptionPlan::query()

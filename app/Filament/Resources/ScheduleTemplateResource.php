@@ -17,7 +17,7 @@ class ScheduleTemplateResource extends Resource
     use TimeSlotRendererTrait;
 
     protected static ?string $model = ScheduleTemplate::class;
-    protected static ?string $navigationGroup = 'Education';
+    protected static ?string $navigationGroup = 'Marketing';
     protected static ?string $navigationLabel = 'Schedule Templates';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
