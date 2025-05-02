@@ -56,8 +56,6 @@ class StripePayment extends AbstractMethod
             dd($exception->getMessage(), $exception->getTraceAsString());
         }
 
-        dd($quote, $user);
-
         /** @var SubscriptionService $subscriptionService */
         $subscriptionService = app(SubscriptionService::class);
         $plan = $subscriptionService->getSubscriptionPlan($quote->getSourceId());
