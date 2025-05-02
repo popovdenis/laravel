@@ -5,6 +5,7 @@ namespace Modules\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Booking\Contracts\BookingQuoteInterface;
@@ -60,6 +61,11 @@ class Order extends Model implements OrderInterface
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(\Modules\Invoice\Models\Invoice::class);
     }
 
     public function setUserId(int $userId): void

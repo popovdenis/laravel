@@ -7,6 +7,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -36,7 +37,10 @@ class OrderResource extends Resource
                         ->content(fn($record) => $record->created_at->format('M d, Y H:i')),
                     Placeholder::make('order_status')
                         ->label('Order Status')
-                        ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—')
+                        ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—'),
+                    ViewField::make('order_link')
+                        ->label('Invoice #')
+                        ->view('components.filament.invoice-html-link')->columnSpanFull(),
                 ])->compact()->collapsible(),
 
                 Section::make('Items Ordered')->icon('heroicon-m-shopping-bag')->schema([
