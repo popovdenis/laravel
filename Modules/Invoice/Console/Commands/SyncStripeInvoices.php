@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 
 use Laravel\Cashier\Invoice;
 use Modules\User\Models\User;
-use Modules\Order\Models\Order;
 use Modules\Invoice\Models\Invoice as LocalInvoice;
 
 /**
