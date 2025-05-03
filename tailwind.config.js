@@ -14,11 +14,6 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            width: {
-                '28': '112px',
-                '26': '104px',
-                'custom-select': '110px',
-            },
         },
     },
 
