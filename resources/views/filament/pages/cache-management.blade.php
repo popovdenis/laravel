@@ -18,9 +18,6 @@
                     <input type="checkbox" onclick="toggleAll(this)">
                 </th>
                 <th class="px-3 py-2 text-left">{{ __('Cache Type')  }}</th>
-                <th class="px-3 py-2 text-left">{{ __('Description')  }}</th>
-                <th class="px-3 py-2 text-left">{{ __('Tag')  }}</th>
-                <th class="px-3 py-2 text-left">{{ __('Status')  }}</th>
             </tr>
             </thead>
             <tbody>
@@ -30,19 +27,6 @@
                         <input type="checkbox" wire:model="data.selected" value="{{ $item['command'] }}" name="data.selected[]">
                     </td>
                     <td class="px-3 py-2">{{ $item['cache_type'] }}</td>
-                    <td class="px-3 py-2">{{ $item['description'] ?? '-' }}</td>
-                    <td class="px-3 py-2">{{ $item['tag'] ?? '-' }}</td>
-                    <td class="px-3 py-2">
-                        @if ($item['status'])
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-            Enabled
-        </span>
-                        @else
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-            Disabled
-        </span>
-                        @endif
-                    </td>
                 </tr>
             @endforeach
             </tbody>

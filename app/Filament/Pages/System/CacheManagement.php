@@ -70,12 +70,6 @@ class CacheManagement extends Page implements HasForms
             return;
         }
 
-        $registry = app(CacheRegistryService::class);
-
-        if ($action === 'enable' || $action === 'disable') {
-            $registry->updateStatuses($selected, $action === 'enable');
-        }
-
         if ($action === 'refresh') {
             foreach ($selected as $type) {
                 Artisan::call($type);
@@ -96,8 +90,6 @@ class CacheManagement extends Page implements HasForms
         return [
             Select::make('action')
                 ->options([
-                    'enable' => 'Enable',
-                    'disable' => 'Disable',
                     'refresh' => 'Refresh',
                 ])->hiddenLabel(),
         ];
@@ -118,8 +110,6 @@ class CacheManagement extends Page implements HasForms
         return [
             Forms\Components\Select::make('action')
                 ->options([
-                    'enable' => 'Enable',
-                    'disable' => 'Disable',
                     'refresh' => 'Refresh',
                 ])
                 ->required(),
@@ -128,7 +118,7 @@ class CacheManagement extends Page implements HasForms
                 ->label('Select Cache Types')
                 ->options(
                     collect($this->cacheItems)->mapWithKeys(fn ($item) => [
-                        $item['command'] => "{$item['command']} ({$item['description']})"
+                        $item['command'] => "{$item['command']}"
                     ])
                 )
                 ->columns(1)

@@ -15,9 +15,6 @@ class CacheItem extends Model
     protected $fillable = [
         'cache_type',
         'command',
-        'description',
-        'tag',
-        'status',
     ];
 
     public $timestamps = false;

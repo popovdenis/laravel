@@ -15,34 +15,21 @@ class CacheRegistryService
 {
     public function getCombined(): Collection
     {
-        $dbItems = CacheItem::all()->keyBy('cache_type');
-        $configItems = collect(config('cacheinvalidate.cache-types.types', []));
+        $dbItems = CacheItem::all()->keyBy('command');
+        $configItems = collect(config('cacheinvalidate.cache-types.types', []))->keyBy('command');
 
-        return $configItems->map(function ($item, $key) use ($dbItems) {
-            if ($dbItems->has($key)) {
-                return $dbItems->get($key)->setAttribute('from_config', true);
+        return $configItems->map(function ($item, $command) use ($dbItems) {
+            if ($dbItems->has($command)) {
+                return $dbItems->get($command)->setAttribute('from_config', true);
             }
 
             return new CacheItem([
                 'cache_type' => $item['cache_type'],
-                'command' => $item['command'],
-                'description' => $item['description'] ?? '',
-                'tag' => $item['tag'] ?? null,
-                'status' => $item['status'] ?? true,
+                'command' => $command,
                 'from_config' => true,
             ]);
         })->merge(
-            $dbItems->reject(fn($item) => $configItems->has($item->cache_type))
+            $dbItems->reject(fn($item) => $configItems->has($item->command))
         );
-    }
-
-    public function updateStatuses(array $types, bool $status): void
-    {
-        foreach ($types as $cacheType) {
-            CacheItem::updateOrCreate(
-                ['cache_type' => $cacheType],
-                ['status' => $status]
-            );
-        }
     }
 }
