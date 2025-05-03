@@ -1,0 +1,11 @@
+{
+    "name": "CacheInvalidate",
+    "alias": "cacheinvalidate",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CacheInvalidate\\Providers\\CacheInvalidateServiceProvider"
+    ],
+    "files": []
+}

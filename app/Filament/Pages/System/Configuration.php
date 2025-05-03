@@ -20,6 +20,7 @@ class Configuration extends BaseSettings
 {
     protected static ?string $navigationGroup = 'System';
     protected static ?string $slug = 'configuration';
+    protected static ?int $navigationSort = 1;
 
     public function schema(): array|Closure
     {

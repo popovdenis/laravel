@@ -20,5 +20,6 @@
     "CreditPayment": true,
     "StripePayment": true,
     "EventManager": true,
-    "Invoice": true
+    "Invoice": true,
+    "CacheInvalidate": true
 }
