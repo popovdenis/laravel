@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Order\Models\Order;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -175,6 +176,21 @@ class OrderResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('purchasable_type', \Modules\Subscription\Models\Subscription::class);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
     }
 
     private static function formatWithTemplate(int $id, string $template = '00000000'): string
