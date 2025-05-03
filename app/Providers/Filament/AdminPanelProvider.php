@@ -67,7 +67,6 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentSettingsPlugin::make()->pages([
                     \App\Filament\Pages\System\Configuration::class,
-                    \App\Filament\Pages\System\CacheManagement::class,
                 ]),
                 FilamentClearCachePlugin::make(),
             ])
