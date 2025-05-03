@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use CmsMulti\FilamentClearCache\FilamentClearCachePlugin;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
@@ -64,10 +65,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-                FilamentSettingsPlugin::make()
-                    ->pages([
-                        \App\Filament\Pages\System\Configuration::class,
-                    ])
+                FilamentSettingsPlugin::make()->pages([
+                    \App\Filament\Pages\System\Configuration::class,
+                    \App\Filament\Pages\System\CacheManagement::class,
+                ]),
+                FilamentClearCachePlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
