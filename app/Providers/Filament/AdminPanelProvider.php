@@ -22,6 +22,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Assets\Js;
+use CmsMulti\FilamentClearCache\Facades\FilamentClearCache;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,6 +31,11 @@ class AdminPanelProvider extends PanelProvider
         FilamentAsset::register([
             Js::make('filters-toggle', asset('js/filament/forms/components/filters-toggle.js')),
         ]);
+        FilamentClearCache::addCommand('config:clear');
+        FilamentClearCache::addCommand('route:clear');
+        FilamentClearCache::addCommand('view:clear');
+        FilamentClearCache::addCommand('event:clear');
+        FilamentClearCache::addCommand('settings:clear-cache');
     }
 
     public function panel(Panel $panel): Panel
@@ -67,8 +73,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentSettingsPlugin::make()->pages([
                     \App\Filament\Pages\System\Configuration::class,
-                    \App\Filament\Pages\System\CacheManagement::class,
                 ]),
+                FilamentClearCachePlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
