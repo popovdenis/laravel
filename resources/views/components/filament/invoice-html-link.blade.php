@@ -1,6 +1,6 @@
 @if ($getRecord() && $getRecord()->invoice)
     <span>{{ __('Invoice #') }}
-        <a href="{{ route('filament.admin.resources.invoices.view', ['record' => $getRecord()->invoice?->id]) }}"
+        <a href="{{ route('filament.admin.resources.invoices.view', ['record' => $getRecord()->invoice->id]) }}"
             target="_blank"
             class="text-primary-600 underline"
         >
