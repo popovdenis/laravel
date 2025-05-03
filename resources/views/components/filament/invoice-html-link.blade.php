@@ -4,7 +4,7 @@
             target="_blank"
             class="text-primary-600 underline"
         >
-             {{ substr('0000000', 0, -strlen((string) $getRecord()->invoice?->id)) . $getRecord()->invoice?->id }}
+             {{ substr('0000000', 0, -strlen((string) $getRecord()->invoice->id)) . $getRecord()->invoice->id }}
         </a>
     </span>
 @else
