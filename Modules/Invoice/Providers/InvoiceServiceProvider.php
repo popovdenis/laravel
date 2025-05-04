@@ -3,6 +3,7 @@
 namespace Modules\Invoice\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Invoice\Services\InvoiceScheduleService;
@@ -55,14 +56,23 @@ class InvoiceServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-         $this->app->booted(function () {
-             /** @var Schedule $schedule */
-             $schedule = $this->app->make(Schedule::class);
+        if (!app()->runningInConsole()) {
+            return;
+        }
 
-             /** @var InvoiceScheduleService $scheduleService */
-             $scheduleService = app(InvoiceScheduleService::class);
-             $scheduleService->register($schedule);
-         });
+        $this->app->booted(function () {
+            /** @var Schedule $schedule */
+            $schedule = $this->app->make(Schedule::class);
+
+            /** @var InvoiceScheduleService $scheduleService */
+            $scheduleService = app(InvoiceScheduleService::class);
+            $scheduleService->register($schedule);
+
+            if (setting('sync:schedule-monitor')) {
+                Artisan::call('schedule-monitor:sync');
+                setting(['sync:schedule-monitor' => 0]);
+            }
+        });
     }
 
     /**

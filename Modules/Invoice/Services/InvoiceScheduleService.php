@@ -5,7 +5,6 @@ namespace Modules\Invoice\Services;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Modules\CronSchedule\Services\ScheduleService;
-use Modules\Invoice\Console\Commands\SyncStripeInvoices;
 use Modules\Invoice\Models\Invoice;
 
 /**

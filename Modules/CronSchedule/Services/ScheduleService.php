@@ -6,8 +6,6 @@ namespace Modules\CronSchedule\Services;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 use Modules\CronSchedule\Models\CronSchedule;
-use Modules\CronSchedule\Contracts\ScheduledTaskLoggerInterface;
-use Throwable;
 
 /**
  * Class ScheduleService
@@ -16,13 +14,6 @@ use Throwable;
  */
 class ScheduleService
 {
-    private ScheduledTaskLoggerInterface $scheduledTaskLogger;
-
-    public function __construct(ScheduledTaskLoggerInterface $scheduledTaskLogger)
-    {
-        $this->scheduledTaskLogger = $scheduledTaskLogger;
-    }
-
     public function registerFor(string $targetType, Schedule $schedule): void
     {
         foreach ($this->getSchedulesFor($targetType) as $cron) {
@@ -36,31 +27,9 @@ class ScheduleService
                 continue;
             }
 
-            $logger = $this->scheduledTaskLogger;
             $artisanCommand = $cron->command;
 
-            $schedule->command($artisanCommand)
-                ->before(function () use ($logger, $artisanCommand) {
-                    $log = $logger->start($artisanCommand);
-                    cache()->put('cron-log-' . $artisanCommand, $log->id, now()->addMinutes(10));
-                })
-                ->after(function () use ($logger, $artisanCommand) {
-                    if ($id = cache()->pull('cron-log-' . $artisanCommand)) {
-                        $log = \Modules\CronSchedule\Models\CronScheduledTaskLogItem::find($id);
-                        if ($log) {
-                            $logger->success($log);
-                        }
-                    }
-                })
-                ->onFailure(function (Throwable $e) use ($logger, $artisanCommand) {
-                    if ($id = cache()->pull('cron-log-' . $artisanCommand)) {
-                        $log = \Modules\CronSchedule\Models\CronScheduledTaskLogItem::find($id);
-                        if ($log) {
-                            $logger->failure($log, $e);
-                        }
-                    }
-                })
-                ->cron('* * * * *');//$this->toCronExpression($cron)
+            $schedule->command($artisanCommand)->cron($this->toCronExpression($cron))->monitorName($artisanCommand);
         }
     }
 

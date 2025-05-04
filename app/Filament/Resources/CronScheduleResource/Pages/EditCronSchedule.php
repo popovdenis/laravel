@@ -8,6 +8,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditCronSchedule extends EditRecord
 {
+    use CronScheduleTrait;
+
     protected static string $resource = CronScheduleResource::class;
 
     protected function getHeaderActions(): array
@@ -19,6 +21,11 @@ class EditCronSchedule extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        return $data;
+        return $this->convertDataBeforeSave($data);
+    }
+
+    protected function afterSave()
+    {
+        setting(['sync:schedule-monitor' => 1]);
     }
 }

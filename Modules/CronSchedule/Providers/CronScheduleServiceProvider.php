@@ -2,10 +2,7 @@
 
 namespace Modules\CronSchedule\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\CronSchedule\Contracts\ScheduledTaskLoggerInterface;
-use Modules\CronSchedule\Services\ScheduledTaskLogger;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -35,7 +32,6 @@ class CronScheduleServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
-        $this->app->bind(ScheduledTaskLoggerInterface::class, ScheduledTaskLogger::class);
     }
 
     /**

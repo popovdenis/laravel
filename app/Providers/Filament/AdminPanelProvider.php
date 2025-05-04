@@ -75,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
                     \App\Filament\Pages\System\Configuration::class,
                 ]),
                 FilamentClearCachePlugin::make(),
+                \Mvenghaus\FilamentScheduleMonitor\FilamentPlugin::make()
             ])
             ->authMiddleware([
                 Authenticate::class,
