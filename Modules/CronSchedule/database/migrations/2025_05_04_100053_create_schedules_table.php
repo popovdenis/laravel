@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('cron_schedules', function (Blueprint $table) {
             $table->id();
             $table->morphs('schedulable');
             $table->string('cron_expression');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('Cron_schedules');
     }
 };

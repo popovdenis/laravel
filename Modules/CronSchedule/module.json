@@ -1,0 +1,11 @@
+{
+    "name": "CronSchedule",
+    "alias": "cron-schedule",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CronSchedule\\Providers\\CronScheduleServiceProvider"
+    ],
+    "files": []
+}

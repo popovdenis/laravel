@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Schedule\Models;
+namespace Modules\CronSchedule\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  *
  * @package Modules\Schedule\Models
  */
-class Schedule extends Model
+class CronSchedule extends Model
 {
     protected $fillable = [
-        'schedulable_id',
-        'schedulable_type',
+        'cron_schedulable_id',
+        'cron_schedulable_type',
         'cron_expression',
         'description',
     ];
 
-    public function schedulable(): MorphTo
+    public function cronSchedulable(): MorphTo
     {
         return $this->morphTo();
     }

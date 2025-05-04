@@ -22,5 +22,5 @@
     "EventManager": true,
     "Invoice": true,
     "CacheInvalidate": true,
-    "Schedule": true
+    "CronSchedule": true
 }

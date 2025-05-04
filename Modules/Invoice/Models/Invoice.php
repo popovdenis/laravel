@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Order\Models\Order;
-use Modules\Schedule\Models\Schedule;
+use Modules\Schedule\Models\CronSchedule;
 use Modules\User\Models\User;
 
 /**
@@ -54,10 +54,10 @@ class Invoice extends Model
     }
 
     /**
-     * Get all schedules of invoices Получить все расписания для данного инвойса.
+     * Get all schedules of invoices
      */
-    public function schedules(): MorphMany
+    public function cronSchedules(): MorphMany
     {
-        return $this->morphMany(Schedule::class, 'schedulable');
+        return $this->morphMany(CronSchedule::class, 'cronSchedulable');
     }
 }
