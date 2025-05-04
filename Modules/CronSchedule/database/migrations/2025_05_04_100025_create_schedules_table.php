@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('enabled')->default(true);
             $table->string('target_type')->index();
+            $table->string('command')->index();
             $table->enum('frequency', ['every_minute', 'hourly', 'daily', 'weekly', 'monthly'])->index();
             $table->tinyInteger('day')->nullable();
             $table->tinyInteger('day_of_week')->nullable();

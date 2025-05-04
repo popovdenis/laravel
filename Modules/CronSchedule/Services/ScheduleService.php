@@ -23,23 +23,21 @@ class ScheduleService
         $this->scheduledTaskLogger = $scheduledTaskLogger;
     }
 
-    public function registerFor(string $targetType, string $artisanCommand, Schedule $schedule): void
+    public function registerFor(string $targetType, Schedule $schedule): void
     {
-        $schedules = $this->getSchedulesFor($targetType);
-
-        foreach ($schedules as $cron) {
+        foreach ($this->getSchedulesFor($targetType) as $cron) {
             if (! $cron->enabled) {
                 continue;
             }
 
-            $expression = $this->toCronExpression($cron);
-
-            if (! $expression) {
-                Log::warning("Invalid frequency '{$cron->frequency}' in CronSchedule #{$cron->id} for type {$targetType}");
+            $allowedCommands = array_column(app('config')->get('cron-commands'), 'command');
+            if (! in_array($cron->command, $allowedCommands, true)) {
+                Log::warning("Unregistered command {$cron->command} for {$targetType}");
                 continue;
             }
 
             $logger = $this->scheduledTaskLogger;
+            $artisanCommand = $cron->command;
 
             $schedule->command($artisanCommand)
                 ->before(function () use ($logger, $artisanCommand) {
@@ -62,7 +60,7 @@ class ScheduleService
                         }
                     }
                 })
-                ->cron($expression);
+                ->cron('* * * * *');//$this->toCronExpression($cron)
         }
     }
 

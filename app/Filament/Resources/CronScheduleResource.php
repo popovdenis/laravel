@@ -15,6 +15,7 @@ use Filament\Forms\Components\{Select, Toggle};
 use Filament\Tables\Columns\{TextColumn, IconColumn};
 use Filament\Tables;
 use Carbon\Carbon;
+use Modules\CronSchedule\Services\CronCommandRegistryService;
 
 class CronScheduleResource extends Resource
 {
@@ -42,6 +43,16 @@ class CronScheduleResource extends Resource
                     ->required()
                     ->extraAttributes(['style' => 'width: 400px'])
                     ->visible(fn ($get) => $get('enabled') === true)
+                    ->columnSpan(8),
+
+                Select::make('command')
+                    ->label('Command to run')
+                    ->options(app(CronCommandRegistryService::class)->optionsForSelect())
+                    ->searchable()
+                    ->required()
+                    ->columnSpan(8)
+                    ->extraAttributes(['style' => 'width: 400px'])
+                    ->helperText('Select the Artisan command that will be executed by this schedule')
                     ->columnSpan(8),
 
                 Select::make('frequency')

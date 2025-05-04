@@ -16,6 +16,7 @@ class CronSchedule extends Model
     protected $fillable = [
         'enabled',
         'target_type',
+        'command',
         'frequency',
         'day',
         'day_of_week',

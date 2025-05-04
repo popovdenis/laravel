@@ -24,10 +24,6 @@ class InvoiceScheduleService
 
     public function register(Schedule $schedule): void
     {
-        $this->scheduleService->registerFor(
-            targetType: Invoice::class,
-            artisanCommand: SyncStripeInvoices::CONSOLE_COMMAND_INVOICES_SYNC_STRIPE,
-            schedule: $schedule
-        );
+        $this->scheduleService->registerFor(targetType: Invoice::class, schedule: $schedule);
     }
 }
