@@ -22,6 +22,7 @@ class EditSchedule extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        // Move out to make on schedule
         if (empty($data['zoom_meeting_id']) || $data['reschedule']) {
             $meeting = $this->prepareMeetingData($data);
             $data = array_merge(
@@ -44,6 +45,7 @@ class EditSchedule extends EditRecord
         return $data;
     }
 
+    //TODO: add events into module
     protected function afterSave()
     {
         app(ScheduleNotifier::class)->notifyParticipants($this->record);

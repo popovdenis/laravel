@@ -6,8 +6,8 @@ namespace Modules\Invoice\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Modules\CronSchedule\Models\CronSchedule;
 use Modules\Order\Models\Order;
-use Modules\Schedule\Models\CronSchedule;
 use Modules\User\Models\User;
 
 /**
@@ -51,13 +51,5 @@ class Invoice extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get all schedules of invoices
-     */
-    public function cronSchedules(): MorphMany
-    {
-        return $this->morphMany(CronSchedule::class, 'cronSchedulable');
     }
 }

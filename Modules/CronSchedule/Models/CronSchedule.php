@@ -14,15 +14,23 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class CronSchedule extends Model
 {
     protected $fillable = [
-        'cron_schedulable_id',
-        'cron_schedulable_type',
-        'cron_expression',
+        'enabled',
+        'target_type',
+        'frequency',
+        'day',
+        'day_of_week',
+        'hours',
+        'minutes',
         'description',
     ];
 
-    public function cronSchedulable(): MorphTo
+    protected $casts = [
+        'enabled' => 'boolean',
+    ];
+
+    public function getTargetTypeNameAttribute(): string
     {
-        return $this->morphTo();
+        return class_basename($this->target_type);
     }
 }
 

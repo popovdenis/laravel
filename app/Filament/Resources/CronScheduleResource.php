@@ -8,21 +8,41 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Modules\CronSchedule\Models\CronSchedule;
-use Filament\Forms\Components\{Checkbox, Select, DatePicker, Grid, Toggle};
+use Modules\Invoice\Models\Invoice;
+use Filament\Forms\Components\{Select, Toggle};
 use Filament\Tables\Columns\{TextColumn, IconColumn};
+use Filament\Tables;
+use Carbon\Carbon;
 
 class CronScheduleResource extends Resource
 {
     protected static ?string $model = CronSchedule::class;
-
+    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationLabel = 'Cron Scheduler';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Grid::make(12)->schema([
-                Toggle::make('enabled')->label('Enable automatic execution')->columnSpan(8),
+                Toggle::make('enabled')
+                    ->label('Enable automatic execution')
+                    ->reactive()
+                    ->columnSpan(8),
+
+                Select::make('target_type')
+                    ->label('Schedule applies to')
+                    ->options([
+                        Invoice::class => 'Invoice',
+//                        \App\Models\Meeting::class => 'Meeting',
+                    ])
+                    ->required()
+                    ->extraAttributes(['style' => 'width: 400px'])
+                    ->visible(fn ($get) => $get('enabled') === true)
+                    ->columnSpan(8),
 
                 Select::make('frequency')
                     ->label('Execution frequency')
@@ -36,6 +56,7 @@ class CronScheduleResource extends Resource
                     ->required()
                     ->reactive()
                     ->extraAttributes(['style' => 'width: 400px'])
+                    ->visible(fn ($get) => $get('enabled') === true)
                     ->columnSpan(8),
 
                 Select::make('day_of_week')
@@ -55,11 +76,16 @@ class CronScheduleResource extends Resource
 
                 // Daily, Weekly, Monthly, Once — Time (hh:mm)
                 Forms\Components\TimePicker::make('schedule_time')
-                    ->label('Date & Time')
+                    ->label('Set a time')
                     ->native(false)
                     ->seconds(false)
                     ->visible(fn (\Filament\Forms\Get $get) => in_array($get('frequency'), ['daily', 'weekly', 'monthly']))
                     ->extraAttributes(['style' => 'width: 400px'])
+                    ->afterStateHydrated(function (\Filament\Forms\Set $set, $record) {
+                        if ($record && $record->hours !== null && $record->minutes !== null) {
+                            $set('schedule_time', Carbon::createFromTime($record->hours, $record->minutes)->format('H:i'));
+                        }
+                    })
                     ->columnSpan(8),
 
                 // Once
@@ -75,7 +101,7 @@ class CronScheduleResource extends Resource
         ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
@@ -84,37 +110,53 @@ class CronScheduleResource extends Resource
                     ->boolean()
                     ->sortable(),
 
-                TextColumn::make('frequency')
-                    ->label('Frequency')
+                TextColumn::make('target_type')
+                    ->label('Applies to')
+                    ->formatStateUsing(fn (string $state) => class_basename($state))
                     ->sortable(),
 
-                TextColumn::make('time')
-                    ->label('Time')
-                    ->formatStateUsing(function ($record) {
-                        if ($record->frequency === 'hourly') {
-                            return 'At minute ' . str_pad($record->minute ?? 0, 2, '0', STR_PAD_LEFT);
-                        }
+                TextColumn::make('frequency')
+                    ->label('Frequency')
+                    ->formatStateUsing(fn (string $state) => Str::title($state))
+                    ->sortable(),
 
-                        if (in_array($record->frequency, ['daily', 'weekly', 'monthly', 'once'])) {
-                            return str_pad($record->hour ?? 0, 2, '0', STR_PAD_LEFT) . ':' . str_pad($record->minute ?? 0, 2, '0', STR_PAD_LEFT);
-                        }
+                TextColumn::make('day')
+                    ->label('Day')
+                    ->formatStateUsing(fn ($state, $record) => $record->frequency === 'monthly' ? ($state ?? '—') : '—')
+                    ->toggleable(),
 
-                        return '-';
-                    }),
+                TextColumn::make('day_of_week')
+                    ->label('Weekday')
+                    ->formatStateUsing(fn ($state, $record) => match (true) {
+                        in_array($record->frequency, ['weekly', 'monthly']) => [
+                            0 => 'Sunday',
+                            1 => 'Monday',
+                            2 => 'Tuesday',
+                            3 => 'Wednesday',
+                            4 => 'Thursday',
+                            5 => 'Friday',
+                            6 => 'Saturday',
+                        ][$state] ?? '—',
+                        default => '—',
+                    })
+                    ->toggleable(),
 
-                TextColumn::make('details')
-                    ->label('Details')
-                    ->formatStateUsing(function ($record) {
-                        return match ($record->frequency) {
-                            'weekly' => 'On ' . [
-                                    0 => 'Sunday', 1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday',
-                                    4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday'
-                                ][$record->day_of_week ?? 0],
-                            'monthly' => 'On day ' . ($record->day_of_month ?? '—'),
-                            'once' => $record->once_at?->format('Y-m-d H:i') ?? '—',
-                            default => '',
-                        };
-                    }),
+                TextColumn::make('hours')
+                    ->label('Hour')
+                    ->formatStateUsing(fn ($state, $record) =>
+                    in_array($record->frequency, ['daily', 'weekly', 'monthly']) ? str_pad($state, 2, '0', STR_PAD_LEFT) : '—')
+                    ->toggleable(),
+
+                TextColumn::make('minutes')
+                    ->label('Minute')
+                    ->formatStateUsing(fn ($state) => str_pad($state, 2, '0', STR_PAD_LEFT))
+                    ->toggleable(),
+
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->wrap()
+                    ->limit(50)
+                    ->toggleable(),
             ])
             ->defaultSort('id', 'desc');
     }
