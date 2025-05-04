@@ -77,7 +77,6 @@ class CronScheduleResource extends Resource
                 // Daily, Weekly, Monthly, Once — Time (hh:mm)
                 Forms\Components\TimePicker::make('schedule_time')
                     ->label('Set a time')
-                    ->native(false)
                     ->seconds(false)
                     ->visible(fn (\Filament\Forms\Get $get) => in_array($get('frequency'), ['daily', 'weekly', 'monthly']))
                     ->extraAttributes(['style' => 'width: 400px'])
