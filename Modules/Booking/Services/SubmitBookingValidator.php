@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use App\Exceptions\AlreadyExistsException;
+use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Enums\BookingStatus;

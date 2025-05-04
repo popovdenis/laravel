@@ -2,10 +2,10 @@
 
 namespace Modules\Booking\Http\Controllers;
 
-use App\Exceptions\AlreadyExistsException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
