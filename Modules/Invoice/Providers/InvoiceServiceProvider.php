@@ -2,8 +2,11 @@
 
 namespace Modules\Invoice\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\CronSchedule\Services\ScheduleService;
+use Modules\Invoice\Services\InvoiceScheduleService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -53,10 +56,14 @@ class InvoiceServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+         $this->app->booted(function () {
+             /** @var Schedule $schedule */
+             $schedule = $this->app->make(Schedule::class);
+
+             /** @var InvoiceScheduleService $scheduleService */
+             $scheduleService = app(InvoiceScheduleService::class);
+             $scheduleService->register($schedule);
+         });
     }
 
     /**
