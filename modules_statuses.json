@@ -21,5 +21,6 @@
     "StripePayment": true,
     "EventManager": true,
     "Invoice": true,
-    "CacheInvalidate": true
+    "CacheInvalidate": true,
+    "Schedule": true
 }

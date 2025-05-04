@@ -5,7 +5,9 @@ namespace Modules\Invoice\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Order\Models\Order;
+use Modules\Schedule\Models\Schedule;
 use Modules\User\Models\User;
 
 /**
@@ -49,5 +51,13 @@ class Invoice extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all schedules of invoices Получить все расписания для данного инвойса.
+     */
+    public function schedules(): MorphMany
+    {
+        return $this->morphMany(Schedule::class, 'schedulable');
     }
 }
