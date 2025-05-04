@@ -16,9 +16,9 @@ use Modules\Invoice\Models\Invoice as LocalInvoice;
  */
 class SyncStripeInvoices extends Command
 {
-    const CONSOLE_COMMAND_INVOICES_SYNC_STRIPE = 'invoices:sync-stripe';
+    const CONSOLE_COMMAND_INVOICES_SYNC_STRIPE = 'stripe:pull-invoices';
 
-    protected $signature = 'invoices:sync-stripe {--email= : The email of the user(optional)}';
+    protected $signature = self::CONSOLE_COMMAND_INVOICES_SYNC_STRIPE . ' {--email= : The email of the user(optional)}';
     protected $description = 'Fetch and store Stripe invoices for each user';
 
     public function handle(): int
