@@ -5,6 +5,7 @@ namespace Modules\Invoice\Services;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Modules\CronSchedule\Services\ScheduleService;
+use Modules\Invoice\Console\Commands\SyncStripeInvoices;
 use Modules\Invoice\Models\Invoice;
 
 /**
@@ -25,7 +26,7 @@ class InvoiceScheduleService
     {
         $this->scheduleService->registerFor(
             targetType: Invoice::class,
-            artisanCommand: 'invoices:process',
+            artisanCommand: SyncStripeInvoices::CONSOLE_COMMAND_INVOICES_SYNC_STRIPE,
             schedule: $schedule
         );
     }

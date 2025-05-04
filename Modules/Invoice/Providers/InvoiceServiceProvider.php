@@ -5,7 +5,6 @@ namespace Modules\Invoice\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\CronSchedule\Services\ScheduleService;
 use Modules\Invoice\Services\InvoiceScheduleService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
