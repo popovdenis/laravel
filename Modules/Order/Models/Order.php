@@ -116,20 +116,6 @@ class Order extends Model implements OrderInterface
         return $this->method;
     }
 
-    public function place(): void
-    {
-        $this->getEventManager()->dispatch('sales_order_place_before', ['order' => $this]);
-        $this->getPayment()->place();
-        $this->getEventManager()->dispatch('sales_order_place_after', ['order' => $this]);
-    }
-
-    public function cancel(): void
-    {
-        $this->getEventManager()->dispatch('sales_order_cancel_before', ['order' => $this]);
-        $this->getPayment()->cancel();
-        $this->getEventManager()->dispatch('sales_order_cancel_after', ['order' => $this]);
-    }
-
     public function setState($state)
     {
         $this->state = $state;
@@ -148,5 +134,25 @@ class Order extends Model implements OrderInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function place(): void
+    {
+        $this->getEventManager()->dispatch('sales_order_place_before', ['order' => $this]);
+        $this->getPayment()->place();
+        $this->getEventManager()->dispatch('sales_order_place_after', ['order' => $this]);
+    }
+
+    public function cancel(): void
+    {
+        $this->getEventManager()->dispatch('sales_order_cancel_before', ['order' => $this]);
+        $this->getPayment()->cancel();
+        $this->getEventManager()->dispatch('sales_order_cancel_after', ['order' => $this]);
+    }
+
+    public function getFormattedPrice($amount, $currency = 'usd'): bool|string
+    {
+        $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($amount, strtoupper($currency));
     }
 }

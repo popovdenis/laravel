@@ -1,20 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold text-gray-800">
-                Order #{{ $order->id }}
-            </h2>
-
-            <a href="{{ route('profile.orders.index') }}" class="inline-flex items-center text-sm text-blue-600 hover:underline">
-                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
-                     viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 19l-7-7 7-7" />
-                </svg>
-                Back to Orders
-            </a>
-        </div>
-    </x-slot>
-
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Sidebar -->
@@ -22,39 +6,53 @@
 
             <!-- Main Content -->
             <div class="md:col-span-3 space-y-6">
-                <div class="bg-white shadow sm:rounded-lg p-6 space-y-6">
-                    <x-slot name="header">
-                        <h2 class="text-lg font-semibold">{{ __('Order Details') }}</h2>
-                    </x-slot>
-                    <div>
-                        <p class="py-2"><span class="font-semibold">{{ __('Order ID: ') }}</span> {{ $order->id }}</p>
-                        <p class="py-2"><span class="font-semibold py-4">{{ __('Status: ') }}</span> {{ ucfirst($order->status->value) }}</p>
-                        <p class="py-2"><span class="font-semibold">{{ __('Amount: ') }}</span> {{ number_format($order->total_amount, 2) }} {{ strtoupper($order->currency ?? 'USD') }}</p>
-                        <p class="py-2"><span class="font-semibold">{{ __('Created At: ') }}</span> {{ $order->created_at->format('M d, Y H:i') }}</p>
-                        @if($order->purchasable instanceof \Modules\Subscription\Models\Subscription)
-                            <p class="py-2"><span class="font-semibold">{{ __('Type: ') }}</span>{{ __('Subscription') }}</p>
-                            <p class="py-2"><span class="font-semibold">{{ __('Plan: ') }}</span>{{ $order->purchasable->plan->name ?? 'N/A' }}</p>
-                        @elseif($order->purchasable instanceof \Modules\Booking\Models\Booking)
-                            <p class="py-2"><span class="font-semibold">{{ __('Type: ') }}</span>{{ __('Booking') }}</p>
-                            <p class="py-2"><span class="font-semibold">{{ __('Slot: ') }}</span>{{ $order->purchasable->timeslot->start ?? 'N/A' }}</p>
-                        @endif
+                <div class="mb-4 md:flex justify-between items-center">
+                    <div class="block-title title-decor w-full">
+                        <span class="text-2xl block">{{ __('Order # :number', ['number' => $order->id]) }}</span>
                     </div>
 
-                    <div class="flex justify-between items-center">
-                        <div class="text-lg font-semibold">
-                            Total: ${{ number_format($order->total_amount, 2) }}
-                        </div>
+                    <div class="flex flex-col md:flex-row gap-2 mt-4 md:mt-0 md:items-center">
+                        <span class="order-status inline-block px-5 py-2 border border-gray-300 bg-white rounded text-sm">
+                            {{ $order->status->label() }}
+                        </span>
+                        <a href=""{{--{{ route('orders.download', $order->id) }}--}}
+                           class="block md:inline-flex items-center gap-2 min-w-[180px] justify-center px-5 py-2 border border-gray-300 bg-white rounded text-sm font-medium hover:bg-gray-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/>
+                            </svg>
+                            {{ __('Download Invoice') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-white shadow sm:rounded-lg p-1 space-y-1">
+                    <div class="rounded-md">
+                        <h2 class="bg-gray-100 my-0 py-2 px-2 text-lg font-semibold mb-4">{{ __('Order')  }}</h2>
+                        <table class="w-full text-sm bg-white rounded">
+                            <thead class="text-gray-800">
+                            <tr class="border-b border-blue-500">
+                                <th class="text-left px-4 py-2 uppercase font-bold">{{ __('Subscription Plan') }}</th>
+                                <th class="text-left px-4 py-2 uppercase font-bold">{{ __('Price') }}</th>
+                                <th class="text-left px-4 py-2 uppercase font-bold">{{ __('Subtotal') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="border-b border-gray-400">
+                                <td class="px-4 py-3">
+                                    <span class="font-semibold text-base">{{ $order->purchasable->plan->name }}</span>
+                                </td>
+                                <td class="px-4 py-3 align-top">{{ $order->getFormattedPrice($order->total_amount) }}</td>
+                                <td class="px-4 py-3 align-top font-bold">{{ $order->getFormattedPrice($order->total_amount) }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                        <div class="space-x-3">
-                            <a href="#" class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200 text-sm">
-                                Download Invoice
-                            </a>
-
-                            @if ($order->status === 'pending')
-                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
-                                    Pay Now
-                                </a>
-                            @endif
+                        <div class="mt-4 mb-2 w-full flex justify-end text-right">
+                            <table>
+                                <tr><td class="px-2">{{ __('Subtotal') }}</td><td class="px-2">{{ $order->getFormattedPrice($order->total_amount) }}</td></tr>
+                                <tr><td class="px-2">AU-GST-10 (10%)</td><td class="px-2">{{ $order->getFormattedPrice($order->total_amount * 0.1) }}</td></tr>
+                                <tr class="font-bold"><td class="px-2">{{ __('Order Total')  }}</td><td class="px-2">{{ $order->getFormattedPrice($order->total_amount * 0.1 + $order->total_amount) }}</td></tr>
+                            </table>
                         </div>
                     </div>
                 </div>
