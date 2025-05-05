@@ -2,6 +2,8 @@
 
 namespace Modules\User\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +16,7 @@ use Modules\Subscription\Models\Subscription;
 use Modules\Subscription\Models\SubscriptionTransaction;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -148,5 +150,10 @@ class User extends Authenticatable
     public function getCreditBalance(): int
     {
         return $this->credit_balance;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole('super_admin') || $this->hasRole('Admin');
     }
 }
