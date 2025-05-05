@@ -22,5 +22,6 @@
     "EventManager": true,
     "Invoice": true,
     "CacheInvalidate": true,
-    "CronSchedule": true
+    "CronSchedule": true,
+    "StripeCard": true
 }

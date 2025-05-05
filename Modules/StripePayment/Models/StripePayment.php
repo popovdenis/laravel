@@ -35,17 +35,14 @@ class StripePayment extends AbstractMethod
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
 
-        $paymentMethod = 'pm_card_visa'; // test method Stripe
         try {
             $transactionPrice = $quote->getTransactionPriceId();
-            $user->createOrGetStripeCustomer();
-            $user->updateDefaultPaymentMethod($paymentMethod);
 
             if ($user->subscribed()) {
                 $user->subscription()->cancelNowAndInvoice();
                 //$subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
             }
-            $subscription = $user->newSubscription('default', $transactionPrice)->create($paymentMethod);
+            $subscription = $user->newSubscription('default', $transactionPrice)->create();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());

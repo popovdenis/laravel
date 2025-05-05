@@ -25,13 +25,6 @@ class StripePaymentMethod implements PaymentMethodInterface
 
     public function processAction()
     {
-//        $user = $this->getOrder()->user;
-//
-//        $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
-//        $user->createOrGetStripeCustomer();
-//        $user->updateDefaultPaymentMethod($paymentMethod);
-//
-//        $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
     }
 
     public function cancel()

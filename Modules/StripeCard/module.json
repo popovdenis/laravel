@@ -1,0 +1,11 @@
+{
+    "name": "StripeCard",
+    "alias": "stripecard",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\StripeCard\\Providers\\StripeCardServiceProvider"
+    ],
+    "files": []
+}
