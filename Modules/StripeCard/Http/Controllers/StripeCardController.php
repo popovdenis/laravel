@@ -50,7 +50,7 @@ class StripeCardController extends Controller
             'payment_method_types' => ['card'],
             'mode' => 'payment',
             'line_items' => [[
-                'price' => 'price_1RLMDc04fVTImIORVYYtqDju',
+                'price' => 'price_1RLV9o04fVTImIORRKU56dzp',
                 'quantity' => 1,
             ]],
             'success_url' => route('stripecard::checkout.success'),
