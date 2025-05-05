@@ -150,9 +150,16 @@ class Order extends Model implements OrderInterface
         $this->getEventManager()->dispatch('sales_order_cancel_after', ['order' => $this]);
     }
 
+    public function isInvoiced()
+    {
+        return $this->invoice !== null;
+    }
+
     public function getFormattedPrice($amount, $currency = 'usd'): bool|string
     {
+        $currency = $this->isInvoiced() ? $this->invoice->currency : $currency;
         $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+
         return $formatter->formatCurrency($amount, strtoupper($currency));
     }
 }
