@@ -88,6 +88,7 @@ class AdminPanelProvider extends PanelProvider
                 'Marketing',
                 'Blog',
                 'System',
+                'Cron Manager',
             ]);
     }
 }

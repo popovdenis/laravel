@@ -20,9 +20,9 @@ use Modules\CronSchedule\Services\CronCommandRegistryService;
 class CronScheduleResource extends Resource
 {
     protected static ?string $model = CronSchedule::class;
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Cron Manager';
     protected static ?string $navigationLabel = 'Cron Scheduler';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
