@@ -12,5 +12,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout/session', [StripeCardController::class, 'createSession'])->name('stripecard::checkout.session');
     Route::get('/checkout/success', fn () => view('stripecard::success'))->name('stripecard::checkout.success');
     Route::get('/checkout/cancel', fn () => view('stripecard::cancel'))->name('stripecard::checkout.cancel');
-    Route::post('/stripe/webhook', [StripeCardController::class, 'handle']);
 });

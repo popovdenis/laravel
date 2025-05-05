@@ -3,34 +3,35 @@ declare(strict_types=1);
 
 namespace Modules\Subscription\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
+use Modules\User\Models\User;
+
 /**
  * Class StripeWebhookController
  *
  * @package Modules\Stripe\Http\Controllers
  */
-
-use Illuminate\Support\Facades\Log;
-use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
-use Modules\User\Models\User;
-
 class StripeWebhookController extends CashierWebhookController
 {
-    protected function handleInvoicePaid(array $payload)
+    public function handle(Request $request)
     {
-        $stripeInvoice = $payload['data']['object'];
-        $user = User::where('stripe_id', $stripeInvoice['customer'])->first();
+        $payload = json_decode($request->getContent(), true);
+        $eventType = $payload['type'] ?? null;
+        if ($eventType === 'payment_intent.succeeded') {
+            $intent = $payload['data']['object'];
+            Log::warning('Stripe data: '. var_export($intent,true));
+            Log::info('Stripe Payment Success', [
+                'payment_intent' => $intent['id'],
+                'amount' => $intent['amount'],
+                'currency' => $intent['currency'],
+                // здесь можно найти customer и другие данные
+            ]);
 
-        if (!$user) {
-            Log::warning('Stripe invoice received for unknown customer.');
-            return response()->json(['message' => 'User not found'], 404);
+            // Тут — логика: активируй подписку, начисли кредиты и т.д.
         }
 
-        // Создание локального ордера
-        $user->orders()->create([
-            'stripe_invoice_id' => $stripeInvoice['id'],
-            'type' => 'subscription',
-            'total' => $stripeInvoice['amount_paid'] / 100,
-            'status' => 'paid',
-        ]);
+        return $this->missingMethod($payload);
     }
 }
