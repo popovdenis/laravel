@@ -19,9 +19,10 @@ use Modules\LanguageLevel\Models\LanguageLevel;
 class LanguageLevelResource extends Resource
 {
     protected static ?string $model = LanguageLevel::class;
-    protected static ?string $navigationGroup = 'Study';
+    protected static ?string $navigationGroup = 'School';
     protected static ?string $navigationLabel = 'Levels';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

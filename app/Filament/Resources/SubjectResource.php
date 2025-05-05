@@ -13,9 +13,10 @@ use Modules\Subject\Models\Subject;
 class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
-    protected static ?string $navigationGroup = 'Study';
+    protected static ?string $navigationGroup = 'School';
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $navigationLabel = 'Subjects';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

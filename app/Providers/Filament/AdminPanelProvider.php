@@ -82,7 +82,7 @@ class AdminPanelProvider extends PanelProvider
             ])->navigationGroups([
                 'Subscriptions',
                 'Booking',
-                'Study',
+                'School',
                 'Members',
                 'Education',
                 'Marketing',

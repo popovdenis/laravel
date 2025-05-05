@@ -16,9 +16,10 @@ use Modules\Stream\Models\Stream;
 class StreamResource extends Resource
 {
     protected static ?string $model = Stream::class;
-    protected static ?string $navigationGroup = 'Education';
+    protected static ?string $navigationGroup = 'School';
     protected static ?string $navigationLabel = 'Streams';
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
