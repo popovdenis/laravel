@@ -16,7 +16,6 @@ class InvoiceServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'Invoice';
-
     protected string $nameLower = 'invoice';
 
     /**

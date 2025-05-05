@@ -60,7 +60,7 @@ class InvoiceResource extends Resource
                 Section::make('Order & Account Information')->icon('heroicon-m-check-badge')->columns(3)->schema([
                     ViewField::make('order_link')
                         ->label('Order #')
-                        ->view('components.filament.order-html-link')->columnSpanFull(),
+                        ->view('order::components.filament.order-html-link')->columnSpanFull(),
                     Placeholder::make('order.created_at')
                         ->label('Order Date')
                         ->content(fn($record) => $record->order?->created_at->format('M d, Y H:i')),
