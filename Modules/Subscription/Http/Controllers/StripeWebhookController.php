@@ -22,6 +22,20 @@ class StripeWebhookController extends CashierWebhookController
 
         $intent = $payload['data']['object'];
 
+        if ($eventType === 'checkout.session.completed') {
+            $userId = $intent['client_reference_id'] ?? null;
+
+            if ($userId) {
+                Log::warning('User ID FOUND: '. $userId);
+                $user = User::find($userId);
+
+                if ($user) {
+                    Log::warning('User FOUND: '. var_export($user, true));
+                    // активируем подписку / даём доступ / сохраняем заказ и т.п.
+                }
+                Log::warning('Additional data: '. var_export($intent,true));
+            }
+        }
 
         if ($eventType === 'payment_intent.succeeded') {
             Log::info('Stripe Payment Success', [

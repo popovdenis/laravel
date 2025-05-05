@@ -55,12 +55,13 @@ class StripeCardController extends Controller
             ]],
             'success_url' => route('stripecard::checkout.success'),
             'cancel_url' => route('stripecard::checkout.cancel'),
-            'client_reference_id' => $user->id,
+            'client_reference_id' => $user->id,//client_reference_id
             'metadata' => [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'plan_id' => 2211223,
                 'purchase_type' => 'one-time',
+                'price_id' => 'price_1RLV9o04fVTImIORRKU56dzp'
             ],
         ]);
 
