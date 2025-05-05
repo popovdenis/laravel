@@ -21,7 +21,7 @@ class StripeWebhookController extends CashierWebhookController
         $eventType = $payload['type'] ?? null;
 
         $intent = $payload['data']['object'];
-        Log::warning('Stripe data: '. var_export($intent,true));
+
 
         if ($eventType === 'payment_intent.succeeded') {
             Log::info('Stripe Payment Success', [
@@ -31,7 +31,7 @@ class StripeWebhookController extends CashierWebhookController
                 // здесь можно найти customer и другие данные
                 // https://english-academy.space/api/v1/stripe/webhook
             ]);
-
+            Log::warning('Stripe data: '. var_export($intent,true));
             // Тут — логика: активируй подписку, начисли кредиты и т.д.
         }
 
