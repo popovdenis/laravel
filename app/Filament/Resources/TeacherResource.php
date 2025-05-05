@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Modules\User\Filament\Resources\UserResource;
 use Modules\User\Models\User;
 
 class TeacherResource extends Resource

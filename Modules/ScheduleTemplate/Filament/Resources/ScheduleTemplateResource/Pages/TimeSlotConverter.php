@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
+namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
 /**
  * Trait TimeSlotConverter

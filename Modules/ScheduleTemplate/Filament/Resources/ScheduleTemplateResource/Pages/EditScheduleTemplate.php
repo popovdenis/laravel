@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
+namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
-use App\Filament\Resources\ScheduleTemplateResource;
 use App\Filament\Resources\TimeSlotValidationTrait;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
 
 class EditScheduleTemplate extends EditRecord
 {

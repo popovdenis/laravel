@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\OrderResource\Pages;
+namespace Modules\Order\Filament\Resources\OrderResource\Pages;
 
-use App\Filament\Resources\OrderResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Order\Filament\Resources\OrderResource;
 
 class EditOrder extends EditRecord
 {

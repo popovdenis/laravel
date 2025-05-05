@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Filament\Resources;
-
-use App\Filament\Resources\OrderResource\Pages;
+namespace Modules\Order\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Order\Models\Order;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\Tabs;
 
 class OrderResource extends Resource
 {
@@ -180,10 +178,10 @@ class OrderResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
-            'view' => Pages\ViewOrder::route('/{record}'),
+            'index' => OrderResource\Pages\ListOrders::route('/'),
+            'create' => OrderResource\Pages\CreateOrder::route('/create'),
+            'edit' => OrderResource\Pages\EditOrder::route('/{record}/edit'),
+            'view' => OrderResource\Pages\ViewOrder::route('/{record}'),
         ];
     }
 

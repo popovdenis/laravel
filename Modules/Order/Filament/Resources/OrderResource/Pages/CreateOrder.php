@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\OrderResource\Pages;
+namespace Modules\Order\Filament\Resources\OrderResource\Pages;
 
-use App\Filament\Resources\OrderResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Order\Filament\Resources\OrderResource;
 
 class CreateOrder extends CreateRecord
 {

@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
+use Modules\User\Filament\Resources\UserResource;
 use Modules\User\Models\User;
 
 class StudentResource extends Resource

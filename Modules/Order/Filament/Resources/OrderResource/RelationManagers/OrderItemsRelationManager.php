@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Filament\Resources\OrderResource\RelationManagers;
+namespace Modules\Order\Filament\Resources\OrderResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;

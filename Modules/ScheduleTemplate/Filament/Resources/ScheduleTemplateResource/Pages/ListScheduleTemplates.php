@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\ScheduleTemplateResource\Pages;
+namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
-use App\Filament\Resources\ScheduleTemplateResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
 
 class ListScheduleTemplates extends ListRecords
 {

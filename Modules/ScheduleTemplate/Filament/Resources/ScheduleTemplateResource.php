@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace Modules\ScheduleTemplate\Filament\Resources;
 
-use App\Filament\Resources\ScheduleTemplateResource\Pages;
-use App\Filament\Resources\ScheduleTemplateResource\RelationManagers;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\RelationManagers;
+use App\Filament\Resources\TimeSlotRendererTrait;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -64,9 +64,9 @@ class ScheduleTemplateResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListScheduleTemplates::route('/'),
-            'create' => Pages\CreateScheduleTemplate::route('/create'),
-            'edit' => Pages\EditScheduleTemplate::route('/{record}/edit'),
+            'index' => ScheduleTemplateResource\Pages\ListScheduleTemplates::route('/'),
+            'create' => ScheduleTemplateResource\Pages\CreateScheduleTemplate::route('/create'),
+            'edit' => ScheduleTemplateResource\Pages\EditScheduleTemplate::route('/{record}/edit'),
         ];
     }
 }

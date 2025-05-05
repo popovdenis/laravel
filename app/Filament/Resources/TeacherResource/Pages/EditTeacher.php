@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\TeacherResource\Pages;
 
-use App\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use App\Filament\Resources\TeacherResource;
 use App\Filament\Resources\TimeSlotValidationTrait;
-use App\Filament\Resources\UserResource\Pages\EditUser;
 use Filament\Actions;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
+use Modules\User\Filament\Resources\UserResource\Pages\EditUser;
 
 class EditTeacher extends EditUser
 {
