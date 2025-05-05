@@ -2,14 +2,14 @@
 
 namespace Modules\ScheduleTemplate\Filament\Resources;
 
-use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\RelationManagers;
-use App\Filament\Resources\TimeSlotRendererTrait;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\RelationManagers;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlotRendererTrait;
 use Modules\ScheduleTemplate\Models\ScheduleTemplate;
 
 class ScheduleTemplateResource extends Resource

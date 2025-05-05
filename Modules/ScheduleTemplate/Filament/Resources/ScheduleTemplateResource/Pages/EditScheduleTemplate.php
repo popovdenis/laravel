@@ -2,10 +2,10 @@
 
 namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
-use App\Filament\Resources\TimeSlotValidationTrait;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlotValidationTrait;
 
 class EditScheduleTemplate extends EditRecord
 {

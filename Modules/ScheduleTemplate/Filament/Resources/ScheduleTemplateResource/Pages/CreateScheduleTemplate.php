@@ -2,9 +2,9 @@
 
 namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
-use App\Filament\Resources\TimeSlotValidationTrait;
 use Filament\Resources\Pages\CreateRecord;
 use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
+use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlotValidationTrait;
 
 class CreateScheduleTemplate extends CreateRecord
 {
