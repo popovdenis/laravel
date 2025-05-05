@@ -19,9 +19,11 @@ class StripeWebhookController extends CashierWebhookController
     {
         $payload = json_decode($request->getContent(), true);
         $eventType = $payload['type'] ?? null;
+
+        $intent = $payload['data']['object'];
+        Log::warning('Stripe data: '. var_export($intent,true));
+
         if ($eventType === 'payment_intent.succeeded') {
-            $intent = $payload['data']['object'];
-            Log::warning('Stripe data: '. var_export($intent,true));
             Log::info('Stripe Payment Success', [
                 'payment_intent' => $intent['id'],
                 'amount' => $intent['amount'],
