@@ -27,6 +27,7 @@ class StripeWebhookController extends CashierWebhookController
                 'amount' => $intent['amount'],
                 'currency' => $intent['currency'],
                 // здесь можно найти customer и другие данные
+                // https://english-academy.space/api/v1/stripe/webhook
             ]);
 
             // Тут — логика: активируй подписку, начисли кредиты и т.д.

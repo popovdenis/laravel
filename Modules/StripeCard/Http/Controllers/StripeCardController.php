@@ -26,11 +26,6 @@ class StripeCardController extends Controller
         return view('stripecard::create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
-
     public function handleCheckoutSessionCompleted(array $payload)
     {
         $session = $payload['data']['object'];
@@ -47,23 +42,26 @@ class StripeCardController extends Controller
 
     public function createSession(Request $request)
     {
-        Stripe::setApiKey(config('cashier.secret')); // или config('services.stripe.secret')
+        Stripe::setApiKey(config('cashier.secret'));
+
+        $user = auth()->user();
 
         $session = Session::create([
             'payment_method_types' => ['card'],
             'mode' => 'payment',
             'line_items' => [[
-                'price_data' => [
-                    'currency' => 'usd',
-                    'unit_amount' => 1000,
-                    'product_data' => [
-                        'name' => '1 Month Access',
-                    ],
-                ],
+                'price' => 'price_1RLMDc04fVTImIORVYYtqDju',
                 'quantity' => 1,
             ]],
             'success_url' => route('stripecard::checkout.success'),
             'cancel_url' => route('stripecard::checkout.cancel'),
+            'client_reference_id' => $user->id,
+            'metadata' => [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'plan_id' => 2211223,
+                'purchase_type' => 'one-time',
+            ],
         ]);
 
         return redirect($session->url);
@@ -95,22 +93,4 @@ class StripeCardController extends Controller
 
         return redirect()->back()->with('success', 'Card saved successfully!');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('stripecard::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
 }
