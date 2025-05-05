@@ -27,6 +27,9 @@ class CronScheduleResource extends Resource
 
     public static function form(Form $form): Form
     {
+        /** @var CronCommandRegistryService $cronScheduleService */
+        $cronScheduleService = app(CronCommandRegistryService::class);
+
         return $form->schema([
             Forms\Components\Grid::make(12)->schema([
                 Toggle::make('enabled')
@@ -47,7 +50,7 @@ class CronScheduleResource extends Resource
 
                 Select::make('command')
                     ->label('Command to run')
-                    ->options(app(CronCommandRegistryService::class)->optionsForSelect())
+                    ->options($cronScheduleService->optionsForSelect())
                     ->searchable()
                     ->required()
                     ->columnSpan(8)

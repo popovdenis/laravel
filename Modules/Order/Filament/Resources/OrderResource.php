@@ -133,10 +133,6 @@ class OrderResource extends Resource
                     })
                     ->sortable(),
 
-                TextColumn::make('purchasable')
-                    ->label('Subscription Plan')
-                    ->formatStateUsing(fn ($record) => $record->purchasable?->plan?->name ?? '—'),
-
                 TextColumn::make('status')
                     ->badge()
                     ->colors([
