@@ -23,7 +23,7 @@ class Payment extends Info implements PaymentInterface
     public ?OrderInterface $order = null;
 
     /**
-     * @var \Modules\EventManager\Contracts\ManagerInterface
+     * @var ManagerInterface
      */
     private ManagerInterface $eventManager;
 
@@ -115,17 +115,11 @@ class Payment extends Info implements PaymentInterface
         $methodInstance->setOrder($order);
         $methodInstance->processAction();
 
-        $orderState = OrderStateEnum::ORDER_STATE_NEW;
-        $orderStatus = OrderStatusEnum::ORDER_STATUS_PENDING;
-
-        if (!$order->getState()) {
-            $order->setState($orderState);
-        }
-        if (!$order->getStatus()) {
-            $order->setStatus($orderStatus);
-        }
-
-        $this->updateOrder($order, $orderState, $orderStatus);
+        $this->updateOrder(
+            $order,
+            OrderStateEnum::ORDER_STATE_NEW->value,
+            OrderStatusEnum::ORDER_STATUS_PENDING->value
+        );
 
         $this->eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
 
@@ -140,8 +134,11 @@ class Payment extends Info implements PaymentInterface
 
         $methodInstance->cancel();
 
-        $order->setState(OrderStateEnum::ORDER_STATE_CANCELLED);
-        $order->setStatus(OrderStatusEnum::ORDER_STATUS_CANCELLED);
+        $this->updateOrder(
+            $order,
+            OrderStateEnum::ORDER_STATE_CANCELLED->value,
+            OrderStatusEnum::ORDER_STATUS_CANCELLED->value
+        );
 
         return $this;
     }
@@ -157,6 +154,7 @@ class Payment extends Info implements PaymentInterface
      */
     protected function updateOrder(OrderInterface $order, $orderState, $orderStatus)
     {
-
+        $order->setState($orderState);
+        $order->setStatus($orderStatus);
     }
 }

@@ -8,5 +8,5 @@
         </a>
     </span>
 @else
-    <span class="text-gray-500">None</span>
+    <span class="text-gray-500">{{ __('We couldn\'t find any records.') }}</span>
 @endif

@@ -18,6 +18,7 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     protected User $user;
     protected int $plan_id;
     protected int $credits;
+    protected string $transaction_price_id;
 
     public function getPaymentMethodConfig(): string
     {
@@ -39,32 +40,32 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
 
-    public function getAmount(): int
+    public function getAmount()
     {
         return $this->credits;
     }
 
-    public function setAmount(int $amount): void
+    public function setAmount(int $amount)
     {
         $this->credits = $amount;
     }
 
-    public function getDescription(): string
+    public function getDescription()
     {
         return "Subscription to plan '{$this->plan_id}'";
     }
 
-    public function getSourceType(): string
+    public function getSourceType()
     {
         return SubscriptionPlan::class;
     }
 
-    public function getSourceId(): int
+    public function getSourceId()
     {
         return $this->plan_id;
     }
@@ -72,5 +73,15 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     public function setSourceId(int $sourceId)
     {
         $this->plan_id = $sourceId;
+    }
+
+    public function getTransactionPriceId()
+    {
+        return $this->transaction_price_id;
+    }
+
+    public function setTransactionPriceId($priceId)
+    {
+        $this->transaction_price_id = $priceId;
     }
 }

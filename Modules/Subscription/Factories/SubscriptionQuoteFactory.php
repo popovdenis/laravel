@@ -20,7 +20,8 @@ class SubscriptionQuoteFactory
         $quote = app()->make(SubscriptionQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSourceId($requestData->planId);
-        $quote->setAmount($requestData->credits);
+        $quote->setAmount($requestData->amount);
+        $quote->setTransactionPriceid($requestData->transactionPriceId);
         $quote->getPayment()->importData($requestData);
         $quote->setModel(app(Subscription::class));
 

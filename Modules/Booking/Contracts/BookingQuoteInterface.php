@@ -11,9 +11,9 @@ use Modules\Order\Contracts\QuoteInterface;
  */
 interface BookingQuoteInterface extends QuoteInterface
 {
-    public function getSlotId(): int;
-    public function setSlotId(int $slotId): void;
+    public function getSlotId();
+    public function setSlotId(int $slotId);
 
-    public function setStreamId(int $streamId): void;
-    public function getStreamId(): int;
+    public function setStreamId(int $streamId);
+    public function getStreamId();
 }

@@ -41,7 +41,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         ]);
     }
 
-    public function setUser(User $user): void
+    public function setUser(User $user)
     {
         $this->student = $user;
     }
@@ -51,42 +51,42 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         return $this->student;
     }
 
-    public function setStreamId(int $streamId): void
+    public function setStreamId(int $streamId)
     {
         $this->streamId = $streamId;
     }
 
-    public function getStreamId(): int
+    public function getStreamId()
     {
         return $this->streamId;
     }
 
-    public function getSlotId(): int
+    public function getSlotId()
     {
         return $this->slotId;
     }
 
-    public function setSlotId(int $slotId): void
+    public function setSlotId(int $slotId)
     {
         $this->slotId = $slotId;
     }
 
-    public function getAmount(): int
+    public function getAmount()
     {
         return $this->credits;
     }
 
-    public function setAmount(int $amount): void
+    public function setAmount(int $amount)
     {
         $this->credits = $amount;
     }
 
-    public function getDescription(): string
+    public function getDescription()
     {
         return "Booking for timeslot ID {$this->slotId}";
     }
 
-    public function getSourceType(): string
+    public function getSourceType()
     {
         return Booking::class;
     }
@@ -96,7 +96,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         $this->slotId = $sourceId;
     }
 
-    public function getSourceId(): int
+    public function getSourceId()
     {
         return $this->slotId;
     }

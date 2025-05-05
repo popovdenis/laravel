@@ -11,4 +11,6 @@ use Modules\Order\Contracts\QuoteInterface;
  */
 interface SubscriptionQuoteInterface extends QuoteInterface
 {
+    public function getTransactionPriceId();
+    public function setTransactionPriceId($priceId);
 }

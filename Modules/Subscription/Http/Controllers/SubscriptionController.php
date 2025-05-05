@@ -4,10 +4,12 @@ namespace Modules\Subscription\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Subscription\Data\SubscriptionData;
 use Modules\Subscription\Factories\SubscriptionQuoteFactory;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
+use Throwable;
 
 class SubscriptionController extends Controller
 {
@@ -19,14 +21,20 @@ class SubscriptionController extends Controller
      * @var \Modules\Subscription\Factories\SubscriptionQuoteFactory
      */
     private SubscriptionQuoteFactory $quoteFactory;
+    /**
+     * @var ManagerInterface $eventManager
+     */
+    private ManagerInterface $eventManager;
 
     public function __construct(
         OrderManagerInterface $orderManager,
         SubscriptionQuoteFactory $quoteFactory,
+        ManagerInterface $eventManager,
     )
     {
         $this->orderManager = $orderManager;
         $this->quoteFactory = $quoteFactory;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -42,13 +50,22 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        $subscriptionData = SubscriptionData::fromRequest($request);
+        try {
+            $subscriptionData = SubscriptionData::fromRequest($request);
 
-        $quote = $this->quoteFactory->create($subscriptionData);
+            $quote = $this->quoteFactory->create($subscriptionData);
+            $order = $this->orderManager->place($quote);
 
-        $order = $this->orderManager->place($quote);
+            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
 
-        return redirect()->route('profile.dashboard')->with('success', 'Your subscription plan has been updated.');
+            return redirect()->route('profile.dashboard')->with('success', 'Your have been subscribed successfully.');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()->back()
+                ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
+                ->withInput();
+        }
     }
 
     /**

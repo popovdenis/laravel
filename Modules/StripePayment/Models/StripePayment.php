@@ -35,25 +35,20 @@ class StripePayment extends AbstractMethod
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
 
-        $paymentMethod = 'pm_card_visa'; // тестовый метод Stripe (подставной)
+        $paymentMethod = 'pm_card_visa'; // test method Stripe
         try {
+            $transactionPrice = $quote->getTransactionPriceId();
             $user->createOrGetStripeCustomer();
             $user->updateDefaultPaymentMethod($paymentMethod);
 
-            // TODO: implement swap
-            if ($user->subscribed('default')) {
-//            $user->subscription('default')->swap('price_id_for_pro'); // keep the current plan till it ends
-                $user->subscription('default')->cancelNowAndInvoice();
-                $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
-//            $subscription = $user->newSubscription('default', 'price_1RJeW304fVTImIORrwg9xKbd')->create($paymentMethod);
-//            $subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
-            } else {
-                $subscription = $user->newSubscription('default', 'price_1RJIH504fVTImIORseJmgDpt')->create($paymentMethod);
+            if ($user->subscribed()) {
+                $user->subscription()->cancelNowAndInvoice();
+                //$subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
             }
+            $subscription = $user->newSubscription('default', $transactionPrice)->create($paymentMethod);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
-            dd($exception->getMessage(), $exception->getTraceAsString());
         }
 
         /** @var SubscriptionService $subscriptionService */

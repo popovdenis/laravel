@@ -41,9 +41,6 @@ class OrderResource extends Resource
                                 Placeholder::make('order_status')
                                     ->label('Order Status')
                                     ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—'),
-                                ViewField::make('order_link')
-                                    ->label('Invoice #')
-                                    ->view('invoice::components.filament.invoice-html-link')->columnSpanFull(),
                             ])->compact()->collapsible(),
 
                             Section::make('Items Ordered')->icon('heroicon-m-shopping-bag')->schema([
@@ -102,7 +99,9 @@ class OrderResource extends Resource
                     ]),
                 Tabs\Tab::make('Invoices')
                     ->schema([
-                        // ...
+                        ViewField::make('order_link')
+                            ->label('Invoice #')
+                            ->view('invoice::components.filament.invoice-html-link')->columnSpanFull(),
                     ]),
                 Tabs\Tab::make('Transactions')
                     ->schema([

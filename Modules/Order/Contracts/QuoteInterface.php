@@ -14,21 +14,25 @@ use Modules\User\Models\User;
 interface QuoteInterface
 {
     public function getUser(): User;
-    public function getAmount(): int;
-    public function getDescription(): string;
-    public function getSourceType(): string;
+    public function setUser(User $user);
 
-    public function getSourceId(): int;
+    public function getAmount();
+    public function setAmount(int $amount);
+
+    public function getDescription();
+    public function getSourceType();
+
+    public function getSourceId();
     public function setSourceId(int $sourceId);
 
     public function getModel(): Model;
     public function setModel(Model $model);
 
-    public function getPaymentMethodConfig(): string;
-
     public function getPayment();
     public function setPayment(PaymentInterface $payment);
 
-    public function validate(): void;
+    public function getPaymentMethodConfig();
+
+    public function validate();
 //    public function save(): \Illuminate\Database\Eloquent\Model;
 }
