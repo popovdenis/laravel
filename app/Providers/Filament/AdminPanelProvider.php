@@ -84,7 +84,6 @@ class AdminPanelProvider extends PanelProvider
                 'Booking',
                 'School',
                 'Members',
-                'Education',
                 'Marketing',
                 'Blog',
                 'System',
