@@ -43,7 +43,7 @@ Route::post('/flow/select-timeslot', [TimeslotSelectionController::class, 'store
     ->name('flow.selectTimeslot.store');
 Route::get('/flow/select-timeslot', [TimeslotSelectionController::class, 'index'])
     ->name('flow.selectTimeslot.index');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('flow.checkout.store');
-Route::get('/checkout', [CheckoutController::class, 'show'])->name('flow.checkout.show');
-Route::post('/checkout/process', [ConfirmationController::class, 'store'])->name('checkout.process');
-Route::get('/checkout/confirmed', [ConfirmationController::class, 'confirmed'])->name('checkout.confirmed');
+//Route::post('/checkout', [CheckoutController::class, 'store'])->name('flow.checkout.store');
+//Route::get('/checkout', [CheckoutController::class, 'show'])->name('flow.checkout.show');
+//Route::post('/checkout/process', [ConfirmationController::class, 'store'])->name('checkout.process');
+//Route::get('/checkout/confirmed', [ConfirmationController::class, 'confirmed'])->name('checkout.confirmed');

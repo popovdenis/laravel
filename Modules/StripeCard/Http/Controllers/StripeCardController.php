@@ -4,6 +4,9 @@ namespace Modules\StripeCard\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\User\Models\User;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class StripeCardController extends Controller
 {
@@ -12,7 +15,7 @@ class StripeCardController extends Controller
      */
     public function index()
     {
-        return view('stripecard::index');
+        return view('stripecard::checkout');
     }
 
     /**
@@ -27,6 +30,44 @@ class StripeCardController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {}
+
+    public function handleCheckoutSessionCompleted(array $payload)
+    {
+        $session = $payload['data']['object'];
+
+        $user = User::where('stripe_id', $session['customer'])->first();
+
+        if ($user) {
+            // Активируем доступ, создаём заказ и т.п.
+            $user->markAsPaid(); // твоя кастомная логика
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
+    public function createSession(Request $request)
+    {
+        Stripe::setApiKey(config('cashier.secret')); // или config('services.stripe.secret')
+
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'mode' => 'payment',
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'usd',
+                    'unit_amount' => 1000,
+                    'product_data' => [
+                        'name' => '1 Month Access',
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'success_url' => route('stripecard::checkout.success'),
+            'cancel_url' => route('stripecard::checkout.cancel'),
+        ]);
+
+        return redirect($session->url);
+    }
 
     /**
      * Show the specified resource.
