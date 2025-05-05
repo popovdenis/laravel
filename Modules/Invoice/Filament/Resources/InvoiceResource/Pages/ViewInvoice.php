@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Filament\Resources\InvoiceResource\Pages;
+namespace Modules\Invoice\Filament\Resources\InvoiceResource\Pages;
 
-use App\Filament\Resources\InvoiceResource;
 use Filament\Resources\Pages\ViewRecord;
+use Modules\Invoice\Filament\Resources\InvoiceResource;
 
 /**
  * Class ViewInvoice

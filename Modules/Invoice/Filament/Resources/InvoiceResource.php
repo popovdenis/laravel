@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace Modules\Invoice\Filament\Resources;
 
-use App\Filament\Resources\InvoiceResource\Pages;
-use App\Filament\Resources\InvoiceResource\RelationManagers;
+use Modules\Invoice\Filament\Resources\InvoiceResource\RelationManagers;
+use Filament\Forms;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Invoice\Enums\InvoiceStatusEnum;
 use Modules\Invoice\Models\Invoice;
-use Filament\Forms\Components\Section;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\ViewField;
 
 class InvoiceResource extends Resource
 {
@@ -224,8 +223,8 @@ class InvoiceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInvoices::route('/'),
-            'view' => Pages\ViewInvoice::route('/{record}'),
+            'index' => InvoiceResource\Pages\ListInvoices::route('/'),
+            'view' => InvoiceResource\Pages\ViewInvoice::route('/{record}'),
         ];
     }
 

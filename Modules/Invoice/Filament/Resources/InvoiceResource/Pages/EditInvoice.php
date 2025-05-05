@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\InvoiceResource\Pages;
+namespace Modules\Invoice\Filament\Resources\InvoiceResource\Pages;
 
-use App\Filament\Resources\InvoiceResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Invoice\Filament\Resources\InvoiceResource;
 
 class EditInvoice extends EditRecord
 {

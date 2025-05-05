@@ -45,7 +45,7 @@ class OrderResource extends Resource
                                     ->content(fn($record) => $record->status ? ucfirst($record->status->value) : '—'),
                                 ViewField::make('order_link')
                                     ->label('Invoice #')
-                                    ->view('components.filament.invoice-html-link')->columnSpanFull(),
+                                    ->view('invoice::components.filament.invoice-html-link')->columnSpanFull(),
                             ])->compact()->collapsible(),
 
                             Section::make('Items Ordered')->icon('heroicon-m-shopping-bag')->schema([

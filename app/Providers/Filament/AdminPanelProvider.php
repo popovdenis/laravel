@@ -20,17 +20,21 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Support\Facades\FilamentAsset;
-use Filament\Support\Assets\Js;
+use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Facades\Log;
 use CmsMulti\FilamentClearCache\Facades\FilamentClearCache;
+
+use Illuminate\Support\Str;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function boot(): void
     {
-        FilamentAsset::register([
-            Js::make('filters-toggle', asset('js/filament/forms/components/filters-toggle.js')),
-        ]);
+//        FilamentAsset::register([
+//            Js::make('filters-toggle', asset('js/filament/forms/components/filters-toggle.js')),
+//        ]);
         FilamentClearCache::addCommand('config:clear');
         FilamentClearCache::addCommand('route:clear');
         FilamentClearCache::addCommand('view:clear');
@@ -40,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
 
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->default()
             ->id('admin')
             ->path('admin')
@@ -89,5 +93,52 @@ class AdminPanelProvider extends PanelProvider
                 'System',
                 'Cron Manager',
             ]);
+
+        $this->extendDiscoverResources($panel);
+
+        return $panel;
+    }
+
+    protected function extendDiscoverResources(Panel $panel): void
+    {
+        $resources = [];
+
+        foreach (Module::allEnabled() as $module) {
+            $resourcePath = $module->getExtraPath('Filament/Resources');
+            $namespace = "Modules\\{$module->getName()}\\Filament\\Resources";
+
+            if (! is_dir($resourcePath)) {
+                continue;
+            }
+
+            $files = Finder::create()
+                ->files()
+                ->in($resourcePath)
+                ->depth('== 0')
+                ->name('*.php');
+
+            foreach ($files as $file) {
+                $class = "{$namespace}\\" . $file->getBasename('.php');
+
+                if (! class_exists($class)) {
+                    continue;
+                }
+
+                try {
+                    $reflection = new ReflectionClass($class);
+
+                    if (
+                        $reflection->isSubclassOf(\Filament\Resources\Resource::class) &&
+                        ! $reflection->isAbstract()
+                    ) {
+                        $resources[] = $class;
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Filament resource autoload failed for [{$class}]: {$e->getMessage()}");
+                }
+            }
+        }
+
+        $panel->resources($resources);
     }
 }
