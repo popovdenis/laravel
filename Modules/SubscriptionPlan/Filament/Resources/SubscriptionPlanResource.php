@@ -145,6 +145,11 @@ class SubscriptionPlanResource extends Resource
                     ->helperText('The subscription price charged at the start of each billing cycle.')
                     ->columnSpan(8),
 
+                TextInput::make('transaction_price_id')
+                    ->label('Transaction Price ID')
+                    ->helperText('The ID of a transaction price.')
+                    ->columnSpan(8),
+
                 TextInput::make('credits')
                     ->label('Credits')
                     ->required()
@@ -180,6 +185,8 @@ class SubscriptionPlanResource extends Resource
                         'unit' => FrequencyUnit::getPluralUnit($unit),
                     ]);
                 }),
+            Tables\Columns\TextColumn::make('price')->label('Price')->sortable(),
+            Tables\Columns\TextColumn::make('transaction_price_id')->label('Transaction Price ID')->toggleable(),
             Tables\Columns\TextColumn::make('enable_trial')->label('Trial Period')
                 ->formatStateUsing(fn ($state) => $state ? __('Enabled') : __('Disabled'))
                 ->sortable()

@@ -17,6 +17,7 @@ class SubscriptionPlan extends Model
         'enable_trial',
         'trial_days',
         'price',
+        'transaction_price_id',
         'credits',
         'enable_initial_fee',
         'initial_fee_type',
