@@ -68,18 +68,6 @@ class StripeCardController extends Controller
         return redirect($session->url);
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show(Request $request)
-    {
-        $intent = $request->user()->createSetupIntent();
-
-        return view('stripecard::card', [
-            'clientSecret' => $intent->client_secret,
-        ]);
-    }
-
     public function attach(Request $request)
     {
         $request->validate(['payment_method' => 'required|string']);

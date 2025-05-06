@@ -24,7 +24,6 @@ use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Log;
 use CmsMulti\FilamentClearCache\Facades\FilamentClearCache;
 
-use Illuminate\Support\Str;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 

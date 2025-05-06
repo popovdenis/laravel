@@ -1,4 +1,4 @@
-<div class="bg-gray-100 py-6 px-4">
+<div class="bg-gray-100 py-2 px-4">
     <h2 class="text-xl font-bold inline-block mb-4">
         {{ __('My Credits') }}
     </h2>
