@@ -14,9 +14,7 @@
                     <!-- Update Profile Information -->
                     @include('user::profile.partials.my-credits')
                     @include('user::profile.partials.account-information')
-
-                    @php $intent = auth()->user()->createSetupIntent(); @endphp
-                    @include('stripecard::card', ['clientSecret' => $intent->client_secret])
+                    <x-user::stripe-card />
                 </div>
             </div>
         </div>
