@@ -10,15 +10,15 @@
                 @endphp
                 <div
                     x-data="{ confirmBooking: false }"
-                    class="flex items-center justify-between border {{ $isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200' }} rounded-md px-6 py-4"
+                    class="flex items-start justify-between border {{ $isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200' }} rounded-md px-6 py-4"
                 >
                     <!-- Time -->
-                    <div class="w-24 text-blue-700 font-bold text-sm uppercase">
+                    <div class="w-24 px-2 text-blue-700 font-bold text-sm uppercase">
                         {{ $item['time'] }}
                     </div>
 
                     <!-- Subject details -->
-                    <div class="flex-1 px-4">
+                    <div class="flex-1 px-2">
                         <p class="text-xs text-gray-500 uppercase tracking-wide">
                             {{ $item['stream']->languageLevel->title }}
                             • Chapter {{ $item['current_subject_number'] }}
@@ -30,12 +30,12 @@
                     </div>
 
                     <!-- Teacher -->
-                    <div class="flex items-center justify-center w-64 space-x-2 mr-20">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($item['teacher']->name) }}&size=32"
-                             alt="{{ $item['teacher']->name }}"
+                    <div class="flex px-4 items-center gap-2">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($item['teacher']->firstname) }}&size=32"
+                             alt="{{ $item['teacher']->firstname }}"
                              class="w-8 h-8 rounded-full">
                         <span class="text-sm text-gray-500 uppercase tracking-wide">
-                            {{ __('Group Class with :name', ['name' => $item['teacher']->name]) }}
+                            {{ __('Group Class with :name', ['name' => $item['teacher']->firstname]) }}
                         </span>
                     </div>
 

@@ -54,58 +54,14 @@
                             </x-dropdown-link>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                                 onclick="event.preventDefault(); this.closest('form').submit();">
+                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
                     </x-dropdown>
 
-                    <!-- Mini Cart -->
-                    <div x-data="{ open: false }" x-cloak class="relative">
-                        <button @click="open = !open" class="relative inline-flex items-center">
-                            <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="9" cy="21" r="1"/>
-                                <circle cx="20" cy="21" r="1"/>
-                            </svg>
-                            @if($cartCount)
-                                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1">
-                                    {{ $cartCount }}
-                                </span>
-                            @endif
-                        </button>
-
-{{--                        <div x-show="open"--}}
-{{--                             x-transition--}}
-{{--                             @click.away="open = false"--}}
-{{--                             x-cloak--}}
-{{--                             class="absolute right-0 mt-2 w-80 bg-white border border-gray-200 shadow-lg rounded z-50">--}}
-{{--                            <div class="p-4 max-h-72 overflow-y-auto">--}}
-{{--                                @forelse($cart->items as $item)--}}
-{{--                                    <div class="border-b pb-2 mb-2">--}}
-{{--                                        <div class="text-sm font-medium text-gray-900">--}}
-{{--                                            {{ $item->itemable->title ?? 'Course' }}--}}
-{{--                                        </div>--}}
-{{--                                        <div class="text-xs text-gray-500">--}}
-{{--                                            QTY: {{ $item->quantity }}--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                @empty--}}
-{{--                                    <div x-show="open" x-cloak class="text-sm text-gray-500">Cart is empty</div>--}}
-{{--                                @endforelse--}}
-{{--                            </div>--}}
-
-{{--                            @if($cartCount)--}}
-{{--                                <div class="px-4 py-2 border-t text-right">--}}
-{{--                                    <a href="{{ route('cart.index') }}" class="text-sm text-blue-600 hover:underline">--}}
-{{--                                        Shopping Cart--}}
-{{--                                    </a>--}}
-{{--                                </div>--}}
-{{--                            @endif--}}
-{{--                        </div>--}}
-                    </div>
+                    <x-user::credit-display size="lg" />
                 </div>
             @endauth
 

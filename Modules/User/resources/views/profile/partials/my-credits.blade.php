@@ -13,7 +13,7 @@
 
         <div>
             <div class="text-green-600 font-bold text-3xl">
-                {{ __(':credits credits', ['credits' => $user->credit_balance]) }}
+                <x-user::credit-display />
             </div>
             <div class="font-semibold mt-1">{{ __('Current Balance')  }}</div>
             <p class="text-sm text-gray-600 mt-1">
