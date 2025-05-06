@@ -19,6 +19,7 @@ class SubscriptionData extends Data implements RequestDataInterface
     public function __construct(
         public User $student,
         public int $planId,
+        public SubscriptionPlan $plan,
         public ?int $amount,
         public ?string $transactionPriceId,
         public ?string $method,
@@ -41,6 +42,7 @@ class SubscriptionData extends Data implements RequestDataInterface
             'student' => auth()->user(),
             'planId' => $request->input('plan_id') ?? null,
             'amount' => $newPlan->price,
+            'plan' => $newPlan,
             'credits' => $newPlan->credits,
             'transactionPriceId' => $newPlan->transaction_price_id,
             'method' => setting('subscription.applicable_payment_method')

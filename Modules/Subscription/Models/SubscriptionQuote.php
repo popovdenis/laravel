@@ -5,6 +5,7 @@ namespace Modules\Subscription\Models;
 
 use Modules\Order\Models\Quote;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
+use Modules\SubscriptionPlan\Contracts\SubscriptionPlanInterface;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
 
@@ -19,6 +20,7 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     protected int $plan_id;
     protected int $credits;
     protected string $transaction_price_id;
+    protected SubscriptionPlanInterface $plan;
 
     public function getPaymentMethodConfig(): string
     {
@@ -83,5 +85,15 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     public function setTransactionPriceId($priceId)
     {
         $this->transaction_price_id = $priceId;
+    }
+
+    public function setPlan(SubscriptionPlanInterface $plan)
+    {
+        $this->plan = $plan;
+    }
+
+    public function getPlan(): SubscriptionPlanInterface
+    {
+        return $this->plan;
     }
 }

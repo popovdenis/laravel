@@ -17,9 +17,11 @@ class SubscriptionQuoteFactory
 {
     public function create(RequestDataInterface $requestData): SubscriptionQuoteInterface
     {
+        /** @var SubscriptionQuote $quote */
         $quote = app()->make(SubscriptionQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSourceId($requestData->planId);
+        $quote->setPlan($requestData->plan);
         $quote->setAmount($requestData->amount);
         $quote->setTransactionPriceid($requestData->transactionPriceId);
         $quote->getPayment()->importData($requestData);

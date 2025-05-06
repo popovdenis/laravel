@@ -5,6 +5,7 @@ namespace Modules\StripePayment\Models;
 
 use Illuminate\Support\Facades\Log;
 use Modules\Payment\Models\AbstractMethod;
+use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
 use Modules\Subscription\Services\SubscriptionService;
 
 /**
@@ -32,17 +33,30 @@ class StripePayment extends AbstractMethod
 
     public function processAction()
     {
+        /** @var SubscriptionQuoteInterface $quote */
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
+        $plan = $quote->getPlan();
 
         try {
             $transactionPrice = $quote->getTransactionPriceId();
 
             if ($user->subscribed()) {
-                $user->subscription()->cancelNowAndInvoice();
+                $user->subscription()->cancelNowAndInvoice(); // TODO: take in account to prolong the current subscription
                 //$subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
             }
-            $subscription = $user->newSubscription('default', $transactionPrice)->create();
+
+            $newSubscription = $user->newSubscription('default', $transactionPrice);
+            $subscriptionOptions = [
+                'collection_method' => 'send_invoice'
+            ];
+
+            if ($plan->isEnabledTrial()) {
+                $newSubscription->trialUntil(now()->addDays($plan->getTrialDays()));
+                $subscriptionOptions['days_until_due'] = $plan->getTrialDays();
+            }
+
+            $subscription = $newSubscription->create(null, [], $subscriptionOptions);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());

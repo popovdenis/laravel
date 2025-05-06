@@ -18,7 +18,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $subscriptionPlan = $user->getActiveSubscription()?->plan;
+        $subscriptionPlan = $user->subscribed() ? $user->subscription()->plan : null;
 
         return view('user::profile.dashboard', compact('user', 'subscriptionPlan'));
     }

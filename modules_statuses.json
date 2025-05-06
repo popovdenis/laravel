@@ -23,5 +23,6 @@
     "Invoice": true,
     "CacheInvalidate": true,
     "CronSchedule": true,
-    "StripeCard": true
+    "StripeCard": true,
+    "UserSubscription": true
 }
