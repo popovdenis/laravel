@@ -20,6 +20,17 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected int $streamId;
     protected int $slotId;
     protected int $credits;
+    private SubmitBookingValidatorInterface $bookingValidator;
+    private SlotAvailabilityValidatorInterface $slotValidator;
+
+    public function __construct(
+        SubmitBookingValidatorInterface $bookingValidator,
+        SlotAvailabilityValidatorInterface $slotValidator,
+    )
+    {
+        $this->bookingValidator = $bookingValidator;
+        $this->slotValidator = $slotValidator;
+    }
 
     public function getPaymentMethodConfig(): string
     {
@@ -28,8 +39,8 @@ class BookingQuote extends Quote implements BookingQuoteInterface
 
     public function validate(): void
     {
-        app(SubmitBookingValidatorInterface::class)->validate($this);
-        app(SlotAvailabilityValidatorInterface::class)->validate($this);
+        $this->bookingValidator->validate($this);
+        $this->slotValidator->validate($this);
     }
 
     public function save(): Booking

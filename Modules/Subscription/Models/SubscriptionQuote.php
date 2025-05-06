@@ -29,7 +29,7 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
 
     public function validate(): void
     {
-        // TODO: Implement validate() method.
+        // TODO: get current plan: if the current plan is not trial and payment method is null, then throw an exception
     }
 
     public function save(): ?\Illuminate\Database\Eloquent\Model

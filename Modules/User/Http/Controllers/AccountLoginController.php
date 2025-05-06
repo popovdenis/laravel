@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modules\User\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 use Modules\Base\Http\Controllers\Controller;
 
-class AuthenticatedSessionController extends Controller
+class AccountLoginController extends Controller
 {
     /**
-     * Display the login view.
+     * Display a listing of the resource.
      */
-    public function create(): View
+    public function index()
     {
-        return view('auth.login');
+        return view('user::account.login');
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Show the form for creating a new resource.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function create(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -42,6 +41,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect(route('user::account.login.index'));
     }
 }

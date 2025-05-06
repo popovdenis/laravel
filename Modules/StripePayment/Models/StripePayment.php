@@ -39,24 +39,22 @@ class StripePayment extends AbstractMethod
         $plan = $quote->getPlan();
 
         try {
-            $transactionPrice = $quote->getTransactionPriceId();
-
-            if ($user->subscribed()) {
-                $user->subscription()->cancelNowAndInvoice(); // TODO: take in account to prolong the current subscription
-                //$subscription = $user->subscription('default')->swapAndInvoice('price_1RJeW304fVTImIORrwg9xKbd')->skipTrial(); // switch now
+            if ($user->isSubscribed()) {
+                if ($user->subscription()->onTrial()) {
+                    $user->subscription()->cancelNow();
+                } else {
+                    $user->subscription()->cancelNowAndInvoice();
+                }
             }
 
-            $newSubscription = $user->newSubscription('default', $transactionPrice);
-            $subscriptionOptions = [
-                'collection_method' => 'send_invoice'
-            ];
+            $newSubscription = $user->newSubscription('default', $quote->getTransactionPriceId());
 
+            $subscriptionOptions = [];
             if ($plan->isEnabledTrial()) {
                 $newSubscription->trialUntil(now()->addDays($plan->getTrialDays()));
-                $subscriptionOptions['days_until_due'] = $plan->getTrialDays();
             }
 
-            $subscription = $newSubscription->create(null, [], $subscriptionOptions);
+            $subscription = $newSubscription->create($user->defaultPaymentMethod(), [], $subscriptionOptions);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());

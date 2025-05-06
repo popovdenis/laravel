@@ -1,38 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modules\User\Http\Controllers;
 
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
+use Illuminate\Validation\Rules;
 
-class RegisteredUserController extends Controller
+class AccountCreateController extends Controller
 {
     /**
-     * Display the registration view.
+     * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create(Request $request)
     {
         $subscriptionPlans = SubscriptionPlan::where('status', true)
             ->orderBy('sort_order')
             ->pluck('name', 'id');
 
-        return view('auth.register', compact('subscriptionPlans'));
+        return view('user::account.register', compact('subscriptionPlans'));
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
@@ -57,4 +53,25 @@ class RegisteredUserController extends Controller
 
         return redirect(route('profile.dashboard', absolute: false));
     }
+
+    /**
+     * Show the specified resource.
+     */
+    public function show($id)
+    {
+        return view('user::account.show');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        return view('user::account.edit');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id) {}
 }

@@ -1,34 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modules\User\Http\Controllers;
 
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\User\Models\User;
+use Illuminate\Validation\Rules;
 
-class NewPasswordController extends Controller
+class AccountNewPasswordController extends Controller
 {
     /**
-     * Display the password reset view.
+     * Display a listing of the resource.
      */
-    public function create(Request $request): View
+    public function index(Request $request)
     {
         return view('auth.reset-password', ['request' => $request]);
     }
 
     /**
-     * Handle an incoming new password request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Show the form for creating a new resource.
      */
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request)
     {
         $request->validate([
             'token' => ['required'],
@@ -55,8 +51,8 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            ? redirect()->route('login')->with('status', __($status))
+            : back()->withInput($request->only('email'))
+                ->withErrors(['email' => __($status)]);
     }
 }

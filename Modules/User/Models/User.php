@@ -106,6 +106,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->subscriptions()->where('stripe_status', 'active')->latest()->first();
     }
 
+    public function isSubscribed($type = 'default', $price = null): bool
+    {
+        return $this->subscribed($type, $price);
+    }
+
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'student_id');

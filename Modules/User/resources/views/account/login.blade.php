@@ -2,7 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('user::account.login.index') }}">
         @csrf
 
         <!-- Email Address -->
@@ -39,12 +39,12 @@
         </div>
 
         <div class="flex items-center justify-between mt-4">
-            <a href="{{ route('register') }}"
+            <a href="{{ route('user::account.create') }}"
                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {{ __('Do not have an account?') }}
             </a>
 
-            <a href="{{ route('password.request') }}"
+            <a href="{{ route('user::account.password.create') }}"
                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {{ __('Forgot your password?') }}
             </a>
