@@ -1,4 +1,7 @@
 <script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ $stripeKey }}');
+</script>
 
 <div class="bg-gray-100 px-4 py-6">
     <h2 class="text-xl font-bold inline-block mb-4">
@@ -6,7 +9,7 @@
     </h2>
 
     <div class="bg-white p-4 rounded shadow-sm flex flex-col">
-        <div x-data="stripeCardForm({{ json_encode(['hasCard' => $hasCard, 'stripeKey' => $stripeKey]) }})"
+        <div x-data="stripeCardForm({ stripe, elements: stripe.elements(), clientSecret: '{{ $clientSecret }}', hasCard: {{ $hasCard ? 'true' : 'false' }} })"
              x-init="init()" class="flex-1"
         >
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
@@ -50,7 +53,7 @@
                     </div>
                 </div>
 
-                <div x-show="showForm && '!{{ $hasCard }}'">
+                <div>
                     <form x-show="showForm" x-cloak method="POST" action="{{ route('stripecard::attach') }}" id="card-form">
                         @csrf
                         <div class="mb-4">
@@ -81,16 +84,15 @@
 </div>
 
 <script>
-    function stripeCardForm({ hasCard, stripeKey }) {
+    function stripeCardForm({ stripe, elements, clientSecret, hasCard }) {
         return {
             showForm: !hasCard,
-            stripe: null,
-            elements: null,
+            stripe,
+            elements,
             card: null,
+            isProcessing: false,
 
             init() {
-                this.stripe = Stripe(stripeKey);
-                this.elements = this.stripe.elements();
                 if (this.showForm) this.mountCard();
                 this.handleSubmit();
             },
@@ -118,12 +120,16 @@
                 form.addEventListener('submit', async (e) => {
                     e.preventDefault();
 
-                    const { setupIntent, error } = await this.stripe.confirmCardSetup('{{ $clientSecret }}', {
+                    if (this.isProcessing) return;
+                    this.isProcessing = true;
+
+                    const { setupIntent, error } = await this.stripe.confirmCardSetup(clientSecret, {
                         payment_method: { card: this.card }
                     });
 
                     if (error) {
                         document.getElementById('card-errors').textContent = error.message;
+                        this.isProcessing = false;
                     } else {
                         document.getElementById('payment-method').value = setupIntent.payment_method;
                         form.submit();
