@@ -80,6 +80,21 @@ class StripeCardController extends Controller
         $user->addPaymentMethod($request->payment_method);
         $user->updateDefaultPaymentMethod($request->payment_method);
 
-        return redirect()->back()->with('success', 'Card saved successfully!');
+        // TODO: call event to update subscription
+
+        return redirect()->back()->with('success', 'Card has been saved successfully!');
+    }
+
+    public function detach(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->hasDefaultPaymentMethod()) {
+            $user->deletePaymentMethod($user->defaultPaymentMethod()->id);
+        }
+
+        // TODO: call event to cance subscription
+
+        return redirect()->back()->with('success', 'Card has been deleted successfully!');
     }
 }

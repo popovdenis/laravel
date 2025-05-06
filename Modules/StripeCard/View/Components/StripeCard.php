@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\View\Components;
+namespace Modules\StripeCard\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -21,7 +21,7 @@ class StripeCard extends Component
         $intent = $user->createSetupIntent();
         $stripeKey = config('cashier.key');
 
-        return view('user::components.stripe-card', [
+        return view('stripecard::components.user-stripe-card', [
             'clientSecret' => $intent->client_secret,
             'stripeKey' => $stripeKey,
             'hasCard' => $user->hasDefaultPaymentMethod(),

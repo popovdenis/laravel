@@ -14,7 +14,7 @@
                     <!-- Update Profile Information -->
                     @include('user::profile.partials.my-credits')
                     @include('user::profile.partials.account-information')
-                    <x-user::stripe-card />
+                    <x-stripecard::stripe-card />
                 </div>
             </div>
         </div>
