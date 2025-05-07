@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->string('increment_id')->after('status')->nullable();
+            $table->string('increment_id', 64)->after('status')->nullable();
         });
     }
 

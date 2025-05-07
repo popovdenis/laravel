@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('increment_id')->after('state')->nullable();
+            $table->string('increment_id', 64)->after('state')->nullable();
         });
     }
 
