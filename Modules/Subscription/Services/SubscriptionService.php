@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Subscription\Services;
 
 use Modules\Payment\Contracts\TransactionServiceInterface;
+use Modules\Subscription\Models\ConfigProvider;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
 
@@ -18,10 +19,15 @@ class SubscriptionService
      * @var \Modules\Payment\Contracts\TransactionServiceInterface
      */
     private TransactionServiceInterface $transactionService;
+    private ConfigProvider $configProvider;
 
-    public function __construct(TransactionServiceInterface $transactionService)
+    public function __construct(
+        TransactionServiceInterface $transactionService,
+        ConfigProvider $configProvider
+    )
     {
         $this->transactionService = $transactionService;
+        $this->configProvider = $configProvider;
     }
 
     public function syncSubscriptionForUser(User $user, ?int $planId): void
@@ -52,9 +58,10 @@ class SubscriptionService
 
     public function updateCreditBalance(User $user, SubscriptionPlan $plan): void
     {
-        if ($plan->credits !== $user->credit_balance) {
-            $this->transactionService->calculateBalanceWithSubscription($user, $plan);
+        if ($this->configProvider->resetCreditsOnPlanChange()) {
+            $this->transactionService->adjustCredits($user, $user->credit_balance);
         }
+        $this->transactionService->topUpCredits($user, $plan->credits);
     }
 
     public function getUpdateUserSubscriptionOptions($plan): array

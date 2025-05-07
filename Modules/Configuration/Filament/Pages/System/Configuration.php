@@ -103,6 +103,12 @@ class Configuration extends BaseSettings
                     ]),
 
                     Tabs\Tab::make('Sales')->schema([
+                        Section::make('General')->schema([
+                            Toggle::make('subscription.general.reset_credits_on_plan_change')
+                                ->label('Clear customer credits when switching plans')
+                                ->helperText('If disabled, the credits will be added to the customer’s existing credit balance.')
+                                ->columnSpan(6),
+                        ])->collapsible(),
                         Section::make('Payment Methods')->schema([
                             Section::make('Credits')->schema([
                                 Toggle::make('payment.credits.active')

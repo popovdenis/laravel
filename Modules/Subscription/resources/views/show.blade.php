@@ -37,15 +37,34 @@
                                         @foreach ($plans as $plan)
                                             <div class="border rounded-lg p-6 bg-white shadow hover:shadow-lg transition">
                                                 <h4 class="text-xl font-bold mb-2">{{ $plan->name }}</h4>
+
+                                                <div>
+                                                    <span class="text-sm text-gray-500">{{ __('Price:') }}</span>
+                                                    <span class="text-sm font-bold">${{ number_format($plan->price, 2) }}</span>
+                                                </div>
+
+                                                <div>
+                                                    <span class="text-sm text-gray-500">{{ __('Credits:') }}</span>
+                                                    <span class="text-sm font-bold">{{ $plan->credits }}</span>
+                                                </div>
+
                                                 <p class="text-gray-600 mb-4">{{ $plan->description }}</p>
-                                                <div class="text-lg font-semibold mb-4">${{ number_format($plan->price, 2) }}</div>
 
                                                 <button
                                                     type="button"
                                                     @click="open = true; planId = '{{ $plan->id }}'; planName = '{{ $plan->name }}'"
-                                                    class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded"
+                                                    class="block w-full text-center font-bold py-2 rounded border transition"
+                                                    style="background-color: #80C242; color: white; border-color: #80C242;"
+                                                    @mouseover="
+                                                        $el.style.backgroundColor = '#F1F3F6';
+                                                        $el.style.color = '#80C242';
+                                                    "
+                                                    @mouseleave="
+                                                        $el.style.backgroundColor = '#80C242';
+                                                        $el.style.color = 'white';
+                                                    "
                                                 >
-                                                    Choose
+                                                    {{ __('Choose')  }}
                                                 </button>
                                             </div>
                                         @endforeach
@@ -53,15 +72,15 @@
                                     <!-- Modal -->
                                     <div x-show="open" x-cloak class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                                         <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-                                            <h2 class="text-lg font-bold mb-4">Confirm Plan Change</h2>
+                                            <h2 class="text-lg font-bold mb-4">{{ __('Confirm Plan Change') }}</h2>
                                             <p class="mb-4">Are you sure you want to switch to the <strong x-text="planName"></strong> plan?</p>
 
                                             <form method="POST" action="{{ route('subscription::store') }}">
                                                 @csrf
                                                 <input type="hidden" name="plan_id" :value="planId">
                                                 <div class="flex space-x-4">
-                                                    <button type="button" @click="open = false" class="px-4 py-2 bg-gray-300 rounded w-full">Cancel</button>
-                                                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded w-full">Yes, Confirm</button>
+                                                    <button type="button" @click="open = false" class="px-4 py-2 bg-gray-300 rounded w-full">{{ __('Cancel') }}</button>
+                                                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded w-full">{{ __('Yes, Confirm') }}</button>
                                                 </div>
                                             </form>
                                         </div>

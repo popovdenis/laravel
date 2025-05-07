@@ -39,23 +39,24 @@ class TransactionService implements TransactionServiceInterface
         $user->update(['credit_balance' => $user->credit_balance + $amount]);
     }
 
-    public function calculateBalanceWithSubscription(User $user, SubscriptionPlan $plan): void
+    public function adjustCredits(User $user, int $creditBalance): void
     {
-        $currentBalance = $user->credit_balance;
-
         // 1. Write off remaining credits if any
-        if ($currentBalance > 0) {
+        if ($creditBalance > 0) {
             $this->adjust(
                 user: $user,
-                amount: -$currentBalance,
+                amount: -$creditBalance,
                 comment: 'Remaining credits expired due to subscription reset'
             );
         }
+    }
 
+    public function topUpCredits(User $user, int $creditBalance): void
+    {
         // 2. Assign new credits from the subscription plan
         $this->topUp(
             user: $user,
-            amount: $plan->credits,
+            amount: $creditBalance,
             source: 'subscription',
             comment: 'Credits assigned from subscription plan'
         );
