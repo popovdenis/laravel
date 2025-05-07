@@ -8,6 +8,7 @@ use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
 use Modules\SubscriptionPlan\Contracts\SubscriptionPlanInterface;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Modules\User\Models\User;
+use Modules\UserSubscription\Contracts\CustomerPaymentValidatorInterface;
 
 /**
  * Class SubscriptionQuote
@@ -21,6 +22,12 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     protected int $credits;
     protected string $transaction_price_id;
     protected SubscriptionPlanInterface $plan;
+    private CustomerPaymentValidatorInterface $customerPaymentValidator;
+
+    public function __construct(CustomerPaymentValidatorInterface $customerPaymentValidator)
+    {
+        $this->customerPaymentValidator = $customerPaymentValidator;
+    }
 
     public function getPaymentMethodConfig(): string
     {
@@ -29,7 +36,7 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
 
     public function validate(): void
     {
-        // TODO: get current plan: if the current plan is not trial and payment method is null, then throw an exception
+        $this->customerPaymentValidator->validate($this);
     }
 
     public function save(): ?\Illuminate\Database\Eloquent\Model

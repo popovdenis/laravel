@@ -6,7 +6,7 @@ namespace Modules\Booking\Models;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
-use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
+use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Order\Models\Quote;
 use Modules\User\Models\User;
 
@@ -21,14 +21,14 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected int $streamId;
     protected int $slotId;
     protected int $credits;
-    private SubmitBookingValidatorInterface $bookingValidator;
+    private SubmitQuoteValidatorInterface $bookingValidator;
     private SlotAvailabilityValidatorInterface $slotValidator;
     private CreditBalanceValidatorInterface $creditBalanceValidator;
 
     public function __construct(
-        SubmitBookingValidatorInterface $bookingValidator,
+        SubmitQuoteValidatorInterface      $bookingValidator,
         SlotAvailabilityValidatorInterface $slotValidator,
-        CreditBalanceValidatorInterface $creditBalanceValidator
+        CreditBalanceValidatorInterface    $creditBalanceValidator,
     )
     {
         $this->bookingValidator = $bookingValidator;
@@ -43,9 +43,9 @@ class BookingQuote extends Quote implements BookingQuoteInterface
 
     public function validate(): void
     {
+        $this->creditBalanceValidator->validate($this);
         $this->bookingValidator->validate($this);
         $this->slotValidator->validate($this);
-        $this->creditBalanceValidator->validate($this);
     }
 
     public function save(): Booking

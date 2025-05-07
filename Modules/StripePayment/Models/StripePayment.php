@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Modules\Payment\Models\AbstractMethod;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
+use Modules\Subscription\Exceptions\SubscriptionValidationException;
 use Stripe\Exception\InvalidRequestException;
 
 /**
@@ -43,6 +44,10 @@ class StripePayment extends AbstractMethod
         $plan = $quote->getPlan();
         $activeSubscription = $user->getActiveSubscription();
 
+        if ($activeSubscription && !$user->hasDefaultPaymentMethod()) {
+            throw new SubscriptionValidationException('You don’t have an active payment method.');
+        }
+
         try {
             if ($activeSubscription && $activeSubscription->valid()) {
                 if ($activeSubscription->onTrial()) {
@@ -66,7 +71,7 @@ class StripePayment extends AbstractMethod
                 $newSubscription->trialUntil(now()->addDays($plan->getTrialDays()));
             }
 
-            $subscription = $newSubscription->create($user->defaultPaymentMethod(), [], $subscriptionOptions);
+            $subscription = $newSubscription->create($user->defaultPaymentMethod()->id, [], $subscriptionOptions);
 
             $quote->setModel($subscription);
         } catch (\Exception $exception) {

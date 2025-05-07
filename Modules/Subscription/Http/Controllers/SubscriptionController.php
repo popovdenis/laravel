@@ -7,6 +7,7 @@ use Modules\Base\Http\Controllers\Controller;
 use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Subscription\Data\SubscriptionData;
+use Modules\Subscription\Exceptions\SubscriptionValidationException;
 use Modules\Subscription\Factories\SubscriptionQuoteFactory;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 use Throwable;
@@ -59,6 +60,13 @@ class SubscriptionController extends Controller
             $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
 
             return redirect()->route('profile.dashboard')->with('success', 'Your have been subscribed successfully.');
+        } catch (SubscriptionValidationException $exception) {
+            $message = 'You don’t have an active payment method. ';
+            $message .= '<a href=":link" class="underline hover:text-blue-800">Add a card</a> to continue.';
+
+            return redirect()->back()
+                ->withErrors(['error' => __($message, ['link' => route('profile.dashboard')])])
+                ->withInput();
         } catch (Throwable $e) {
             report($e);
 

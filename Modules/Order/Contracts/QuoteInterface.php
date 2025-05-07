@@ -13,6 +13,8 @@ use Modules\User\Models\User;
  */
 interface QuoteInterface
 {
+    public function validate();
+
     public function getUser(): User;
     public function setUser(User $user);
 
@@ -32,6 +34,4 @@ interface QuoteInterface
     public function setPayment(PaymentInterface $payment);
 
     public function getPaymentMethodConfig();
-
-    public function validate();
 }

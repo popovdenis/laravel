@@ -41,6 +41,6 @@ class AccountLoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect(route('user::account.login.index'));
+        return redirect(route('login'));
     }
 }

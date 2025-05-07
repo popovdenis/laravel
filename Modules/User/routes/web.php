@@ -30,7 +30,7 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [AccountCreateController::class, 'create'])->name('user::account.create');
     Route::post('register', [AccountCreateController::class, 'store'])->name('user::account.store');
 
-    Route::get('login', [AccountLoginController::class, 'index'])->name('user::account.login.index');
+    Route::get('login', [AccountLoginController::class, 'index'])->name('login');
     Route::post('login', [AccountLoginController::class, 'create'])->name('user::account.login.create');
 
     Route::get('forgot-password', [AccountResetPasswordController::class, 'create'])->name('user::account.password.create');

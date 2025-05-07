@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
-use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
+use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
 use Modules\Booking\Services\CreditBalanceValidator;
 use Modules\Booking\Services\SlotAvailabilityValidator;
@@ -47,7 +47,7 @@ class BookingServiceProvider extends ServiceProvider
 
         // Slot Validator binding
         $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
-        $this->app->bind(SubmitBookingValidatorInterface::class, SubmitBookingValidator::class);
+        $this->app->bind(SubmitQuoteValidatorInterface::class, SubmitBookingValidator::class);
         $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
     }
 

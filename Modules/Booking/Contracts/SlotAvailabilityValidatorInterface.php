@@ -2,12 +2,13 @@
 
 namespace Modules\Booking\Contracts;
 
+use Modules\Order\Contracts\QuoteValidatorInterface;
+
 /**
  * Interface SlotAvailabilityValidatorInterface
  *
  * @package App\Services\Booking
  */
-interface SlotAvailabilityValidatorInterface
+interface SlotAvailabilityValidatorInterface extends QuoteValidatorInterface
 {
-    public function validate(BookingQuoteInterface $bookingQuote): void;
 }

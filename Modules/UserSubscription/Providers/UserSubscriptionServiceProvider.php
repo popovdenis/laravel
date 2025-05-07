@@ -4,6 +4,8 @@ namespace Modules\UserSubscription\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\UserSubscription\Contracts\CustomerPaymentValidatorInterface;
+use Modules\UserSubscription\Services\CustomerPaymentValidator;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -35,6 +37,8 @@ class UserSubscriptionServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(CustomerPaymentValidatorInterface::class, CustomerPaymentValidator::class);
     }
 
     /**
