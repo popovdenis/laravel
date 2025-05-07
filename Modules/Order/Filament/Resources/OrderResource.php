@@ -34,7 +34,7 @@ class OrderResource extends Resource
                             Section::make('Order & Account Information')->icon('heroicon-m-check-badge')->columns(3)->schema([
                                 Placeholder::make('id')
                                     ->label('Order #')
-                                    ->content(fn ($record) => '#' . self::formatWithTemplate($record->id)),
+                                    ->content(fn ($record) => $record->increment_id),
                                 Placeholder::make('created_at')
                                     ->label('Order Date')
                                     ->content(fn($record) => $record->created_at->format('M d, Y H:i')),
@@ -52,13 +52,23 @@ class OrderResource extends Resource
                                     ->content(fn($record) => $record->purchasable->stripe_id ?? '—'),
                                 Placeholder::make('stripe_price')
                                     ->label('Stripe Price')
-                                    ->content(fn($record) => $record->purchasable->stripe_price ?? '—'),
+                                    ->content(function ($record) {
+                                        if (!$record->purchasable->stripe_price) {
+                                            return '—';
+                                        }
+                                        return self::getFormattedPrice((float)$record->purchasable->stripe_price);
+                                    }),
                                 Placeholder::make('type')
                                     ->label('Subscription Type')
                                     ->content(fn($record) => $record->purchasable->type ?? '—'),
                                 Placeholder::make('credits_amount')
                                     ->label('Credits')
-                                    ->content(fn($record) => $record->purchasable->credits_amount ?? '—'),
+                                    ->content(function ($record) {
+                                        if (!$record->purchasable->credits_amount) {
+                                            return '—';
+                                        }
+                                        return self::getFormattedPrice((float)$record->purchasable->credits_amount);
+                                    }),
                                 Placeholder::make('trial_ends_at')
                                     ->label('Trial End At')
                                     ->content(fn($record) => $record->purchasable->trial_ends_at?->format('M d, Y H:i') ?? '-'),
@@ -116,6 +126,10 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('increment_id')
+                    ->label('Order ID')
+                    ->sortable(),
+
                 TextColumn::make('id')
                     ->label('Order ID')
                     ->sortable(),
@@ -201,12 +215,7 @@ class OrderResource extends Resource
         return false;
     }
 
-    private static function formatWithTemplate(int $id, string $template = '00000000'): string
-    {
-        return substr($template, 0, -strlen((string)$id)) . $id;
-    }
-
-    protected static function getFormattedPrice($amount, $currency): bool|string
+    protected static function getFormattedPrice($amount, $currency = 'aud'): bool|string
     {
         $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($amount, strtoupper($currency));

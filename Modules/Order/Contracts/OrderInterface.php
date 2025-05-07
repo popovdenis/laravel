@@ -31,4 +31,7 @@ interface OrderInterface
 
     public function setTotalAmount(int $totalAmount): void;
     public function getTotalAmount();
+
+    public function getIncrementId();
+    public function setIncrementId($incrementId);
 }

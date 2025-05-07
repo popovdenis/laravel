@@ -19,15 +19,6 @@ interface OrderPlacementServiceInterface
     public function cancel(OrderInterface $order): bool;
 
     /**
-     * Gets the status for a specified order.
-     *
-     * @param int $id The order ID.
-     *
-     * @return string Booking status.
-     */
-    public function getStatus($id);
-
-    /**
      * @param OrderInterface $order
      *
      * @return OrderInterface

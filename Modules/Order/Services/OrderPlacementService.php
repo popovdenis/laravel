@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\OrderPlacementServiceInterface;
 use Modules\Order\Contracts\PurchasableInterface;
+use Modules\Order\Contracts\SequenceInterface;
 use Modules\Order\Enums\OrderActionEnum;
 use Modules\Order\Models\OrderTransactionManager;
 
@@ -21,15 +22,15 @@ class OrderPlacementService implements OrderPlacementServiceInterface
      * @var \Modules\Order\Models\OrderTransactionManager
      */
     private OrderTransactionManager $transactionManager;
+    private SequenceInterface $sequence;
 
-    public function __construct(OrderTransactionManager $transactionManager)
+    public function __construct(
+        OrderTransactionManager $transactionManager,
+        SequenceInterface $sequence
+    )
     {
         $this->transactionManager = $transactionManager;
-    }
-
-    public function getStatus($id)
-    {
-        // TODO: Implement getStatus() method.
+        $this->sequence = $sequence;
     }
 
     public function place(OrderInterface $order): OrderInterface
@@ -43,8 +44,12 @@ class OrderPlacementService implements OrderPlacementServiceInterface
 
         // save order
         try {
-            $model = $order->getQuote()->save();
+            $quote = $order->getQuote();
+            $model = $quote->save();
             $order->purchasable()->associate($model);
+            $order->save();
+
+            $order->setIncrementId($this->sequence->getCurrentValue($order->id));
             $order->save();
 
             $this->transactionManager->handle($order, OrderActionEnum::ORDER_ACTION_PLACED);
@@ -81,8 +86,6 @@ class OrderPlacementService implements OrderPlacementServiceInterface
 //            );
             throw $e;
         }
-
-
 
         return true;
     }

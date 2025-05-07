@@ -140,7 +140,7 @@ class InvoiceResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('Invoice')
+                TextColumn::make('increment_id')
                     ->label('ID')
                     ->sortable()
                     ->toggleable(),
@@ -151,16 +151,16 @@ class InvoiceResource extends Resource
                     ->sortable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('order.id')
-                     ->label('Order #')
-                     ->formatStateUsing(fn ($state) => $state ? '#' . self::formatWithTemplate($state) : '—')
-                     ->url(fn ($record) => $record->order
-                         ? route('filament.admin.resources.orders.view', ['record' => $record->order->id])
-                         : null)
-                     ->openUrlInNewTab()
-                     ->color('primary')
-                     ->toggleable()
-                     ->sortable(),
+                Tables\Columns\TextColumn::make('order.increment_id')
+                    ->label('Order #')
+                    ->formatStateUsing(fn($state, $record) => $state ?? '—')
+                    ->url(fn($record) => $record->order
+                        ? route('filament.admin.resources.orders.view', ['record' => $record->order->id])
+                        : null)
+                    ->openUrlInNewTab()
+                    ->color('primary')
+                    ->toggleable()
+                    ->sortable(),
 
                 TextColumn::make('order.created_at')
                     ->label('Order Date')
@@ -240,11 +240,6 @@ class InvoiceResource extends Resource
     public static function canDelete(Model $record): bool
     {
         return false;
-    }
-
-    private static function formatWithTemplate(int $id, string $template = '00000000'): string
-    {
-        return substr($template, 0, -strlen((string)$id)) . $id;
     }
 
     protected static function getFormattedPrice($amount, $currency): bool|string

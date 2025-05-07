@@ -30,6 +30,7 @@ class Order extends Model implements OrderInterface
         'purchasable_id',
         'status',
         'total_amount',
+        'increment_id',
     ];
 
     protected $casts = [
@@ -39,8 +40,9 @@ class Order extends Model implements OrderInterface
 
     protected QuoteInterface $quote;
     protected ?PaymentInterface $method = null;
+
     /**
-     * @var \Modules\EventManager\Contracts\ManagerInterface
+     * @var ManagerInterface|null
      */
     private static ?ManagerInterface $eventManager = null;
 
@@ -134,6 +136,16 @@ class Order extends Model implements OrderInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function setIncrementId($incrementId)
+    {
+        $this->increment_id = $incrementId;
+    }
+
+    public function getIncrementId()
+    {
+        return $this->increment_id;
     }
 
     public function place(): void

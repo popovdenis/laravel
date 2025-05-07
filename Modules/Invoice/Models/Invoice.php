@@ -32,6 +32,7 @@ class Invoice extends Model
         'pdf_url',
         'increment_id',
         'status',
+        'increment_id',
         'amount_paid',
         'subtotal',
         'total',

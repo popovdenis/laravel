@@ -9,9 +9,11 @@ use Modules\Order\Contracts\OrderFactoryInterface;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Order\Contracts\OrderPlacementServiceInterface;
+use Modules\Order\Contracts\SequenceInterface;
 use Modules\Order\Factories\OrderFactory;
 use Modules\Order\Models\Order;
 use Modules\Order\Models\OrderManager;
+use Modules\Order\Models\Sequence;
 use Modules\Order\Services\OrderPlacementService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
@@ -52,6 +54,7 @@ class OrderServiceProvider extends ServiceProvider
         $this->app->bind(OrderManagerInterface::class, OrderManager::class);
         $this->app->bind(OrderPlacementServiceInterface::class, OrderPlacementService::class);
         $this->app->bind(OrderFactoryInterface::class, OrderFactory::class);
+        $this->app->bind(SequenceInterface::class, Sequence::class);
     }
 
     /**

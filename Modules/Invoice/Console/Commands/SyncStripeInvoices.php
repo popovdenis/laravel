@@ -6,7 +6,9 @@ namespace Modules\Invoice\Console\Commands;
 use Illuminate\Console\Command;
 
 use Laravel\Cashier\Invoice;
+use Modules\Order\Contracts\SequenceInterface;
 use Modules\Order\Enums\OrderStatusEnum;
+use Modules\Order\Models\Quote;
 use Modules\User\Models\User;
 use Modules\Invoice\Models\Invoice as LocalInvoice;
 use Throwable;
@@ -22,6 +24,13 @@ class SyncStripeInvoices extends Command
 
     protected $signature = self::CONSOLE_COMMAND_INVOICES_SYNC_STRIPE . ' {--email= : The email of the user(optional)}';
     protected $description = 'Fetch and store Stripe invoices for each user';
+    private SequenceInterface $sequence;
+
+    public function __construct(SequenceInterface $sequence)
+    {
+        parent::__construct();
+        $this->sequence = $sequence;
+    }
 
     public function handle(): int
     {
@@ -73,7 +82,7 @@ class SyncStripeInvoices extends Command
                 $order->update(['status' => OrderStatusEnum::ORDER_STATUS_PROCESSING]);
 
                 try {
-                    LocalInvoice::create([
+                    $invoice = LocalInvoice::create([
                         'order_id'          => $order?->id,
                         'user_id'           => $user->id,
                         'stripe_id'         => $subscriptionId,
@@ -94,6 +103,7 @@ class SyncStripeInvoices extends Command
                         'total_excl_tax'    => $this->formatNumber($invoiceData->asStripeInvoice()->total_excluding_tax),
                     ]);
 
+                    $invoice->update(['increment_id' => $this->sequence->getCurrentValue($invoice->id)]);
                     $order->update(['status' => OrderStatusEnum::ORDER_STATUS_COMPLETE]);
 
                     $this->info("Stored invoice: $subscriptionId");
