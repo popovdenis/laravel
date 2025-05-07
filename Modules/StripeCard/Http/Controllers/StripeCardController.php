@@ -93,7 +93,7 @@ class StripeCardController extends Controller
             $user->deletePaymentMethod($user->defaultPaymentMethod()->id);
         }
 
-        // TODO: call event to cance subscription
+        // TODO: call event to cancel subscription
 
         return redirect()->back()->with('success', 'Card has been deleted successfully!');
     }
