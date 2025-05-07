@@ -79,6 +79,23 @@ class Configuration extends BaseSettings
                                 ->helperText('Delay in seconds between booking requests. Use 0 to disable.'),
                         ]),
 
+                    Tabs\Tab::make('Customers')->schema([
+                        Section::make('Customer Configuration')->schema([
+                            Section::make('Password Options')->schema([
+                                TextInput::make('customer.password.required_character_classes_number')
+                                    ->label('Number of Required Character Classes')
+                                    ->helperText('Number of different character classes required in password: Lowercase, Uppercase, Digits, Special Characters.')
+                                    ->columnSpan(6),
+                                TextInput::make('customer.password.minimum_password_length')
+                                    ->label('Minimum Password Length')
+                                    ->rules(['integer', 'min:0'])
+                                    ->numeric()
+                                    ->helperText('Please enter a number 1 or greater in this field.')
+                                    ->columnSpan(6),
+                            ])->columns(10)->collapsible(),
+                        ])
+                    ]),
+
                     Tabs\Tab::make('Sales')->schema([
                         Section::make('Payment Methods')->schema([
                             Section::make('Credits')->schema([

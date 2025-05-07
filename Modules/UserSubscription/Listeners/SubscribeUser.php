@@ -23,9 +23,14 @@ class SubscribeUser
     /**
      * Handle the event.
      */
-    public function handle(Registered $event): void
+    public function handle(array $data): void
     {
-        $event->user->assignRole('Student');
-        $this->subscriptionService->syncSubscriptionForUser($event->user, (int) $event->subscriptionPlanId);
+        $customer = $data['customer'];
+        $customerData = $data['customer_data'];
+
+        $customer->assignRole('Student');
+        $plan = $this->subscriptionService->getSubscriptionPlan((int) $customerData->subscriptionPlanId);
+        $this->subscriptionService->updateCreditBalance($customer, $plan);
+        //TODO: subscribe customer to the selected subscription
     }
 }

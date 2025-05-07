@@ -39,53 +39,15 @@ class SubscriptionService
         if ($planId) {
             $plan = $this->getSubscriptionPlan($planId);
 
-            $this->updateUserSubscription($user, $this->getUpdateUserSubscriptionOptions($plan));
             $this->updateCreditBalance($user, $plan);
         } else {
             $user->subscriptions()?->delete();
         }
     }
 
-    public function getUpdateUserSubscriptionOptions($plan): array
-    {
-        $now = now();
-        $trialEndsAt = null;
-
-        if ($plan?->enable_trial && $plan->trial_days) {
-            $trialEndsAt = $now->copy()->addDays($plan->trial_days);
-        }
-
-        $startsAt = $trialEndsAt ?? $now;
-
-        $endsAt = match ($plan->frequency_unit) {
-            'day'    => $startsAt->copy()->addDays($plan->frequency),
-            'week'   => $startsAt->copy()->addWeeks($plan->frequency),
-            'month'  => $startsAt->copy()->addMonths($plan->frequency),
-            'year'   => $startsAt->copy()->addYears($plan->frequency),
-            default  => null,
-        };
-
-        return [
-            'plan_id'        => $plan->id,
-            'starts_at'      => $startsAt,
-            'ends_at'        => $endsAt,
-            'trial_ends_at'  => $trialEndsAt,
-            'credits_amount' => $plan->credits
-        ];
-    }
-
     public function getSubscriptionPlan(int $planId): SubscriptionPlan
     {
         return \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($planId);
-    }
-
-    protected function updateUserSubscription(User $user, array $options): void
-    {
-        if ($activeSubscription = $user->getActiveSubscription()) {
-            $activeSubscription->update($options);
-        } else {
-            $user->subscriptions()->create($options);
-        }
     }
 
     public function updateCreditBalance(User $user, SubscriptionPlan $plan): void

@@ -11,7 +11,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        'customer_register_success' => [
+            \Modules\UserSubscription\Listeners\SubscribeUser::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

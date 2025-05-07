@@ -2,17 +2,33 @@
 
 namespace Modules\User\Http\Controllers;
 
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Modules\Base\Exceptions\AlreadyExistsException;
+use Modules\Base\Exceptions\InputException;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
-use Modules\User\Models\User;
-use Illuminate\Validation\Rules;
+use Modules\User\Contracts\AccountManagementInterface;
+use Modules\User\Data\CustomerData;
+use Modules\User\Exceptions\CreateAccountException;
+use Throwable;
 
 class AccountCreateController extends Controller
 {
+    private ManagerInterface $eventManager;
+
+    private AccountManagementInterface $accountManager;
+
+    public function __construct(
+        ManagerInterface $eventManager,
+        AccountManagementInterface $accountManager
+    )
+    {
+        $this->eventManager = $eventManager;
+        $this->accountManager = $accountManager;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -30,26 +46,28 @@ class AccountCreateController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'firstname' => ['required', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'subscription_plan_id'  => ['required', 'exists:subscription_plans,id'],
-        ]);
+        try {
+            $customerData = CustomerData::fromRequest($request);
 
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+            $customer = $this->accountManager->createAccount($customerData, $customerData->password);
 
-        event(new Registered($user, $request->input('subscription_plan_id')));
+            $this->eventManager->dispatch(
+                'customer_register_success',
+                ['customer' => $customer, 'customer_data' => $customerData]
+            );
+        } catch (CreateAccountException | InputException | AlreadyExistsException $exception) {
+            return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();
+        } catch (Throwable $e) {
+            report($e);
 
-        $user->password_plaint = $request->password;
+            return redirect()->back()
+                ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
+                ->withInput();
+        }
 
-        Auth::login($user);
+        $customer->password_plaint = $request->password;
+
+        Auth::login($customer);
 
         return redirect(route('profile.dashboard', absolute: false));
     }
