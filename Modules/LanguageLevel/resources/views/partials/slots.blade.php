@@ -45,7 +45,7 @@
                             <div x-data="{ confirmCancel: false }">
                                 <button
                                     @click="confirmCancel = true"
-                                    class="btn-cancel-booking"
+                                    class="btn btn-cancel-booking"
                                 >
                                     {{ __('Cancel Booking') }}
                                 </button>
@@ -61,13 +61,13 @@
                                             {{ __('Are you sure you want to cancel this booking?') }}
                                         </p>
                                         <div class="flex justify-center space-x-2">
-                                            <button @click="confirmCancel = false" class="btn-secondary">
+                                            <button @click="confirmCancel = false" class="btn btn-secondary">
                                                 {{ __('No, Keep Booking') }}
                                             </button>
                                             <form method="POST" action="{{ route('booking.cancel') }}">
                                                 @csrf
                                                 <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
-                                                <button type="submit" class="btn-cancel">
+                                                <button type="submit" class="btn btn-cancel">
                                                     {{ __('Yes, Cancel Booking') }}
                                                 </button>
                                             </form>
@@ -76,11 +76,11 @@
                                 </div>
                             </div>
                         @else
-                            <button @click="confirmBooking = true" class="px-4 py-2 btn-primary rounded-md">
+                            <button @click="confirmBooking = true" class="px-4 py-2 btn btn-primary rounded-md">
                                 {{ __('Book') }}
                             </button>
                         @endif
-                        <button class="px-4 py-2 btn-secondary rounded-md">
+                        <button class="px-4 py-2 btn btn-secondary rounded-md">
                             {{ __('Details') }}
                         </button>
                     </div>
@@ -94,14 +94,14 @@
                         <div class="bg-white p-6 rounded shadow-md text-center">
                             <p class="mb-4 text-gray-800 font-medium">{{ __('Are you sure you want to book this slot?') }}</p>
                             <div class="flex justify-center space-x-2">
-                                <button @click="confirmBooking = false" class="btn-secondary">
+                                <button @click="confirmBooking = false" class="btn btn-secondary">
                                     {{ __('Cancel') }}
                                 </button>
                                 <form method="POST" action="{{ route('booking.store') }}">
                                     @csrf
                                     <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
                                     <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
-                                    <button type="submit" class="btn-primary">
+                                    <button type="submit" class="btn btn-primary">
                                         {{ __('Confirm Booking') }}
                                     </button>
                                 </form>

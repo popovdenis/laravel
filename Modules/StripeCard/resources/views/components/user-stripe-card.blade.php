@@ -21,11 +21,11 @@
                         </div>
                     @endif
                     <div class="flex items-center space-x-2 mt-4">
-                        <button @click="showCardForm()" class="px-4 py-2 mr-2 btn-secondary rounded">
+                        <button @click="showCardForm()" class="px-4 py-2 mr-2 btn btn-secondary rounded">
                             {{ __('Change card')  }}
                         </button>
                         <div x-data="{ showModal: false }">
-                            <button @click="showModal = true" class="px-4 py-2 btn-cancel rounded">
+                            <button @click="showModal = true" class="px-4 py-2 btn btn-cancel rounded">
                                 {{ __('Delete Card') }}
                             </button>
 
@@ -39,11 +39,11 @@
                                         <form method="POST" action="{{ route('stripecard::detach') }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-cancel">
+                                            <button type="submit" class="btn btn-cancel">
                                                 Delete
                                             </button>
                                         </form>
-                                        <button @click="showModal = false" class="btn-secondary">
+                                        <button @click="showModal = false" class="btn btn-secondary">
                                             Cancel
                                         </button>
                                     </div>
