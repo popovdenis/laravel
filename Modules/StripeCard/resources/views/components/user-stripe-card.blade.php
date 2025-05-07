@@ -33,17 +33,17 @@
                             <div x-show="showModal" x-cloak class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                                 <!-- Modal content -->
                                 <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
-                                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirm deletion</h3>
-                                    <p class="text-sm text-gray-600 mb-6">Are you sure you want to delete your saved card?</p>
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('Confirm deletion') }}</h3>
+                                    <p class="text-sm text-gray-600 mb-6">{{ __('Are you sure you want to delete your saved card?') }}</p>
                                     <div class="flex justify-end space-x-3">
                                         <form method="POST" action="{{ route('stripecard::detach') }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                                            <button type="submit" class="btn-cancel">
                                                 Delete
                                             </button>
                                         </form>
-                                        <button @click="showModal = false" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                                        <button @click="showModal = false" class="btn-secondary">
                                             Cancel
                                         </button>
                                     </div>
