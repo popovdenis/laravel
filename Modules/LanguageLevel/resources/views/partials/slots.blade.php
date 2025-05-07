@@ -94,14 +94,14 @@
                         <div class="bg-white p-6 rounded shadow-md text-center">
                             <p class="mb-4 text-gray-800 font-medium">{{ __('Are you sure you want to book this slot?') }}</p>
                             <div class="flex justify-center space-x-2">
-                                <button @click="confirmBooking = false" class="px-4 py-2 bg-gray-300 rounded">
+                                <button @click="confirmBooking = false" class="btn-secondary">
                                     {{ __('Cancel') }}
                                 </button>
                                 <form method="POST" action="{{ route('booking.store') }}">
                                     @csrf
                                     <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
                                     <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
-                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
+                                    <button type="submit" class="btn-primary">
                                         {{ __('Confirm Booking') }}
                                     </button>
                                 </form>
