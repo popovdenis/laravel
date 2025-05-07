@@ -34,5 +34,4 @@ interface QuoteInterface
     public function getPaymentMethodConfig();
 
     public function validate();
-//    public function save(): \Illuminate\Database\Eloquent\Model;
 }
