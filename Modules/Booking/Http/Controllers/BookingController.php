@@ -19,6 +19,7 @@ use Modules\Security\Enums\RequestType;
 use Modules\Security\Exceptions\SecurityViolationException;
 use Modules\Security\Models\AttemptRequestEvent;
 use Modules\Security\Models\SecurityManager;
+use Modules\Subscription\Exceptions\InsufficientCreditsException;
 use Throwable;
 
 class BookingController extends Controller
@@ -94,6 +95,10 @@ class BookingController extends Controller
         } catch (SlotUnavailableException $e) {
             return redirect()->back()
                 ->withErrors(['slot' => 'Selected time slot is not available. Please choose another time.'])
+                ->withInput();
+        } catch (InsufficientCreditsException $e) {
+            return redirect()->back()
+                ->withErrors(['slot' => 'You don’t have enough credits to book a class. Please top-up credits or upgrade your plan.'])
                 ->withInput();
         } catch (PaymentFailedException $e) {
             return redirect()->back()

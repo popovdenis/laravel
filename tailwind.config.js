@@ -12,17 +12,11 @@ export default {
     ],
 
     safelist: [
-        'text-green-600',
-        'text-green-800',
-        'bg-green-100',
-        'text-red-600',
-        'text-red-800',
-        'bg-red-100',
         'odd:bg-white',
         'even:bg-gray-50',
-        'bg-gray-900',
-        'bg-gray-800',
         'text-white',
+        {pattern: /text-(red|yellow|green|gray|white|fuchsia|rose|amber)-(100|200|300|400|500|600|700|800|900)/},
+        {pattern: /bg-(red|yellow|green|gray|white|fuchsia|rose|amber)-(100|200|300|400|500|600|700|800|900)/},
     ],
 
     theme: {

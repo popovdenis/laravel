@@ -19,8 +19,8 @@ class CreditDisplay extends Component
     public function color(): string
     {
         return match (true) {
-            $this->credits === 0 => 'text-red-600',
-            $this->credits < 5 => 'text-yellow-500',
+            $this->credits === 0 => 'text-rose-500',
+            $this->credits < 5 => 'text-amber-500',
             default => 'text-green-600',
         };
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Booking\Models;
 
 use Modules\Booking\Contracts\BookingQuoteInterface;
+use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Order\Models\Quote;
@@ -22,14 +23,17 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected int $credits;
     private SubmitBookingValidatorInterface $bookingValidator;
     private SlotAvailabilityValidatorInterface $slotValidator;
+    private CreditBalanceValidatorInterface $creditBalanceValidator;
 
     public function __construct(
         SubmitBookingValidatorInterface $bookingValidator,
         SlotAvailabilityValidatorInterface $slotValidator,
+        CreditBalanceValidatorInterface $creditBalanceValidator
     )
     {
         $this->bookingValidator = $bookingValidator;
         $this->slotValidator = $slotValidator;
+        $this->creditBalanceValidator = $creditBalanceValidator;
     }
 
     public function getPaymentMethodConfig(): string
@@ -41,6 +45,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     {
         $this->bookingValidator->validate($this);
         $this->slotValidator->validate($this);
+        $this->creditBalanceValidator->validate($this);
     }
 
     public function save(): Booking

@@ -5,9 +5,11 @@ namespace Modules\Booking\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Booking\Contracts\BookingQuoteInterface;
+use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitBookingValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
+use Modules\Booking\Services\CreditBalanceValidator;
 use Modules\Booking\Services\SlotAvailabilityValidator;
 use Modules\Booking\Services\SubmitBookingValidator;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -46,6 +48,7 @@ class BookingServiceProvider extends ServiceProvider
         // Slot Validator binding
         $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
         $this->app->bind(SubmitBookingValidatorInterface::class, SubmitBookingValidator::class);
+        $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
     }
 
     /**
