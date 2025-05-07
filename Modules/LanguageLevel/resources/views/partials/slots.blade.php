@@ -61,13 +61,13 @@
                                             {{ __('Are you sure you want to cancel this booking?') }}
                                         </p>
                                         <div class="flex justify-center space-x-2">
-                                            <button @click="confirmCancel = false" class="px-4 py-2 bg-gray-300 rounded">
+                                            <button @click="confirmCancel = false" class="btn-secondary">
                                                 {{ __('No, Keep Booking') }}
                                             </button>
                                             <form method="POST" action="{{ route('booking.cancel') }}">
                                                 @csrf
                                                 <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
-                                                <button type="submit" class="px-4 py-2 btn-cancel rounded">
+                                                <button type="submit" class="btn-cancel">
                                                     {{ __('Yes, Cancel Booking') }}
                                                 </button>
                                             </form>
