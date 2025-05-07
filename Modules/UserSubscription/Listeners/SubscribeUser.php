@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Modules\UserSubscription\Listeners;
 
 use Illuminate\Auth\Events\Registered;
+use Modules\Order\Contracts\OrderManagerInterface;
+use Modules\Subscription\Data\SubscriptionData;
+use Modules\Subscription\Factories\SubscriptionQuoteFactory;
 use Modules\Subscription\Services\SubscriptionService;
 
 /**
@@ -14,10 +17,18 @@ use Modules\Subscription\Services\SubscriptionService;
 class SubscribeUser
 {
     private SubscriptionService $subscriptionService;
+    private OrderManagerInterface $orderManager;
+    private SubscriptionQuoteFactory $quoteFactory;
 
-    public function __construct(SubscriptionService $subscriptionService)
+    public function __construct(
+        SubscriptionService $subscriptionService,
+        OrderManagerInterface $orderManager,
+        SubscriptionQuoteFactory $quoteFactory
+    )
     {
         $this->subscriptionService = $subscriptionService;
+        $this->orderManager = $orderManager;
+        $this->quoteFactory = $quoteFactory;
     }
 
     /**
@@ -29,8 +40,10 @@ class SubscribeUser
         $customerData = $data['customer_data'];
 
         $customer->assignRole('Student');
-        $plan = $this->subscriptionService->getSubscriptionPlan((int) $customerData->subscriptionPlanId);
-        $this->subscriptionService->updateCreditBalance($customer, $plan);
-        //TODO: subscribe customer to the selected subscription
+
+        $subscriptionData = SubscriptionData::fromModel($customer, (int) $customerData->subscriptionPlanId);
+
+        $quote = $this->quoteFactory->create($subscriptionData);
+        $this->orderManager->place($quote);
     }
 }

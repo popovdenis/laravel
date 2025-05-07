@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderFactoryInterface;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
@@ -21,6 +22,7 @@ class OrderManager implements OrderManagerInterface
         protected OrderPlacementServiceInterface $placementService,
         protected OrderFactoryInterface $orderFactory,
         protected QuoteValidator $quoteValidator,
+        protected ManagerInterface $eventManager
     )
     {
     }
@@ -31,7 +33,18 @@ class OrderManager implements OrderManagerInterface
 
         $order = $this->orderFactory->createFromQuote($quote);
         $order->setPayment($quote->getPayment());
+
+        $this->eventManager->dispatch(
+            'sales_model_service_quote_submit_before',
+            ['order' => $order, 'quote' => $quote]
+        );
+
         $order = $this->placementService->place($order);
+
+        $this->eventManager->dispatch(
+            'sales_model_service_quote_submit_success',
+            ['order' => $order, 'quote' => $quote]
+        );
 
         return $order;
     }

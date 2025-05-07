@@ -32,8 +32,8 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'prefix',
         'firstname',
-        'lastname',
         'middlename',
+        'lastname',
         'suffix',
         'dob',
         'gender',
@@ -41,6 +41,11 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'remember_token',
         'credit_balance',
+        'stripe_id',
+        'pm_type',
+        'pm_last_four',
+        'trial_ends_at',
+        'confirmation',
     ];
 
     protected $casts = [

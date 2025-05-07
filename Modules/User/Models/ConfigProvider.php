@@ -18,6 +18,8 @@ class ConfigProvider extends ConfigProviderAbstract
     public const CONFIG_PATH_REQUIRED_CHARACTER_CLASSES_NUMBER = 'password.required_character_classes_number';
     public const CONFIG_PATH_MINIMUM_PASSWORD_LENGTH = 'password.minimum_password_length';
 
+    public const XML_PATH_IS_CONFIRM = 'customer.create_account.confirm';
+
     protected $pathPrefix = 'customer.';
 
     public function getRequiredCharClassesNumber(): int
@@ -28,5 +30,10 @@ class ConfigProvider extends ConfigProviderAbstract
     public function getMinPasswordLength(): int
     {
         return (int) $this->getValue(self::CONFIG_PATH_MINIMUM_PASSWORD_LENGTH);
+    }
+
+    public function isConfirmationRequired(): bool
+    {
+        return (bool) $this->getValue(self::XML_PATH_IS_CONFIRM);
     }
 }

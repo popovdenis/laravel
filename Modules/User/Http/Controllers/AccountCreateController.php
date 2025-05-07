@@ -18,15 +18,15 @@ class AccountCreateController extends Controller
 {
     private ManagerInterface $eventManager;
 
-    private AccountManagementInterface $accountManager;
+    private AccountManagementInterface $accountManagement;
 
     public function __construct(
         ManagerInterface $eventManager,
-        AccountManagementInterface $accountManager
+        AccountManagementInterface $accountManagement
     )
     {
         $this->eventManager = $eventManager;
-        $this->accountManager = $accountManager;
+        $this->accountManagement = $accountManagement;
     }
 
     /**
@@ -49,12 +49,26 @@ class AccountCreateController extends Controller
         try {
             $customerData = CustomerData::fromRequest($request);
 
-            $customer = $this->accountManager->createAccount($customerData, $customerData->password);
+            $customer = $this->accountManagement->createAccount($customerData, $customerData->password);
 
             $this->eventManager->dispatch(
                 'customer_register_success',
                 ['customer' => $customer, 'customer_data' => $customerData]
             );
+            $confirmationStatus = $this->accountManagement->getConfirmationStatus($customer);
+            if ($confirmationStatus === AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
+                return redirect()->back()
+                    ->with('success',
+                        sprintf('Thank you for registering with %s.
+                         We will send you the confirmation email.
+                         Please confirm before you logged in', $customer->name())
+                    );
+            } else {
+                $customer->password_plaint = $request->password;
+                Auth::login($customer);
+
+                return redirect('/')->with('success', sprintf('Thank you for registering with %s.', $customer->name()));
+            }
         } catch (CreateAccountException | InputException | AlreadyExistsException $exception) {
             return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();
         } catch (Throwable $e) {
@@ -64,12 +78,6 @@ class AccountCreateController extends Controller
                 ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
                 ->withInput();
         }
-
-        $customer->password_plaint = $request->password;
-
-        Auth::login($customer);
-
-        return redirect(route('profile.dashboard', absolute: false));
     }
 
     /**

@@ -48,4 +48,19 @@ class SubscriptionData extends Data implements RequestDataInterface
             'method' => setting('subscription.applicable_payment_method')
         ]);
     }
+
+    public static function fromModel(User $user, int $planId): static
+    {
+        $newPlan = SubscriptionPlan::findOrFail($planId);
+
+        return static::from([
+            'student' => $user,
+            'planId' => $newPlan->id,
+            'amount' => $newPlan->price,
+            'plan' => $newPlan,
+            'credits' => $newPlan->credits,
+            'transactionPriceId' => $newPlan->transaction_price_id,
+            'method' => setting('subscription.applicable_payment_method')
+        ]);
+    }
 }

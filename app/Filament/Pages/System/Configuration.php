@@ -81,6 +81,12 @@ class Configuration extends BaseSettings
 
                     Tabs\Tab::make('Customers')->schema([
                         Section::make('Customer Configuration')->schema([
+                            Section::make('Create New Account Options')->schema([
+                                Toggle::make('customer.create_account.confirm')
+                                    ->label('Require Emails Confirmation')
+                                    ->columnSpan(6),
+                            ])->columns(10)->collapsible(),
+
                             Section::make('Password Options')->schema([
                                 TextInput::make('customer.password.required_character_classes_number')
                                     ->label('Number of Required Character Classes')

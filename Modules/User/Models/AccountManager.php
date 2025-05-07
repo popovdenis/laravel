@@ -19,8 +19,6 @@ use Modules\User\Models\Customer\CredentialsValidator;
  */
 class AccountManager implements AccountManagementInterface
 {
-    public const MAX_PASSWORD_LENGTH = 256;
-
     private CredentialsValidator $credentialsValidator;
     private StringUtils $stringUtils;
     private ConfigProvider $configProvider;
@@ -58,6 +56,21 @@ class AccountManager implements AccountManagementInterface
         }
 
         return $this->createAccountWithPasswordHash($customer, $hash);
+    }
+
+    public function getConfirmationStatus($customerId)
+    {
+        // load customer by id
+        $customer = User::where('id', $customerId);
+
+        return $this->isConfirmationRequired($customer)
+            ? $customer->confirmation ? self::ACCOUNT_CONFIRMATION_REQUIRED : self::ACCOUNT_CONFIRMED
+            : self::ACCOUNT_CONFIRMATION_NOT_REQUIRED;
+    }
+
+    protected function isConfirmationRequired($customer): bool
+    {
+        return $this->configProvider->isConfirmationRequired($customer);
     }
 
     /**

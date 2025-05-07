@@ -6,6 +6,7 @@ namespace Modules\Subscription\Models;
 use Modules\Order\Contracts\OrderInterface;
 use Modules\Order\Contracts\PurchasableTransactionHandlerInterface;
 use Modules\Subscription\Enums\TransactionStatus;
+use Modules\Subscription\Services\SubscriptionService;
 
 /**
  * Class SubscriptionTransactionHandler
@@ -14,19 +15,21 @@ use Modules\Subscription\Enums\TransactionStatus;
  */
 class SubscriptionTransactionHandler implements PurchasableTransactionHandlerInterface
 {
+    private SubscriptionService $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService)
+    {
+        $this->subscriptionService = $subscriptionService;
+    }
+
     public function handleOrderPlaced(OrderInterface $order): void
     {
-        //TODO: do nothing for now
-//        $subscription = $order->purchasable;
-//        SubscriptionTransaction::create([
-//            'user_id'        => $subscription->user_id,
-//            'subscription_id'=> $order->getQuote()->subscription->id,//TODO: refactor
-//            'credits_amount' => $subscription->plan->credits,
-//            'action'         => TransactionStatus::PURCHASE,
-//            'comment'        => "Order #{$order->id} placed",
-//        ]);
+        $plan = $order->getQuote()->getPlan();
+        $user = $order->getQuote()->getUser();
+        $subscription = $order->getQuote()->getModel();
 
-        //insert into `subscription_transactions` (`user_id`, `subscription_id`, `credits_amount`, `comment`, `updated_at`, `created_at`) values (2, 15, 100, Order #19 placed, 2025-04-30 12:41:30, 2025-04-30 12:41:30))
+        $subscription->update($this->subscriptionService->getUpdateUserSubscriptionOptions($plan));
+        $this->subscriptionService->updateCreditBalance($user, $plan);
     }
 
     public function handleOrderCancelled(OrderInterface $order): void
