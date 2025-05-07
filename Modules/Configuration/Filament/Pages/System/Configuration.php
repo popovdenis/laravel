@@ -121,16 +121,7 @@ class Configuration extends BaseSettings
                                     ->label('Title')
                                     ->columnSpan(6),
                             ])->columns(10)->collapsible(),
-
-                            Section::make('Stripe')->schema([
-                                Toggle::make('payment.stripe.active')
-                                    ->label('Enabled')
-                                    ->columnSpan(6),
-                                TextInput::make('payment.stripe.title')
-                                    ->label('Title')
-                                    ->columnSpan(6),
-                            ])->columns(10)->collapsible(),
-                        ])
+                        ])->collapsible()
                     ]),
 
                     Tabs\Tab::make('System')->schema([
