@@ -33,13 +33,6 @@ interface QuoteInterface
 
     public function getPaymentMethodConfig();
 
-    public function reserveOrderId($oderId);
-
-//    protected function fetchIncrementId($oderId, string $template = '00000000'): string
-//    {
-//        return substr($template, 0, -strlen((string) $oderId)) . $id;
-//    }
-
     public function validate();
 //    public function save(): \Illuminate\Database\Eloquent\Model;
 }
