@@ -51,7 +51,7 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         try {
-            $subscriptionData = SubscriptionData::fromRequest($request->all());
+            $subscriptionData = SubscriptionData::fromRequest($request);
 
             $quote = $this->quoteFactory->create($subscriptionData);
             $order = $this->orderManager->place($quote);

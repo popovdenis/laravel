@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Modules\Payment\Models\AbstractMethod;
 use Modules\Subscription\Contracts\SubscriptionQuoteInterface;
+use Stripe\Exception\InvalidRequestException;
 
 /**
  * Class StripePayment
@@ -40,13 +41,21 @@ class StripePayment extends AbstractMethod
         $quote = $this->getOrder()->getQuote();
         $user = $quote->getUser();
         $plan = $quote->getPlan();
+        $activeSubscription = $user->getActiveSubscription();
 
         try {
-            if ($user->isSubscribed()) {
-                if ($user->subscription()->onTrial()) {
-                    $user->subscription()->cancelNow();
+            if ($activeSubscription && $activeSubscription->valid()) {
+                if ($activeSubscription->onTrial()) {
+                    try {
+                        $activeSubscription->cancelNow();
+                    } catch (InvalidRequestException $exception) {
+                        Log::error($exception->getMessage());
+                        Log::error($exception->getTraceAsString());
+
+                        $activeSubscription->delete();
+                    }
                 } else {
-                    $user->subscription()->cancelNowAndInvoice();
+                    $activeSubscription->cancelNowAndInvoice();
                 }
             }
 

@@ -108,7 +108,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function getActiveSubscription(): ?Subscription
     {
-        return $this->subscriptions()->where('stripe_status', 'active')->latest()->first();
+        return $this->subscriptions()->where('stripe_status', '!=', 'canceled')->latest()->first();
     }
 
     public function isSubscribed($type = 'default', $price = null): bool

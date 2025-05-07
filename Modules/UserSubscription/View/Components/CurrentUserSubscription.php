@@ -19,7 +19,8 @@ class CurrentUserSubscription extends Component
     public function render(): View
     {
         $user = auth()->user();
-        $subscriptionPlan = $user->subscribed() ? $user->subscription()->plan : null;
+        $activeSubscription = $user->getActiveSubscription();
+        $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
 
         return view('usersubscription::components.current-user-subscription', compact('subscriptionPlan'));
     }
