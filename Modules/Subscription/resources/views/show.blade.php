@@ -53,16 +53,7 @@
                                                 <button
                                                     type="button"
                                                     @click="open = true; planId = '{{ $plan->id }}'; planName = '{{ $plan->name }}'"
-                                                    class="block w-full text-center font-bold py-2 rounded border transition"
-                                                    style="background-color: #80C242; color: white; border-color: #80C242;"
-                                                    @mouseover="
-                                                        $el.style.backgroundColor = '#F1F3F6';
-                                                        $el.style.color = '#80C242';
-                                                    "
-                                                    @mouseleave="
-                                                        $el.style.backgroundColor = '#80C242';
-                                                        $el.style.color = 'white';
-                                                    "
+                                                    class="block w-full text-center font-bold py-2 rounded border transition btn-primary"
                                                 >
                                                     {{ __('Choose')  }}
                                                 </button>
@@ -79,8 +70,8 @@
                                                 @csrf
                                                 <input type="hidden" name="plan_id" :value="planId">
                                                 <div class="flex space-x-4">
-                                                    <button type="button" @click="open = false" class="px-4 py-2 bg-gray-300 rounded w-full">{{ __('Cancel') }}</button>
-                                                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded w-full">{{ __('Yes, Confirm') }}</button>
+                                                    <button type="button" @click="open = false" class="px-4 py-2 btn-secondary rounded w-full">{{ __('Cancel') }}</button>
+                                                    <button type="submit" class="px-4 py-2 btn-primary rounded w-full">{{ __('Yes, Confirm') }}</button>
                                                 </div>
                                             </form>
                                         </div>

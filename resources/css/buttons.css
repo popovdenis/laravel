@@ -1,0 +1,20 @@
+@layer components {
+    .btn-primary {
+        background-color: #80C242;
+        color: white;
+        border-color: #80C242;
+    }
+    .btn-primary:hover {
+        background-color: #F1F3F6;
+        color: #80C242;
+    }
+    .btn-secondary {
+        background-color: #f1f3f6;
+        color: #4d4d4d;
+        border-color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #024DA1;
+        color: #FFFFFF;
+    }
+}
