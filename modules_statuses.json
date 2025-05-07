@@ -24,5 +24,6 @@
     "CacheInvalidate": true,
     "CronSchedule": true,
     "StripeCard": true,
-    "UserSubscription": true
+    "UserSubscription": true,
+    "Configuration": true
 }
