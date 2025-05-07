@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Modules\SubscriptionPlan\Enums\FrequencyUnit;
+use Modules\SubscriptionPlan\Filament\Table\Actions\ChangeStatusBulkAction;
 use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionPlanResource extends Resource
@@ -228,6 +229,7 @@ class SubscriptionPlanResource extends Resource
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
                 Tables\Actions\DeleteBulkAction::make(),
+                ChangeStatusBulkAction::make('change_status'),
             ]),
         ]);
     }
