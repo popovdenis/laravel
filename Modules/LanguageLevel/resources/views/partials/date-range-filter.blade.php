@@ -24,14 +24,14 @@
         <div>
             <p class="text-sm text-gray-700 font-semibold mb-1">Group or Private</p>
             <div class="flex space-x-2">
-                <button type="button" class="border rounded-md px-3 py-2 text-sm text-blue-600 border-blue-600 bg-blue-100">Group</button>
-                <button type="button" class="border rounded-md px-3 py-2 text-sm text-gray-700 border-gray-300">Private</button>
+                <button type="button" class="btn-primary">Group</button>
+                <button type="button" class="btn-secondary">Private</button>
             </div>
         </div>
 
         <!-- Clear all -->
         <div class="self-end ml-auto">
-            <a href="{{ route('languagelevel::index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="px-4 py-2 border border-blue-600 text-blue-600 text-sm rounded-md hover:bg-blue-50">
+            <a href="{{ route('languagelevel::index', $selectedLevelId ? ['level_id' => $selectedLevelId] : []) }}" class="btn-primary-inverted">
                 Clear all
             </a>
         </div>

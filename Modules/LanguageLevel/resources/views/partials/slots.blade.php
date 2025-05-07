@@ -45,7 +45,7 @@
                             <div x-data="{ confirmCancel: false }">
                                 <button
                                     @click="confirmCancel = true"
-                                    class="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
+                                    class="btn-cancel-booking"
                                 >
                                     {{ __('Cancel Booking') }}
                                 </button>
@@ -67,7 +67,7 @@
                                             <form method="POST" action="{{ route('booking.cancel') }}">
                                                 @csrf
                                                 <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
-                                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">
+                                                <button type="submit" class="px-4 py-2 btn-cancel rounded">
                                                     {{ __('Yes, Cancel Booking') }}
                                                 </button>
                                             </form>
@@ -76,11 +76,11 @@
                                 </div>
                             </div>
                         @else
-                            <button @click="confirmBooking = true" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                            <button @click="confirmBooking = true" class="px-4 py-2 btn-primary rounded-md">
                                 {{ __('Book') }}
                             </button>
                         @endif
-                        <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm rounded-md hover:bg-gray-300">
+                        <button class="px-4 py-2 btn-secondary rounded-md">
                             {{ __('Details') }}
                         </button>
                     </div>
