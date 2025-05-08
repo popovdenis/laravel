@@ -36,10 +36,14 @@ class BookingManager
         $minimalToStart = 5;
         $now = now();
 
-        return BookingGridFlat::where('status', BookingStatus::PENDING)
+        $query = BookingGridFlat::where('status', BookingStatus::PENDING)
             ->whereRaw("start_time >= DATE_ADD('{$now->toDateTimeString()}', INTERVAL {$minimalToStart} MINUTE)")
             ->whereRaw("start_time <= DATE_ADD('{$now->toDateTimeString()}', INTERVAL {$cancellationDeadlineTime} MINUTE)")
-            ->get();
+            ;
+
+        dd($now->toDateTimeString(), $minimalToStart, $cancellationDeadlineTime, $query->toSql())
+
+        return $query->get();
     }
 
     private function getCancellationDeadlineTime()
