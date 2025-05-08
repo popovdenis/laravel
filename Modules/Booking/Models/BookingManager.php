@@ -34,7 +34,10 @@ class BookingManager
     {
         $cancellationDeadlineTime = $this->getCancellationDeadlineTime();
         $minimalToStart = 5;
-        $now = now();
+        $timezone = new \DateTimeZone('Europe/Warsaw');
+//        $dateTime = new \DateTime('now', new \DateTimeZone('UTC'));
+//        $dateTime->setTimezone($timezone);
+        $now = now($timezone);
 
         $query = BookingGridFlat::where('status', BookingStatus::PENDING)
             ->whereRaw("start_time >= DATE_ADD('{$now->toDateTimeString()}', INTERVAL {$minimalToStart} MINUTE)")
