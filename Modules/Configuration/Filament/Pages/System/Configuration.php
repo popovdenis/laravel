@@ -32,16 +32,19 @@ class Configuration extends BaseSettings
                             TextInput::make('booking.rules.group_lesson_duration')
                                 ->label('Duration of Group Lesson')
                                 ->rules(['integer', 'min:0'])
-                                ->numeric(),
+                                ->numeric()
+                                ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.group_lesson_duration'))),
                             TextInput::make('booking.rules.individual_lesson_duration')
                                 ->label('Duration of Individual Lesson')
                                 ->rules(['integer', 'min:0'])
-                                ->numeric(),
-                            TextInput::make('booking.rules.cancellation_deadline')
+                                ->numeric()
+                                ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.individual_lesson_duration'))),
+                            TextInput::make('booking.rules.cancellation_deadline', config('booking.rules.cancellation_deadline'))
                                 ->label('Allow cancellations up to (minutes before meeting starts)')
                                 ->rules(['integer', 'min:0'])
                                 ->helperText('After this period, cancellations are not allowed.')
-                                ->numeric(),
+                                ->numeric()
+                                ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.cancellation_deadline'))),
                             Section::make('Advanced Settings')->schema([
                                 Select::make('booking.applicable_payment_method')
                                     ->options([
