@@ -41,7 +41,7 @@ class BookingManager
             ->whereRaw("start_time <= DATE_ADD('{$now->toDateTimeString()}', INTERVAL {$cancellationDeadlineTime} MINUTE)")
             ;
 
-        dd($now->toDateTimeString(), $minimalToStart, $cancellationDeadlineTime, $query->toSql())
+        dd([$now->toDateTimeString(), $minimalToStart, $cancellationDeadlineTime, $query->toSql()]);
 
         return $query->get();
     }
