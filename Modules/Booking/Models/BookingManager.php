@@ -5,6 +5,7 @@ namespace Modules\Booking\Models;
 
 use Modules\Booking\Enums\BookingStatus;
 use Illuminate\Support\Collection;
+use Modules\BookingGridFlat\Models\BookingGridFlat;
 
 /**
  * Class BookingManager
@@ -13,6 +14,13 @@ use Illuminate\Support\Collection;
  */
 class BookingManager
 {
+    private ConfigProvider $configProvider;
+
+    public function __construct(ConfigProvider $configProvider)
+    {
+        $this->configProvider = $configProvider;
+    }
+
     public function getConfirmedBookings(): Collection
     {
         return Booking::leftJoin('booking_grid_flat', 'bookings.id', '=', 'booking_grid_flat.booking_id')
@@ -20,5 +28,21 @@ class BookingManager
             ->whereIn('bookings.status', [BookingStatus::PENDING, BookingStatus::CONFIRMED])
             ->select('bookings.*')
             ->get();
+    }
+
+    public function getUpcomingBookings()
+    {
+        $cancellationDeadlineTime = $this->getCancellationDeadlineTime();
+        $minimalToStart = 5;
+
+        return BookingGridFlat::where('status', BookingStatus::PENDING)
+            ->whereRaw("start_time >= DATE_ADD(NOW(), INTERVAL {$minimalToStart} MINUTE)")
+            ->whereRaw("start_time <= DATE_ADD(NOW(), INTERVAL {$cancellationDeadlineTime} MINUTE)")
+            ->get();
+    }
+
+    private function getCancellationDeadlineTime()
+    {
+        return $this->configProvider->getBookingCancellationDeadline() ?? config('booking.rules.cancellation_deadline');
     }
 }

@@ -83,11 +83,18 @@ class LanguageLevelController extends Controller
 
             $currentDate = $streamStart->copy();
             while ($currentDate->lte($streamEnd)) {
-                $dayOfWeek = $currentDate->format('l'); // Monday, Tuesday, etc.
-
                 // Teacher's slots on the day
-                $daySlots = $stream->teacher->scheduleTimeslots->filter(function ($slot) use ($dayOfWeek) {
-                    return strtolower($slot->day) === strtolower($dayOfWeek);
+                $dayOfWeek = $currentDate->format('l'); // Monday, Tuesday, etc.
+                $minStartTime = Carbon::now()->copy()->addMinutes(5);
+
+                $daySlots = $stream->teacher->scheduleTimeslots->filter(function ($slot) use ($dayOfWeek, $minStartTime) {
+                    if (strtolower($slot->day) !== strtolower($dayOfWeek)) {
+                        return false;
+                    }
+                    if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
+                        return Carbon::parse($slot->start)->greaterThanOrEqualTo($minStartTime);
+                    }
+                    return true;
                 });
 
                 foreach ($daySlots as $slot) {

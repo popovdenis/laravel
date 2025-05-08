@@ -27,15 +27,20 @@ class Configuration extends BaseSettings
         return [
             Tabs::make('Configuration')
                 ->schema([
-                    Tabs\Tab::make('Booking')
+                    Tabs\Tab::make('Booking Settings')
                         ->schema([
-                            TextInput::make('booking.group_lesson_duration')
+                            TextInput::make('booking.rules.group_lesson_duration')
                                 ->label('Duration of Group Lesson')
                                 ->rules(['integer', 'min:0'])
                                 ->numeric(),
-                            TextInput::make('booking.individual_lesson_duration')
+                            TextInput::make('booking.rules.individual_lesson_duration')
                                 ->label('Duration of Individual Lesson')
                                 ->rules(['integer', 'min:0'])
+                                ->numeric(),
+                            TextInput::make('booking.rules.cancellation_deadline')
+                                ->label('Allow cancellations up to (minutes before meeting starts)')
+                                ->rules(['integer', 'min:0'])
+                                ->helperText('After this period, cancellations are not allowed.')
                                 ->numeric(),
                             Section::make('Advanced Settings')->schema([
                                 Select::make('booking.applicable_payment_method')

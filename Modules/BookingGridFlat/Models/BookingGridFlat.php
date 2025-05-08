@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Modules\BookingGridFlat\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Booking\Enums\BookingStatus;
+use Modules\Booking\Models\Booking;
 use Modules\BookingGridFlat\Contracts\BookingGridFlatInterface;
 
 class BookingGridFlat extends Model implements BookingGridFlatInterface
@@ -23,11 +25,23 @@ class BookingGridFlat extends Model implements BookingGridFlatInterface
 //        'subject_category',
         'start_time',
         'end_time',
+        'status',
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
+
+    public function booking(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
+
+    public function markAsConfirmed(): void
+    {
+        $this->booking->markAsConfirmed();
+        $this->update(['status' => BookingStatus::CONFIRMED]);
+    }
 }
 
