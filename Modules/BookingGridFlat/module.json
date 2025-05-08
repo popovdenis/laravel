@@ -1,0 +1,11 @@
+{
+    "name": "BookingGridFlat",
+    "alias": "bookinggridflat",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BookingGridFlat\\Providers\\BookingGridFlatServiceProvider"
+    ],
+    "files": []
+}

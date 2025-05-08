@@ -25,5 +25,6 @@
     "CronSchedule": true,
     "StripeCard": true,
     "UserSubscription": true,
-    "Configuration": true
+    "Configuration": true,
+    "BookingGridFlat": true
 }

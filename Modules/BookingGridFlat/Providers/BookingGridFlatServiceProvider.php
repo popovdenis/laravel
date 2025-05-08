@@ -1,33 +1,32 @@
 <?php
+declare(strict_types=1);
 
-namespace Modules\Booking\Providers;
+namespace Modules\BookingGridFlat\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Booking\Contracts\BookingQuoteInterface;
-use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
-use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
-use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
-use Modules\Booking\Models\BookingQuote;
-use Modules\Booking\Models\Validator\CreditBalanceValidator;
-use Modules\Booking\Models\Validator\SlotAvailabilityValidator;
-use Modules\Booking\Models\Validator\SubmitBookingValidator;
+use Modules\BookingGridFlat\Contracts\BookingGridFlatInterface;
+use Modules\BookingGridFlat\Models\BookingGridFlat;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Modules\BookingGridFlat\Factories\BookingGridFlatFactory;
 
-class BookingServiceProvider extends ServiceProvider
+class BookingGridFlatServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Booking';
-    protected string $nameLower = 'booking';
+    protected string $name = 'BookingGridFlat';
+
+    protected string $nameLower = 'bookinggridflat';
 
     /**
      * Boot the application events.
      */
     public function boot(): void
     {
+        $this->registerCommands();
+        $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
@@ -42,13 +41,32 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
-        // Management binding
-        $this->app->bind(BookingQuoteInterface::class, BookingQuote::class);
+        $this->app->bind(BookingGridFlatInterface::class, BookingGridFlat::class);
 
-        // Slot Validator binding
-        $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
-        $this->app->bind(SubmitQuoteValidatorInterface::class, SubmitBookingValidator::class);
-        $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
+        $this->app->singleton(BookingGridFlatFactory::class, function ($app) {
+            return new BookingGridFlatFactory();
+        });
+    }
+
+    /**
+     * Register commands in the format of Command::class
+     */
+    protected function registerCommands(): void
+    {
+         $this->commands([
+             \Modules\BookingGridFlat\Console\SyncBookingGridFlat::class
+         ]);
+    }
+
+    /**
+     * Register command Schedules.
+     */
+    protected function registerCommandSchedules(): void
+    {
+        // $this->app->booted(function () {
+        //     $schedule = $this->app->make(Schedule::class);
+        //     $schedule->command('inspire')->hourly();
+        // });
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Booking\Services;
+namespace Modules\Booking\Models\Validator;
 
 use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
