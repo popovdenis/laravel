@@ -11,6 +11,7 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\BookingGridFlat\Factories\BookingGridFlatFactory;
+use Illuminate\Console\Scheduling\Schedule;
 
 class BookingGridFlatServiceProvider extends ServiceProvider
 {
@@ -63,10 +64,14 @@ class BookingGridFlatServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        if (!app()->runningInConsole()) {
+            return;
+        }
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command('booking_grid')->cron('*/10 * * * *');
+        });
     }
 
     /**
