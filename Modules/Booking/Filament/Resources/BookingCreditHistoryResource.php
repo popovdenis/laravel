@@ -16,14 +16,7 @@ class BookingCreditHistoryResource extends Resource
     protected static ?string $navigationGroup = 'Booking';
     protected static ?string $navigationLabel = 'Transactions History';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                //
-            ]);
-    }
+    protected static ?int $navigationSort = 2;
 
     public static function table(Table $table): Table
     {

@@ -13,11 +13,9 @@ class BookingGridFlat extends Model implements BookingGridFlatInterface
     protected $fillable = [
         'booking_id',
         'student_id',
-        'student_firstname',
-        'student_lastname',
+        'student_fullname',
         'teacher_id',
-        'teacher_firstname',
-        'teacher_lastname',
+        'teacher_fullname',
         'stream_id',
         'level_title',
         'subject_title',

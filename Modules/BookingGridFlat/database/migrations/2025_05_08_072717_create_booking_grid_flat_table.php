@@ -17,12 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('booking_id')->unique()->comment('ID original booking');
             // student
             $table->unsignedBigInteger('student_id')->index();
-            $table->string('student_firstname');
-            $table->string('student_lastname');
+            $table->string('student_fullname');
             // teacher
             $table->unsignedBigInteger('teacher_id')->index();
-            $table->string('teacher_firstname');
-            $table->string('teacher_lastname');
+            $table->string('teacher_fullname');
             // Stream info
             $table->unsignedBigInteger('stream_id')->index();
             $table->string('level_title');

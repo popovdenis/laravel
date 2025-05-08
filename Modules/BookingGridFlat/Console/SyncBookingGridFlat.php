@@ -65,11 +65,9 @@ class SyncBookingGridFlat extends Command
             $bookingRow = [
                 'booking_id' => $booking->id,
                 'student_id' => $student->id,
-                'student_firstname' => $student->firstname,
-                'student_lastname' => $student->lastname,
+                'student_fullname' => $student->name,
                 'teacher_id' => $teacher->id,
-                'teacher_firstname' => $teacher->firstname,
-                'teacher_lastname' => $teacher->lastname,
+                'teacher_fullname' => $teacher->name,
                 'stream_id' => $stream->id,
                 'level_title' => $stream->languageLevel->title,
                 'subject_title' => $stream->currentSubject->title ?? null,
