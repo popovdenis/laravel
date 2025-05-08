@@ -7,10 +7,12 @@ use Modules\Booking\Services\BookingStatusTransitionService;
 
 class ConfirmUpcomingBookingCommand extends Command
 {
+    public const SIGNATURE = 'booking:confirm-upcoming-booking';
+
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'booking:confirm-upcoming';
+    protected $signature = self::SIGNATURE;
 
     /**
      * The console command description.

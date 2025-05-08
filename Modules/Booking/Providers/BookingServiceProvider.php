@@ -5,6 +5,7 @@ namespace Modules\Booking\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Booking\Console\ConfirmUpcomingBookingCommand;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
@@ -60,7 +61,7 @@ class BookingServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            \Modules\Booking\Console\ConfirmUpcomingBookingCommand::class
+            ConfirmUpcomingBookingCommand::class
         ]);
     }
 
@@ -74,8 +75,8 @@ class BookingServiceProvider extends ServiceProvider
         }
 
         $this->app->booted(function () {
-//            $schedule = $this->app->make(Schedule::class);
-//            $schedule->command('booking_grid')->cron('* * * * *')->storeOutputInDb();
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command(ConfirmUpcomingBookingCommand::SIGNATURE)->cron('0 */2 * * *')->storeOutputInDb();
         });
     }
 
