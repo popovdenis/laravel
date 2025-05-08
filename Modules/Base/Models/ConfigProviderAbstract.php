@@ -42,4 +42,9 @@ class ConfigProviderAbstract
 
         return \Outerweb\Settings\Models\Setting::get($this->pathPrefix . $key, $default);
     }
+
+    protected function setValue(string|array $key, mixed $value): void
+    {
+        setting([$this->pathPrefix . $key => $value]);
+    }
 }

@@ -13,14 +13,12 @@ use Illuminate\Support\Collection;
  */
 class BookingManager
 {
-    public function getConfirmedBookings(array $excludeBookingIds = []): Collection
+    public function getConfirmedBookings(): Collection
     {
-        $bookings = Booking::whereIn('status', [BookingStatus::PENDING, BookingStatus::CONFIRMED]);// TODO: remove PENDING!
-
-        if ($excludeBookingIds) {
-            $bookings->whereNotIn('id', $excludeBookingIds);
-        }
-
-        return $bookings->get();
+        return Booking::leftJoin('booking_grid_flat', 'bookings.id', '=', 'booking_grid_flat.booking_id')
+            ->whereNull('booking_grid_flat.booking_id')
+            ->whereIn('bookings.status', [BookingStatus::PENDING, BookingStatus::CONFIRMED])
+            ->select('bookings.*')
+            ->get();
     }
 }

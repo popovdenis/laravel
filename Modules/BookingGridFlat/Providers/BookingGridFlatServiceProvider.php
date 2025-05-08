@@ -70,7 +70,7 @@ class BookingGridFlatServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
-            $schedule->command('booking_grid')->cron('*/10 * * * *');
+            $schedule->command('booking_grid')->cron('* * * * *')->storeOutputInDb();
         });
     }
 

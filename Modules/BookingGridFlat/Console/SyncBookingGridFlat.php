@@ -5,6 +5,7 @@ namespace Modules\BookingGridFlat\Console;
 
 use Illuminate\Console\Command;
 use Modules\Booking\Models\BookingManager;
+use Modules\Booking\Models\ConfigProvider;
 use Modules\BookingGridFlat\Factories\BookingGridFlatFactory;
 use Modules\BookingGridFlat\Models\BookingGridFlat;
 use Modules\User\Models\User;
@@ -23,6 +24,7 @@ class SyncBookingGridFlat extends Command
 
     private BookingGridFlatFactory $bookingGridFlatFactory;
     private BookingManager $bookingManager;
+    private ConfigProvider $configProvider;
 
     /**
      * Create a new command instance.
@@ -31,12 +33,14 @@ class SyncBookingGridFlat extends Command
      */
     public function __construct(
         BookingGridFlatFactory $bookingGridFlatFactory,
-        BookingManager $bookingManager
+        BookingManager $bookingManager,
+        ConfigProvider $configProvider
     )
     {
         parent::__construct();
         $this->bookingGridFlatFactory = $bookingGridFlatFactory;
         $this->bookingManager = $bookingManager;
+        $this->configProvider = $configProvider;
     }
 
     /**
@@ -44,14 +48,19 @@ class SyncBookingGridFlat extends Command
      */
     public function handle(): int
     {
+        $reindexRequired = $this->isReindexRequired();
+
         if ($this->option('clear-all')) {
             $this->info('Clearing all records...');
             BookingGridFlat::truncate();
+            $reindexRequired = true;
         }
 
-        $existingBookingIds = BookingGridFlat::pluck('booking_id')->toArray();
+        if (!$reindexRequired) {
+            return Command::SUCCESS;
+        }
 
-        $bookings = $this->bookingManager->getConfirmedBookings($existingBookingIds);
+        $bookings = $this->bookingManager->getConfirmedBookings();
 
         $count = 0;
 
@@ -83,8 +92,20 @@ class SyncBookingGridFlat extends Command
             $count++;
         }
 
+        $this->markBookingReindexFinished();
+
         $this->info("Synced {$count} new booking(s).");
 
         return Command::SUCCESS;
+    }
+
+    private function isReindexRequired(): bool
+    {
+        return $this->configProvider->getBookingReindexRequiredFlag();
+    }
+
+    private function markBookingReindexFinished(): void
+    {
+        $this->configProvider->markBookingReindex(false);
     }
 }

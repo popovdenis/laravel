@@ -17,11 +17,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [
-        'sales_order_payment_place_start' => [
-            \Modules\Booking\Listeners\CreditPaymentPlaceStart::class,
-        ],
-    ];
+    protected $listen = [];
 
     /**
      * Indicates if events should be discovered.

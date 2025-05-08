@@ -11,7 +11,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        'cancel_booking_order_after' => [
+            \Modules\Booking\Listeners\RemoveBookingFromGrid::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

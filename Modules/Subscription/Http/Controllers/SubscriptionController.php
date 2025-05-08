@@ -57,7 +57,7 @@ class SubscriptionController extends Controller
             $quote = $this->quoteFactory->create($subscriptionData);
             $order = $this->orderManager->place($quote);
 
-            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
+            $this->eventManager->dispatch('save_subscription_order_after', ['order' => $order, 'quote' => $quote]);
 
             return redirect()->route('profile.dashboard')->with('success', 'Your have been subscribed successfully.');
         } catch (SubscriptionValidationException $exception) {

@@ -11,6 +11,7 @@ use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Factories\BookingQuoteFactory;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\ConfigProvider;
 use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Order\Contracts\PurchasableInterface;
@@ -40,12 +41,14 @@ class BookingController extends Controller
      * @var \Modules\EventManager\Contracts\ManagerInterface
      */
     private ManagerInterface $eventManager;
+    private ConfigProvider $configProvider;
 
     public function __construct(
         SecurityManager $securityManager,
         BookingQuoteFactory $bookingQuoteFactory,
         OrderManagerInterface $orderManager,
         ManagerInterface $eventManager,
+        ConfigProvider $configProvider,
         private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
@@ -53,6 +56,7 @@ class BookingController extends Controller
         $this->bookingQuoteFactory = $bookingQuoteFactory;
         $this->orderManager = $orderManager;
         $this->eventManager = $eventManager;
+        $this->configProvider = $configProvider;
     }
 
     /**
@@ -85,7 +89,9 @@ class BookingController extends Controller
             $quote = $this->bookingQuoteFactory->create($bookingData);
             $order = $this->orderManager->place($quote);
 
-            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
+            $this->markBookingReindexRequired();
+
+            $this->eventManager->dispatch('save_booking_order_after', ['order' => $order, 'quote' => $quote]);
 
             return redirect()->back()->with('success', 'Booking has been successfully created.');
         } catch (AlreadyExistsException $e) {
@@ -115,6 +121,11 @@ class BookingController extends Controller
         }
     }
 
+    private function markBookingReindexRequired(): void
+    {
+        $this->configProvider->markBookingReindex(true);
+    }
+
     public function cancel(Request $request): RedirectResponse
     {
         if (!$errors = $this->isValidPostRequest($request)) {
@@ -128,8 +139,16 @@ class BookingController extends Controller
                 $order = $this->orderManager->findOrderByEntity($booking);
                 $order->setQuote($quote);
                 $order->setPayment($quote->getPayment());
+
                 $this->orderManager->cancel($order);
-            } catch (\Exception $exception) {
+
+                $this->eventManager->dispatch('cancel_booking_order_after', ['order' => $order, 'quote' => $quote]);
+            } catch (Throwable $e) {
+                report($e);
+
+                return redirect()->back()
+                    ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
+                    ->withInput();
             }
         }
 
