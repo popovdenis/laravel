@@ -34,6 +34,15 @@ class BookingManagementResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('year')
+                    ->label('Day')
+                    ->getStateUsing(fn ($record) => \Carbon\Carbon::parse($record->start_time)->format('d/m')),
+                Tables\Columns\TextColumn::make('time_range')
+                    ->label('Time')
+                    ->getStateUsing(fn ($record) =>
+                        \Carbon\Carbon::parse($record->start_time)->format('H:i') . ' — ' .
+                        \Carbon\Carbon::parse($record->end_time)->format('H:i')
+                    ),
                 Tables\Columns\TextColumn::make('teacher_fullname')
                     ->label('Teacher')->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('student_fullname')
@@ -44,10 +53,6 @@ class BookingManagementResource extends Resource
                     ->label('Subject')->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('current_subject_number')
                     ->label('Subject Number')->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('start_time')
-                    ->label('Subject Lesson')->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('end_time')
-                    ->label('End Lesson')->sortable()->toggleable(),
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -67,7 +72,7 @@ class BookingManagementResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('start_time');
     }
 
     public static function getRelations(): array
