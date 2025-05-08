@@ -33,8 +33,13 @@ class ConfirmUpcomingBookingCommand extends Command
      */
     public function handle()
     {
-        $this->transitionService->handle();
+        try {
+            $this->transitionService->handle();
 
-        return Command::SUCCESS;
+            return Command::SUCCESS;
+        } catch (\Throwable $exception) {
+            $this->error($exception->getMessage());
+            return Command::FAILURE;
+        }
     }
 }
