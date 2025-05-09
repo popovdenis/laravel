@@ -71,12 +71,11 @@ interface TimezoneInterface
     /**
      * Create \DateTime object with date converted to scope timezone and scope Locale
      *
-     * @param   mixed $scope Information about scope
      * @param   string|integer|\DateTime|array|null $date date in UTC
      * @param   boolean $includeTime flag for including time to date
      * @return  \DateTime
      */
-    public function scopeDate($scope = null, $date = null, bool $includeTime = false): Carbon;
+    public function scopeDate($date = null, bool $includeTime = false): Carbon;
 
     /**
      * Get scope timestamp

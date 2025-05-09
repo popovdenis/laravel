@@ -99,7 +99,7 @@ class Timezone implements TimezoneInterface
         return Carbon::createFromTimestamp($date, $timezone);
     }
 
-    public function scopeDate($scope = null, $date = null, bool $includeTime = false): Carbon
+    public function scopeDate($date = null, bool $includeTime = false): Carbon
     {
         $timezone = $this->getConfigTimezone();
 
@@ -120,7 +120,12 @@ class Timezone implements TimezoneInterface
         return $date;
     }
 
-    public function formatDate($date = null, string $format = 'Y-m-d', bool $showTime = false, ?string $timezone = null): string
+    public function formatDate(
+        $date = null,
+        string $format = 'Y-m-d',
+        bool $showTime = false,
+        ?string $timezone = null
+    ): string
     {
         if ($showTime) {
             $format .= ' H:i:s';
@@ -144,10 +149,6 @@ class Timezone implements TimezoneInterface
         $timeStamp = $this->scopeTimeStamp();
         $fromTimeStamp = $dateFrom ? Carbon::parse($dateFrom)->timestamp : null;
         $toTimeStamp = $dateTo ? Carbon::parse($dateTo)->addDay()->timestamp : null;
-        if ($dateTo) {
-            // fix date YYYY-MM-DD 00:00:00 to YYYY-MM-DD 23:59:59
-            $toTimeStamp += 86400;
-        }
 
         return !(
             (!$this->dateTime->isEmptyDate($dateFrom) && $timeStamp < $fromTimeStamp) ||
@@ -193,7 +194,6 @@ class Timezone implements TimezoneInterface
      * @param string $date
      * @param boolean $includeTime
      * @param string $timezone
-     * @param string $locale
      * @return string
      * @throws \Exception
      */
