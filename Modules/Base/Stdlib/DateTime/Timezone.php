@@ -4,11 +4,9 @@ declare(strict_types=1);
 namespace Modules\Base\Stdlib\DateTime;
 
 use Carbon\Carbon;
-use Illuminate\Validation\ValidationException;
 use Modules\Base\Conracts\TimezoneInterface;
 use Modules\Base\Models\ConfigProvider;
 use Modules\Base\Stdlib\DateTime;
-use Modules\Base\Stdlib\DateTime\Intl\DateFormatterFactory;
 
 /**
  * Class Timezone
@@ -18,44 +16,30 @@ use Modules\Base\Stdlib\DateTime\Intl\DateFormatterFactory;
 class Timezone implements TimezoneInterface
 {
     private string $defaultTimezonePath;
-    private DateFormatterFactory $dateFormatterFactory;
     private ConfigProvider $configProvider;
-    private string $currentLocale;
     private DateTime $dateTime;
 
     public function __construct(
-        DateFormatterFactory $dateFormatterFactory,
         ConfigProvider $configProvider,
         DateTime $dateTime,
         string $defaultTimezonePath = ConfigProvider::XML_PATH_DEFAULT_TIMEZONE,
     )
     {
-        $this->currentLocale = \Illuminate\Support\Facades\App::getLocale();
         $this->defaultTimezonePath = $defaultTimezonePath;
-        $this->dateFormatterFactory = $dateFormatterFactory;
         $this->configProvider = $configProvider;
         $this->dateTime = $dateTime;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDefaultTimezonePath()
     {
         return $this->defaultTimezonePath;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDefaultTimezone()
     {
         return 'UTC';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getConfigTimezone()
     {
         return $this->configProvider->getValue(
@@ -63,53 +47,33 @@ class Timezone implements TimezoneInterface
         );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDateFormat($type = \IntlDateFormatter::SHORT)
+    public function getDateFormat($type = \IntlDateFormatter::SHORT): string
     {
-        $formatter = $this->dateFormatterFactory->create(
-            $this->currentLocale,
-            (int) $type,
-            \IntlDateFormatter::NONE,
-            null,
-            false
-        );
-
-        return $formatter->getPattern();
+        return match ($type) {
+            \IntlDateFormatter::FULL => 'l, j F Y',
+            \IntlDateFormatter::LONG => 'j F Y',
+            \IntlDateFormatter::MEDIUM => 'j M Y',
+            \IntlDateFormatter::SHORT => 'd/m/Y',
+            default => 'Y-m-d',
+        };
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDateFormatWithLongYear()
+    public function getDateFormatWithLongYear(): string
     {
-        $formatter = $this->dateFormatterFactory->create(
-            $this->currentLocale,
-            \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::NONE
-        );
-
-        return $formatter->getPattern();
+        return str_replace('y', 'Y', $this->getDateFormat());
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getTimeFormat($type = \IntlDateFormatter::SHORT)
+    public function getTimeFormat($type = \IntlDateFormatter::SHORT): string
     {
-        $formatter = $this->dateFormatterFactory->create(
-            $this->currentLocale,
-            \IntlDateFormatter::NONE,
-            (int)$type
-        );
-
-        return $formatter->getPattern();
+        return match ($type) {
+            \IntlDateFormatter::FULL,
+            \IntlDateFormatter::LONG => 'H:i:s',
+            \IntlDateFormatter::MEDIUM => 'H:i',
+            \IntlDateFormatter::SHORT => 'H:i',
+            default => 'H:i',
+        };
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDateTimeFormat($type)
     {
         return $this->getDateFormat($type) . ' ' . $this->getTimeFormat($type);
@@ -117,7 +81,6 @@ class Timezone implements TimezoneInterface
 
     public function date($date = null, ?string $locale = null, bool $useTimezone = true, bool $includeTime = true): Carbon
     {
-        $locale = $locale ?? app()->getLocale();
         $timezone = $useTimezone ? $this->getConfigTimezone() : config('app.timezone', 'UTC');
 
         if (empty($date)) {
@@ -129,7 +92,7 @@ class Timezone implements TimezoneInterface
         }
 
         if (!is_numeric($date)) {
-            $date = $this->appendTimeIfNeeded((string) $date, $includeTime, $timezone, $locale);
+            $date = $this->appendTimeIfNeeded((string) $date, $includeTime, $timezone);
             return Carbon::parse($date, $timezone);
         }
 
@@ -157,9 +120,6 @@ class Timezone implements TimezoneInterface
         return $date;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function formatDate($date = null, string $format = 'Y-m-d', bool $showTime = false, ?string $timezone = null): string
     {
         if ($showTime) {
@@ -169,38 +129,30 @@ class Timezone implements TimezoneInterface
         return $this->formatDateTime($date, $format, $timezone);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scopeTimeStamp()
     {
         $timezone = $this->configProvider->getValue($this->getDefaultTimezonePath());
-        $currentTimezone = @date_default_timezone_get();
-        @date_default_timezone_set($timezone);
-        $date = date('Y-m-d H:i:s');
-        @date_default_timezone_set($currentTimezone);
-        return strtotime($date);
+
+        return Carbon::now($timezone)->timestamp;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function isScopeDateInInterval($dateFrom = null, $dateTo = null)
     {
         $dateFrom = $dateFrom ?? '';
         $dateTo = $dateTo ?? '';
 
-
         $timeStamp = $this->scopeTimeStamp();
-        $fromTimeStamp = strtotime($dateFrom);
-        $toTimeStamp = strtotime($dateTo);
+        $fromTimeStamp = $dateFrom ? Carbon::parse($dateFrom)->timestamp : null;
+        $toTimeStamp = $dateTo ? Carbon::parse($dateTo)->addDay()->timestamp : null;
         if ($dateTo) {
             // fix date YYYY-MM-DD 00:00:00 to YYYY-MM-DD 23:59:59
             $toTimeStamp += 86400;
         }
 
-        return ! (! $this->dateTime->isEmptyDate($dateFrom) && $timeStamp < $fromTimeStamp ||
-            ! $this->dateTime->isEmptyDate($dateTo) && $timeStamp > $toTimeStamp);
+        return !(
+            (!$this->dateTime->isEmptyDate($dateFrom) && $timeStamp < $fromTimeStamp) ||
+            (!$this->dateTime->isEmptyDate($dateTo) && $timeStamp > $toTimeStamp)
+        );
     }
 
     public function formatDateTime(
@@ -228,7 +180,7 @@ class Timezone implements TimezoneInterface
             ? Carbon::instance($date)
             : Carbon::parse($date, $configTimezone);
 
-        if ($carbonDate->timezone->getName() !== $configTimezone) {
+        if ($carbonDate->timezone->getName() !== (new \DateTimeZone($configTimezone))->getName()) {
             throw new \Exception("The DateTime object timezone must be {$configTimezone}.");
         }
 
@@ -243,31 +195,13 @@ class Timezone implements TimezoneInterface
      * @param string $timezone
      * @param string $locale
      * @return string
-     * @throws ValidationException
+     * @throws \Exception
      */
-    private function appendTimeIfNeeded(string $date, bool $includeTime, string $timezone, string $locale)
+    private function appendTimeIfNeeded(string $date, bool $includeTime, string $timezone)
     {
-        if ($includeTime && !preg_match('/\d{1}:\d{2}/', $date)) {
-            $formatter = $this->dateFormatterFactory->create(
-                $locale,
-                \IntlDateFormatter::SHORT,
-                \IntlDateFormatter::NONE,
-                $timezone
-            );
-            $timestamp = $formatter->parse($date);
-            if (!$timestamp) {
-                throw ValidationException::withMessages([
-                    'field' => __('Could not append time to DateTime'),
-                ]);
-            }
-
-            $formatterWithHour = $this->dateFormatterFactory->create(
-                $locale,
-                \IntlDateFormatter::SHORT,
-                \IntlDateFormatter::SHORT,
-                $timezone
-            );
-            $date = $formatterWithHour->format($timestamp);
+        if ($includeTime && !preg_match('/^\d{1,2}:\d{2}$/', $date)) {
+            $parsed = Carbon::parse($date, $timezone);
+            return $parsed->format('Y-m-d H:i:s');
         }
 
         return $date;

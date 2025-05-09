@@ -2,6 +2,7 @@
 
 namespace Modules\Base\Conracts;
 
+use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -65,7 +66,7 @@ interface TimezoneInterface
      * @param bool $includeTime
      * @return \DateTime
      */
-    public function date($date = null, $locale = null, $useTimezone = true, $includeTime = true);
+    public function date($date = null, ?string $locale = null, bool $useTimezone = true, bool $includeTime = true): Carbon;
 
     /**
      * Create \DateTime object with date converted to scope timezone and scope Locale
@@ -75,17 +76,16 @@ interface TimezoneInterface
      * @param   boolean $includeTime flag for including time to date
      * @return  \DateTime
      */
-    public function scopeDate($scope = null, $date = null, $includeTime = false);
+    public function scopeDate($scope = null, $date = null, bool $includeTime = false): Carbon;
 
     /**
      * Get scope timestamp
      *
      * Timestamp will be built with scope timezone settings
      *
-     * @param   mixed $scope
      * @return  int
      */
-    public function scopeTimeStamp($scope = null);
+    public function scopeTimeStamp();
 
     /**
      * Format date using current locale options and time zone.
@@ -97,47 +97,40 @@ interface TimezoneInterface
      */
     public function formatDate(
         $date = null,
-        $format = \IntlDateFormatter::SHORT,
-        $showTime = false
-    );
+        string $format = 'Y-m-d',
+        bool $showTime = false,
+        ?string $timezone = null
+    ): string;
 
     /**
      * Gets the scope config timezone
      *
-     * @param string $scopeType
-     * @param string $scopeCode
      * @return string
      */
-    public function getConfigTimezone($scopeType = null, $scopeCode = null);
+    public function getConfigTimezone();
 
     /**
      * Checks if current date of the given scope (in the scope timezone) is within the range
      *
-     * @param int|string|\Magento\Framework\App\ScopeInterface $scope
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return bool
      */
-    public function isScopeDateInInterval($scope, $dateFrom = null, $dateTo = null);
+    public function isScopeDateInInterval($dateFrom = null, $dateTo = null);
 
     /**
      * Format date according to date and time formats, locale, timezone and pattern.
      *
      * @param string|\DateTimeInterface $date
-     * @param int $dateType
-     * @param int $timeType
+     * @param string $format
      * @param string|null $locale
      * @param string|null $timezone
-     * @param string|null $pattern
      * @return string
      */
     public function formatDateTime(
         $date,
-        $dateType = \IntlDateFormatter::SHORT,
-        $timeType = \IntlDateFormatter::SHORT,
-        $locale = null,
-        $timezone = null,
-        $pattern = null
+        string $format = 'Y-m-d H:i:s',
+        ?string $timezone = null
     );
 
     /**
@@ -151,5 +144,5 @@ interface TimezoneInterface
      * @throws ValidationException
      * @since 100.1.0
      */
-    public function convertConfigTimeToUtc($date, $format = 'Y-m-d H:i:s');
+    public function convertConfigTimeToUtc($date, string $format = 'Y-m-d H:i:s');
 }
