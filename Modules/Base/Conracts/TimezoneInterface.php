@@ -99,7 +99,7 @@ interface TimezoneInterface
      *
      * @return string
      */
-    public function getConfigTimezone();
+    public function getConfigTimezone($customerTimezoneId = null);
 
     /**
      * Checks if current date of the given scope (in the scope timezone) is within the range

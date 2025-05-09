@@ -5,26 +5,35 @@ namespace Modules\LanguageLevel\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\LanguageLevel\Models\LanguageLevel;
 use Modules\Stream\Models\Stream;
 
 class LanguageLevelController extends Controller
 {
+    private CustomerTimezone $timezone;
+
+    public function __construct(CustomerTimezone $timezone)
+    {
+        $this->timezone = $timezone;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->timezone->setUser(auth()->user());
         $selectedLevelId = $request->input('level_id');
         $selectedSubjectIds = $request->input('subject_ids', []);
 
         $filterStartDate = $request->input('start_date')
-            ? Carbon::parse($request->input('start_date'))
-            : Carbon::today();
+            ? $this->timezone->date($request->input('start_date'))
+            : $this->timezone->date()->startOfDay();
         $filterEndDate = $request->input('end_date')
-            ? Carbon::parse($request->input('end_date'))
-            : Carbon::today()->copy()->addDays(7);
+            ? $this->timezone->date($request->input('end_date'))
+            : $this->timezone->date()->addDays(7)->startOfDay();
 
         // Get streams with planned and started statuses
         $streamsQuery = Stream::with([
@@ -78,21 +87,21 @@ class LanguageLevelController extends Controller
                 continue;
             }
 
-            $streamStart = Carbon::parse($stream->start_date);
-            $streamEnd = Carbon::parse($stream->end_date);
+            $streamStart = $this->timezone->date($stream->start_date);
+            $streamEnd = $this->timezone->date($stream->end_date);
 
             $currentDate = $streamStart->copy();
             while ($currentDate->lte($streamEnd)) {
                 // Teacher's slots on the day
                 $dayOfWeek = $currentDate->format('l'); // Monday, Tuesday, etc.
-                $minStartTime = Carbon::now()->copy()->addMinutes(5);
+                $minStartTime = $this->timezone->date()->addMinutes(5);
 
                 $daySlots = $stream->teacher->scheduleTimeslots->filter(function ($slot) use ($dayOfWeek, $minStartTime) {
                     if (strtolower($slot->day) !== strtolower($dayOfWeek)) {
                         return false;
                     }
                     if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
-                        return Carbon::parse($slot->start)->greaterThanOrEqualTo($minStartTime);
+                        return $this->timezone->date($slot->start)->greaterThanOrEqualTo($minStartTime);
                     }
                     return true;
                 });

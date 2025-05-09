@@ -32,9 +32,9 @@ class Timezone implements TimezoneInterface
         return 'UTC';
     }
 
-    public function getConfigTimezone()
+    public function getConfigTimezone($customerTimezoneId = null)
     {
-        return $this->configProvider->getDefaultTimeZone();
+        return $customerTimezoneId ?? $this->configProvider->getDefaultTimeZone();
     }
 
     public function getDateFormat($type = \IntlDateFormatter::SHORT): string
