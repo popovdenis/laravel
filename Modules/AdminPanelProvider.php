@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\FilamentSyncScheduleMonitor\Models\FilamentSyncScheduleMonitorPlugin;
 use Nwidart\Modules\Facades\Module;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use ReflectionClass;
@@ -77,6 +78,7 @@ class AdminPanelProvider extends PanelProvider
                     Configuration\Filament\Pages\System\Configuration::class,
                 ]),
                 FilamentClearCachePlugin::make(),
+                FilamentSyncScheduleMonitorPlugin::make(),
                 \Mvenghaus\FilamentScheduleMonitor\FilamentPlugin::make()
             ])
             ->authMiddleware([

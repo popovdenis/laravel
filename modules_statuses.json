@@ -26,5 +26,6 @@
     "StripeCard": true,
     "UserSubscription": true,
     "Configuration": true,
-    "BookingGridFlat": true
+    "BookingGridFlat": true,
+    "FilamentSyncScheduleMonitor": true
 }

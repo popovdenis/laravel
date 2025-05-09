@@ -1,0 +1,11 @@
+{
+    "name": "FilamentSyncScheduleMonitor",
+    "alias": "filamentsyncschedulemonitor",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\FilamentSyncScheduleMonitor\\Providers\\FilamentSyncScheduleMonitorServiceProvider"
+    ],
+    "files": []
+}
