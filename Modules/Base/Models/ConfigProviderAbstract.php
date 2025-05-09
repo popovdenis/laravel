@@ -28,7 +28,7 @@ class ConfigProviderAbstract
         }
     }
 
-    protected function getValue(string|array $key = '*', mixed $default = null)
+    public function getValue(string|array $key = '*', mixed $default = null)
     {
         if (is_array($key)) {
             $settings = [];
@@ -43,7 +43,7 @@ class ConfigProviderAbstract
         return \Outerweb\Settings\Models\Setting::get($this->pathPrefix . $key, $default);
     }
 
-    protected function setValue(string|array $key, mixed $value): void
+    public function setValue(string|array $key, mixed $value): void
     {
         setting([$this->pathPrefix . $key => $value]);
     }
