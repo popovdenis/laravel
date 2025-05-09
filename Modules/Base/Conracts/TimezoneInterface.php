@@ -13,13 +13,6 @@ use Illuminate\Validation\ValidationException;
 interface TimezoneInterface
 {
     /**
-     * Return path to default timezone
-     *
-     * @return string
-     */
-    public function getDefaultTimezonePath();
-
-    /**
      * Retrieve timezone code
      *
      * @return string

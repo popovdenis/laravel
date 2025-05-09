@@ -15,24 +15,16 @@ use Modules\Base\Stdlib\DateTime;
  */
 class Timezone implements TimezoneInterface
 {
-    private string $defaultTimezonePath;
     private ConfigProvider $configProvider;
     private DateTime $dateTime;
 
     public function __construct(
         ConfigProvider $configProvider,
         DateTime $dateTime,
-        string $defaultTimezonePath = ConfigProvider::XML_PATH_DEFAULT_TIMEZONE,
     )
     {
-        $this->defaultTimezonePath = $defaultTimezonePath;
         $this->configProvider = $configProvider;
         $this->dateTime = $dateTime;
-    }
-
-    public function getDefaultTimezonePath()
-    {
-        return $this->defaultTimezonePath;
     }
 
     public function getDefaultTimezone()
@@ -42,9 +34,7 @@ class Timezone implements TimezoneInterface
 
     public function getConfigTimezone()
     {
-        return $this->configProvider->getValue(
-            $this->getDefaultTimezonePath()
-        );
+        return $this->configProvider->getDefaultTimeZone();
     }
 
     public function getDateFormat($type = \IntlDateFormatter::SHORT): string
@@ -136,7 +126,7 @@ class Timezone implements TimezoneInterface
 
     public function scopeTimeStamp()
     {
-        $timezone = $this->configProvider->getValue($this->getDefaultTimezonePath());
+        $timezone = $this->getConfigTimezone();
 
         return Carbon::now($timezone)->timestamp;
     }
