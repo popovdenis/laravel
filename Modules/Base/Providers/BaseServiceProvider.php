@@ -5,6 +5,8 @@ namespace Modules\Base\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Base\Conracts\TimezoneInterface;
+use Modules\Base\Stdlib\DateTime\Timezone;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -41,6 +43,8 @@ class BaseServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(TimezoneInterface::class, Timezone::class);
     }
 
     /**
