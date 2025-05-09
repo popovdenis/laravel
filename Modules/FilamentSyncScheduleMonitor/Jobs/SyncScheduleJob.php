@@ -22,6 +22,6 @@ class SyncScheduleJob implements ShouldQueue
 
     public function handle()
     {
-        Artisan::call('schedule-monitor:sync');
+        Artisan::call('schedule-monitor:sync {--keep-old}');
     }
 }
