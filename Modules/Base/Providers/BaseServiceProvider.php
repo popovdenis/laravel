@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace Modules\StripeCard\Providers;
+namespace Modules\Base\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -8,12 +9,17 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class StripeCardServiceProvider extends ServiceProvider
+/**
+ * Class BaseServiceProvider
+ *
+ * @package Modules\Base\Providers
+ */
+class BaseServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'StripeCard';
-    protected string $nameLower = 'stripecard';
+    protected string $name = 'Base';
+    protected string $nameLower = 'base';
 
     /**
      * Boot the application events.

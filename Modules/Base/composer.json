@@ -17,9 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\StripeCard\\": "/",
-            "Modules\\StripeCard\\Database\\Factories\\": "database/factories/",
-            "Modules\\StripeCard\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\StripeCard\\": "/"
         }
     }
 }
