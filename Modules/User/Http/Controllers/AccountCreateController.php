@@ -49,7 +49,7 @@ class AccountCreateController extends Controller
     {
         try {
             $customerData = CustomerData::fromRequest($request);
-dd($customerData);
+
             $customer = $this->accountManagement->createAccount($customerData, $customerData->password);
 
             $this->eventManager->dispatch(
