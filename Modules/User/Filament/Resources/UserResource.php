@@ -107,6 +107,34 @@ class UserResource extends Resource
                     ->same('new_password')
                     ->visible(fn ($get) => $get('change_password'))
                     ->columnSpan(6),
+
+                Forms\Components\TextInput::make('dstOffset')
+                    ->label('DST Offset')
+                    ->helperText('The time (in seconds) that the timezone is away from UTC')
+                    ->maxLength(255)
+                    ->readOnly()
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('rawOffset')
+                    ->label('Raw Offset')
+                    ->maxLength(255)
+                    ->helperText('The given time zone GMT offset in milliseconds')
+                    ->readOnly()
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('timeZoneId')
+                    ->label('Timezone ID')
+                    ->maxLength(255)
+                    ->helperText('The location ID of a time zone')
+                    ->readOnly()
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('timeZoneName')
+                    ->label('Timezone Name')
+                    ->maxLength(255)
+                    ->helperText('TimeZoneName is a custom string subclass for validating and serializing timezone names.')
+                    ->readOnly()
+                    ->columnSpan(6),
             ])
         ]);
     }
