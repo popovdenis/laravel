@@ -59,7 +59,7 @@ class SubscriptionService
     public function updateCreditBalance(User $user, SubscriptionPlan $plan): void
     {
         if ($this->configProvider->resetCreditsOnPlanChange()) {
-            $this->transactionService->adjustCredits($user, $user->credit_balance);
+            $this->transactionService->adjustCredits($user, (int) $user->credit_balance);
         }
         $this->transactionService->topUpCredits($user, $plan->credits);
     }

@@ -71,7 +71,7 @@ class StripePayment extends AbstractMethod
                 $newSubscription->trialUntil(now()->addDays($plan->getTrialDays()));
             }
 
-            $subscription = $newSubscription->create($user->defaultPaymentMethod()->id, [], $subscriptionOptions);
+            $subscription = $newSubscription->create($user->defaultPaymentMethod()?->id, [], $subscriptionOptions);
 
             $quote->setModel($subscription);
         } catch (\Exception $exception) {

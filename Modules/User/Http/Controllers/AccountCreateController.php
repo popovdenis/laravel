@@ -37,8 +37,9 @@ class AccountCreateController extends Controller
         $subscriptionPlans = SubscriptionPlan::where('status', true)
             ->orderBy('sort_order')
             ->pluck('name', 'id');
+        $googleKey = config('services.google_maps.api_key');
 
-        return view('user::account.register', compact('subscriptionPlans'));
+        return view('user::account.register', compact('subscriptionPlans', 'googleKey'));
     }
 
     /**
@@ -67,7 +68,7 @@ class AccountCreateController extends Controller
                 $customer->password_plaint = $request->password;
                 Auth::login($customer);
 
-                return redirect('/')->with('success', sprintf('Thank you for registering with %s.', $customer->name()));
+                return redirect('/')->with('success', sprintf('Thank you for registering with %s.', $customer->getNameAttribute()));
             }
         } catch (CreateAccountException | InputException | AlreadyExistsException $exception) {
             return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();

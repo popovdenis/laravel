@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Modules\User\Contracts\AccountDataInterface;
 use Modules\User\Models\User;
+use Spatie\GoogleTimeZone\GoogleTimeZone;
 use Spatie\LaravelData\Data;
 
 /**
@@ -23,6 +24,10 @@ class CustomerData extends Data
         public string $password,
         public string $password_confirmation,
         public string $subscriptionPlanId,
+        public ?int $dstOffset,
+        public ?int $rawOffset,
+        public ?string $timeZoneId,
+        public ?string $timeZoneName,
     )
     {
     }
@@ -40,6 +45,8 @@ class CustomerData extends Data
 
     public static function fromRequest(Request $request): static
     {
+        $timezone = self::getGoogleTimeZone($request);
+
         return static::from([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
@@ -47,6 +54,27 @@ class CustomerData extends Data
             'password' => $request->password,
             'password_confirmation' => $request->password_confirmation,
             'subscriptionPlanId' => $request->subscription_plan_id,
+            'dstOffset' => $timezone['dstOffset'] ?? null,
+            'rawOffset' => $timezone['rawOffset'] ?? null,
+            'timeZoneId' => $timezone['timeZoneId'] ?? null,
+            'timeZoneName' => $timezone['timeZoneName'] ?? null,
         ]);
+    }
+
+    private static function getGoogleTimeZone(Request $request): array
+    {
+        try {
+            $latitude = $request->input('latitude');
+            $longitude = $request->input('longitude');
+
+            $googleTimeZone = new GoogleTimeZone();
+            $googleTimeZone->setApiKey(config('google-time-zone.key'));
+
+            return $googleTimeZone->getTimeZoneForCoordinates($latitude, $longitude);
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
+
+        return [];
     }
 }

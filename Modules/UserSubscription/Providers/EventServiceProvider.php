@@ -14,6 +14,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'customer_register_success' => [
             \Modules\UserSubscription\Listeners\SubscribeUser::class,
+            \Modules\User\Listeners\SetCustomerTimezone::class,
         ],
     ];
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18a8f7a1bd22386ee4d0ee5f5d7bde5a",
+    "content-hash": "adf5bbbe9c5fbe8471f268c731444e01",
     "packages": [
         {
             "name": "amphp/amp",
@@ -8381,6 +8381,77 @@
                 }
             ],
             "time": "2025-02-10T09:22:41+00:00"
+        },
+        {
+            "name": "spatie/google-time-zone",
+            "version": "1.2.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/google-time-zone.git",
+                "reference": "222a6b11e056154eafaf13601eee758c4c4de0bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/google-time-zone/zipball/222a6b11e056154eafaf13601eee758c4c4de0bc",
+                "reference": "222a6b11e056154eafaf13601eee758c4c4de0bc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.5|^7.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^8.0|^9.0|^10.5|^11.5.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "GoogleTimeZone": "Spatie\\GoogleTimeZone\\Facades\\GoogleTimeZone"
+                    },
+                    "providers": [
+                        "Spatie\\GoogleTimeZone\\GoogleTimeZoneServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\GoogleTimeZone\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ruben Van Assche",
+                    "email": "ruben@spatie.be"
+                }
+            ],
+            "description": "Get time zones for coordinates",
+            "homepage": "https://github.com/spatie/google-time-zone",
+            "keywords": [
+                "coordinate",
+                "laravel",
+                "location",
+                "map",
+                "time zone"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/google-time-zone/issues",
+                "source": "https://github.com/spatie/google-time-zone/tree/1.2.7"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-02-21T11:38:57+00:00"
         },
         {
             "name": "spatie/image",

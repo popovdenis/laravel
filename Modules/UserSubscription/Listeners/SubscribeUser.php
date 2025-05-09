@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Modules\UserSubscription\Listeners;
 
-use Illuminate\Auth\Events\Registered;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Subscription\Data\SubscriptionData;
 use Modules\Subscription\Factories\SubscriptionQuoteFactory;
@@ -16,7 +15,6 @@ use Modules\Subscription\Services\SubscriptionService;
  */
 class SubscribeUser
 {
-    private SubscriptionService $subscriptionService;
     private OrderManagerInterface $orderManager;
     private SubscriptionQuoteFactory $quoteFactory;
 
@@ -26,7 +24,6 @@ class SubscribeUser
         SubscriptionQuoteFactory $quoteFactory
     )
     {
-        $this->subscriptionService = $subscriptionService;
         $this->orderManager = $orderManager;
         $this->quoteFactory = $quoteFactory;
     }

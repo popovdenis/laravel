@@ -46,6 +46,10 @@ class User extends Authenticatable implements FilamentUser
         'pm_last_four',
         'trial_ends_at',
         'confirmation',
+        'dstOffset',
+        'rawOffset',
+        'timeZoneId',
+        'timeZoneName',
     ];
 
     protected $casts = [

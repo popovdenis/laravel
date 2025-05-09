@@ -79,6 +79,11 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Hidden fields -->
+        <input type="hidden" name="location" id="location" />
+        <input type="hidden" name="latitude" id="latitude" />
+        <input type="hidden" name="longitude" id="longitude" />
+
         <div class="flex items-center justify-end mt-4">
             <a href="{{ route('login') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 {{ __('Already registered?') }}
@@ -88,5 +93,51 @@
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ $googleKey }}&libraries=places"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            const geocoder = new google.maps.Geocoder();
+                            const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+                            document.getElementById('latitude').value = lat;
+                            document.getElementById('longitude').value = lng;
+
+                            // geocoder.geocode({ location: latlng }, (results, status) => {
+                            //     if (status === 'OK' && results[0]) {
+                            //         debugger;
+                            //         document.getElementById('location').value = results[0].formatted_address;
+                            //     } else {
+                            //         console.warn('Geocoder failed: ' + status);
+                            //     }
+                            // });
+                        },
+                        function (error) {
+                            console.warn('Geolocation denied or error', error);
+                            fallbackByIP();
+                        }
+                    );
+                } else {
+                    console.warn('Geolocation not supported');
+                    fallbackByIP();
+                }
+
+                function fallbackByIP() {
+                    fetch('https://ipapi.co/json/')
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('location').value = data.city + ', ' + data.country;
+                        })
+                        .catch(() => {
+                            document.getElementById('location').value = 'Unknown location';
+                        });
+                }
+            });
+        </script>
     </form>
 </x-guest-layout>
