@@ -46,7 +46,7 @@ class CustomerData extends Data
     public static function fromRequest(Request $request): static
     {
         $timezone = self::getGoogleTimeZone($request);
-
+dd($timezone);
         return static::from([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
