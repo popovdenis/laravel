@@ -29,9 +29,11 @@ class StudentResource extends Resource
                     Select::make('subscription_plan_id')
                         ->label('Subscription Plan')
                         ->options(SubscriptionPlan::pluck('name', 'id'))
-                        ->default(fn ($record) => $record?->userSubscription?->plan_id)
-                        ->dehydrated(false)
                         ->required()
+                        ->dehydrated(false)
+                        ->afterStateHydrated(fn ($component, $state, $record) => $component->state(
+                            $record?->getActiveSubscription()?->plan?->id
+                        ))
                         ->columnSpan(6),
 
                     Forms\Components\TextInput::make('credit_balance')

@@ -67,7 +67,6 @@ class UserResource extends Resource
                         'female' => 'Female',
                         'other' => 'Not Specified',
                     ])
-                    ->default(fn ($record) => $record?->userSubscription?->plan_id)
                     ->dehydrated(false)
                     ->columnSpan(6),
 
