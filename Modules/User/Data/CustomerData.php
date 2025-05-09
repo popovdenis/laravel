@@ -46,7 +46,7 @@ class CustomerData extends Data
     public static function fromRequest(Request $request): static
     {
         $timezone = self::getGoogleTimeZone($request);
-dd($timezone);
+
         return static::from([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
@@ -63,12 +63,18 @@ dd($timezone);
 
     private static function getGoogleTimeZone(Request $request): array
     {
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
+        try {
+            $latitude = $request->input('latitude');
+            $longitude = $request->input('longitude');
 
-        $googleTimeZone = new GoogleTimeZone();
-        $googleTimeZone->setApiKey(config('google-time-zone.key'));
+            $googleTimeZone = new GoogleTimeZone();
+            $googleTimeZone->setApiKey(config('google-time-zone.key'));
 
-        return $googleTimeZone->getTimeZoneForCoordinates($latitude, $longitude);
+            return $googleTimeZone->getTimeZoneForCoordinates($latitude, $longitude);
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
+
+        return [];
     }
 }
