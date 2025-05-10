@@ -17,17 +17,10 @@ trait TimeSlotConverter
             'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
         ])->each(function ($day) use (&$data, $field, $timezone) {
             $data["{$day}_{$field}"] = collect($data["{$day}_{$field}"] ?? [])->map(function ($slot) use ($day, $timezone) {
-                $startUtc = Carbon::createFromFormat('H:i', $slot['start'], $timezone)
-                    ->setTimezone('UTC')
-                    ->format('H:i');
-                $endUtc = Carbon::createFromFormat('H:i', $slot['end'], $timezone)
-                    ->setTimezone('UTC')
-                    ->format('H:i');
-
                 return [
-//                    'day'   => $day,
-                    'start' => $startUtc,
-                    'end'   => $endUtc,
+                    'day'   => $day,
+                    'start' => $slot['start'],
+                    'end'   => $slot['end'],
                 ];
             })
             ->all();

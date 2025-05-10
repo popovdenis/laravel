@@ -43,10 +43,10 @@ class EditTeacher extends EditUser
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $timezone = app()->make(TimezoneInterface::class);
-        $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
+//        $timezone = app()->make(TimezoneInterface::class);
+//        $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
 
-        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet', $userTimezone);
+//        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet', $userTimezone);
 
         $this->record->scheduleTimeslots()->delete();
 
@@ -80,8 +80,8 @@ class EditTeacher extends EditUser
             ->get()
             ->groupBy('day')
             ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->map(fn ($slot) => [
-                'start' => Carbon::createFromFormat('H:i', $slot->start, 'UTC')->setTimezone($this->record->timeZoneId)->format('H:i'),
-                'end'   => Carbon::createFromFormat('H:i', $slot->end, 'UTC')->setTimezone($this->record->timeZoneId)->format('H:i'),
+                'start' => $slot->start,
+                'end'   => $slot->end,
             ])->values()->all()]);
 
         return array_merge($data, $grouped->toArray());

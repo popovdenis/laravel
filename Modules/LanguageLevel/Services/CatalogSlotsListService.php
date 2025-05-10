@@ -105,20 +105,39 @@ class CatalogSlotsListService
                 continue;
             }
 
-            $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($this->timezone->getConfigTimezone());
-            $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($this->timezone->getConfigTimezone());
+            $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
+            $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId);
 
-            $currentDate = $streamStart->copy();
+            $currentDate = $streamStart->greaterThan($filterStartDate)
+                ? $streamStart->copy()
+                : $filterStartDate->copy();
             while ($currentDate->lte($streamEnd)) {
                 $daySlots = $this->getDaySlots($stream, $currentDate);
 
                 foreach ($daySlots as $slot) {
-                    $slotStartUtc = Carbon::parse($currentDate->format('Y-m-d') . ' ' . $slot->start, 'UTC');
-                    $slotStart = $slotStartUtc->setTimezone($this->timezone->getConfigTimezone());
+                    $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
 
-                    if ($slotStart->between($filterStartDate, $filterEndDate)) {
-                        $dateKey = $slotStart->toDateString();
-                        $groupedSlots[$dateKey][] = $this->formatSlot($slotStart, $stream, $slot, $userBookedSlotIds);
+                    $currentDateInTeacherTz = $currentDate->copy()->setTimezone($teacherTz);
+
+                    $slotStart = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz);
+                    $slotEnd = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz);
+
+                    $slotStartUtc = $slotStart->copy()->setTimezone('UTC');
+                    $slotEndUtc = $slotEnd->copy()->setTimezone('UTC');
+
+                    $filters['lesson_type'] = 'individual';
+                    $chunkLength = $filters['lesson_type'] === 'group' ? 90 : 60;
+
+                    $chunkStart = $slotStartUtc->copy();
+                    while ($chunkStart->copy()->addMinutes($chunkLength)->lte($slotEndUtc)) {
+                        $chunkStartInTz = $chunkStart->copy()->setTimezone($user->timeZoneId);
+
+                        if ($chunkStartInTz->between($filterStartDate, $filterEndDate)) {
+                            $dateKey = $chunkStartInTz->toDateString();
+                            $groupedSlots[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);
+                        }
+
+                        $chunkStart->addMinutes($chunkLength);
                     }
                 }
 
