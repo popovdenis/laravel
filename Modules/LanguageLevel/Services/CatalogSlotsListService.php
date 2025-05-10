@@ -94,54 +94,18 @@ class CatalogSlotsListService
     public function groupSlots(array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user): array
     {
         $groupedSlots = [];
-
         $userBookedSlotIds = auth()->check() ? $this->getUserBookedSlots($user) : [];
         $streams = $this->filterStreamsByLevel($filters['level_id']);
 
         foreach ($streams as $stream) {
-            $subjectId = $stream->current_subject_id;
-
-            if (!empty($filters['subject_ids']) && !in_array($subjectId, $filters['subject_ids'])) {
+            if (!empty($filters['subject_ids']) && !in_array($stream->current_subject_id, $filters['subject_ids'])) {
                 continue;
             }
 
-            $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
-            $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId);
+            $slots = $this->getChunksForStream($stream, $filters, $filterStartDate, $filterEndDate, $user, $userBookedSlotIds);
 
-            $currentDate = $streamStart->greaterThan($filterStartDate)
-                ? $streamStart->copy()
-                : $filterStartDate->copy();
-            while ($currentDate->lte($streamEnd)) {
-                $daySlots = $this->getDaySlots($stream, $currentDate);
-
-                foreach ($daySlots as $slot) {
-                    $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
-
-                    $currentDateInTeacherTz = $currentDate->copy()->setTimezone($teacherTz);
-
-                    $slotStart = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz);
-                    $slotEnd = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz);
-
-                    $slotStartUtc = $slotStart->copy()->setTimezone('UTC');
-                    $slotEndUtc = $slotEnd->copy()->setTimezone('UTC');
-
-                    $filters['lesson_type'] = 'individual';
-                    $chunkLength = $filters['lesson_type'] === 'group' ? 90 : 60;
-
-                    $chunkStart = $slotStartUtc->copy();
-                    while ($chunkStart->copy()->addMinutes($chunkLength)->lte($slotEndUtc)) {
-                        $chunkStartInTz = $chunkStart->copy()->setTimezone($user->timeZoneId);
-
-                        if ($chunkStartInTz->between($filterStartDate, $filterEndDate)) {
-                            $dateKey = $chunkStartInTz->toDateString();
-                            $groupedSlots[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);
-                        }
-
-                        $chunkStart->addMinutes($chunkLength);
-                    }
-                }
-
-                $currentDate->addDay();
+            foreach ($slots as $date => $slotList) {
+                $groupedSlots[$date] = array_merge($groupedSlots[$date] ?? [], $slotList);
             }
         }
 
@@ -151,6 +115,56 @@ class CatalogSlotsListService
         }
 
         return $groupedSlots;
+    }
+
+    private function getChunksForStream(Stream $stream, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, array $userBookedSlotIds): array
+    {
+        $results = [];
+
+        $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
+        $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId);
+        $currentDate = $streamStart->greaterThan($filterStartDate) ? $streamStart->copy() : $filterStartDate->copy();
+
+        while ($currentDate->lte($streamEnd)) {
+            $daySlots = $this->getDaySlots($stream, $currentDate);
+
+            foreach ($daySlots as $slot) {
+                $chunks = $this->splitSlotToChunks($slot, $stream, $currentDate, $filters, $filterStartDate, $filterEndDate, $user, $userBookedSlotIds);
+                foreach ($chunks as $date => $chunkList) {
+                    $results[$date] = array_merge($results[$date] ?? [], $chunkList);
+                }
+            }
+
+            $currentDate->addDay();
+        }
+
+        return $results;
+    }
+
+    private function splitSlotToChunks($slot, Stream $stream, Carbon $currentDate, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, array $userBookedSlotIds): array
+    {
+        $results = [];
+        $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
+        $chunkLength = $filters['lesson_type'] === 'group' ? 90 : 60;
+
+        $currentDateInTeacherTz = $currentDate->copy()->setTimezone($teacherTz);
+        $slotStart = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone('UTC');
+        $slotEnd = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone('UTC');
+
+        $chunkStart = $slotStart->copy();
+
+        while ($chunkStart->copy()->addMinutes($chunkLength)->lte($slotEnd)) {
+            $chunkStartInTz = $chunkStart->copy()->setTimezone($user->timeZoneId);
+
+            if ($chunkStartInTz->between($filterStartDate, $filterEndDate)) {
+                $dateKey = $chunkStartInTz->toDateString();
+                $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);
+            }
+
+            $chunkStart->addMinutes($chunkLength);
+        }
+
+        return $results;
     }
 
     private function getDaySlots(Stream $stream, Carbon $currentDate): Collection

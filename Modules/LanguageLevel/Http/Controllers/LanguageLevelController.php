@@ -34,6 +34,7 @@ class LanguageLevelController extends Controller
             'type' => $request->input('type'),
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
+            'lesson_type' => $request->input('lesson_type', 'group'),
         ];
     }
 
