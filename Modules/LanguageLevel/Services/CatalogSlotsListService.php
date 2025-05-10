@@ -157,14 +157,34 @@ class CatalogSlotsListService
         ];
     }
 
-    private function generateAvailableChunks(Carbon $start, Carbon $end, int $chunkLength, string $studentTz, Carbon $filterStart, Carbon $filterEnd, callable $callback): void
+    private function generateAvailableChunks(
+        Carbon $start,
+        Carbon $end,
+        int $chunkLength,
+        string $studentTz,
+        Carbon $filterStart,
+        Carbon $filterEnd,
+        User $user,
+        callable $callback
+    ): void
     {
         $chunkStart = $start->copy();
 
         while ($chunkStart->copy()->addMinutes($chunkLength)->lte($end)) {
             $chunkInTz = $chunkStart->copy()->setTimezone($studentTz);
 
-            if ($chunkInTz->between($filterStart, $filterEnd)) {
+            $preferredStart = $user->preferred_start_time
+                ? Carbon::createFromFormat('H:i', $user->preferred_start_time->format('H:i'), $studentTz)
+                : null;
+            $preferredEnd = $user->preferred_end_time
+                ? Carbon::createFromFormat('H:i', $user->preferred_end_time->format('H:i'), $studentTz)
+                : null;
+
+            if (
+                $chunkInTz->between($filterStart, $filterEnd) &&
+                (!$preferredStart || $chunkInTz->gte($chunkInTz->copy()->setTimeFrom($preferredStart))) &&
+                (!$preferredEnd || $chunkInTz->lte($chunkInTz->copy()->setTimeFrom($preferredEnd)))
+            ) {
                 $callback($chunkInTz);
             }
 
@@ -187,6 +207,7 @@ class CatalogSlotsListService
             $user->timeZoneId,
             $filterStartDate,
             $filterEndDate,
+            $user,
             function (Carbon $chunkStartInTz) use (&$results, $stream, $slot, $userBookedSlotIds) {
                 $dateKey = $chunkStartInTz->toDateString();
                 $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);

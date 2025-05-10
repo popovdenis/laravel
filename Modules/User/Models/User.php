@@ -50,11 +50,15 @@ class User extends Authenticatable implements FilamentUser
         'rawOffset',
         'timeZoneId',
         'timeZoneName',
+        'preferred_start_time',
+        'preferred_end_time',
     ];
 
     protected $casts = [
         'dob'               => 'date',
         'email_verified_at' => 'datetime',
+        'preferred_start_time' => 'datetime:H:i',
+        'preferred_end_time' => 'datetime:H:i',
     ];
 
     /**
