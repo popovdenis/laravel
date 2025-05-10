@@ -131,10 +131,8 @@ interface TimezoneInterface
      * If pass \DateTime object as argument be sure that timezone is the same with config timezone
      *
      * @param string|\DateTimeInterface $date
-     * @param string $format
-     * @return string
+     * @return Carbon
      * @throws ValidationException
-     * @since 100.1.0
      */
-    public function convertConfigTimeToUtc($date, string $format = 'Y-m-d H:i:s');
+    public function convertConfigTimeToUtc($date): Carbon;
 }

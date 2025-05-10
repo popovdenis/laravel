@@ -2,7 +2,9 @@
 
 namespace Modules\User\Filament\Resources\TeacherResource\Pages;
 
+use Carbon\Carbon;
 use Filament\Actions;
+use Modules\Base\Conracts\TimezoneInterface;
 use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlotValidationTrait;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
@@ -41,17 +43,27 @@ class EditTeacher extends EditUser
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet');
+        $timezone = app()->make(TimezoneInterface::class);
+        $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
+
+        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet', $userTimezone);
 
         $this->record->scheduleTimeslots()->delete();
 
-        foreach ($data['timesheet'] ?? [] as $slot) {
-            $this->record->scheduleTimeslots()->create([
-                'day' => $slot['day'],
-                'start' => $slot['start'],
-                'end' => $slot['end'],
-            ]);
-        }
+        collect(
+            ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        )->each(function ($day) use ($data) {
+            $slots = $data[$day . '_timesheet'] ?? null;
+            if ($slots) {
+                foreach ($slots as $slot) {
+                    $this->record->scheduleTimeslots()->create([
+                        'day' => $day,
+                        'start' => $slot['start'],
+                        'end' => $slot['end'],
+                    ]);
+                }
+            }
+        });
 
         return $data;
     }
@@ -68,8 +80,8 @@ class EditTeacher extends EditUser
             ->get()
             ->groupBy('day')
             ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->map(fn ($slot) => [
-                'start' => $slot->start,
-                'end'   => $slot->end,
+                'start' => Carbon::createFromFormat('H:i', $slot->start, 'UTC')->setTimezone($this->record->timeZoneId)->format('H:i'),
+                'end'   => Carbon::createFromFormat('H:i', $slot->end, 'UTC')->setTimezone($this->record->timeZoneId)->format('H:i'),
             ])->values()->all()]);
 
         return array_merge($data, $grouped->toArray());

@@ -2,7 +2,9 @@
 
 namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
 
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
+use Modules\Base\Conracts\TimezoneInterface;
 
 /**
  * Trait TimeSlotValidationTrait
@@ -13,30 +15,33 @@ trait TimeSlotValidationTrait
 {
     protected function validateOverlappingSlots(array $data, $field): void
     {
+        $timezone = app()->make(TimezoneInterface::class);
+        $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
+
         collect(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
-            ->each(function ($day) use ($data, $field) {
+            ->each(function ($day) use ($data, $field, $userTimezone) {
                 $slots = collect($data["{$day}_{$field}"] ?? []);
-                $this->checkOverlapsForDay($day, $slots);
+                $this->checkOverlapsForDay($day, $slots, $userTimezone);
             });
     }
 
-    protected function checkOverlapsForDay(string $day, \Illuminate\Support\Collection $slots): void
+    protected function checkOverlapsForDay(string $day, \Illuminate\Support\Collection $slots, string $timezone): void
     {
         $label = ucfirst($day);
 
-        $slots->each(function ($slotA, $i) use ($slots, $label) {
-            $startA = \Carbon\Carbon::createFromFormat('H:i', $slotA['start']);
-            $endA = $startA->copy()->addMinutes(60);
+        $slots->each(function ($slotA, $i) use ($slots, $label, $timezone) {
+            $startA = Carbon::createFromFormat('H:i', $slotA['start'], $timezone)->setTimezone('UTC');
+            $endA = Carbon::createFromFormat('H:i', $slotA['end'], $timezone)->setTimezone('UTC');
 
-            $slots->each(function ($slotB, $j) use ($i, $startA, $endA, $label, $slotA) {
+            $slots->each(function ($slotB, $j) use ($i, $startA, $endA, $label, $slotA, $timezone) {
                 if ($i === $j) {
-                    return; // Skip self
+                    return;
                 }
 
-                $startB = \Carbon\Carbon::createFromFormat('H:i', $slotB['start']);
-                $endB = \Carbon\Carbon::createFromFormat('H:i', $slotB['end']);
+                $startB = Carbon::createFromFormat('H:i', $slotB['start'], $timezone)->setTimezone('UTC');
+                $endB = Carbon::createFromFormat('H:i', $slotB['end'], $timezone)->setTimezone('UTC');
 
-                if ($startA->lessThan($endB) && $endA->greaterThan($startB)) {
+                if ($startA->lt($endB) && $endA->gt($startB)) {
                     Notification::make()
                         ->title('Error')
                         ->body("Time slots overlap on {$label} between {$slotA['start']} and {$slotB['start']}.")

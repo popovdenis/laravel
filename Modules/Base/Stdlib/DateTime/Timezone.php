@@ -163,7 +163,7 @@ class Timezone implements TimezoneInterface
         return $carbonDate->format($format);
     }
 
-    public function convertConfigTimeToUtc($date, string $format = 'Y-m-d H:i:s'): string
+    public function convertConfigTimeToUtc($date): Carbon
     {
         $configTimezone = $this->getConfigTimezone();
 
@@ -172,10 +172,10 @@ class Timezone implements TimezoneInterface
             : Carbon::parse($date, $configTimezone);
 
         if ($carbonDate->timezone->getName() !== (new \DateTimeZone($configTimezone))->getName()) {
-            throw new \Exception("The DateTime object timezone must be {$configTimezone}.");
+            $carbonDate->setTimezone('UTC');
         }
 
-        return $carbonDate->setTimezone('UTC')->format($format);
+        return $carbonDate;
     }
 
     /**

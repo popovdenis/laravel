@@ -2,6 +2,8 @@
 
 namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages;
 
+use Carbon\Carbon;
+
 /**
  * Trait TimeSlotConverter
  *
@@ -9,19 +11,27 @@ namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\P
  */
 trait TimeSlotConverter
 {
-    protected function convertTimeSlotsBeforeSave(array $data, $field): array
+    protected function convertTimeSlotsBeforeSave(array $data, $field, string $timezone): array
     {
         $data[$field] = collect([
             'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
-        ])->flatMap(function ($day) use ($data, $field) {
-            return collect($data["{$day}_{$field}"] ?? [])->map(function ($slot) use ($day) {
+        ])->each(function ($day) use (&$data, $field, $timezone) {
+            $data["{$day}_{$field}"] = collect($data["{$day}_{$field}"] ?? [])->map(function ($slot) use ($day, $timezone) {
+                $startUtc = Carbon::createFromFormat('H:i', $slot['start'], $timezone)
+                    ->setTimezone('UTC')
+                    ->format('H:i');
+                $endUtc = Carbon::createFromFormat('H:i', $slot['end'], $timezone)
+                    ->setTimezone('UTC')
+                    ->format('H:i');
+
                 return [
-                    'day'   => $day,
-                    'start' => $slot['start'],
-                    'end'   => $slot['end'],
+//                    'day'   => $day,
+                    'start' => $startUtc,
+                    'end'   => $endUtc,
                 ];
-            });
-        })->values()->all();
+            })
+            ->all();
+        });
 
         return $data;
     }
