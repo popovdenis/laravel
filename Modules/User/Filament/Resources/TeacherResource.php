@@ -34,31 +34,6 @@ class TeacherResource extends Resource
             Forms\Components\Section::make('Schedule Timesheet')
                 ->schema([
                     Forms\Components\Grid::make(12)->schema([
-                        Forms\Components\Select::make('schedule_template_id')
-                            ->label('Select Template')
-                            ->options(fn () => \Modules\ScheduleTemplate\Models\ScheduleTemplate::pluck('title', 'id'))
-                            ->reactive()
-                            ->columnSpan(6),
-
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('load_template')
-                                ->label('Load Time Slots')
-                                ->action(function (Forms\Get $get, Forms\Set $set) {
-                                    $templateId = $get('schedule_template_id');
-                                    if ($templateId) {
-                                        $template = \Modules\ScheduleTemplate\Models\ScheduleTemplate::find($templateId);
-                                        if ($template) {
-                                            $grouped = collect($template->slots ?? [])
-                                                ->groupBy('day')
-                                                ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->values()->all()]);
-                                            foreach ($grouped as $key => $value) {
-                                                $set($key, $value);
-                                            }
-                                        }
-                                    }
-                                }),
-                        ])->columnSpan(12),
-
                         static::makeDaySlotSection('monday', 'Monday', 'timesheet')->columnSpan(12),
                         static::makeDaySlotSection('tuesday', 'Tuesday', 'timesheet')->columnSpan(12),
                         static::makeDaySlotSection('wednesday', 'Wednesday', 'timesheet')->columnSpan(12),

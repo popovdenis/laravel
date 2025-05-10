@@ -34,7 +34,7 @@ trait TimeSlotValidationTrait
                 }
 
                 $startB = \Carbon\Carbon::createFromFormat('H:i', $slotB['start']);
-                $endB = $startB->copy()->addMinutes(60);
+                $endB = \Carbon\Carbon::createFromFormat('H:i', $slotB['end']);
 
                 if ($startA->lessThan($endB) && $endA->greaterThan($startB)) {
                     Notification::make()
