@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Enums\BookingStatus;
+use Modules\LanguageLevel\DTO\SlotResult;
 use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
 
@@ -141,28 +142,56 @@ class CatalogSlotsListService
         return $results;
     }
 
-    private function splitSlotToChunks($slot, Stream $stream, Carbon $currentDate, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, array $userBookedSlotIds): array
+    private function getChunkLength(array $filters): int
     {
-        $results = [];
-        $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
-        $chunkLength = $filters['lesson_type'] === 'group' ? 90 : 60;
+        return $filters['lesson_type'] === 'group' ? 90 : 60;
+    }
 
-        $currentDateInTeacherTz = $currentDate->copy()->setTimezone($teacherTz);
-        $slotStart = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone('UTC');
-        $slotEnd = Carbon::parse($currentDateInTeacherTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone('UTC');
+    private function calculateUtcSlotWindow($slot, Carbon $currentDate, string $teacherTz): array
+    {
+        $currentDateInTz = $currentDate->copy()->setTimezone($teacherTz);
 
-        $chunkStart = $slotStart->copy();
+        return [
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone('UTC'),
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone('UTC'),
+        ];
+    }
 
-        while ($chunkStart->copy()->addMinutes($chunkLength)->lte($slotEnd)) {
-            $chunkStartInTz = $chunkStart->copy()->setTimezone($user->timeZoneId);
+    private function generateAvailableChunks(Carbon $start, Carbon $end, int $chunkLength, string $studentTz, Carbon $filterStart, Carbon $filterEnd, callable $callback): void
+    {
+        $chunkStart = $start->copy();
 
-            if ($chunkStartInTz->between($filterStartDate, $filterEndDate)) {
-                $dateKey = $chunkStartInTz->toDateString();
-                $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);
+        while ($chunkStart->copy()->addMinutes($chunkLength)->lte($end)) {
+            $chunkInTz = $chunkStart->copy()->setTimezone($studentTz);
+
+            if ($chunkInTz->between($filterStart, $filterEnd)) {
+                $callback($chunkInTz);
             }
 
             $chunkStart->addMinutes($chunkLength);
         }
+    }
+
+    private function splitSlotToChunks($slot, Stream $stream, Carbon $currentDate, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, array $userBookedSlotIds): array
+    {
+        $results = [];
+        $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
+        $chunkLength = $this->getChunkLength($filters);
+
+        [$slotStartUtc, $slotEndUtc] = $this->calculateUtcSlotWindow($slot, $currentDate, $teacherTz);
+
+        $this->generateAvailableChunks(
+            $slotStartUtc,
+            $slotEndUtc,
+            $chunkLength,
+            $user->timeZoneId,
+            $filterStartDate,
+            $filterEndDate,
+            function (Carbon $chunkStartInTz) use (&$results, $stream, $slot, $userBookedSlotIds) {
+                $dateKey = $chunkStartInTz->toDateString();
+                $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds);
+            }
+        );
 
         return $results;
     }
@@ -183,8 +212,19 @@ class CatalogSlotsListService
         });
     }
 
-    private function formatSlot(Carbon $slotStart, Stream $stream, $slot, array $userBookedSlotIds): array
+    private function formatSlot(Carbon $slotStart, Stream $stream, $slot, array $userBookedSlotIds): SlotResult
     {
+        return new SlotResult(
+            time: $slotStart->format('H:i'),
+            stream: $stream,
+            teacher: $stream->teacher,
+            subject: $stream->currentSubject,
+            currentSubjectNumber: $stream->current_subject_number,
+            slot: $slot,
+            bookingId: $this->isSlotBooked($userBookedSlotIds[$slot->id] ?? null)
+                ? $userBookedSlotIds[$slot->id]['booking_id']
+                : null,
+        );
         return [
             'time' => $slotStart->format('H:i'),
             'stream' => $stream,
@@ -200,11 +240,11 @@ class CatalogSlotsListService
 
     private function compareSlots($a, $b): int
     {
-        $timeA = Carbon::createFromFormat('H:i', $a['time']);
-        $timeB = Carbon::createFromFormat('H:i', $b['time']);
+        $timeA = Carbon::createFromFormat('H:i', $a->time);
+        $timeB = Carbon::createFromFormat('H:i', $b->time);
 
         return $timeA->eq($timeB)
-            ? $a['current_subject_number'] <=> $b['current_subject_number']
+            ? $a->currentSubjectNumber <=> $b->currentSubjectNumber
             : ($timeA->lt($timeB) ? -1 : 1);
     }
 

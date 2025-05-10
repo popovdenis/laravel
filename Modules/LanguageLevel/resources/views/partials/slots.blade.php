@@ -6,7 +6,7 @@
         <div class="mt-4">
             @foreach ($slots as $item)
                 @php
-                    $isBooked = !empty($item['booking_id']);
+                    $isBooked = !empty($item->bookingId);
                 @endphp
                 <div
                     x-data="{ confirmBooking: false }"
@@ -14,28 +14,28 @@
                 >
                     <!-- Time -->
                     <div class="w-24 px-2 text-blue-700 font-bold text-sm uppercase">
-                        {{ $item['time'] }}
+                        {{ $item->time }}
                     </div>
 
                     <!-- Subject details -->
                     <div class="flex-1 px-2">
                         <p class="text-xs text-gray-500 uppercase tracking-wide">
-                            {{ $item['stream']->languageLevel->title }}
-                            • Chapter {{ $item['current_subject_number'] }}
-                            • {{ strtoupper($item['subject']->category ?? '') }}
+                            {{ $item->stream->languageLevel->title }}
+                            • Chapter {{ $item->currentSubjectNumber }}
+                            • {{ strtoupper($item->subject->category ?? '') }}
                         </p>
                         <p class="text-sm text-gray-800 font-semibold">
-                            {{ $item['subject']->title ?? 'No subject selected' }}
+                            {{ $item->subject->title ?? 'No subject selected' }}
                         </p>
                     </div>
 
                     <!-- Teacher -->
                     <div class="flex px-4 items-center gap-2">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($item['teacher']->firstname) }}&size=32"
-                             alt="{{ $item['teacher']->firstname }}"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($item->teacher->firstname) }}&size=32"
+                             alt="{{ $item->teacher->firstname }}"
                              class="w-8 h-8 rounded-full">
                         <span class="text-sm text-gray-500 uppercase tracking-wide">
-                            {{ __('Group Class with :name', ['name' => $item['teacher']->firstname]) }}
+                            {{ __('Group Class with :name', ['name' => $item->teacher->firstname]) }}
                         </span>
                     </div>
 
@@ -66,7 +66,7 @@
                                             </button>
                                             <form method="POST" action="{{ route('booking.cancel') }}">
                                                 @csrf
-                                                <input type="hidden" name="booking_id" value="{{ $item['booking_id'] }}">
+                                                <input type="hidden" name="booking_id" value="{{ $item->bookingId }}">
                                                 <button type="submit" class="btn btn-cancel">
                                                     {{ __('Yes, Cancel Booking') }}
                                                 </button>
@@ -99,8 +99,8 @@
                                 </button>
                                 <form method="POST" action="{{ route('booking.store') }}">
                                     @csrf
-                                    <input type="hidden" name="stream_id" value="{{ $item['stream']->id }}">
-                                    <input type="hidden" name="slot_id" value="{{ $item['slot']->id }}">
+                                    <input type="hidden" name="stream_id" value="{{ $item->stream->id }}">
+                                    <input type="hidden" name="slot_id" value="{{ $item->slot->id }}">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Confirm Booking') }}
                                     </button>
