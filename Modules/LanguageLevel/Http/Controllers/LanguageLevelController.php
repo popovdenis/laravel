@@ -3,165 +3,63 @@
 namespace Modules\LanguageLevel\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\LanguageLevel\Models\LanguageLevel;
+use Modules\LanguageLevel\Services\CatalogSlotsListService;
 use Modules\Stream\Models\Stream;
+use Modules\User\Models\User;
 
 class LanguageLevelController extends Controller
 {
-    private CustomerTimezone $timezone;
+    private CatalogSlotsListService $catalogSlotsListService;
 
-    public function __construct(CustomerTimezone $timezone)
+    public function __construct(
+        CustomerTimezone $timezone,
+        CatalogSlotsListService  $catalogSlotsListService,
+    )
     {
-        $this->timezone = $timezone;
+        parent::__construct($timezone);
+        $this->catalogSlotsListService = $catalogSlotsListService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+    private function getFilters(Request $request): array
+    {
+        return [
+            'level_id' => $request->input('level_id'),
+            'subject_ids' => $request->input('subject_ids', []),
+            'type' => $request->input('type'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+        ];
+    }
+
     public function index(Request $request)
     {
-        $this->timezone->setUser(auth()->user());
-        $selectedLevelId = $request->input('level_id');
-        $selectedSubjectIds = $request->input('subject_ids', []);
+        $user = $request->user();
 
-        $filterStartDate = $request->input('start_date')
-            ? $this->timezone->date($request->input('start_date'))
-            : $this->timezone->date()->startOfDay();
-        $filterEndDate = $request->input('end_date')
-            ? $this->timezone->date($request->input('end_date'))
-            : $this->timezone->date()->addDays(7)->startOfDay();
+        $filters = $this->getFilters($request);
 
-        // Get streams with planned and started statuses
-        $streamsQuery = Stream::with([
-            'languageLevel.subjects',
-            'teacher.scheduleTimeslots',
-            'currentSubject',
-            'teacher',
-        ])
-            ->whereIn('status', ['planned', 'started'])
-            ->whereHas('languageLevel', fn($q) => $q->where('is_active', true));
+        $streams = $this->catalogSlotsListService->getStreams();
+        $levels = $this->catalogSlotsListService->getLevels($streams);
+        $subjects = $this->catalogSlotsListService->getSubjects($filters['level_id'] ?? null, $levels);
 
-        $streams = $streamsQuery->get();
-
-        // Levels for the dropdown (only those which linked with the streams)
-        $levels = $streams->pluck('languageLevel')->unique('id')->values();
-
-        // Filter streams by the selected Level
-        if (!$selectedLevelId && $levels->isNotEmpty()) {
-            $selectedLevelId = $levels->first()->id;
-        }
-
-        $filteredStreams = $streams->filter(fn($stream) => $stream->language_level_id == $selectedLevelId);
-
-        // List of subjects for the selected level
-        $subjects = null;
-        if ($selectedLevelId) {
-            $selectedLevel = $levels->where('id', $selectedLevelId)->first();
-            $subjects = $selectedLevel?->subjects;
-        }
-
-        // List of user's booked slots
-        $userBookedSlotIds = auth()->user()?->bookings()
-            ->whereIn('status', [BookingStatus::PENDING->value, BookingStatus::CONFIRMED->value])
-            ->get(['id', 'schedule_timeslot_id', 'status'])
-            ->mapWithKeys(function($booking) {
-                return [
-                    $booking->schedule_timeslot_id => [
-                        'booking_id' => $booking->id,
-                        'status'     => $booking->status,
-                    ]
-                ];
-            })
-            ->toArray();
-
-        $groupedSlots = [];
-        foreach ($filteredStreams as $stream) {
-            $subjectId = $stream->current_subject_id;
-
-            // Subject filter, if selected
-            if (!empty($selectedSubjectIds) && !in_array($subjectId, $selectedSubjectIds)) {
-                continue;
-            }
-
-            $streamStart = $this->timezone->date($stream->start_date);
-            $streamEnd = $this->timezone->date($stream->end_date);
-
-            $currentDate = $streamStart->copy();
-            while ($currentDate->lte($streamEnd)) {
-                // Teacher's slots on the day
-                $dayOfWeek = $currentDate->format('l'); // Monday, Tuesday, etc.
-                $minStartTime = $this->timezone->date()->addMinutes(5);
-
-                $daySlots = $stream->teacher->scheduleTimeslots->filter(function ($slot) use ($dayOfWeek, $minStartTime) {
-                    if (strtolower($slot->day) !== strtolower($dayOfWeek)) {
-                        return false;
-                    }
-                    if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
-                        return $this->timezone->date($slot->start)->greaterThanOrEqualTo($minStartTime);
-                    }
-                    return true;
-                });
-
-                foreach ($daySlots as $slot) {
-                    $slotStart = $currentDate->copy()->setTimeFromTimeString($slot->start);
-
-                    // Restrict by the filtered dates
-                    if ($slotStart->between($filterStartDate, $filterEndDate)) {
-                        $dateKey = $slotStart->toDateString();
-                        $groupedSlots[$dateKey][] = [
-                            'time'                     => $slotStart->format('H:i'),
-                            'stream'                   => $stream,
-                            'teacher'                  => $stream->teacher,
-                            'subject'                  => $stream->currentSubject,
-                            'current_subject_number'   => $stream->current_subject_number,
-                            'slot'                     => $slot,
-                            'booking_id'               => $this->isSlotBooked($userBookedSlotIds[$slot->id] ?? null)
-                                                            ? $userBookedSlotIds[$slot->id]['booking_id']
-                                                            : null,
-                        ];
-                    }
-                }
-
-                $currentDate->addDay();
-            }
-        }
-        ksort($groupedSlots);
-
-        foreach ($groupedSlots as $dateKey => &$slots) {
-            usort($slots, function ($a, $b) {
-                $timeA = \Carbon\Carbon::createFromFormat('H:i', $a['time']);
-                $timeB = \Carbon\Carbon::createFromFormat('H:i', $b['time']);
-
-                if ($timeA->eq($timeB)) {
-                    return $a['current_subject_number'] <=> $b['current_subject_number'];
-                }
-
-                return $timeA->lt($timeB) ? -1 : 1;
-            });
-        }
-        unset($slots);
+        $filterStartDate = $this->catalogSlotsListService->getFilterStartDate($filters);
+        $filterEndDate = $this->catalogSlotsListService->getFilterEndDate($filters);
+        $groupedSlots = $this->catalogSlotsListService->groupSlots($filters, $filterStartDate, $filterEndDate, $user);
 
         return view('languagelevel::index', [
-            'levels'             => $levels,
-            'subjects'           => $subjects,
-            'groupedSlots'       => $groupedSlots,
-            'selectedLevelId'    => $selectedLevelId,
-            'selectedSubjectIds' => $selectedSubjectIds,
-            'filterStartDate'    => $filterStartDate->toDateString(),
-            'filterEndDate'      => $filterEndDate->toDateString(),
+            'levels' => $levels,
+            'subjects' => $subjects,
+            'groupedSlots' => $groupedSlots,
+            'selectedLevelId' => $filters['level_id'],
+            'selectedSubjectIds' => $filters['subject_ids'],
+            'filterStartDate' => $filterStartDate->toDateString(),
+            'filterEndDate' => $filterEndDate->toDateString(),
         ]);
-    }
-
-    private function isSlotBooked($slotStatus = null): ?bool
-    {
-        return isset($slotStatus['status']) && in_array($slotStatus['status'], [
-            BookingStatus::PENDING->value,
-            BookingStatus::CONFIRMED->value,
-        ], true);
     }
 
     /**

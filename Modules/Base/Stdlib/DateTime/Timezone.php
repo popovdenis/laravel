@@ -15,8 +15,8 @@ use Modules\Base\Stdlib\DateTime;
  */
 class Timezone implements TimezoneInterface
 {
-    private ConfigProvider $configProvider;
-    private DateTime $dateTime;
+    protected ConfigProvider $configProvider;
+    protected DateTime $dateTime;
 
     public function __construct(
         ConfigProvider $configProvider,
@@ -83,7 +83,7 @@ class Timezone implements TimezoneInterface
 
         if (!is_numeric($date)) {
             $date = $this->appendTimeIfNeeded((string) $date, $includeTime, $timezone);
-            return Carbon::parse($date, $timezone);
+            return Carbon::parse($date, 'UTC')->setTimezone($timezone);
         }
 
         return Carbon::createFromTimestamp($date, $timezone);

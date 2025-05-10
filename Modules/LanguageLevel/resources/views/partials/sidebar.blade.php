@@ -17,9 +17,9 @@
         </select>
 
         <!-- Subjects grouped by Chapters -->
-        @if ($selectedLevelId)
+        @if ($subjects && $subjects->isNotEmpty())
             <div class="space-y-4 mt-4">
-                @foreach ($levels->where('id', $selectedLevelId)->first()->subjects->groupBy('chapter') as $chapter => $subjectsGroup)
+                @foreach ($subjects->groupBy('chapter') as $chapter => $subjectsGroup)
                     <div>
                         <p class="text-sm font-semibold text-gray-800 mb-2">{{ $chapter }}</p>
                         <div class="space-y-2">

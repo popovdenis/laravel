@@ -13,9 +13,9 @@ use Modules\User\Models\User;
  */
 class CustomerTimezone extends Timezone
 {
-    private ?User $user;
+    protected ?User $user = null;
 
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
         return $this;
@@ -23,6 +23,10 @@ class CustomerTimezone extends Timezone
 
     public function getConfigTimezone($customerTimezoneId = null)
     {
+        if (! $this->user && auth()->check()) {
+            $this->setUser(auth()->user());
+        }
+
         return $this->user instanceof User && $this->user->timeZoneId
             ? $this->user->timeZoneId
             : parent::getConfigTimezone($customerTimezoneId);
