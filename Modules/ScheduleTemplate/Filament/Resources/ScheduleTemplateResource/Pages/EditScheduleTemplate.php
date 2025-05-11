@@ -9,7 +9,7 @@ use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlo
 
 class EditScheduleTemplate extends EditRecord
 {
-    use TimeSlotValidationTrait, TimeSlotConverter;
+    use TimeSlotValidationTrait;
 
     protected static string $resource = ScheduleTemplateResource::class;
 
@@ -18,16 +18,6 @@ class EditScheduleTemplate extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return $this->convertTimeSlotsBeforeSave($data, 'slots');
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $this->convertTimeSlotsBeforeFill($data, 'slots');
     }
 
     protected function beforeSave(): void

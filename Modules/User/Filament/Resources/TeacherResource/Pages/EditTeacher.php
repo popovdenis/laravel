@@ -2,10 +2,7 @@
 
 namespace Modules\User\Filament\Resources\TeacherResource\Pages;
 
-use Carbon\Carbon;
 use Filament\Actions;
-use Modules\Base\Conracts\TimezoneInterface;
-use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\Pages\TimeSlotConverter;
 use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlotValidationTrait;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\User\Filament\Resources\TeacherResource;
@@ -13,7 +10,7 @@ use Modules\User\Filament\Resources\UserResource\Pages\EditUser;
 
 class EditTeacher extends EditUser
 {
-    use TimeSlotValidationTrait, TimeSlotConverter;
+    use TimeSlotValidationTrait;
 
     protected static string $resource = TeacherResource::class;
     protected static ?string $title = 'Edit Teacher';
@@ -43,11 +40,6 @@ class EditTeacher extends EditUser
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-//        $timezone = app()->make(TimezoneInterface::class);
-//        $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
-
-//        $data = $this->convertTimeSlotsBeforeSave($data, 'timesheet', $userTimezone);
-
         $this->record->scheduleTimeslots()->delete();
 
         collect(

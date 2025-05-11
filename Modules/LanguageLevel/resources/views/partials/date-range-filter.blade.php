@@ -22,10 +22,29 @@
 
         <!-- Group or Private (toggle buttons, non-functional for now) -->
         <div>
-            <p class="text-sm text-gray-700 font-semibold mb-1">Group or Private</p>
+            <p class="text-sm text-gray-700 font-semibold mb-1">{{ __('Group or Private') }}</p>
             <div class="flex space-x-2">
-                <button type="button" class="btn btn-primary">Group</button>
-                <button type="button" class="btn btn-secondary">Private</button>
+                <form method="GET" action="{{ route('languagelevel::index') }}">
+                    @foreach(request()->except('lesson_type') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <input type="hidden" name="lesson_type" value="group">
+                    <button type="submit"
+                            class="btn {{ request('lesson_type') === 'group' ? 'btn-primary' : 'btn-secondary' }}">
+                        {{ __('Group') }}
+                    </button>
+                </form>
+
+                <form method="GET" action="{{ route('languagelevel::index') }}">
+                    @foreach(request()->except('lesson_type') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <input type="hidden" name="lesson_type" value="individual">
+                    <button type="submit"
+                            class="btn {{ request('lesson_type', 'individual') === 'individual' ? 'btn-primary' : 'btn-secondary' }}">
+                        {{ __('Private') }}
+                    </button>
+                </form>
             </div>
         </div>
 

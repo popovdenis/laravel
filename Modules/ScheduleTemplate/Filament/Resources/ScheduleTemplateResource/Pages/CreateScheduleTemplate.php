@@ -8,7 +8,7 @@ use Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource\TimeSlo
 
 class CreateScheduleTemplate extends CreateRecord
 {
-    use TimeSlotValidationTrait, TimeSlotConverter;
+    use TimeSlotValidationTrait;
 
     protected static string $resource = ScheduleTemplateResource::class;
 
