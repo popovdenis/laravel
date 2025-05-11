@@ -21,6 +21,8 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
+        "@stripe/react-stripe-js": "^3.7.0",
+        "@stripe/stripe-js": "^7.3.0",
         "@zoom/meetingsdk": "^3.12.0",
         "@zoomus/websdk": "^2.18.3",
         "react-router-dom": "^7.6.0"
