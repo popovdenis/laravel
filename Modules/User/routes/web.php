@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware('auth')->prefix('profile')->group(function () {
     // Account Dashboard
     Route::get('/', [UserController::class, 'index'])->name('profile.dashboard');
+    Route::get('/account-information/credits', [UserController::class, 'credits'])->name('user::credits');
 
     // Account Information
     Route::get('/account-information', [UserController::class, 'edit'])->name('profile.account-information.edit');

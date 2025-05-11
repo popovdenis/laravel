@@ -24,6 +24,37 @@ class UserController extends Controller
         return view('user::profile.dashboard', compact('user', 'subscriptionPlan'));
     }
 
+    public function credits(Request $request)
+    {
+        $user = $request->user();
+        $credits = $user?->credit_balance ?? 0;
+        $size = $request->get('size', 'base');
+
+        return response()->json([
+            'credits' => $credits,
+            'size' => $this->textSize($size),
+            'color' => $this->color($credits)
+        ]);
+    }
+
+    public function color($credits): string
+    {
+        return match (true) {
+            $credits === 0 => 'text-rose-500',
+            $credits < 5 => 'text-amber-500',
+            default => 'text-green-600',
+        };
+    }
+
+    public function textSize($size): string
+    {
+        return match ($size) {
+            'sm' => 'text-sm font-normal',
+            'lg' => 'text-lg font-semibold',
+            default => '',
+        };
+    }
+
     /**
      * Show the form for creating a new resource.
      */
