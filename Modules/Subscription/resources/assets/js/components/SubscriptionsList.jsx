@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
 import { createRoot } from 'react-dom/client'
-import Sidebar from '@modules/User/resources/assets/js/components/Sidebar';
 import axios from "axios";
 
 function SubscriptionsList() {
@@ -41,14 +40,14 @@ function SubscriptionsList() {
     if (loading) return <div>Loading...</div>
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div><Sidebar/></div>
+        <div className="grid grid-cols-1 w-full gap-6">
+            {/*<div><Sidebar/></div>*/}
 
             <div className="md:col-span-3 space-y-6">
                 <h4 className="text-blue-400 text-xl font-bold">Subscription Plans</h4>
 
                 <div className="flex flex-wrap justify-between bg-white rounded-2xl px-4 py-6 lg:px-6 mb-6 lg:mb-10">
-                    <div className="w-full lg:w-1/2">
+                    <div className="w-full ">
                         <div className="flex flex-col h-full sm:flex-row">
                             <div className="grow flex flex-col md:justify-between">
                                 <div>
@@ -63,7 +62,6 @@ function SubscriptionsList() {
                 </div>
 
                 <div className="bg-white shadow sm:rounded-lg p-6">
-                    <h3 className="text-lg font-semibold mb-8">Subscription Plans</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {plans.map(plan => (
                             <div key={plan.id}
