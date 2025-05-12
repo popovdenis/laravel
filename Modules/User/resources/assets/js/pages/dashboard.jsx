@@ -12,8 +12,16 @@ function Dashboard() {
 
             <div className="md:col-span-3">
                 <div className="md:col-span-3 space-y-6">
-                    <MyCredits credits={42}/>
-                    <AccountInformation user={{firstname: 'John', lastname: 'Doe', email: 'john@example.com'}}/>
+                    <div className="bg-gray-100 py-2 px-4">
+                        <h2 className="text-xl font-bold inline-block mb-4">My Credits</h2>
+                        <MyCredits />
+                    </div>
+                    <div className="bg-gray-100 px-4">
+                        <h2 className="text-xl font-bold inline-block mb-4">
+                            Account Information
+                        </h2>
+                        <AccountInformation user={{firstname: 'John', lastname: 'Doe', email: 'john@example.com'}}/>
+                    </div>
                     <div className="bg-gray-100 px-4 py-6">
                         <h2 className="text-xl font-bold inline-block mb-4">My Card</h2>
                         <StripeCard />
