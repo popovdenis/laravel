@@ -41,7 +41,6 @@ function SubscriptionsList() {
 
     return (
         <div className="grid grid-cols-1 w-full gap-6">
-            {/*<div><Sidebar/></div>*/}
 
             <div className="md:col-span-3 space-y-6">
                 <h4 className="text-blue-400 text-xl font-bold">Subscription Plans</h4>
