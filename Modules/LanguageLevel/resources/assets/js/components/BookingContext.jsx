@@ -1,0 +1,36 @@
+import { createContext, useContext, useState } from 'react';
+
+export const BookingContext = createContext();
+
+export function BookingProvider({ children }) {
+    const [levels, setLevels] = useState([]);
+    const [subjects, setSubjects] = useState([]);
+    const [selectedLevelId, setSelectedLevelId] = useState(null);
+    const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+    const [lessonType, setLessonType] = useState('individual');
+    const [dateRange, setDateRange] = useState({ start: null, end: null });
+    const [slots, setSlots] = useState([]);
+
+    return (
+        <BookingContext.Provider value={{
+            levels,
+            setLevels,
+            subjects,
+            setSubjects,
+            selectedLevelId,
+            setSelectedLevelId,
+            selectedSubjectIds,
+            setSelectedSubjectIds,
+            lessonType,
+            setLessonType,
+            dateRange,
+            setDateRange,
+            slots,
+            setSlots,
+        }}>
+            {children}
+        </BookingContext.Provider>
+    );
+}
+
+export const useBooking = () => useContext(BookingContext);

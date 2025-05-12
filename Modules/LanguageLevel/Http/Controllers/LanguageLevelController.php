@@ -38,7 +38,12 @@ class LanguageLevelController extends Controller
         ];
     }
 
-    public function index(Request $request)
+    public function index()
+    {
+        return view('languagelevel::index');
+    }
+
+    public function init(Request $request)
     {
         $user = $request->user();
 
@@ -52,11 +57,11 @@ class LanguageLevelController extends Controller
         $filterEndDate = $this->catalogSlotsListService->getFilterEndDate($filters);
         $groupedSlots = $this->catalogSlotsListService->groupSlots($filters, $filterStartDate, $filterEndDate, $user);
 
-        return view('languagelevel::index', [
+        return response()->json([
             'levels' => $levels,
             'subjects' => $subjects,
-            'groupedSlots' => $groupedSlots,
-            'selectedLevelId' => $filters['level_id'],
+            'slots' => $groupedSlots,
+            'selectedLevelId' => $filters['level_id'] ?? $levels->first()->id,
             'selectedSubjectIds' => $filters['subject_ids'],
             'filterStartDate' => $filterStartDate->toDateString(),
             'filterEndDate' => $filterEndDate->toDateString(),
