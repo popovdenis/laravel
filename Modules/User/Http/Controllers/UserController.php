@@ -21,7 +21,36 @@ class UserController extends Controller
         $activeSubscription = $user->getActiveSubscription();
         $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
 
-        return view('user::profile.dashboard', compact('user', 'subscriptionPlan'));
+        $credits = $user?->credit_balance ?? 0;
+        $size = $request->get('size', 'base');
+
+        $creditsData = [
+            'credits' => $credits,
+            'size' => $this->textSize($size),
+            'color' => $this->color($credits)
+        ];
+
+        return view('user::profile.dashboard', compact('user', 'subscriptionPlan', 'creditsData'));
+    }
+
+    public function dashboard(Request $request)
+    {
+        $user = $request->user();
+        $activeSubscription = $user->getActiveSubscription();
+        $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
+
+        $credits = $user?->credit_balance ?? 0;
+        $size = $request->get('size', 'base');
+
+        return response()->json([
+            'user' => $user,
+            'subscriptionPlan' => $subscriptionPlan,
+            'creditsData' => [
+                'credits' => $credits,
+                'size' => $this->textSize($size),
+                'color' => $this->color($credits)
+            ],
+        ]);
     }
 
     public function credits(Request $request)

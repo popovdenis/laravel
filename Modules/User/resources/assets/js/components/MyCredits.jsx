@@ -1,31 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 
-export default function MyCredits() {
-    const [props, setProps] = useState(null)
-    const [loading, setLoading] = useState(true);
-    const hasFetched = useRef(false);
-
-    useEffect(() => {
-        if (!hasFetched.current) {
-            hasFetched.current = true;
-            const getCredits = async () => {
-                try {
-                    await axios.get('/profile/account-information/credits')
-                        .then(res => setProps(res.data))
-                        .catch(err => console.error('My Credits init error:', err))
-                        .finally(() => setLoading(false))
-                } catch (error) {
-                    console.error('Error fetching patterns:', error);
-                }
-            };
-            getCredits();
-        }
-    }, [])
-
-    if (loading) return <div>Loading credits info...</div>
-    if (!props) return <div>Failed to load credits info.</div>
-
+export default function MyCredits({ creditsData }) {
     return (
         <div className="bg-white p-6 rounded shadow-sm flex items-center gap-6">
             <div className="text-gray-500">
@@ -38,7 +13,7 @@ export default function MyCredits() {
 
             <div>
                 <div className="text-green-600 font-bold text-3xl">
-                    {props.credits}
+                    {creditsData.credits}
                 </div>
                 <div className="font-semibold mt-1">Current Balance</div>
                 <p className="text-sm text-gray-600 mt-1">

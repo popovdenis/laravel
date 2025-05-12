@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function CurrentUserSubscription(props) {
     return (
-        <div className="w-full md:mb-6 lg:mb-0 lg:pr-4">
+        <div className="w-full lg:w-1/2 md:mb-6 lg:mb-0 lg:pr-4">
             <div className="flex flex-col h-full sm:flex-row">
                 <div className="grow flex flex-col md:justify-between">
                     <div>
@@ -16,13 +16,12 @@ export default function CurrentUserSubscription(props) {
                         )}
                     </div>
                     <a
-                        href={ props.editUrl }
+                        href="my-subscription/change"
                         className="inline-flex items-center w-full mt-4 text-xm font-semibold hover:underline"
                         aria-label="Edit newsletters"
                     >
                         <span>Edit</span>
                     </a>
-
                 </div>
             </div>
         </div>
