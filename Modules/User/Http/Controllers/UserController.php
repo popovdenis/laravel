@@ -15,22 +15,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $user = $request->user();
-        $activeSubscription = $user->getActiveSubscription();
-        $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
-
-        $credits = $user?->credit_balance ?? 0;
-        $size = $request->get('size', 'base');
-
-        $creditsData = [
-            'credits' => $credits,
-            'size' => $this->textSize($size),
-            'color' => $this->color($credits)
-        ];
-
-        return view('user::profile.dashboard', compact('user', 'subscriptionPlan', 'creditsData'));
+        return view('user::profile.dashboard');
     }
 
     public function dashboard(Request $request)

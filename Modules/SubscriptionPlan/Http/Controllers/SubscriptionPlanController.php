@@ -4,6 +4,7 @@ namespace Modules\SubscriptionPlan\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\SubscriptionPlan\Models\SubscriptionPlan;
 
 class SubscriptionPlanController extends Controller
 {
@@ -13,6 +14,27 @@ class SubscriptionPlanController extends Controller
     public function index()
     {
         return view('subscriptionplan::index');
+    }
+
+    public function list(Request $request)
+    {
+        $user = $request->user();
+
+        $activeSubscription = $user->getActiveSubscription();
+        $currentPlanId = $activeSubscription?->plan_id;
+
+        $plans = SubscriptionPlan::query()
+            ->where('status', true)
+            ->when($currentPlanId, fn($q) => $q->where('id', '!=', $currentPlanId))
+            ->orderBy('sort_order')
+            ->get();
+
+        return response()->json([
+            'user'            => $user,
+            'plans'           => $plans,
+            'activePlan'      => $activeSubscription?->plan,
+            'isSubscribed'    => (bool) $activeSubscription,
+        ]);
     }
 
     /**

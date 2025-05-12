@@ -57,7 +57,7 @@ class UserSubscriptionController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('subscription::show', [
+        return view('usersubscription::show', [
             'user'            => $user,
             'plans'           => $plans,
             'activePlan'      => $activeSubscription?->plan,
