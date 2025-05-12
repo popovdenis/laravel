@@ -24,9 +24,10 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::patch('/account-information', [UserController::class, 'update'])->name('profile.account-information.update');
     Route::delete('/account-information', [UserController::class, 'destroy'])->name('profile.account-information.destroy');
 
-    Route::get('/my-orders', [OrderController::class, 'index'])->name('profile.orders.index');
+    Route::get('/my-orders', [OrderController::class, 'list']);
     Route::post('/my-orders', [OrderController::class, 'store'])->name('profile.orders.store');
-    Route::get('/my-orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
+    Route::get('/my-orders/{order}', [OrderController::class, 'show']);
+    Route::get('/my-orders/order/{order}', [OrderController::class, 'order']);
 });
 
 Route::middleware('guest')->group(function () {

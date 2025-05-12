@@ -1,7 +1,9 @@
 import { useUser } from './UserContext.jsx';
+import { useTab } from './TabContext';
 
 export default function ContactInformation() {
     const { user } = useUser();
+    const {setTab} = useTab();
 
     return (
         <div className="w-full lg:w-1/2">
@@ -16,13 +18,14 @@ export default function ContactInformation() {
                             {user.email}<br/>
                         </p>
                     </div>
-                    <a
-                        href="/profile/account-information"
+                    <button
+                        type="button"
+                        onClick={() => setTab('account')}
                         className="inline-flex items-center w-full mt-4 text-sm font-semibold hover:underline"
                         aria-label="Edit contact information"
                     >
                         <span>Edit</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

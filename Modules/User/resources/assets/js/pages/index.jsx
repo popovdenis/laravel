@@ -5,35 +5,40 @@ import Sidebar from '../components/Sidebar';
 import { TabProvider, useTab } from '../components/TabContext';
 import Dashboard from '../components/Dashboard';
 import AccountInformation from '../components/AccountInformation';
+import MyOrders from '../components/MyOrders';
 import axios from "axios";
 
 function Main() {
     const [user, setUser] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
     const [subscriptionPlan, setSubscriptionPlan] = useState(null);
+    const [stripeCardProps, setStripeCardProps] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const initUser = async () => {
+        const init = async () => {
             try {
                 const response = await axios.get('/profile/dashboard');
                 setUser(response.data.user);
                 setCreditsData(response.data.creditsData);
                 setSubscriptionPlan(response.data.subscriptionPlan);
+
+                const stripeCardResponse = await axios.get('/stripecard/init');
+                setStripeCardProps(stripeCardResponse.data);
             } catch (error) {
                 console.error('Error:', error);
             } finally {
                 setLoading(false);
             }
         };
-        initUser();
+        init();
     }, []);
 
     if (loading) return <div>Loading...</div>;
 
     return (
         <TabProvider>
-            <UserContext.Provider value={{ user, creditsData, subscriptionPlan }}>
+            <UserContext.Provider value={{ user, creditsData, subscriptionPlan, stripeCardProps }}>
                 <Content />
             </UserContext.Provider>
         </TabProvider>
@@ -49,6 +54,7 @@ function Content() {
             <div className="md:col-span-3 space-y-6">
                 {tab === 'dashboard' && <Dashboard />}
                 {tab === 'account' && <AccountInformation />}
+                {tab === 'orders' && <MyOrders />}
             </div>
         </div>
     );

@@ -6,24 +6,22 @@ import StripeCardForm from './StripeCardForm'
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
-export default function StripeCard() {
-    const [props, setProps] = useState(null)
-    const [loading, setLoading] = useState(true);
-    const hasFetched = useRef(false);
+export default function StripeCard({ props: externalProps }) {
+    const [props, setProps] = useState(externalProps || null)
+    const [loading, setLoading] = useState(!externalProps);
 
     useEffect(() => {
-        if (!hasFetched.current) {
-            hasFetched.current = true;
-            const initStripeCard = async () => {
-                try {
-                    await axios.get('/stripecard/init')
-                        .then(res => setProps(res.data))
-                        .catch(err => console.error('StripeCard init error:', err))
-                        .finally(() => setLoading(false))
-                } catch (error) {
-                    console.error('Error fetching patterns:', error);
-                }
-            };
+        const initStripeCard = async () => {
+            try {
+                await axios.get('/stripecard/init')
+                    .then(res => setProps(res.data))
+                    .catch(err => console.error('StripeCard init error:', err))
+                    .finally(() => setLoading(false))
+            } catch (error) {
+                console.error('Error fetching patterns:', error);
+            }
+        };
+        if (!externalProps) {
             initStripeCard();
         }
     }, [])
