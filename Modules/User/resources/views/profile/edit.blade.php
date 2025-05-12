@@ -4,6 +4,7 @@
     </x-slot>
 
     <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div id="edit-profile"></div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Sidebar -->
             @include('user::profile.partials.sidebar')

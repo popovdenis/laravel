@@ -1,6 +1,9 @@
 import React from 'react'
+import { useUser } from "./UserContext.jsx";
 
-export default function MyCredits({ creditsData }) {
+export default function MyCredits() {
+    const { creditsData } = useUser();
+
     return (
         <div className="bg-white p-6 rounded shadow-sm flex items-center gap-6">
             <div className="text-gray-500">
