@@ -8,7 +8,8 @@ export function BookingProvider({ children }) {
     const [selectedLevelId, setSelectedLevelId] = useState(null);
     const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
     const [lessonType, setLessonType] = useState('individual');
-    const [dateRange, setDateRange] = useState({ start: null, end: null });
+    const [filterStartDate, setFilterStartDate] = useState(null);
+    const [filterEndDate, setFilterEndDate] = useState(null);
     const [slots, setSlots] = useState([]);
 
     return (
@@ -23,8 +24,10 @@ export function BookingProvider({ children }) {
             setSelectedSubjectIds,
             lessonType,
             setLessonType,
-            dateRange,
-            setDateRange,
+            filterStartDate,
+            setFilterStartDate,
+            filterEndDate,
+            setFilterEndDate,
             slots,
             setSlots,
         }}>

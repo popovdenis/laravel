@@ -7,29 +7,48 @@ import TopFilters from "./TopFilters.jsx";
 
 function BookingPageContent() {
     const {
-        setLevels, setSubjects, setSelectedLevelId,
-        setSlots, setSelectedSubjectIds, setDateRange, setLessonType,
+        levels,
+        setLevels,
+        subjects,
+        setSubjects,
+        selectedLevelId,
+        setSelectedLevelId,
+        setSlots,
+        selectedSubjectIds,
+        setSelectedSubjectIds,
+        lessonType,
+        setLessonType,
+        filterStartDate,
+        filterEndDate,
+        setFilterStartDate,
+        setFilterEndDate,
     } = useBooking()
 
-    const hasFetched = useRef(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (hasFetched.current) return;
-        hasFetched.current = true;
-
-        const init = async () => {
+        const fetchSlots = async () => {
             try {
                 setLoading(true)
-                const response = await axios.get('/levels/init')
+                const response = await axios.get('/levels/init', {
+                    params: {
+                        level_id: selectedLevelId,
+                        subject_ids: selectedSubjectIds,
+                        start_date: filterStartDate,
+                        end_date: filterEndDate,
+                        lesson_type: lessonType,
+                    },
+                });
+
                 const data = response.data;
 
                 setLevels(data.levels)
                 setSubjects(data.subjects)
                 setSelectedLevelId(data.selectedLevelId)
-                setSelectedSubjectIds(data.selectedSubjectIds || [])
+                // setSelectedSubjectIds(data.selectedSubjectIds || [])
                 setLessonType(data.lessonType || 'individual')
-                setDateRange({ start: data.startDate, end: data.endDate })
+                setFilterStartDate(data.filterStartDate)
+                setFilterEndDate(data.filterEndDate)
                 setSlots(data.slots)
             } catch (e) {
                 console.error('Init error:', e)
@@ -37,9 +56,8 @@ function BookingPageContent() {
                 setLoading(false)
             }
         }
-
-        init()
-    }, [])
+        fetchSlots();
+    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
 
     if (loading) return <div>Loading booking data...</div>
 

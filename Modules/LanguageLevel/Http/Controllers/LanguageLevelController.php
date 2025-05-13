@@ -60,6 +60,7 @@ class LanguageLevelController extends Controller
         return response()->json([
             'levels' => $levels,
             'subjects' => $subjects,
+            'lessonType' => $filters['lesson_type'],
             'slots' => $groupedSlots,
             'selectedLevelId' => $filters['level_id'] ?? $levels->first()->id,
             'selectedSubjectIds' => $filters['subject_ids'],

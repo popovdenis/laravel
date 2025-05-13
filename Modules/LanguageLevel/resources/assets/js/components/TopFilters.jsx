@@ -6,14 +6,20 @@ import { useBooking } from './BookingContext'
 export default function TopFilters() {
     const {
         filterStartDate,
-        filterEndDate,
         setFilterStartDate,
+        filterEndDate,
         setFilterEndDate,
         lessonType,
         setLessonType,
     } = useBooking()
 
     const ref = useRef(null)
+
+    const formatLocalDate = (date) => {
+        const offset = date.getTimezoneOffset();
+        const localDate = new Date(date.getTime() - offset * 60 * 1000);
+        return localDate.toISOString().slice(0, 10);
+    };
 
     useEffect(() => {
         if (!ref.current) return
@@ -27,8 +33,8 @@ export default function TopFilters() {
             time_24hr: true,
             onClose: function (selectedDates) {
                 if (selectedDates.length === 2) {
-                    setFilterStartDate(selectedDates[0].toISOString().split('T')[0])
-                    setFilterEndDate(selectedDates[1].toISOString().split('T')[0])
+                    setFilterStartDate(formatLocalDate(selectedDates[0]))
+                    setFilterEndDate(formatLocalDate(selectedDates[1]))
                 }
             },
         })
@@ -72,8 +78,7 @@ export default function TopFilters() {
                 <div className="self-end ml-auto">
                     <button
                         onClick={() => {
-                            setFilterStartDate(null)
-                            setFilterEndDate(null)
+                            // setDateRange({ start: , end: null })
                             setLessonType(null)
                         }}
                         className="btn btn-primary-inverted"
