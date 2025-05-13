@@ -1,17 +1,38 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { BookingContext } from './BookingContext';
 import SlotCard from './SlotCard';
 
 export default function SlotsList() {
     const { slots, selectedSubjectIds } = useContext(BookingContext);
+    const [visibleDatesCount, setVisibleDatesCount] = useState(5)
+    const loaderRef = useRef(null)
 
-    if (!slots || Object.keys(slots).length === 0) {
-        return <p className="text-gray-500">No available streams for the selected filters.</p>;
+    const allDates = Object.keys(slots || {})
+    const visibleDates = allDates.slice(0, visibleDatesCount)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setVisibleDatesCount(prev => prev + 5)
+            }
+        }, {
+            rootMargin: '200px',
+        })
+
+        if (loaderRef.current) observer.observe(loaderRef.current)
+
+        return () => observer.disconnect()
+    }, [])
+
+    if (!slots || allDates.length === 0) {
+        return <p className="text-gray-500">No available streams for the selected filters.</p>
     }
 
     return (
         <>
-            {Object.entries(slots).map(([date, slotList]) => {
+            {visibleDates.map(date => {
+                const slotList = slots[date] || []
+
                 const filtered = selectedSubjectIds.length
                     ? slotList.filter(slot => selectedSubjectIds.includes(slot.subject?.id))
                     : slotList;
@@ -29,8 +50,12 @@ export default function SlotsList() {
                             ))}
                         </div>
                     </div>
-                );
+                )
             })}
+
+            {visibleDatesCount < allDates.length && (
+                <div ref={loaderRef} className="h-12" />
+            )}
         </>
-    );
+    )
 }
