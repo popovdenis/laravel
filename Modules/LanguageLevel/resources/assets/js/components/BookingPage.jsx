@@ -25,6 +25,40 @@ function BookingPageContent() {
     } = useBooking()
 
     const [loading, setLoading] = useState(true);
+    const hasInitialized = useRef(false);
+
+    useEffect(() => {
+        if (hasInitialized.current) return;
+        hasInitialized.current = true;
+
+        const params = new URLSearchParams(window.location.search);
+        const levelId = params.get('level_id');
+        const subjectIds = params.getAll('subject_ids[]');
+        const lessonType = params.get('lesson_type');
+        const startDate = params.get('start_date');
+        const endDate = params.get('end_date');
+
+        if (levelId) setSelectedLevelId(Number(levelId));
+        if (subjectIds.length) setSelectedSubjectIds(subjectIds.map(id => Number(id)));
+        if (lessonType) setLessonType(lessonType);
+        if (startDate) setFilterStartDate(startDate);
+        if (endDate) setFilterEndDate(endDate);
+    }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams()
+
+        if (selectedLevelId) params.set('level_id', selectedLevelId)
+        if (selectedSubjectIds.length > 0) {
+            selectedSubjectIds.forEach(id => params.append('subject_ids[]', id))
+        }
+        if (lessonType) params.set('lesson_type', lessonType)
+        if (filterStartDate) params.set('start_date', filterStartDate)
+        if (filterEndDate) params.set('end_date', filterEndDate)
+
+        const newUrl = `${window.location.pathname}?${params.toString()}`
+        window.history.replaceState({}, '', newUrl)
+    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
 
     useEffect(() => {
         const fetchSlots = async () => {
