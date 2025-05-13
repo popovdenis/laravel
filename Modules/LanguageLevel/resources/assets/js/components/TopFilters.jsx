@@ -29,12 +29,13 @@ export default function TopFilters() {
             enableTime: false,
             noCalendar: false,
             dateFormat: 'Y-m-d',
-            defaultDate: [filterStartDate, filterEndDate],
+            defaultDate: filterStartDate && filterEndDate ? [filterStartDate, filterEndDate] : null,
             time_24hr: true,
             onClose: function (selectedDates) {
                 if (selectedDates.length === 2) {
                     setFilterStartDate(formatLocalDate(selectedDates[0]))
                     setFilterEndDate(formatLocalDate(selectedDates[1]))
+                    ref.current?._flatpickr?.clear()
                 }
             },
         })
@@ -78,7 +79,8 @@ export default function TopFilters() {
                 <div className="self-end ml-auto">
                     <button
                         onClick={() => {
-                            // setDateRange({ start: , end: null })
+                            setFilterStartDate(null)
+                            setFilterEndDate(null)
                             setLessonType(null)
                         }}
                         className="btn btn-primary-inverted"
