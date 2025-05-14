@@ -7,6 +7,7 @@ dayjs.extend(isSameOrAfter)
 import SidebarFilters from "./SidebarFilters.jsx";
 import SlotsList from "./SlotsList.jsx";
 import TopFilters from "./TopFilters.jsx";
+import FullscreenLoader from './FullscreenLoader';
 
 function BookingPageContent() {
     const {
@@ -151,7 +152,7 @@ function BookingPageContent() {
             <SidebarFilters/>
             <div className="md:col-span-3 space-y-6">
                 <TopFilters />
-                { loading && ( <div>Loading booking data...</div> )}
+                { loading && <FullscreenLoader />}
                 <SlotsList/>
                 {(
                     <div className="text-center">
