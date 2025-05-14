@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Base\Http\Controllers\Controller;
+use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Data\BookingData;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Factories\BookingQuoteFactory;
@@ -44,6 +45,7 @@ class BookingController extends Controller
     private ConfigProvider $configProvider;
 
     public function __construct(
+        CustomerTimezone $timezone,
         SecurityManager $securityManager,
         BookingQuoteFactory $bookingQuoteFactory,
         OrderManagerInterface $orderManager,
@@ -52,6 +54,7 @@ class BookingController extends Controller
         private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
+        parent::__construct($timezone);
         $this->securityManager = $securityManager;
         $this->bookingQuoteFactory = $bookingQuoteFactory;
         $this->orderManager = $orderManager;
@@ -78,7 +81,7 @@ class BookingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         try {
             $bookingData = BookingData::fromRequest($request);
@@ -93,31 +96,33 @@ class BookingController extends Controller
 
             $this->eventManager->dispatch('save_booking_order_after', ['order' => $order, 'quote' => $quote]);
 
-            return redirect()->back()->with('success', 'Booking has been successfully created.');
+            return response()->json(['success' => true, 'message' => 'Booking has been successfully created.']);
         } catch (AlreadyExistsException $e) {
-            return redirect()->back()
-                ->withErrors(['slot' => 'The selected time slot hasl already been chosen. Please choose another time.'])
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'The selected time slot hasl already been chosen. Please choose another time.',
+            ], 422);
         } catch (SlotUnavailableException $e) {
-            return redirect()->back()
-                ->withErrors(['slot' => 'Selected time slot is not available. Please choose another time.'])
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Selected time slot is not available. Please choose another time.',
+            ], 422);
         } catch (InsufficientCreditsException $e) {
-            return redirect()->back()
-                ->withErrors(['slot' => 'You don’t have enough credits to book a class. Please top-up credits or upgrade your plan.'])
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'You don’t have enough credits to book a class. Please top-up credits or upgrade your plan.',
+            ], 422);
         } catch (PaymentFailedException $e) {
-            return redirect()->back()
-                ->withErrors(['payment' => 'Payment failed: ' . $e->getMessage()])
-                ->withInput();
+            return response()->json(['success' => false, 'message' => 'Payment failed: ' . $e->getMessage()], 422);
         } catch (SecurityViolationException $e) {
-            return redirect()->back()->withErrors(['slot' => $e->getMessage()])->withInput();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
         } catch (Throwable $e) {
             report($e);
 
-            return redirect()->back()
-                ->withErrors(['error' => 'An unexpected error occurred. Please try again later.'])
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred. Please try again later.',
+            ], 422);
         }
     }
 
