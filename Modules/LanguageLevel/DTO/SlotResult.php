@@ -17,6 +17,7 @@ class SlotResult
         public $subject,
         public int $currentSubjectNumber,
         public $slot,
+        public $uid,
         public ?int $bookingId
     ) {}
 }

@@ -3,8 +3,7 @@ import { BookingContext } from './BookingContext';
 import SlotCard from './SlotCard';
 
 export default function SlotsList() {
-    const { slots, selectedSubjectIds } = useContext(BookingContext);
-    const [visibleDatesCount, setVisibleDatesCount] = useState(5)
+    const { slots, selectedSubjectIds, visibleDatesCount, setVisibleDatesCount } = useContext(BookingContext);
     const loaderRef = useRef(null)
 
     const allDates = Object.keys(slots || {})
@@ -46,7 +45,7 @@ export default function SlotsList() {
                         </h3>
                         <div className="mt-4 space-y-4">
                             {filtered.map((item, index) => (
-                                <SlotCard key={`${index}`} item={item} />
+                                <SlotCard key={`${item.uid}`} item={item} />
                             ))}
                         </div>
                     </div>

@@ -25,6 +25,7 @@
         "@stripe/stripe-js": "^7.3.0",
         "@zoom/meetingsdk": "^3.12.0",
         "@zoomus/websdk": "^2.18.3",
+        "dayjs": "^1.11.13",
         "flatpickr": "^4.6.13",
         "react-router-dom": "^7.6.0"
     }

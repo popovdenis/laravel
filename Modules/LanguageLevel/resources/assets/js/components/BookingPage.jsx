@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { BookingProvider, useBooking } from './BookingContext'
 import axios from 'axios'
+import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+dayjs.extend(isSameOrAfter)
 import SidebarFilters from "./SidebarFilters.jsx";
 import SlotsList from "./SlotsList.jsx";
 import TopFilters from "./TopFilters.jsx";
 
 function BookingPageContent() {
     const {
-        levels,
         setLevels,
-        subjects,
         setSubjects,
         selectedLevelId,
         setSelectedLevelId,
@@ -22,11 +23,17 @@ function BookingPageContent() {
         filterEndDate,
         setFilterStartDate,
         setFilterEndDate,
+        currentEndDate,
+        setCurrentEndDate,
+        setVisibleDatesCount
     } = useBooking()
 
     const [loading, setLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
+    const DAYS_RANGE = 7;
 
+    // 1. Init from URL once
     useEffect(() => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
@@ -41,17 +48,28 @@ function BookingPageContent() {
         if (levelId) setSelectedLevelId(Number(levelId));
         if (subjectIds.length) setSelectedSubjectIds(subjectIds.map(id => Number(id)));
         if (lessonType) setLessonType(lessonType);
-        if (startDate) setFilterStartDate(startDate);
-        if (endDate) setFilterEndDate(endDate);
+
+        const today = dayjs().format('YYYY-MM-DD');
+        if (startDate) {
+            setFilterStartDate(startDate);
+            setCurrentEndDate(startDate);
+        } else {
+            setFilterStartDate(today);
+            setCurrentEndDate(today);
+        }
+        if (endDate) {
+            setFilterEndDate(endDate);
+        } else {
+            setFilterEndDate(dayjs(today).add(DAYS_RANGE, 'day').format('YYYY-MM-DD'));
+        }
     }, []);
 
+    // 2. Update URL when filters change
     useEffect(() => {
         const params = new URLSearchParams()
 
         if (selectedLevelId) params.set('level_id', selectedLevelId)
-        if (selectedSubjectIds.length > 0) {
-            selectedSubjectIds.forEach(id => params.append('subject_ids[]', id))
-        }
+        selectedSubjectIds.forEach(id => params.append('subject_ids[]', id))
         if (lessonType) params.set('lesson_type', lessonType)
         if (filterStartDate) params.set('start_date', filterStartDate)
         if (filterEndDate) params.set('end_date', filterEndDate)
@@ -60,10 +78,13 @@ function BookingPageContent() {
         window.history.replaceState({}, '', newUrl)
     }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
 
+    // 3. Fetch initial slots when currentEndDate sets
     useEffect(() => {
-        const fetchSlots = async () => {
+        const fetchInitial = async () => {
             try {
                 setLoading(true)
+                //const initialEnd = dayjs(filterStartDate).add(5, 'day').format('YYYY-MM-DD')
+
                 const response = await axios.get('/levels/init', {
                     params: {
                         level_id: selectedLevelId,
@@ -71,36 +92,74 @@ function BookingPageContent() {
                         start_date: filterStartDate,
                         end_date: filterEndDate,
                         lesson_type: lessonType,
-                    },
+                    }
                 });
 
                 const data = response.data;
-
                 setLevels(data.levels)
                 setSubjects(data.subjects)
                 setSelectedLevelId(data.selectedLevelId)
-                // setSelectedSubjectIds(data.selectedSubjectIds || [])
                 setLessonType(data.lessonType || 'individual')
-                setFilterStartDate(data.filterStartDate)
-                setFilterEndDate(data.filterEndDate)
                 setSlots(data.slots)
+                setCurrentEndDate(filterEndDate)
             } catch (e) {
-                console.error('Init error:', e)
+                console.error('Initial load error', e)
             } finally {
                 setLoading(false)
             }
         }
-        fetchSlots();
+
+        if (filterStartDate && filterEndDate) {
+            fetchInitial()
+        }
     }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
 
-    if (loading) return <div>Loading booking data...</div>
+    const loadMore = async () => {
+        if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return
+
+        const nextEnd = dayjs(currentEndDate).add(DAYS_RANGE, 'day').format('YYYY-MM-DD')
+
+        try {
+            setIsFetchingMore(true);
+
+            const response = await axios.get('/levels/init', {
+                params: {
+                    level_id: selectedLevelId,
+                    subject_ids: selectedSubjectIds,
+                    start_date: currentEndDate,
+                    end_date: nextEnd,
+                    lesson_type: lessonType,
+                }
+            })
+
+            setSlots(function(prev) {
+                console.log('prev keys:', Object.keys(prev))
+                console.log('new keys:', Object.keys(response.data.slots))
+                return ({ ...prev, ...response.data.slots });
+            })
+            setVisibleDatesCount(prev => prev + 5)
+            setCurrentEndDate(nextEnd)
+        } catch (e) {
+            console.error('Load more error', e)
+        } finally {
+            setIsFetchingMore(false)
+        }
+    }
 
     return (
         <>
             <SidebarFilters/>
             <div className="md:col-span-3 space-y-6">
                 <TopFilters />
+                { loading && ( <div>Loading booking data...</div> )}
                 <SlotsList/>
+                {(
+                    <div className="text-center">
+                        <button onClick={loadMore} disabled={isFetchingMore} className="btn btn-primary">
+                            {isFetchingMore ? 'Loading...' : 'Load More'}
+                        </button>
+                    </div>
+                )}
             </div>
         </>
     )

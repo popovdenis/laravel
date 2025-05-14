@@ -85,10 +85,11 @@ class CatalogSlotsListService
             : $this->timezone->date()->startOfDay();
     }
 
+    // TODO: user Config for addDays
     public function getFilterEndDate(array $filters): Carbon
     {
         return $filters['end_date']
-            ? $this->timezone->date($filters['end_date'])
+            ? $this->timezone->date($filters['end_date'])->endOfDay()
             : $this->timezone->date()->addDays(7)->startOfDay();
     }
 
@@ -119,12 +120,9 @@ class CatalogSlotsListService
         $results = [];
 
         $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
-        $currentDate = $streamStart->greaterThan($filterStartDate) ? $streamStart->copy() : $filterStartDate->copy();
-        $slotIndex = $streamStart->diffInDays($currentDate);
-
-        $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
         $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId);
         $currentDate = $streamStart->greaterThan($filterStartDate) ? $streamStart->copy() : $filterStartDate->copy();
+        $slotIndex = $streamStart->diffInDays($currentDate);
 
         while ($currentDate->lte($streamEnd)) {
             $daySlots = $this->getDaySlots($stream, $currentDate);
@@ -134,7 +132,17 @@ class CatalogSlotsListService
             $subjectId = $subjectIds[$shiftedIndex];
 
             foreach ($daySlots as $slot) {
-                $chunks = $this->splitSlotToChunks($slot, $stream, $currentDate, $filters, $filterStartDate, $filterEndDate, $user, $userBookedSlotIds, $subjectId);
+                $chunks = $this->splitSlotToChunks(
+                    $slot,
+                    $stream,
+                    $currentDate,
+                    $filters,
+                    $filterStartDate,
+                    $filterEndDate,
+                    $user,
+                    $userBookedSlotIds,
+                    $subjectId
+                );
                 foreach ($chunks as $date => $chunkList) {
                     $results[$date] = array_merge($results[$date] ?? [], $chunkList);
                 }
@@ -152,13 +160,13 @@ class CatalogSlotsListService
         return $filters['lesson_type'] === 'group' ? 90 : 60;
     }
 
-    private function calculateUtcSlotWindow($slot, Carbon $currentDate, string $teacherTz): array
+    private function calculateSlotWindow($slot, Carbon $currentDate, string $teacherTz, string $studentTz): array
     {
         $currentDateInTz = $currentDate->copy()->setTimezone($teacherTz);
 
         return [
-            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone('UTC'),
-            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone('UTC'),
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone($studentTz),
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone($studentTz),
         ];
     }
 
@@ -210,9 +218,10 @@ class CatalogSlotsListService
     ): array {
         $results = [];
         $teacherTz = $stream->teacher->timeZoneId ?? 'UTC';
+        $studentTz = $user->timeZoneId ?? 'UTC';
         $chunkLength = $this->getChunkLength($filters);
 
-        [$slotStartUtc, $slotEndUtc] = $this->calculateUtcSlotWindow($slot, $currentDate, $teacherTz);
+        [$slotStart, $slotEnd] = $this->calculateSlotWindow($slot, $currentDate, $teacherTz, $studentTz);
 
         $subject = $stream->languageLevel->subjects->firstWhere('id', $subjectId);
 
@@ -221,8 +230,8 @@ class CatalogSlotsListService
         }
 
         $this->generateAvailableChunks(
-            $slotStartUtc,
-            $slotEndUtc,
+            $slotStart,
+            $slotEnd,
             $chunkLength,
             $user->timeZoneId,
             $filterStartDate,
@@ -268,6 +277,7 @@ class CatalogSlotsListService
             subject: $subject,
             currentSubjectNumber: $subjectId,
             slot: $slot,
+            uid: \Illuminate\Support\Str::uuid()->toString(),
             bookingId: $this->isSlotBooked($userBookedSlotIds[$slot->id] ?? null)
                 ? $userBookedSlotIds[$slot->id]['booking_id']
                 : null,
