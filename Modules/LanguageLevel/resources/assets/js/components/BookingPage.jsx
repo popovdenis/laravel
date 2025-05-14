@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { BookingProvider, useBooking } from './BookingContext'
-import axios from 'axios'
-import dayjs from 'dayjs'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import React, { useEffect, useRef, useState } from 'react';
+import { BookingProvider, useBooking } from './BookingContext';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import { Toaster } from 'sonner';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 dayjs.extend(isSameOrAfter)
 import SidebarFilters from "./SidebarFilters.jsx";
 import SlotsList from "./SlotsList.jsx";
@@ -169,7 +170,10 @@ function BookingPageContent() {
 export default function BookingPage() {
     return (
         <BookingProvider>
-            <BookingPageContent/>
+            <>
+                <BookingPageContent />
+                <Toaster richColors position="top-right" />
+            </>
         </BookingProvider>
     )
 }

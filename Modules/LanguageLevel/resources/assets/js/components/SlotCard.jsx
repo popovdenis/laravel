@@ -1,26 +1,28 @@
-import React, { useState } from 'react'
-import { bookSlot, cancelBooking } from './bookingApi'
+import React, { useState } from 'react';
+import { toast } from 'sonner';
+import { bookSlot, cancelBooking } from './bookingApi';
 
 export default function SlotCard({ item }) {
-    const [loading, setLoading] = useState(false)
-    const [confirmed, setConfirmed] = useState(false)
-    const [cancelConfirm, setCancelConfirm] = useState(false)
-    const [message, setMessage] = useState(null)
+    const [loading, setLoading] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+    const [cancelConfirm, setCancelConfirm] = useState(false);
     const isBooked = !!item.bookingId;
 
     const handleBooking = async () => {
-        setLoading(true)
-        const result = await bookSlot(item.stream.id, item.slot.id)
-        setMessage(result.message)
-        setLoading(false)
-    }
+        setLoading(true);
+        const result = await bookSlot(item.stream.id, item.slot.id);
+        toast[result.success ? 'success' : 'error'](result.message);
+        setConfirmed(false);
+        setLoading(false);
+    };
 
     const handleCancel = async () => {
-        setLoading(true)
-        const result = await cancelBooking(item.bookingId)
-        setMessage(result.message)
-        setLoading(false)
-    }
+        setLoading(true);
+        const result = await cancelBooking(item.bookingId);
+        toast[result.success ? 'success' : 'error'](result.message);
+        setCancelConfirm(false);
+        setLoading(false);
+    };
 
     return (
         <div className={`flex items-start justify-between border ${isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200'} rounded-md px-6 py-4 relative`}>
@@ -82,12 +84,6 @@ export default function SlotCard({ item }) {
                 )}
                 <button className="btn btn-secondary">Details</button>
             </div>
-
-            {message && (
-                <div className={`text-sm p-2 ${result.success ? 'text-green-600' : 'text-red-600'}`}>
-                    {message}
-                </div>
-            )}
         </div>
-    )
+    );
 }
