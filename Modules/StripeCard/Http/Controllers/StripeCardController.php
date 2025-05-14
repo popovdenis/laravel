@@ -18,22 +18,6 @@ class StripeCardController extends Controller
         return view('stripecard::checkout');
     }
 
-    public function init(Request $request)
-    {
-        $user = $request->user();
-        $intent = $user->createSetupIntent();
-        $stripeKey = config('cashier.key');
-
-        return response()->json([
-            'clientSecret' => $intent->client_secret,
-            'stripeKey' => $stripeKey,
-            'hasCard' => $user->hasDefaultPaymentMethod(),
-            'card' => optional($user->defaultPaymentMethod())->card,
-            'attachUrl' => route('stripecard::attach'),
-            'detachUrl' => route('stripecard::detach'),
-        ]);
-    }
-
     /**
      * Show the form for creating a new resource.
      */

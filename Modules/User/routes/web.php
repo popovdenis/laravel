@@ -15,19 +15,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware('auth')->prefix('profile')->group(function () {
     // Account Dashboard
     Route::get('/', [UserController::class, 'index'])->name('profile.dashboard');
-    Route::get('/me', [UserController::class, 'me']);
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user::dashboard');
-    Route::get('/account-information/credits', [UserController::class, 'credits'])->name('user::credits');
 
     // Account Information
     Route::get('/account-information', [UserController::class, 'edit'])->name('profile.account-information.edit');
     Route::patch('/account-information', [UserController::class, 'update'])->name('profile.account-information.update');
     Route::delete('/account-information', [UserController::class, 'destroy'])->name('profile.account-information.destroy');
 
-    Route::get('/my-orders', [OrderController::class, 'list']);
+    Route::get('/my-orders', [OrderController::class, 'index'])->name('profile.orders.index');
     Route::post('/my-orders', [OrderController::class, 'store'])->name('profile.orders.store');
-    Route::get('/my-orders/{order}', [OrderController::class, 'show']);
-    Route::get('/my-orders/order/{order}', [OrderController::class, 'order']);
+    Route::get('/my-orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
 });
 
 Route::middleware('guest')->group(function () {

@@ -14,5 +14,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attach', [StripeCardController::class, 'attach'])->name('stripecard::attach');
     Route::delete('/detach', [StripeCardController::class, 'detach'])->name('stripecard::detach');
     Route::get('/stripecard/form', [StripeCardController::class, 'show'])->name('stripecard::form');
-    Route::get('/stripecard/init', [StripeCardController::class, 'init'])->name('stripecard::init');
 });

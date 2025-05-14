@@ -15,80 +15,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return view('user::profile.dashboard');
-    }
-
-    public function me(Request $request)
+    public function index(Request $request)
     {
         $user = $request->user();
+        $subscriptionPlan = $user->subscribed() ? $user->subscription()->plan : null;
         $activeSubscription = $user->getActiveSubscription();
         $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
 
-        $credits = $user?->credit_balance ?? 0;
-        $size = $request->get('size', 'base');
-
-        return response()->json([
-            'user' => $user,
-            'subscriptionPlan' => $subscriptionPlan,
-            'creditsData' => [
-                'credits' => $credits,
-                'size' => $this->textSize($size),
-                'color' => $this->color($credits)
-            ],
-        ]);
-    }
-
-    public function dashboard(Request $request)
-    {
-        $user = $request->user();
-        $activeSubscription = $user->getActiveSubscription();
-        $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
-
-        $credits = $user?->credit_balance ?? 0;
-        $size = $request->get('size', 'base');
-
-        return response()->json([
-            'user' => $user,
-            'subscriptionPlan' => $subscriptionPlan,
-            'creditsData' => [
-                'credits' => $credits,
-                'size' => $this->textSize($size),
-                'color' => $this->color($credits)
-            ],
-        ]);
-    }
-
-    public function credits(Request $request)
-    {
-        $user = $request->user();
-        $credits = $user?->credit_balance ?? 0;
-        $size = $request->get('size', 'base');
-
-        return response()->json([
-            'credits' => $credits,
-            'size' => $this->textSize($size),
-            'color' => $this->color($credits)
-        ]);
-    }
-
-    public function color($credits): string
-    {
-        return match (true) {
-            $credits === 0 => 'text-rose-500',
-            $credits < 5 => 'text-amber-500',
-            default => 'text-green-600',
-        };
-    }
-
-    public function textSize($size): string
-    {
-        return match ($size) {
-            'sm' => 'text-sm font-normal',
-            'lg' => 'text-lg font-semibold',
-            default => '',
-        };
+        return view('user::profile.dashboard', compact('user', 'subscriptionPlan'));
     }
 
     /**
