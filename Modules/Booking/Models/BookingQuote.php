@@ -7,6 +7,7 @@ use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
+use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Order\Models\Quote;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\User\Models\User;
@@ -22,6 +23,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected int $streamId;
     protected int $slotId;
     protected ScheduleTimeslot $slot;
+    protected BookingTypeEnum $lessonType;
     protected int $credits;
     private SubmitQuoteValidatorInterface $bookingValidator;
     private SlotAvailabilityValidatorInterface $slotValidator;
@@ -57,6 +59,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
             'stream_id' => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
             'slot_start_at' => $this->getSlot()->getSlotStartAtAttribute(),
+            'lesson_type' => $this->getLessonType(),
         ]);
     }
 
@@ -88,6 +91,16 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     public function setSlot(ScheduleTimeslot $slot)
     {
         $this->slot = $slot;
+    }
+
+    public function setLessonType(BookingTypeEnum $lessonType)
+    {
+        $this->lessonType = $lessonType;
+    }
+
+    public function getLessonType()
+    {
+        return $this->lessonType;
     }
 
     public function getAmount()

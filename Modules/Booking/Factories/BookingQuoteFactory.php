@@ -40,6 +40,7 @@ class BookingQuoteFactory
         $quote = app()->make(BookingQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSlot($this->getSlotById($requestData->slotId));
+        $quote->setLessonType(BookingTypeEnum::from($requestData->lessonType));
         $quote->setStreamId($requestData->streamId);
         $quote->setAmount($this->getBookingAmount($requestData));
         $quote->setModel(app(Booking::class));

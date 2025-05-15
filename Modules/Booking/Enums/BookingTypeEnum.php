@@ -9,4 +9,12 @@ enum BookingTypeEnum: string
 {
     case BOOKING_TYPE_GROUPED = 'grouped';
     case BOOKING_TYPE_INDIVIDUAL = 'individual';
+
+    public function type(): string
+    {
+        return match ($this) {
+            self::BOOKING_TYPE_GROUPED      => 'grouped',
+            self::BOOKING_TYPE_INDIVIDUAL   => 'individual'
+        };
+    }
 }

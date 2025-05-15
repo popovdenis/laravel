@@ -14,7 +14,7 @@ export default function SlotCard({ item }) {
             setConfirmed(false);
             setLoading(true);
 
-            const result = await bookSlot(item.stream.id, item.slot.id, item.slotStartAt);
+            const result = await bookSlot(item.stream.id, item.slot.id, item.slotStartAt, item.lessonType);
 
             setSlots(prev => {
                 const updated = { ...prev }

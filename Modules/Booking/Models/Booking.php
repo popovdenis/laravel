@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\Booking\Enums\BookingStatus;
+use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Models\Order;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
@@ -21,10 +22,12 @@ class Booking extends Model implements PurchasableInterface
         'stream_id',
         'schedule_timeslot_id',
         'status',
+        'lesson_type',
         'slot_start_at',
     ];
     protected $casts = [
         'slot_start_at' => 'datetime',
+        'lesson_type'   => BookingTypeEnum::class,
     ];
 
     public function payment(): MorphOne

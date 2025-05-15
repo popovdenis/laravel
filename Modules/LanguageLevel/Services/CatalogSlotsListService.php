@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Enums\BookingStatus;
+use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\LanguageLevel\DTO\SlotResult;
 use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
@@ -151,7 +152,20 @@ class CatalogSlotsListService
 
     private function getChunkLength(array $filters): int
     {
-        return $filters['lesson_type'] === 'group' ? 90 : 60;
+        return $this->getLessonDuration($filters['lesson_type']);
+    }
+
+    private function getLessonDuration($lessonType): int
+    {
+        return match ($this->getLessonEnumType($lessonType)) {
+            BookingTypeEnum::BOOKING_TYPE_GROUPED => 90,
+            BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL => 60,
+        };
+    }
+
+    private function getLessonEnumType($lessonType)
+    {
+        return BookingTypeEnum::from($lessonType);
     }
 
     private function calculateSlotWindow($teacherSlot, Carbon $currentDate, string $teacherTz, string $studentTz): array
@@ -273,6 +287,7 @@ class CatalogSlotsListService
         return new SlotResult(
             time: $slotStart->format('H:i'),
             slotStartAt: $slotStart->format('Y-m-d H:i'),
+            lessonType: $this->getLessonEnumType($filters['lesson_type'])->value,
             stream: $stream,
             teacher: $stream->teacher,
             subject: $subject,
