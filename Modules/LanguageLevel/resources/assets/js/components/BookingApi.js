@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-export async function bookSlot(streamId, slotId) {
+export async function bookSlot(streamId, slotId, slotStartAt) {
     try {
         const response = await axios.post('/booking/store', {
             stream_id: streamId,
             slot_id: slotId,
+            slotStartAt: slotStartAt,
         })
 
         return { success: true, message: 'Booking successful.', data: response.data }

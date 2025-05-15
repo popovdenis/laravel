@@ -64,24 +64,17 @@ class CatalogSlotsListService
         return $levels->firstWhere('id', $levelId)?->subjects;
     }
 
-    public function getUserBookedSlots(User $user): array
+    public function getUserBookedSlots(User $user)
     {
         return $user->bookings()
             ->whereIn('status', [BookingStatus::PENDING->value, BookingStatus::CONFIRMED->value])
-            ->get(['id', 'schedule_timeslot_id', 'status'])
-            ->mapWithKeys(fn($booking) => [
-                $booking->schedule_timeslot_id => [
-                    'booking_id' => $booking->id,
-                    'status' => $booking->status,
-                ]
-            ])
-            ->toArray();
+            ->get();
     }
 
     public function getFilterStartDate(array $filters): Carbon
     {
         return $filters['start_date']
-            ? $this->timezone->date($filters['start_date'])
+            ? $this->timezone->date($filters['start_date'])->setTimeFrom(Carbon::now($this->timezone->getConfigTimezone()))
             : $this->timezone->date()->startOfDay();
     }
 
@@ -96,11 +89,11 @@ class CatalogSlotsListService
     public function groupSlots(array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user): array
     {
         $groupedSlots = [];
-        $userBookedSlotIds = auth()->check() ? $this->getUserBookedSlots($user) : [];
+        $userBookedSlots = auth()->check() ? $this->getUserBookedSlots($user) : [];
         $streams = $this->filterStreamsByLevel($filters['level_id']);
 
         foreach ($streams as $stream) {
-            $slots = $this->getChunksForStream($stream, $filters, $filterStartDate, $filterEndDate, $user, $userBookedSlotIds);
+            $slots = $this->getChunksForStream($stream, $filters, $filterStartDate, $filterEndDate, $user, $userBookedSlots);
 
             foreach ($slots as $date => $slotList) {
                 $groupedSlots[$date] = array_merge($groupedSlots[$date] ?? [], $slotList);
@@ -115,32 +108,33 @@ class CatalogSlotsListService
         return $groupedSlots;
     }
 
-    private function getChunksForStream(Stream $stream, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, array $userBookedSlotIds): array
+    private function getChunksForStream(Stream $stream, array $filters, Carbon $filterStartDate, Carbon $filterEndDate, User $user, Collection $userBookedSlots): array
     {
         $results = [];
 
-        $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId);
-        $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId);
+        // TODO: get start/end by Repeat
+        $streamStart = Carbon::parse($stream->start_date, 'UTC')->setTimezone($user->timeZoneId)->startOfDay();
+        $streamEnd = Carbon::parse($stream->end_date, 'UTC')->setTimezone($user->timeZoneId)->endOfDay();
         $currentDate = $streamStart->greaterThan($filterStartDate) ? $streamStart->copy() : $filterStartDate->copy();
         $slotIndex = $streamStart->diffInDays($currentDate);
 
         while ($currentDate->lte($streamEnd)) {
-            $daySlots = $this->getDaySlots($stream, $currentDate);
+            $teacherDaySlots = $this->getDaySlots($stream->teacher, $currentDate);
             $subjectIds = $stream->languageLevel->subjects->pluck('id')->values();
             $currentIndex = $subjectIds->search($stream->current_subject_id);
             $shiftedIndex = ($currentIndex + $slotIndex) % $subjectIds->count();
             $subjectId = $subjectIds[$shiftedIndex];
 
-            foreach ($daySlots as $slot) {
+            foreach ($teacherDaySlots as $teacherDaySlot) {
                 $chunks = $this->splitSlotToChunks(
-                    $slot,
+                    $teacherDaySlot,
                     $stream,
                     $currentDate,
                     $filters,
                     $filterStartDate,
                     $filterEndDate,
                     $user,
-                    $userBookedSlotIds,
+                    $userBookedSlots,
                     $subjectId
                 );
                 foreach ($chunks as $date => $chunkList) {
@@ -160,19 +154,19 @@ class CatalogSlotsListService
         return $filters['lesson_type'] === 'group' ? 90 : 60;
     }
 
-    private function calculateSlotWindow($slot, Carbon $currentDate, string $teacherTz, string $studentTz): array
+    private function calculateSlotWindow($teacherSlot, Carbon $currentDate, string $teacherTz, string $studentTz): array
     {
         $currentDateInTz = $currentDate->copy()->setTimezone($teacherTz);
 
         return [
-            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->start, $teacherTz)->setTimezone($studentTz),
-            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $slot->end, $teacherTz)->setTimezone($studentTz),
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $teacherSlot->start, $teacherTz)->setTimezone($studentTz),
+            Carbon::parse($currentDateInTz->format('Y-m-d') . ' ' . $teacherSlot->end, $teacherTz)->setTimezone($studentTz),
         ];
     }
 
     private function generateAvailableChunks(
-        Carbon $start,
-        Carbon $end,
+        Carbon $tSlotStartInStz,
+        Carbon $tSlotEndInStz,
         int $chunkLength,
         string $studentTz,
         Carbon $filterStart,
@@ -181,11 +175,9 @@ class CatalogSlotsListService
         callable $callback
     ): void
     {
-        $chunkStart = $start->copy();
+        $chunkStart = $tSlotStartInStz->copy();
 
-        while ($chunkStart->copy()->addMinutes($chunkLength)->lte($end)) {
-            $chunkInTz = $chunkStart->copy()->setTimezone($studentTz);
-
+        while ($chunkStart->copy()->addMinutes($chunkLength)->lte($tSlotEndInStz)) {
             $preferredStart = $user->preferred_start_time
                 ? Carbon::createFromFormat('H:i', $user->preferred_start_time->format('H:i'), $studentTz)
                 : null;
@@ -194,11 +186,11 @@ class CatalogSlotsListService
                 : null;
 
             if (
-                $chunkInTz->between($filterStart, $filterEnd) &&
-                (!$preferredStart || $chunkInTz->gte($chunkInTz->copy()->setTimeFrom($preferredStart))) &&
-                (!$preferredEnd || $chunkInTz->lte($chunkInTz->copy()->setTimeFrom($preferredEnd)))
+                $chunkStart->between($filterStart, $filterEnd) &&
+                (!$preferredStart || $chunkStart->gte($chunkStart->copy()->setTimeFrom($preferredStart))) &&
+                (!$preferredEnd || $chunkStart->lte($chunkStart->copy()->setTimeFrom($preferredEnd)))
             ) {
-                $callback($chunkInTz);
+                $callback($chunkStart);
             }
 
             $chunkStart->addMinutes($chunkLength);
@@ -206,14 +198,14 @@ class CatalogSlotsListService
     }
 
     private function splitSlotToChunks(
-        $slot,
+        $tDaySlot,
         Stream $stream,
         Carbon $currentDate,
         array $filters,
         Carbon $filterStartDate,
         Carbon $filterEndDate,
         User $user,
-        array $userBookedSlotIds,
+        Collection $userBookedSlots,
         int $subjectId
     ): array {
         $results = [];
@@ -221,7 +213,7 @@ class CatalogSlotsListService
         $studentTz = $user->timeZoneId ?? 'UTC';
         $chunkLength = $this->getChunkLength($filters);
 
-        [$slotStart, $slotEnd] = $this->calculateSlotWindow($slot, $currentDate, $teacherTz, $studentTz);
+        [$tSlotStartInStz, $tSlotEndInStz] = $this->calculateSlotWindow($tDaySlot, $currentDate, $teacherTz, $studentTz);
 
         $subject = $stream->languageLevel->subjects->firstWhere('id', $subjectId);
 
@@ -230,39 +222,40 @@ class CatalogSlotsListService
         }
 
         $this->generateAvailableChunks(
-            $slotStart,
-            $slotEnd,
+            $tSlotStartInStz,
+            $tSlotEndInStz,
             $chunkLength,
             $user->timeZoneId,
             $filterStartDate,
             $filterEndDate,
             $user,
-            function (Carbon $chunkStartInTz) use (&$results, $stream, $slot, $userBookedSlotIds, $subjectId, $filters) {
+            function (Carbon $chunkStartInTz) use (&$results, $stream, $tDaySlot, $userBookedSlots, $subjectId, $filters, $user) {
                 $dateKey = $chunkStartInTz->toDateString();
-                $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $slot, $userBookedSlotIds, $subjectId, $filters);
+                $results[$dateKey][] = $this->formatSlot($chunkStartInTz, $stream, $tDaySlot, $userBookedSlots, $subjectId, $filters, $user);
             }
         );
 
         return $results;
     }
 
-    private function getDaySlots(Stream $stream, Carbon $currentDate): Collection
+    private function getDaySlots(User $teacher, Carbon $currentDate): Collection
     {
-        $dayOfWeek = $currentDate->format('l');
-        $minStartTime = $this->timezone->date()->addMinutes(5);
+        $sDayOfWeek = $currentDate->format('l');
+        $tDayOfWeek = $currentDate->copy()->setTimezone($teacher->timeZoneId)->format('l');
+        $minStartTime = $this->timezone->date(null, null, false)->addMinutes(5);
 
-        return $stream->teacher->scheduleTimeslots->filter(function ($slot) use ($dayOfWeek, $minStartTime) {
-            if (strtolower($slot->day) !== strtolower($dayOfWeek)) {
+        return $teacher->scheduleTimeslots->filter(function ($slot) use ($tDayOfWeek, $sDayOfWeek, $minStartTime) {
+            if (strtolower($slot->day) !== strtolower($tDayOfWeek) || $tDayOfWeek !== $sDayOfWeek) {
                 return false;
             }
-            if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
-                return $this->timezone->date($slot->start, null, false)->greaterThanOrEqualTo($minStartTime);
-            }
+//            if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
+//                return $this->timezone->date($slot->start, null, false)->greaterThanOrEqualTo($minStartTime);
+//            }
             return true;
         });
     }
 
-    private function formatSlot(Carbon $slotStart, Stream $stream, $slot, array $userBookedSlotIds, $subjectId, array $filters): ?SlotResult
+    private function formatSlot(Carbon $slotStart, Stream $stream, $daySlot, Collection $userBookedSlots, $subjectId, array $filters, User $user): ?SlotResult
     {
         $subject = $stream->languageLevel->subjects->firstWhere('id', $subjectId);
 
@@ -270,17 +263,23 @@ class CatalogSlotsListService
             return null;
         }
 
+        $slotStartUTC = $slotStart->copy()->setTimezone('UTC')->format('Y-m-d H:i:s');
+
+        $booking = $userBookedSlots->first(fn($b) =>
+            $b->student_id === $user->id &&
+            $b->slot_start_at->equalTo($slotStartUTC)
+        );
+
         return new SlotResult(
             time: $slotStart->format('H:i'),
+            slotStartAt: $slotStart->format('Y-m-d H:i'),
             stream: $stream,
             teacher: $stream->teacher,
             subject: $subject,
             currentSubjectNumber: $subjectId,
-            slot: $slot,
-            uid: \Illuminate\Support\Str::uuid()->toString(),
-            bookingId: $this->isSlotBooked($userBookedSlotIds[$slot->id] ?? null)
-                ? $userBookedSlotIds[$slot->id]['booking_id']
-                : null,
+            slot: $daySlot,
+            uid: md5($slotStart->format('Y-m-d H:i')),
+            bookingId: $booking ? $booking->id : null,
         );
     }
 

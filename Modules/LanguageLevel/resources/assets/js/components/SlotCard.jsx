@@ -1,27 +1,63 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { bookSlot, cancelBooking } from './bookingApi';
+import { useBooking } from './BookingContext';
 
 export default function SlotCard({ item }) {
+    const { slots, setSlots } = useBooking();
     const [loading, setLoading] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
     const [cancelConfirm, setCancelConfirm] = useState(false);
     const isBooked = !!item.bookingId;
 
     const handleBooking = async () => {
-        setLoading(true);
-        const result = await bookSlot(item.stream.id, item.slot.id);
-        toast[result.success ? 'success' : 'error'](result.message);
-        setConfirmed(false);
-        setLoading(false);
-    };
+        setLoading(true)
+        const result = await bookSlot(item.stream.id, item.slot.id, item.slotStartAt)
+        setLoading(false)
+
+        if (result.success) {
+            setConfirmed(false);
+            toast.success(result.message);
+
+            setSlots(prev => {
+                const updated = { ...prev }
+                for (const date in updated) {
+                    updated[date] = updated[date].map(slot =>
+                        slot.slot.id === item.slot.id && slot.slotStartAt === item.slotStartAt
+                            ? { ...slot, bookingId: result.data.booking_id }
+                            : slot
+                    )
+                }
+                return updated
+            })
+        } else {
+            toast.error(result.message)
+        }
+    }
 
     const handleCancel = async () => {
-        setLoading(true);
-        const result = await cancelBooking(item.bookingId);
-        toast[result.success ? 'success' : 'error'](result.message);
-        setCancelConfirm(false);
-        setLoading(false);
+        setLoading(true)
+        const result = await cancelBooking(item.bookingId)
+        setLoading(false)
+
+        if (result.success) {
+            setConfirmed(false);
+            toast.success(result.message);
+
+            setSlots(prev => {
+                const updated = { ...prev }
+                for (const date in updated) {
+                    updated[date] = updated[date].map(slot =>
+                        slot.slot.id === item.slot.id
+                            ? { ...slot, bookingId: null }
+                            : slot
+                    )
+                }
+                return updated
+            })
+        } else {
+            toast.error(result.message)
+        }
     };
 
     return (
@@ -32,7 +68,9 @@ export default function SlotCard({ item }) {
             {/* Subject details */}
             <div className="flex-1 px-2">
                 <p className="text-xs text-gray-500 uppercase tracking-wide">
-                    {item.stream.language_level.title} • Chapter {item.stream.current_subject_number} • {(item.subject?.category ?? '').toUpperCase()}
+                    {item.stream.language_level.title}
+                    • Chapter {item.stream.current_subject_number}
+                    • {(item.subject?.category ?? '').toUpperCase()}
                 </p>
                 <p className="text-sm text-gray-800 font-semibold">{item.subject?.title ?? 'No subject selected'}</p>
             </div>

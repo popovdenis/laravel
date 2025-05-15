@@ -4,6 +4,8 @@ namespace Modules\ScheduleTimeslot\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\ScheduleTimeslot\Contracts\ScheduleTimeslotRepositoryInterface;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslotRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,8 @@ class ScheduleTimeslotServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(ScheduleTimeslotRepositoryInterface::class, ScheduleTimeslotRepository::class);
     }
 
     /**

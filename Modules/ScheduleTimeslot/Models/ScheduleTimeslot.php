@@ -14,6 +14,8 @@ class ScheduleTimeslot extends Model
         'end',
     ];
 
+    protected ?string $slotStartAt;
+
     public function enrollments()
     {
         return $this->belongsToMany(CourseEnrollment::class, 'course_enrollment_timeslots');
@@ -27,5 +29,15 @@ class ScheduleTimeslot extends Model
     public function getEndAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->format('H:i');
+    }
+
+    public function setSlotStartAtAttribute($value)
+    {
+        $this->slotStartAt = $value;
+    }
+
+    public function getSlotStartAtAttribute()
+    {
+        return $this->slotStartAt;
     }
 }

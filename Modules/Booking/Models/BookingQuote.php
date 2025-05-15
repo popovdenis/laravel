@@ -8,6 +8,7 @@ use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Order\Models\Quote;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\User\Models\User;
 
 /**
@@ -20,6 +21,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected User $student;
     protected int $streamId;
     protected int $slotId;
+    protected ScheduleTimeslot $slot;
     protected int $credits;
     private SubmitQuoteValidatorInterface $bookingValidator;
     private SlotAvailabilityValidatorInterface $slotValidator;
@@ -53,7 +55,8 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         return Booking::create([
             'student_id' => $this->getUser()->id,
             'stream_id' => $this->getStreamId(),
-            'schedule_timeslot_id' => $this->getSlotId(),
+            'schedule_timeslot_id' => $this->getSlot()->id,
+            'slot_start_at' => $this->getSlot()->getSlotStartAtAttribute(),
         ]);
     }
 
@@ -77,14 +80,14 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         return $this->streamId;
     }
 
-    public function getSlotId()
+    public function getSlot()
     {
-        return $this->slotId;
+        return $this->slot;
     }
 
-    public function setSlotId(int $slotId)
+    public function setSlot(ScheduleTimeslot $slot)
     {
-        $this->slotId = $slotId;
+        $this->slot = $slot;
     }
 
     public function getAmount()

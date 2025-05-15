@@ -96,7 +96,11 @@ class BookingController extends Controller
 
             $this->eventManager->dispatch('save_booking_order_after', ['order' => $order, 'quote' => $quote]);
 
-            return response()->json(['success' => true, 'message' => 'Booking has been successfully created.']);
+            return response()->json([
+                'success' => true,
+                'booking_id' => $order->purchasable_id,
+                'message' => 'Booking has been successfully created.'
+            ]);
         } catch (AlreadyExistsException $e) {
             return response()->json([
                 'success' => false,

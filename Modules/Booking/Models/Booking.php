@@ -21,6 +21,10 @@ class Booking extends Model implements PurchasableInterface
         'stream_id',
         'schedule_timeslot_id',
         'status',
+        'slot_start_at',
+    ];
+    protected $casts = [
+        'slot_start_at' => 'datetime',
     ];
 
     public function payment(): MorphOne

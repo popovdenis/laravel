@@ -21,6 +21,7 @@ class BookingData extends Data implements RequestDataInterface
     public function __construct(
         public User $student,
         public int $slotId,
+        public string $slotStartAt,
         public ?int $streamId,
         public ?int $teacherId,
         public ?string $method,
@@ -43,6 +44,7 @@ class BookingData extends Data implements RequestDataInterface
             'student' => $request->user(),
             'streamId' => $request->input('stream_id') ?? null,
             'slotId' => $request->input('slot_id'),
+            'slotStartAt' => $request->input('slotStartAt'),
             'method' => setting('booking.applicable_payment_method')
         ]);
     }

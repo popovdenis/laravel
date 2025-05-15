@@ -17,7 +17,7 @@ class SlotAvailabilityValidator implements SlotAvailabilityValidatorInterface
 {
     public function validate(QuoteInterface $bookingQuote): void
     {
-        $slot = ScheduleTimeslot::where('id', $bookingQuote->getSlotId())->exists();
+        $slot = ScheduleTimeslot::where('id', $bookingQuote->getSlot()->id)->exists();
 
         if (!$slot) {
             throw new SlotUnavailableException('Selected time slot is not available.');

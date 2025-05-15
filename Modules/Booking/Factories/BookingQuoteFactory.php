@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Factories;
 
+use Carbon\Carbon;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Models\Booking;
 use Modules\Booking\Models\BookingQuote;
 use Modules\Payment\Contracts\RequestDataInterface;
+use Modules\ScheduleTimeslot\Contracts\ScheduleTimeslotRepositoryInterface;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
@@ -21,21 +23,29 @@ class BookingQuoteFactory
      * @var \Modules\Subscription\Models\ConfigProvider
      */
     private ConfigProvider $configProvider;
+    private ScheduleTimeslotRepositoryInterface $scheduleTimeslotRepository;
 
-    public function __construct(ConfigProvider $configProvider)
+    public function __construct(
+        ConfigProvider $configProvider,
+        ScheduleTimeslotRepositoryInterface $scheduleTimeslotRepository,
+    )
     {
         $this->configProvider = $configProvider;
+        $this->scheduleTimeslotRepository = $scheduleTimeslotRepository;
     }
 
     public function create(RequestDataInterface $requestData): BookingQuoteInterface
     {
+        /** @var BookingQuote $quote */
         $quote = app()->make(BookingQuote::class);
         $quote->setUser($requestData->student);
-        $quote->setSlotId($requestData->slotId);
+        $quote->setSlot($this->getSlotById($requestData->slotId));
         $quote->setStreamId($requestData->streamId);
         $quote->setAmount($this->getBookingAmount($requestData));
         $quote->setModel(app(Booking::class));
         $quote->getPayment()->importData($requestData);
+
+        $this->initSlotStartAt($quote, $requestData);
 
         return $quote;
     }
@@ -47,5 +57,22 @@ class BookingQuoteFactory
         }
 
         return $this->configProvider->getGroupLessonPrice();
+    }
+
+    private function getSlotById(int $slotId)
+    {
+        return $this->scheduleTimeslotRepository->getById($slotId);
+    }
+
+    private function initSlotStartAt(BookingQuote $quote, RequestDataInterface $requestData)
+    {
+        $student = $quote->getUser();
+        $studentTz = $student->timeZoneId;
+
+        $bookingDateTime = \Carbon\Carbon::parse($requestData->slotStartAt, $studentTz);
+
+        $bookingDateTimeUTC = $bookingDateTime->copy()->setTimezone('UTC');
+
+        $quote->getSlot()->setAttribute('slot_start_at', $bookingDateTimeUTC);
     }
 }

@@ -84,8 +84,7 @@ function BookingPageContent() {
     useEffect(() => {
         const fetchInitial = async () => {
             try {
-                setLoading(true)
-                //const initialEnd = dayjs(filterStartDate).add(5, 'day').format('YYYY-MM-DD')
+                setLoading(true);
 
                 const response = await axios.get('/levels/init', {
                     params: {
@@ -135,8 +134,6 @@ function BookingPageContent() {
             })
 
             setSlots(function(prev) {
-                console.log('prev keys:', Object.keys(prev))
-                console.log('new keys:', Object.keys(response.data.slots))
                 return ({ ...prev, ...response.data.slots });
             })
             setVisibleDatesCount(prev => prev + 5)

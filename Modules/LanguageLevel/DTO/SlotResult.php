@@ -12,6 +12,7 @@ class SlotResult
 {
     public function __construct(
         public string $time,
+        public string $slotStartAt,
         public $stream,
         public $teacher,
         public $subject,

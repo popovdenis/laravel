@@ -20,7 +20,8 @@ class SubmitBookingValidator implements SubmitQuoteValidatorInterface
     {
         $duplicate = Booking::where('student_id', $bookingQuote->getUser()->id)
             ->where('stream_id', $bookingQuote->getStreamId())
-            ->where('schedule_timeslot_id', $bookingQuote->getSlotId())
+            ->where('schedule_timeslot_id', $bookingQuote->getSlot()->id)
+            ->where('slot_start_at', $bookingQuote->getSlot()->getSlotStartAtAttribute())
             ->where('status', '!=', BookingStatus::CANCELLED)
             ->exists();
 

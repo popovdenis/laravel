@@ -39,7 +39,7 @@ export default function TopFilters() {
                 }
             },
         })
-    }, [ref])
+    }, [ref, filterStartDate, filterEndDate])
 
     return (
         <div className="bg-white border rounded-md p-4 mb-6 md:col-span-3">

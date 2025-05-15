@@ -3,6 +3,7 @@
 namespace Modules\Booking\Contracts;
 
 use Modules\Order\Contracts\QuoteInterface;
+use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 
 /**
  * Interface BookingQuoteInterface
@@ -11,8 +12,8 @@ use Modules\Order\Contracts\QuoteInterface;
  */
 interface BookingQuoteInterface extends QuoteInterface
 {
-    public function getSlotId();
-    public function setSlotId(int $slotId);
+    public function getSlot();
+    public function setSlot(ScheduleTimeslot $slot);
 
     public function setStreamId(int $streamId);
     public function getStreamId();
