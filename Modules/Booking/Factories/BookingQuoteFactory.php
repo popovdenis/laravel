@@ -40,7 +40,7 @@ class BookingQuoteFactory
         $quote = app()->make(BookingQuote::class);
         $quote->setUser($requestData->student);
         $quote->setSlot($this->getSlotById($requestData->slotId));
-        $quote->setLessonType(BookingTypeEnum::from($requestData->lessonType));
+        $quote->setLessonType($requestData->lessonType);
         $quote->setStreamId($requestData->streamId);
         $quote->setAmount($this->getBookingAmount($requestData));
         $quote->setModel(app(Booking::class));
@@ -53,7 +53,7 @@ class BookingQuoteFactory
 
     private function getBookingAmount(\Modules\Booking\Data\BookingData $bookingData): int
     {
-        if ($bookingData->bookingType === BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL) {
+        if ($bookingData->lessonType === BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL) {
             return $this->configProvider->getIndividualLessonPrice();
         }
 

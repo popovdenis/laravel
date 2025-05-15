@@ -259,7 +259,7 @@ class CatalogSlotsListService
         $minStartTime = $this->timezone->date(null, null, false)->addMinutes(5);
 
         return $teacher->scheduleTimeslots->filter(function ($slot) use ($tDayOfWeek, $sDayOfWeek, $minStartTime) {
-            if (strtolower($slot->day) !== strtolower($tDayOfWeek) || $tDayOfWeek !== $sDayOfWeek) {
+            if (strtolower($slot->day) !== strtolower($tDayOfWeek)) {
                 return false;
             }
 //            if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {

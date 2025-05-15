@@ -22,11 +22,10 @@ class BookingData extends Data implements RequestDataInterface
         public User $student,
         public int $slotId,
         public string $slotStartAt,
-        public ?string $lessonType,
+        public BookingTypeEnum $lessonType,
         public ?int $streamId,
         public ?int $teacherId,
         public ?string $method,
-        public BookingTypeEnum $bookingType = BookingTypeEnum::BOOKING_TYPE_GROUPED,
         public array $extra = []
     ) {
     }
@@ -46,7 +45,7 @@ class BookingData extends Data implements RequestDataInterface
             'streamId' => $request->input('stream_id') ?? null,
             'slotId' => $request->input('slot_id'),
             'slotStartAt' => $request->input('slot_start_at'),
-            'lessonType' => $request->input('lesson_type'),
+            'lessonType' => BookingTypeEnum::tryFrom($request->input('lesson_type')),
             'method' => setting('booking.applicable_payment_method')
         ]);
     }
@@ -58,6 +57,7 @@ class BookingData extends Data implements RequestDataInterface
             'streamId' => $booking->stream->id,
             'slotId' => $booking->timeslot->id,
             'slotStartAt' => $booking->slot_start_at,
+            'lessonType' => $booking->lesson_type,
             'method' => setting('booking.applicable_payment_method')
         ]);
     }
