@@ -27,10 +27,11 @@ function BookingPageContent() {
         setFilterEndDate,
         currentEndDate,
         setCurrentEndDate,
-        setVisibleDatesCount
+        setVisibleDatesCount,
+        loading,
+        setLoading
     } = useBooking()
 
-    const [loading, setLoading] = useState(true);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
     const DAYS_RANGE = 7;

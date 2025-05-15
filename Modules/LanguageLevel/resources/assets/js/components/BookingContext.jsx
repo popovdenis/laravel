@@ -13,6 +13,7 @@ export function BookingProvider({ children }) {
     const [slots, setSlots] = useState([]);
     const [currentEndDate, setCurrentEndDate] = useState(null);
     const [visibleDatesCount, setVisibleDatesCount] = useState(5);
+    const [loading, setLoading] = useState(false);
 
     return (
         <BookingContext.Provider value={{
@@ -35,7 +36,9 @@ export function BookingProvider({ children }) {
             currentEndDate,
             setCurrentEndDate,
             visibleDatesCount,
-            setVisibleDatesCount
+            setVisibleDatesCount,
+            loading,
+            setLoading
         }}>
             {children}
         </BookingContext.Provider>

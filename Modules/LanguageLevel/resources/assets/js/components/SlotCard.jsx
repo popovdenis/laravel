@@ -4,20 +4,17 @@ import { bookSlot, cancelBooking } from './bookingApi';
 import { useBooking } from './BookingContext';
 
 export default function SlotCard({ item }) {
-    const { slots, setSlots } = useBooking();
-    const [loading, setLoading] = useState(false);
+    const { slots, setSlots, loading, setLoading } = useBooking();
     const [confirmed, setConfirmed] = useState(false);
     const [cancelConfirm, setCancelConfirm] = useState(false);
     const isBooked = !!item.bookingId;
 
     const handleBooking = async () => {
-        setLoading(true)
-        const result = await bookSlot(item.stream.id, item.slot.id, item.slotStartAt)
-        setLoading(false)
-
-        if (result.success) {
+        try {
             setConfirmed(false);
-            toast.success(result.message);
+            setLoading(true);
+
+            const result = await bookSlot(item.stream.id, item.slot.id, item.slotStartAt);
 
             setSlots(prev => {
                 const updated = { ...prev }
@@ -29,34 +26,38 @@ export default function SlotCard({ item }) {
                     )
                 }
                 return updated
-            })
-        } else {
-            toast.error(result.message)
+            });
+
+            toast.success(result.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Booking failed.')
+        } finally {
+            setLoading(false);
         }
     }
 
     const handleCancel = async () => {
-        setLoading(true)
-        const result = await cancelBooking(item.bookingId)
-        setLoading(false)
-
-        if (result.success) {
+        try {
             setConfirmed(false);
-            toast.success(result.message);
+            setLoading(true);
+
+            await cancelBooking(item.bookingId);
 
             setSlots(prev => {
                 const updated = { ...prev }
                 for (const date in updated) {
                     updated[date] = updated[date].map(slot =>
-                        slot.slot.id === item.slot.id
+                        slot.slot.id === item.slot.id && slot.slotStartAt === item.slotStartAt
                             ? { ...slot, bookingId: null }
                             : slot
                     )
                 }
                 return updated
             })
-        } else {
-            toast.error(result.message)
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Booking cancellation is failed.')
+        } finally {
+            setLoading(false);
         }
     };
 

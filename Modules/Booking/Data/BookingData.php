@@ -55,6 +55,7 @@ class BookingData extends Data implements RequestDataInterface
             'student' => $booking->student,
             'streamId' => $booking->stream->id,
             'slotId' => $booking->timeslot->id,
+            'slotStartAt' => $booking->slot_start_at,
             'method' => setting('booking.applicable_payment_method')
         ]);
     }
