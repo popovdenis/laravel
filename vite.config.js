@@ -7,13 +7,13 @@ import fg from "fast-glob";
 const moduleJsFiles = fg.sync('Modules/**/resources/assets/js/pages/*.jsx');
 
 export default defineConfig({
-    // server: {
-    //     https: {
-    //         key: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local-key.pem'),
-    //         cert: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local.pem'),
-    //     },
-    //     host: 'laravel.local',
-    // },
+    server: {
+        https: {
+            key: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local-key.pem'),
+            cert: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local.pem'),
+        },
+        host: 'laravel.local',
+    },
     plugins: [
         laravel({
             input: [

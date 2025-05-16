@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->enum('lesson_type', ['grouped', 'individual'])->after('slot_start_at')->default('grouped');
+            $table->enum('lesson_type', ['group', 'individual'])->after('slot_start_at')->default('group');
         });
     }
 
