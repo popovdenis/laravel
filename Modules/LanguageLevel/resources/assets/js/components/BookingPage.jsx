@@ -36,7 +36,7 @@ function BookingPageContent() {
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
 
-    const getNextDay = function (date) {
+    const fetchDay = function (date) {
         return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
     }
 
@@ -104,7 +104,7 @@ function BookingPageContent() {
         if (endDate) {
             setFilterEndDate(endDate);
         } else {
-            setFilterEndDate(getNextDay(today));
+            setFilterEndDate(fetchDay(today));
         }
     }, []);
 
@@ -125,14 +125,14 @@ function BookingPageContent() {
     // 3. Fetch initial slots when currentEndDate sets
     useEffect(() => {
         if (filterStartDate && filterEndDate) {
-            const nextEnd = getNextDay(filterStartDate);
+            const nextEnd = fetchDay(filterStartDate);
             fetchSlots({ startDate: filterStartDate, endDate: nextEnd, append: false });
         }
     }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate]);
 
     const loadMore = async () => {
         if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return;
-        const nextEnd = getNextDay(currentEndDate);
+        const nextEnd = fetchDay(currentEndDate);
         await fetchSlots({ startDate: currentEndDate, endDate: nextEnd, append: true });
     };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.min.css'
 import { useBooking } from './BookingContext'
+import dayjs from "dayjs";
 
 export default function TopFilters() {
     const {
@@ -11,14 +12,32 @@ export default function TopFilters() {
         setFilterEndDate,
         lessonType,
         setLessonType,
+        setSelectedLevelId,
+        setSelectedSubjectIds,
+        setCurrentEndDate,
+        visibleDatesCount,
+        setVisibleDatesCount,
+        setSlots
     } = useBooking()
 
-    const ref = useRef(null)
+    const ref = useRef(null);
 
     const formatLocalDate = (date) => {
         const offset = date.getTimezoneOffset();
         const localDate = new Date(date.getTime() - offset * 60 * 1000);
         return localDate.toISOString().slice(0, 10);
+    };
+
+    const fetchDay = function (date) {
+        return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
+    }
+
+    const clearAllFilters = () => {
+        const today = dayjs().startOf('day');
+
+        setLessonType('group');
+        setFilterStartDate(today.format('YYYY-MM-DD'));
+        setFilterEndDate(fetchDay(today));
     };
 
     useEffect(() => {
@@ -77,11 +96,7 @@ export default function TopFilters() {
 
                 <div className="self-end ml-auto">
                     <button
-                        onClick={() => {
-                            setFilterStartDate(null)
-                            setFilterEndDate(null)
-                            setLessonType(null)
-                        }}
+                        onClick={() => clearAllFilters()}
                         className="btn btn-primary-inverted"
                     >
                         Clear all
