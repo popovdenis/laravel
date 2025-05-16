@@ -31,7 +31,7 @@ class Configuration extends BaseSettings
             Tabs::make('Configuration')->schema([
                 Tabs\Tab::make('General')->schema([
                     Section::make('Country Options')->schema([
-                        Select::make('general.locale.timezone')
+                        Select::make('base.locale.timezone')
                             ->label('Applicable Payment Method')
                             ->placeholder('-- Please Select --')
                             ->options($timezones)

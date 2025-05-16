@@ -12,7 +12,7 @@ class ConfigProvider extends ConfigProviderAbstract
 {
     public const XML_PATH_DEFAULT_TIMEZONE = 'locale.timezone';
 
-    protected $pathPrefix = 'general.';
+    protected $pathPrefix = 'base.';
 
     public function getDefaultTimeZone()
     {

@@ -23,7 +23,6 @@ trait TimeSlotValidationTrait
                 $slots = collect($data["{$day}_{$field}"] ?? []);
                 $this->checkOverlapsForDay($day, $slots, $userTimezone);
             });
-        dd('ok');
     }
 
     protected function checkOverlapsForDay(string $day, \Illuminate\Support\Collection $slots, string $timezone): void
