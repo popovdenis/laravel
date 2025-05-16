@@ -31,6 +31,7 @@ trait TimeSlotValidationTrait
         $label = ucfirst($day);
 
         $slots->each(function ($slotA, $i) use ($slots, $label, $timezone) {
+            $timezone = str_replace('\/', '/', $timezone);
             $startA = Carbon::createFromFormat('H:i', $slotA['start'], $timezone)->setTimezone('UTC');
             $endA = Carbon::createFromFormat('H:i', $slotA['end'], $timezone)->setTimezone('UTC');
 
