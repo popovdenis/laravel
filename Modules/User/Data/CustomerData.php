@@ -24,10 +24,7 @@ class CustomerData extends Data
         public string $password,
         public string $password_confirmation,
         public string $subscriptionPlanId,
-        public ?int $dstOffset,
-        public ?int $rawOffset,
         public ?string $timeZoneId,
-        public ?string $timeZoneName,
     )
     {
     }
@@ -54,10 +51,7 @@ class CustomerData extends Data
             'password' => $request->password,
             'password_confirmation' => $request->password_confirmation,
             'subscriptionPlanId' => $request->subscription_plan_id,
-            'dstOffset' => $timezone['dstOffset'] ?? null,
-            'rawOffset' => $timezone['rawOffset'] ?? null,
             'timeZoneId' => $timezone['timeZoneId'] ?? null,
-            'timeZoneName' => $timezone['timeZoneName'] ?? null,
         ]);
     }
 

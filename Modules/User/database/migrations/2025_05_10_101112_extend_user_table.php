@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('users', function (Blueprint $table) {
-            $table->time('preferred_start_time')->after('timeZoneName')->nullable();
+            $table->time('preferred_start_time')->after('timeZoneId')->nullable();
             $table->time('preferred_end_time')->after('preferred_start_time')->nullable();
         });
     }
@@ -21,10 +21,8 @@ return new class extends Migration
      */
     public function down(): void {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('dstOffset');
-            $table->dropColumn('rawOffset');
-            $table->dropColumn('timeZoneId');
-            $table->dropColumn('timeZoneName');
+            $table->dropColumn('preferred_start_time');
+            $table->dropColumn('preferred_end_time');
         });
     }
 };

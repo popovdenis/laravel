@@ -24,7 +24,7 @@ class Configuration extends BaseSettings
 
     public function schema(): array|Closure
     {
-        $timezones = collect(\DateTimeZone::listIdentifiers(\DateTimeZone::ALL))
+        $timezones = collect(\DateTimeZone::listIdentifiers())
             ->mapWithKeys(fn($tz) => [$tz => $tz])
             ->toArray();
         return [

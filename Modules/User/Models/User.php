@@ -46,10 +46,7 @@ class User extends Authenticatable implements FilamentUser
         'pm_last_four',
         'trial_ends_at',
         'confirmation',
-        'dstOffset',
-        'rawOffset',
         'timeZoneId',
-        'timeZoneName',
         'preferred_start_time',
         'preferred_end_time',
     ];

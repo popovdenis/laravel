@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('users', function (Blueprint $table) {
-            $table->smallInteger('dstOffset')->after('confirmation')->nullable();
-            $table->smallInteger('rawOffset')->after('dstOffset')->nullable();
             $table->tinyText('timeZoneId')->after('rawOffset')->nullable();
-            $table->tinyText('timeZoneName')->after('timeZoneId')->nullable();
         });
     }
 
@@ -23,10 +20,7 @@ return new class extends Migration
      */
     public function down(): void {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('dstOffset');
-            $table->dropColumn('rawOffset');
             $table->dropColumn('timeZoneId');
-            $table->dropColumn('timeZoneName');
         });
     }
 };

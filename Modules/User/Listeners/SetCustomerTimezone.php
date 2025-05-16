@@ -21,11 +21,6 @@ class SetCustomerTimezone
         $customer = $data['customer'];
         $customerData = $data['customer_data'];
 
-        $customer->update([
-            'dstOffset' => $customerData->dstOffset ?? null,
-            'rawOffset' => $customerData->rawOffset ?? null,
-            'timeZoneId' => $customerData->timeZoneId ?? null,
-            'timeZoneName' => $customerData->timeZoneName ?? null,
-        ]);
+        $customer->update(['timeZoneId' => $customerData->timeZoneId ?? null]);
     }
 }
