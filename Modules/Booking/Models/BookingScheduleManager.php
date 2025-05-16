@@ -425,6 +425,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
             $b->stream_id === $stream->id &&
+            $b->lesson_type->value === $filters['lesson_type'] &&
             $b->slot_start_at->equalTo($slotStartUTC)
         );
 
@@ -437,7 +438,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             subject: $subject,
             currentSubjectNumber: $subjectId,
             slot: $daySlot,
-            uid: md5($slotStart->format('Y-m-d H:i')),
+            uid: md5(implode('.', [$student->id, $stream->id, $filters['lesson_type'], $slotStartUTC])),
             bookingId: $booking ? $booking->id : null,
         );
     }
