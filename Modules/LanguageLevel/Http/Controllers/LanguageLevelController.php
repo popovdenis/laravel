@@ -43,6 +43,7 @@ class LanguageLevelController extends Controller
 
     public function init(Request $request)
     {
+        dd('ok');
         $slotsResponse = $this->bookingScheduleManager
             ->setFilters($this->getFilters($request))
             ->setStudent($request->user())
