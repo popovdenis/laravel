@@ -4,18 +4,19 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 
 export default defineConfig({
-    server: {
-        https: {
-            key: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local-key.pem'),
-            cert: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local.pem'),
-        },
-        host: 'laravel.local',
-    },
+    // server: {
+    //     https: {
+    //         key: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local-key.pem'),
+    //         cert: fs.readFileSync('/Users/denispopov/Sites/laravel/certs/laravel.local.pem'),
+    //     },
+    //     host: 'laravel.local',
+    // },
     plugins: [
         laravel({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'Modules/LanguageLevel/resources/assets/js/pages/index.jsx',
             ],
             refresh: true,
         }),

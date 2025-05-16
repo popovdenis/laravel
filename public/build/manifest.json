@@ -1,13 +1,32 @@
 {
+  "Modules/LanguageLevel/resources/assets/js/pages/index.jsx": {
+    "file": "assets/index-BVUYTWLh.js",
+    "name": "index",
+    "src": "Modules/LanguageLevel/resources/assets/js/pages/index.jsx",
+    "isEntry": true,
+    "imports": [
+      "_index-xsH4HHeE.js"
+    ],
+    "css": [
+      "assets/index-CksuuEqD.css"
+    ]
+  },
+  "_index-xsH4HHeE.js": {
+    "file": "assets/index-xsH4HHeE.js",
+    "name": "index"
+  },
   "resources/css/app.css": {
     "file": "assets/app-KdbY8ZnN.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Di1Nc4h1.js",
+    "file": "assets/app-Ch5JwZPv.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_index-xsH4HHeE.js"
+    ]
   }
 }
