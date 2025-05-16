@@ -36,6 +36,7 @@ class LanguageLevelController extends Controller
     public function index()
     {
         $lessonType = $this->bookingScheduleManager->getDefaultLessonType();
+        dd('ok');
         $visibleDatesCount = $this->bookingScheduleManager->getInitialDaysToShow();
 
         return view('languagelevel::index', compact('lessonType', 'visibleDatesCount'));
