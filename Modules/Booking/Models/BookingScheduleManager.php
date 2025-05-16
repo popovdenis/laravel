@@ -424,6 +424,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
+            $b->stream_id === $stream->id &&
             $b->slot_start_at->equalTo($slotStartUTC)
         );
 
