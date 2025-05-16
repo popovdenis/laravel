@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import fs from 'fs';
+import fg from "fast-glob";
+
+const moduleJsFiles = fg.sync('Modules/**/resources/assets/js/pages/*.jsx');
 
 export default defineConfig({
     // server: {
@@ -16,7 +19,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'Modules/LanguageLevel/resources/assets/js/pages/index.jsx',
+                ...moduleJsFiles,
             ],
             refresh: true,
         }),
