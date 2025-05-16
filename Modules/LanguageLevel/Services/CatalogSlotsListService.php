@@ -5,10 +5,13 @@ namespace Modules\LanguageLevel\Services;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\Base\Conracts\SearchCriteriaInterface;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\LanguageLevel\DTO\SlotResult;
+use Modules\Stream\Contracts\StreamRepositoryInterface;
 use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
 
@@ -19,32 +22,48 @@ use Modules\User\Models\User;
  */
 class CatalogSlotsListService
 {
+    private StreamRepositoryInterface $streamRepository;
+    private SearchCriteriaInterface $searchCriteria;
+    private static ?LengthAwarePaginator $allStreams;
     private CustomerTimezone $timezone;
-    private static ?Collection $allStreams;
 
-    public function __construct(CustomerTimezone $timezone)
+    public function __construct(
+        CustomerTimezone $timezone,
+        StreamRepositoryInterface $streamRepository,
+        SearchCriteriaInterface $searchCriteria
+    )
     {
+        $this->streamRepository = $streamRepository;
+        $this->searchCriteria = $searchCriteria;
         $this->timezone = $timezone;
     }
 
-    public function getStreams(): Collection
+    public function getStreams(): LengthAwarePaginator
     {
         if (empty(self::$allStreams)) {
-            self::$allStreams = Stream::with([
+            $this->searchCriteria->setWith([
                 'languageLevel.subjects',
                 'teacher.scheduleTimeslots',
                 'currentSubject',
                 'teacher',
-            ])
-                ->whereIn('status', ['planned', 'started'])
-                ->whereHas('languageLevel', fn($q) => $q->where('is_active', true))
-                ->get();
+            ])->setFilters([
+                'status' => ['planned', 'started'],
+            ])->setWhereHas([
+                'languageLevel' => fn($q) => $q->where('is_active', true),
+            ]);
+
+            self::$allStreams = $this->streamRepository->getList($this->searchCriteria);
         }
 
         return self::$allStreams;
     }
 
-    public function filterStreamsByLevel($levelId): Collection
+    /**
+     * @param $levelId
+     *
+     * @return LengthAwarePaginator|Collection
+     */
+    public function filterStreamsByLevel($levelId): LengthAwarePaginator|Collection
     {
         $streams = $this->getStreams();
 
@@ -53,7 +72,7 @@ class CatalogSlotsListService
             : $streams;
     }
 
-    public function getLevels(Collection $streams)
+    public function getLevels(LengthAwarePaginator $streams)
     {
         return $streams->map(fn($stream) => $stream->languageLevel)->filter()->unique('id')->values();
     }
@@ -199,10 +218,9 @@ class CatalogSlotsListService
                 ? Carbon::createFromFormat('H:i', $user->preferred_end_time->format('H:i'), $studentTz)
                 : null;
 
-            if (
-                $chunkStart->between($filterStart, $filterEnd) &&
-                (!$preferredStart || $chunkStart->gte($chunkStart->copy()->setTimeFrom($preferredStart))) &&
-                (!$preferredEnd || $chunkStart->lte($chunkStart->copy()->setTimeFrom($preferredEnd)))
+            if ($chunkStart->between($filterStart, $filterEnd)
+                /*&& (!$preferredStart || $chunkStart->gte($chunkStart->copy()->setTimeFrom($preferredStart)))
+                && (!$preferredEnd || $chunkStart->lte($chunkStart->copy()->setTimeFrom($preferredEnd)))*/
             ) {
                 $callback($chunkStart);
             }

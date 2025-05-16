@@ -4,6 +4,8 @@ namespace Modules\Stream\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Stream\Contracts\StreamRepositoryInterface;
+use Modules\Stream\Models\StreamRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,8 @@ class StreamServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(StreamRepositoryInterface::class, StreamRepository::class);
     }
 
     /**

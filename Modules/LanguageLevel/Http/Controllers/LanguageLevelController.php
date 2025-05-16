@@ -2,16 +2,11 @@
 
 namespace Modules\LanguageLevel\Http\Controllers;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
-use Modules\Booking\Enums\BookingStatus;
 use Modules\LanguageLevel\Models\LanguageLevel;
 use Modules\LanguageLevel\Services\CatalogSlotsListService;
-use Modules\Stream\Models\Stream;
-use Modules\User\Models\User;
 
 class LanguageLevelController extends Controller
 {

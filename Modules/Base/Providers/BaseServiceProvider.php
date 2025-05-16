@@ -5,7 +5,9 @@ namespace Modules\Base\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Base\Conracts\SearchCriteriaInterface;
 use Modules\Base\Conracts\TimezoneInterface;
+use Modules\Base\Framework\SearchCriteria;
 use Modules\Base\Stdlib\DateTime\Timezone;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
@@ -45,6 +47,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
         $this->app->bind(TimezoneInterface::class, Timezone::class);
+        $this->app->bind(SearchCriteriaInterface::class, SearchCriteria::class);
     }
 
     /**
