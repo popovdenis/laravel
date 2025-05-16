@@ -33,9 +33,8 @@ export default function TopFilters() {
             time_24hr: true,
             onClose: function (selectedDates) {
                 if (selectedDates.length === 2) {
-                    setFilterStartDate(formatLocalDate(selectedDates[0]))
-                    setFilterEndDate(formatLocalDate(selectedDates[1]))
-                    ref.current?._flatpickr?.clear()
+                    setFilterStartDate(formatLocalDate(selectedDates[0]));
+                    setFilterEndDate(formatLocalDate(selectedDates[1]));
                 }
             },
         })

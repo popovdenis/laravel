@@ -12,7 +12,7 @@ export default function SlotsList() {
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting) {
-                setVisibleDatesCount(prev => prev + 5)
+                setVisibleDatesCount(prev => prev + visibleDatesCount)
             }
         }, {
             rootMargin: '200px',

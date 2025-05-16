@@ -38,7 +38,7 @@ export function BookingProvider({ children }) {
             visibleDatesCount,
             setVisibleDatesCount,
             loading,
-            setLoading
+            setLoading,
         }}>
             {children}
         </BookingContext.Provider>

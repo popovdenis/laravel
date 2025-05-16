@@ -434,7 +434,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     private function getChunkLength(string $lessonType): int
     {
         return match ($this->getLessonEnumType($lessonType)) {
-            BookingTypeEnum::BOOKING_TYPE_GROUPED => $this->configProvider->getBookingGroupLessonDuration(),
+            BookingTypeEnum::BOOKING_TYPE_GROUP => $this->configProvider->getBookingGroupLessonDuration(),
             BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL => $this->configProvider->getBookingIndividualLessonDuration(),
         };
     }

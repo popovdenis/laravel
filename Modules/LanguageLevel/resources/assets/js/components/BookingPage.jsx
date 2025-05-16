@@ -27,6 +27,7 @@ function BookingPageContent() {
         setFilterEndDate,
         currentEndDate,
         setCurrentEndDate,
+        visibleDatesCount,
         setVisibleDatesCount,
         loading,
         setLoading
@@ -34,7 +35,47 @@ function BookingPageContent() {
 
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
-    const DAYS_RANGE = 7;
+
+    const getNextDay = function (date) {
+        return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
+    }
+
+    const fetchSlots = async ({ startDate, endDate, append = false }) => {
+        try {
+            setLoading(true);
+            if (append) setIsFetchingMore(true);
+
+            const response = await axios.get('/levels/init', {
+                params: {
+                    level_id: selectedLevelId,
+                    subject_ids: selectedSubjectIds,
+                    start_date: startDate,
+                    end_date: endDate,
+                    lesson_type: lessonType,
+                }
+            });
+
+            const data = response.data;
+
+            if (append) {
+                setSlots(prev => ({ ...prev, ...data.slots }));
+                setVisibleDatesCount(prev => prev + visibleDatesCount);
+            } else {
+                setLevels(data.levels);
+                setSubjects(data.subjects);
+                setSelectedLevelId(data.selectedLevelId);
+                setLessonType(data.lessonType || 'individual');
+                setSlots(data.slots);
+            }
+
+            setCurrentEndDate(endDate);
+        } catch (e) {
+            console.error(append ? 'Load more error' : 'Initial load error', e);
+        } finally {
+            if (append) setIsFetchingMore(false);
+            setLoading(false);
+        }
+    };
 
     // 1. Init from URL once
     useEffect(() => {
@@ -63,7 +104,7 @@ function BookingPageContent() {
         if (endDate) {
             setFilterEndDate(endDate);
         } else {
-            setFilterEndDate(dayjs(today).add(DAYS_RANGE, 'day').format('YYYY-MM-DD'));
+            setFilterEndDate(getNextDay(today));
         }
     }, []);
 
@@ -83,68 +124,17 @@ function BookingPageContent() {
 
     // 3. Fetch initial slots when currentEndDate sets
     useEffect(() => {
-        const fetchInitial = async () => {
-            try {
-                setLoading(true);
-
-                const response = await axios.get('/levels/init', {
-                    params: {
-                        level_id: selectedLevelId,
-                        subject_ids: selectedSubjectIds,
-                        start_date: filterStartDate,
-                        end_date: filterEndDate,
-                        lesson_type: lessonType,
-                    }
-                });
-
-                const data = response.data;
-                setLevels(data.levels)
-                setSubjects(data.subjects)
-                setSelectedLevelId(data.selectedLevelId)
-                setLessonType(data.lessonType || 'individual')
-                setSlots(data.slots)
-                setCurrentEndDate(filterEndDate)
-            } catch (e) {
-                console.error('Initial load error', e)
-            } finally {
-                setLoading(false)
-            }
-        }
-
         if (filterStartDate && filterEndDate) {
-            fetchInitial()
+            const nextEnd = getNextDay(filterStartDate);
+            fetchSlots({ startDate: filterStartDate, endDate: nextEnd, append: false });
         }
-    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
+    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate]);
 
     const loadMore = async () => {
-        if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return
-
-        const nextEnd = dayjs(currentEndDate).add(DAYS_RANGE, 'day').format('YYYY-MM-DD')
-
-        try {
-            setIsFetchingMore(true);
-
-            const response = await axios.get('/levels/init', {
-                params: {
-                    level_id: selectedLevelId,
-                    subject_ids: selectedSubjectIds,
-                    start_date: currentEndDate,
-                    end_date: nextEnd,
-                    lesson_type: lessonType,
-                }
-            })
-
-            setSlots(function(prev) {
-                return ({ ...prev, ...response.data.slots });
-            })
-            setVisibleDatesCount(prev => prev + 5)
-            setCurrentEndDate(nextEnd)
-        } catch (e) {
-            console.error('Load more error', e)
-        } finally {
-            setIsFetchingMore(false)
-        }
-    }
+        if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return;
+        const nextEnd = getNextDay(currentEndDate);
+        await fetchSlots({ startDate: currentEndDate, endDate: nextEnd, append: true });
+    };
 
     return (
         <>
