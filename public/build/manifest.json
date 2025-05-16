@@ -1,19 +1,13 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-DBLaUD9S.css",
+    "file": "assets/app-KdbY8ZnN.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bo-u61x1.js",
+    "file": "assets/app-Di1Nc4h1.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
-  },
-  "resources/js/zoom-component.js": {
-    "file": "assets/zoom-component-CzoaCtos.js",
-    "name": "zoom-component",
-    "src": "resources/js/zoom-component.js",
     "isEntry": true
   }
 }
