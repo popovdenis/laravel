@@ -1,20 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Stream\Models;
+namespace Modules\LanguageLevel\Models;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Base\Conracts\SearchCriteriaInterface;
-use Modules\Stream\Contracts\StreamRepositoryInterface;
+use Modules\LanguageLevel\Contracts\LanguageLevelRepositoryInterface;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 
 /**
- * Class StreamRepository
+ * Class LanguageLevelRepository
  *
- * @package Modules\Stream\Models
+ * @package Modules\LanguageLevel\Models
  */
-class StreamRepository implements StreamRepositoryInterface
+class LanguageLevelRepository implements LanguageLevelRepositoryInterface
 {
     public function save($entity)
     {
@@ -25,7 +24,7 @@ class StreamRepository implements StreamRepositoryInterface
 
     public function getById($entityId)
     {
-        return Stream::findOrFail($entityId);
+        return LanguageLevel::findOrFail($entityId);
     }
 
     public function delete($entity)
@@ -35,19 +34,14 @@ class StreamRepository implements StreamRepositoryInterface
 
     public function deleteById($entityId)
     {
-        $stream = Stream::findOrFail($entityId);
+        $stream = LanguageLevel::findOrFail($entityId);
 
         return $stream->delete();
     }
 
-    /**
-     * @param SearchCriteriaInterface $searchCriteria
-     *
-     * @return LengthAwarePaginator
-     */
-    public function getList(SearchCriteriaInterface $searchCriteria)
+    public function getList(SearchCriteriaInterface $searchCriteria): LengthAwarePaginator
     {
-        $query = QueryBuilder::for(Stream::class);
+        $query = QueryBuilder::for(LanguageLevel::class);
 
         if ($searchCriteria->getWith()) {
             $query->with($searchCriteria->getWith());

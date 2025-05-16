@@ -40,7 +40,12 @@ class ConfigProviderAbstract
             return $settings;
         }
 
-        return \Outerweb\Settings\Models\Setting::get($this->pathPrefix . $key, $default);
+        $value = \Outerweb\Settings\Models\Setting::get($this->pathPrefix . $key, $default);
+        if (empty($value)) {
+            $value = config($this->pathPrefix . $key);
+        }
+
+        return $value;
     }
 
     public function setValue(string|array $key, mixed $value): void

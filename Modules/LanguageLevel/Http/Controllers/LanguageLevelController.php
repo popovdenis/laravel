@@ -5,20 +5,20 @@ namespace Modules\LanguageLevel\Http\Controllers;
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
+use Modules\Booking\Models\BookingScheduleManager;
 use Modules\LanguageLevel\Models\LanguageLevel;
-use Modules\LanguageLevel\Services\CatalogSlotsListService;
 
 class LanguageLevelController extends Controller
 {
-    private CatalogSlotsListService $catalogSlotsListService;
+    private BookingScheduleManager $bookingScheduleManager;
 
     public function __construct(
         CustomerTimezone $timezone,
-        CatalogSlotsListService  $catalogSlotsListService,
+        BookingScheduleManager $bookingScheduleManager
     )
     {
         parent::__construct($timezone);
-        $this->catalogSlotsListService = $catalogSlotsListService;
+        $this->bookingScheduleManager = $bookingScheduleManager;
     }
 
     private function getFilters(Request $request): array
@@ -40,28 +40,12 @@ class LanguageLevelController extends Controller
 
     public function init(Request $request)
     {
-        $user = $request->user();
+        $slotsResponse = $this->bookingScheduleManager
+            ->setFilters($this->getFilters($request))
+            ->setStudent($request->user())
+            ->getBookingScheduleSlots();
 
-        $filters = $this->getFilters($request);
-
-        $streams = $this->catalogSlotsListService->getStreams();
-        $levels = $this->catalogSlotsListService->getLevels($streams);
-        $subjects = $this->catalogSlotsListService->getSubjects($filters['level_id'] ?? null, $levels);
-
-        $filterStartDate = $this->catalogSlotsListService->getFilterStartDate($filters);
-        $filterEndDate = $this->catalogSlotsListService->getFilterEndDate($filters);
-        $groupedSlots = $this->catalogSlotsListService->groupSlots($filters, $filterStartDate, $filterEndDate, $user);
-
-        return response()->json([
-            'levels' => $levels,
-            'subjects' => $subjects,
-            'lessonType' => $filters['lesson_type'],
-            'slots' => $groupedSlots,
-            'selectedLevelId' => $filters['level_id'] ?? $levels->first()->id,
-            'selectedSubjectIds' => $filters['subject_ids'],
-            'filterStartDate' => $filterStartDate->toDateString(),
-            'filterEndDate' => $filterEndDate->toDateString(),
-        ]);
+        return response()->json($slotsResponse);
     }
 
     /**
