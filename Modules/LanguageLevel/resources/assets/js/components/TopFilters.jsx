@@ -10,14 +10,10 @@ export default function TopFilters() {
         setFilterStartDate,
         filterEndDate,
         setFilterEndDate,
+        initialLessonType,
         lessonType,
         setLessonType,
-        setSelectedLevelId,
-        setSelectedSubjectIds,
-        setCurrentEndDate,
         visibleDatesCount,
-        setVisibleDatesCount,
-        setSlots
     } = useBooking()
 
     const ref = useRef(null);
@@ -35,7 +31,7 @@ export default function TopFilters() {
     const clearAllFilters = () => {
         const today = dayjs().startOf('day');
 
-        setLessonType('group');
+        setLessonType(initialLessonType);
         setFilterStartDate(today.format('YYYY-MM-DD'));
         setFilterEndDate(fetchDay(today));
     };

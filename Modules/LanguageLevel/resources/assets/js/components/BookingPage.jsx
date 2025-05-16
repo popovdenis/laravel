@@ -64,7 +64,7 @@ function BookingPageContent() {
                 setLevels(data.levels);
                 setSubjects(data.subjects);
                 setSelectedLevelId(data.selectedLevelId);
-                setLessonType(data.lessonType || 'individual');
+                setLessonType(data.lessonType || defaultLessonType);
                 setSlots(data.slots);
             }
 
@@ -155,9 +155,9 @@ function BookingPageContent() {
     )
 }
 
-export default function BookingPage() {
+export default function BookingPage({ lessonType, visibleDatesCount }) {
     return (
-        <BookingProvider>
+        <BookingProvider defaultLessonType={lessonType} defaultVisibleDatesCount={visibleDatesCount}>
             <>
                 <BookingPageContent />
                 <Toaster richColors position="top-right" />

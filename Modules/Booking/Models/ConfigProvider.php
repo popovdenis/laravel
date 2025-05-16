@@ -18,6 +18,7 @@ class ConfigProvider extends ConfigProviderAbstract
     public const CONFIG_PATH_BOOKING_INDIVIDUAL_LESSON_DURATION = 'rules.individual_lesson_duration';
     public const CONFIG_PATH_BOOKING_CANCELLATION_DEADLINE = 'rules.cancellation_deadline';
 
+    public const CONFIG_PATH_BOOKING_LISTING_DEFAULT_LESSON_TYPE = 'listing.default_lesson_type';
     public const CONFIG_PATH_BOOKING_LISTING_INITIAL_DAYS_RANGE = 'listing.initial_days_range';
     public const CONFIG_PATH_BOOKING_LISTING_LOAD_MORE_DAYS = 'listing.load_more_days';
 
@@ -46,6 +47,11 @@ class ConfigProvider extends ConfigProviderAbstract
     public function getBookingCancellationDeadline(): ?int
     {
         return $this->getValue(self::CONFIG_PATH_BOOKING_CANCELLATION_DEADLINE);
+    }
+
+    public function getDefaultLessonType()
+    {
+        return $this->getValue(self::CONFIG_PATH_BOOKING_LISTING_DEFAULT_LESSON_TYPE);
     }
 
     public function getInitialDaysToShow(): ?int

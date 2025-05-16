@@ -83,6 +83,16 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         return $this->setData(self::SUBJECTS, $subjects);
     }
 
+    public function getDefaultLessonType()
+    {
+        return $this->configProvider->getDefaultLessonType();
+    }
+
+    public function getInitialDaysToShow()
+    {
+        return $this->configProvider->getInitialDaysToShow();
+    }
+
     public function getStreams(): LengthAwarePaginator
     {
         if (empty($this->_get(self::STREAMS))) {
@@ -164,7 +174,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     {
         if (empty($this->_get(self::FILTER_END_DATE))) {
             $filters = $this->getFilters();
-            $daysRange = $this->configProvider->getInitialDaysToShow();
+            $daysRange = $this->getInitialDaysToShow();
 
             $endDate = isset($filters['end_date'])
                 ? $this->timezone->date($filters['end_date'])->endOfDay()
