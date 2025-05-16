@@ -4,6 +4,7 @@ namespace Modules\ScheduleTemplate\Filament\Resources\ScheduleTemplateResource;
 
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
+use Filament\Support\Exceptions\Halt;
 use Modules\Base\Conracts\TimezoneInterface;
 
 /**
@@ -17,7 +18,7 @@ trait TimeSlotValidationTrait
     {
         $timezone = app()->make(TimezoneInterface::class);
         $userTimezone = $this->record->timeZoneId ?? $timezone->getConfigTimezone();
-dd($userTimezone);
+
         collect(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
             ->each(function ($day) use ($data, $field, $userTimezone) {
                 $slots = collect($data["{$day}_{$field}"] ?? []);
@@ -48,7 +49,10 @@ dd($userTimezone);
                         ->danger()
                         ->send();
 
-                    $this->halt();
+                    try {
+                        $this->halt();
+                    } catch (Halt $e) {
+                    }
                 }
             });
         });
