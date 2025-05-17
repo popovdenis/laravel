@@ -20,6 +20,7 @@ class SlotResult
         public int $currentSubjectNumber,
         public $slot,
         public $uid,
-        public ?int $bookingId
+        public ?int $bookingId,
+        public bool $isBookable
     ) {}
 }

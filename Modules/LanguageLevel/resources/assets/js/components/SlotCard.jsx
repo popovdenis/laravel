@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { bookSlot, cancelBooking } from './bookingApi';
+import { ConfirmModal } from './ConfirmModal.jsx';
 import { useBooking } from './BookingContext';
 
 export default function SlotCard({ item }) {
@@ -8,6 +9,7 @@ export default function SlotCard({ item }) {
     const [confirmed, setConfirmed] = useState(false);
     const [cancelConfirm, setCancelConfirm] = useState(false);
     const isBooked = !!item.bookingId;
+    const isBookable = item.isBookable;
 
     const handleBooking = async () => {
         try {
@@ -61,8 +63,11 @@ export default function SlotCard({ item }) {
         }
     };
 
+    const handleNotBookable = async () => {};
+
     return (
-        <div className={`flex items-start justify-between border ${isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200'} rounded-md px-6 py-4 relative`}>
+        <div
+            className={`flex items-start justify-between border ${isBooked ? 'bg-purple-100 border-purple-400' : 'bg-white border-gray-200'} rounded-md px-6 py-4 relative`}>
             {/* Time */}
             <div className="w-24 px-2 text-blue-700 font-bold text-sm uppercase">{item.time}</div>
 
@@ -92,36 +97,47 @@ export default function SlotCard({ item }) {
             <div className="flex space-x-2">
                 {isBooked ? (
                     <>
-                        <button className="btn btn-cancel-booking" onClick={() => setCancelConfirm(true)}>Cancel</button>
+                        <button
+                            className="btn btn-cancel-booking"
+                            onClick={() => setCancelConfirm(true)}
+                        >
+                            Cancel
+                        </button>
                         {cancelConfirm && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                                <div className="bg-white p-6 rounded shadow-md text-center">
-                                    <p className="mb-4 text-gray-800 font-medium">Are you sure you want to cancel?</p>
-                                    <div className="flex justify-center space-x-2">
-                                        <button className="btn btn-secondary" onClick={() => setCancelConfirm(false)}>No</button>
-                                        <button className="btn btn-cancel" onClick={handleCancel}>Yes</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <ConfirmModal
+                                message="Are you sure you want to cancel?"
+                                onCancel={() => setCancelConfirm(false)}
+                                onConfirm={handleCancel}
+                            />
                         )}
                     </>
                 ) : (
                     <>
-                        <button className="btn btn-primary" onClick={() => setConfirmed(true)}>Book</button>
+                        <button
+                            className={isBookable ? "btn btn-primary" : "btn btn-disabled cursor-not-allowed"}
+                            disabled={!isBookable}
+                            onClick={() => {
+                                if (!isBookable) {
+                                    handleNotBookable();
+                                } else {
+                                    setConfirmed(true);
+                                }
+                            }}
+                        >
+                            Book
+                        </button>
                         {confirmed && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                                <div className="bg-white p-6 rounded shadow-md text-center">
-                                    <p className="mb-4 text-gray-800 font-medium">Are you sure you want to book?</p>
-                                    <div className="flex justify-center space-x-2">
-                                        <button className="btn btn-secondary" onClick={() => setConfirmed(false)}>Cancel</button>
-                                        <button className="btn btn-primary" onClick={handleBooking}>Confirm</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <ConfirmModal
+                                message="Are you sure you want to book?"
+                                onCancel={() => setConfirmed(false)}
+                                onConfirm={handleBooking}
+                            />
                         )}
                     </>
                 )}
-                <button className="btn btn-secondary">Details</button>
+                <button
+                    className={isBookable ? "btn btn-secondary" : "btn btn-disabled cursor-not-allowed"}
+                    disabled={!isBookable}>Details</button>
             </div>
         </div>
     );

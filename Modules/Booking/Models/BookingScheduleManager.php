@@ -440,6 +440,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             slot: $daySlot,
             uid: md5(implode('.', [$student->id, $stream->id, $filters['lesson_type'], $slotStartUTC])),
             bookingId: $booking ? $booking->id : null,
+            isBookable: $slotStart->greaterThan(now())
         );
     }
 

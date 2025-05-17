@@ -56,4 +56,10 @@
         color: #EF4444;
         border-color: #EF4444;
     }
+
+    .btn-disabled {
+        background-color: #e5e7eb;
+        color: #9ca3af;
+        border-color: #e5e7eb;
+    }
 }
