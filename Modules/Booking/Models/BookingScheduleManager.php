@@ -16,6 +16,7 @@ use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\LanguageLevel\Contracts\LanguageLevelRepositoryInterface;
 use Modules\LanguageLevel\DTO\SlotResult;
 use Modules\Stream\Contracts\StreamRepositoryInterface;
+use Modules\Stream\Enums\StreamStatus;
 use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
 
@@ -64,12 +65,14 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
     public function setFilters(array $filters): self
     {
-        return $this->setData(self::FILTERS, $filters);
+        $filtersObj = $this->dataObject->create()->setData($filters);
+
+        return $this->setData(self::FILTERS, $filtersObj);
     }
 
-    public function getFilters(): array
+    public function getFilters(): DataObject
     {
-        return (array) $this->_get(self::FILTERS);
+        return $this->_get(self::FILTERS);
     }
 
     public function setStreams(LengthAwarePaginator $streams): self
@@ -106,7 +109,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
                 'currentSubject',
                 'teacher',
             ])->setFilters([
-                'status' => ['planned', 'started'],
+                'status' => [StreamStatus::PLANNED, StreamStatus::STARTED],
             ])->setWhereHas([
                 'languageLevel' => fn($q) => $q->where('is_active', true),
             ]);
@@ -145,7 +148,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         if (empty($this->_get(self::SUBJECTS))) {
             try {
                 $filters = $this->getFilters();
-                $levelId = $filters['level_id'] ?? $this->getFirstStreamLevel()->id;
+                $levelId = $filters->getLevelId() ?? $this->getFirstStreamLevel()->id;
 
                 $level = $this->languageLevelRepository->getById($levelId);
 
@@ -164,8 +167,8 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $filters = $this->getFilters();
             $systemTimezone = $this->timezone->getConfigTimezone();
 
-            $startDate = isset($filters['start_date'])
-                ? $this->timezone->date($filters['start_date'])->setTimeFrom(Carbon::now($systemTimezone))
+            $startDate = $filters->hasData('start_date')
+                ? $this->timezone->date($filters->getStartDate())->setTimeFrom(Carbon::now($systemTimezone))
                 : $this->timezone->date()->startOfDay();
 
             $this->setData(self::FILTER_START_DATE, $startDate);
@@ -180,8 +183,8 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $filters = $this->getFilters();
             $daysRange = $this->getInitialDaysToShow();
 
-            $endDate = isset($filters['end_date'])
-                ? $this->timezone->date($filters['end_date'])->endOfDay()
+            $endDate = $filters->hasData('end_date')
+                ? $this->timezone->date($filters->getEndDate())->endOfDay()
                 : $this->timezone->date()->addDays($daysRange)->startOfDay();
 
             $this->setData(self::FILTER_END_DATE, $endDate);
@@ -196,11 +199,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
         $groupedSlots = [];
 
-        $student = $this->getStudent();
-        $streams = $this->filterStreamsByLevel($filters['level_id']);
+        $streams = $this->filterStreamsByLevel($filters->getLevelId());
 
         foreach ($streams as $stream) {
-            $slots = $this->getChunksForStream($stream, $student);
+            $slots = $this->getChunksForStream($stream);
 
             foreach ($slots as $date => $slotList) {
                 $groupedSlots[$date] = array_merge($groupedSlots[$date] ?? [], $slotList);
@@ -222,10 +224,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         return [
             'levels' => $this->getStreamLevels(),
             'subjects' => $this->getLevelSubjects(),
-            'lessonType' => $filters['lesson_type'],
+            'lessonType' => $filters->getLessonType(),
             'slots' => $this->groupSlots(),
-            'selectedLevelId' => $filters['level_id'] ?? $this->getFirstStreamLevel()?->id,
-            'selectedSubjectIds' => $filters['subject_ids'],
+            'selectedLevelId' => $filters->getLevelId() ?? $this->getFirstStreamLevel()?->id,
+            'selectedSubjectIds' => $filters->getSubjectIds(),
             'filterStartDate' => $this->getFilterStartDate()->toDateString(),
             'filterEndDate' => $this->getFilterEndDate()->toDateString(),
         ];
@@ -298,7 +300,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $subjectId = $subjectIds[$shiftedIndex];
 
             foreach ($teacherDaySlots as $teacherDaySlot) {
-                $slotChunk = clone $this->dataObject;
+                $slotChunk = $this->dataObject->create();
                 $slotChunk->setData([
                     'day_slot' => $teacherDaySlot,
                     'stream'         => $stream,
@@ -341,7 +343,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
         $subject = $slotChunk->getStream()->languageLevel->subjects->firstWhere('id', $slotChunk->getSubjectId());
 
-        if (!empty($filters['subject_ids']) && $subject && !in_array($slotChunk->getSubjectId(), $filters['subject_ids'])) {
+        if ($filters->getSubjectIds()
+            && $subject
+            && !in_array($slotChunk->getSubjectId(), $filters->getSubjectIds())
+        ) {
             return [];
         }
 
@@ -357,7 +362,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $teacherTz,
             $studentTz
         );
-        $chunkLength = $this->getChunkLength($filters['lesson_type']);
+        $chunkLength = $this->getChunkLength($filters->getLessonType());
 
         $this->generateAvailableChunks(
             $tSlotStartInStz,
@@ -407,13 +412,15 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
     private function formatSlot(Carbon $slotStart, DataObject $slotChunk): ?SlotResult
     {
+        $response = $this->dataObject->create();
+
         $filters = $this->getFilters();
         $student = $this->getStudent();
         $userBookedSlots = $this->getUserBookedSlots($student);
 
         $subject = $slotChunk->getStream()->languageLevel->subjects->firstWhere('id', $slotChunk->getSubjectId());
 
-        if (!empty($filters['subject_ids']) && $subject && !in_array($subject->id, $filters['subject_ids'])) {
+        if (!empty($filters->getSubjectIds()) && $subject && !in_array($subject->id, $filters->getSubjectIds())) {
             return null;
         }
 
@@ -422,9 +429,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
             $b->stream_id === $slotChunk->getStream()->id &&
-            $b->lesson_type->value === $filters['lesson_type'] &&
+            $b->lesson_type->value === $filters->getLessonType() &&
             $b->slot_start_at->equalTo($slotStartUTC)
         );
+        $uid = md5(implode('.', [$student->id, $slotChunk->getStream()->id, $filters->getLessonType(), $slotStartUTC]));
 
         return new SlotResult(
             time: $slotStart->format('H:i'),
@@ -435,7 +443,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             subject: $subject,
             currentSubjectNumber: $slotChunk->getSubjectId(),
             slot: $slotChunk->getDaySlot(),
-            uid: md5(implode('.', [$student->id, $slotChunk->getStream()->id, $filters['lesson_type'], $slotStartUTC])),
+            uid: $uid,
             bookingId: $booking ? $booking->id : null,
             isBookable: $slotStart->greaterThan(now())
         );

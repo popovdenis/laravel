@@ -38,6 +38,11 @@ class DataObject implements \ArrayAccess
         $this->data = $data;
     }
 
+    public function create(): static
+    {
+        return clone $this;
+    }
+
     /**
      * Add data to the object.
      *
