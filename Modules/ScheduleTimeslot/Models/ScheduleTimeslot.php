@@ -4,6 +4,8 @@ namespace Modules\ScheduleTimeslot\Models;
 
 use App\Models\CourseEnrollment;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Booking\Enums\BookingTypeEnum;
+use Modules\Booking\Models\Booking;
 
 class ScheduleTimeslot extends Model
 {
@@ -19,6 +21,11 @@ class ScheduleTimeslot extends Model
     public function enrollments()
     {
         return $this->belongsToMany(CourseEnrollment::class, 'course_enrollment_timeslots');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'schedule_timeslot_id');
     }
 
     public function getStartAttribute($value)
@@ -39,5 +46,14 @@ class ScheduleTimeslot extends Model
     public function getSlotStartAtAttribute()
     {
         return $this->slotStartAt;
+    }
+
+    public function getParticipantsCountAttribute(): int
+    {
+        return $this->bookings
+            ->groupBy('lesson_type')
+            ->reduce(function ($count, $group) {
+                return $count + ($group->first()->type === BookingTypeEnum::BOOKING_TYPE_GROUP ? 1 : count($group));
+            }, 0);
     }
 }

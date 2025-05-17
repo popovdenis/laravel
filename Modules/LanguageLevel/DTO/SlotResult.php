@@ -15,7 +15,6 @@ class SlotResult
         public string $slotStartAt,
         public string $lessonType,
         public $stream,
-        public $teacher,
         public $subject,
         public int $currentSubjectNumber,
         public $slot,

@@ -91,6 +91,15 @@ class DataObject implements \ArrayAccess
         return $this;
     }
 
+    public function appendData($key, $value = null)
+    {
+        if ($key === (array)$key) {
+            $this->data = $key;
+        } else {
+            $this->data[$key][] = $value;
+        }
+    }
+
     /**
      * Unset data from the object.
      *

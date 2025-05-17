@@ -5,7 +5,7 @@ import { ConfirmModal } from './ConfirmModal.jsx';
 import { useBooking } from './BookingContext';
 
 export default function SlotCard({ item }) {
-    const { slots, setSlots, loading, setLoading } = useBooking();
+    const { setSlots, setLoading } = useBooking();
     const [confirmed, setConfirmed] = useState(false);
     const [cancelConfirm, setCancelConfirm] = useState(false);
     const isBooked = !!item.bookingId;
@@ -84,12 +84,12 @@ export default function SlotCard({ item }) {
             {/* Teacher */}
             <div className="flex px-4 items-center gap-2">
                 <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.teacher.firstname)}&size=32`}
-                    alt={item.teacher.firstname}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.stream.teacher.firstname)}&size=32`}
+                    alt={item.stream.teacher.firstname}
                     className="w-8 h-8 rounded-full"
                 />
                 <span className="text-sm text-gray-500 uppercase tracking-wide">
-                    Group Class with {item.teacher.firstname}
+                    Group Class with {item.stream.teacher.firstname}
                 </span>
             </div>
 

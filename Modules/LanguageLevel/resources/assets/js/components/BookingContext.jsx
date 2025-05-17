@@ -13,6 +13,7 @@ export function BookingProvider({ children, defaultLessonType, defaultVisibleDat
     const [filterEndDate, setFilterEndDate] = useState(null);
     const [slots, setSlots] = useState([]);
     const [currentEndDate, setCurrentEndDate] = useState(null);
+    const [initialVisibleDatesCount, setInitialVisibleDatesCount] = useState(defaultVisibleDatesCount);
     const [visibleDatesCount, setVisibleDatesCount] = useState(defaultVisibleDatesCount);
     const [loading, setLoading] = useState(false);
 
@@ -37,6 +38,7 @@ export function BookingProvider({ children, defaultLessonType, defaultVisibleDat
             setSlots,
             currentEndDate,
             setCurrentEndDate,
+            initialVisibleDatesCount,
             visibleDatesCount,
             setVisibleDatesCount,
             loading,

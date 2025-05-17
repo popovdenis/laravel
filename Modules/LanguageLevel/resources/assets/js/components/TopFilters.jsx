@@ -13,7 +13,8 @@ export default function TopFilters() {
         initialLessonType,
         lessonType,
         setLessonType,
-        visibleDatesCount,
+        initialVisibleDatesCount,
+        setVisibleDatesCount
     } = useBooking()
 
     const ref = useRef(null);
@@ -24,16 +25,14 @@ export default function TopFilters() {
         return localDate.toISOString().slice(0, 10);
     };
 
-    const fetchDay = function (date) {
-        return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
-    }
-
     const clearAllFilters = () => {
         const today = dayjs().startOf('day');
+        const endDate = dayjs(today).add(initialVisibleDatesCount, 'day');
 
+        setVisibleDatesCount(initialVisibleDatesCount);
         setLessonType(initialLessonType);
         setFilterStartDate(today.format('YYYY-MM-DD'));
-        setFilterEndDate(fetchDay(today));
+        setFilterEndDate(endDate.format('YYYY-MM-DD'));
     };
 
     useEffect(() => {
