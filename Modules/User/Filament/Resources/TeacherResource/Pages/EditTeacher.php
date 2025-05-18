@@ -32,7 +32,7 @@ class EditTeacher extends EditUser
             [
                 'timesheet' => ScheduleTimeslot::query()
                     ->where('user_id', $record)
-                    ->get(['day', 'start', 'end'])
+                    ->get(['day_of_week', 'start_time', 'end_time'])
                     ->toArray(),
             ]
         ));
@@ -49,9 +49,9 @@ class EditTeacher extends EditUser
             if ($slots) {
                 foreach ($slots as $slot) {
                     $this->record->scheduleTimeslots()->create([
-                        'day' => $day,
-                        'start' => $slot['start'],
-                        'end' => $slot['end'],
+                        'day_of_week' => $day,
+                        'start_time' => $slot['start_time'],
+                        'end_time' => $slot['end_time'],
                     ]);
                 }
             }
@@ -70,10 +70,10 @@ class EditTeacher extends EditUser
         $grouped = \Modules\ScheduleTimeslot\Models\ScheduleTimeslot::query()
             ->where('user_id', $data['id'])
             ->get()
-            ->groupBy('day')
+            ->groupBy('day_of_week')
             ->mapWithKeys(fn ($slots, $day) => ["{$day}_timesheet" => $slots->map(fn ($slot) => [
-                'start' => $slot->start,
-                'end'   => $slot->end,
+                'start_time' => $slot->start_time->format('H:i'),
+                'end_time'   => $slot->end_time->format('H:i'),
             ])->values()->all()]);
 
         return array_merge($data, $grouped->toArray());

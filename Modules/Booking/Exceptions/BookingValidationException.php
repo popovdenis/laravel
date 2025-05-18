@@ -12,5 +12,4 @@ use Exception;
  */
 class BookingValidationException extends Exception
 {
-
 }

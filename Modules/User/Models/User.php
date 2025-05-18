@@ -155,9 +155,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->scheduleTimeslots->map(function ($slot) {
             return [
-                'day' => $slot->day,
-                'start' => $slot->start,
-                'end' => $slot->end,
+                'day_of_week' => $slot->day_of_week,
+                'start_time' => $slot->start_time,
+                'end_time' => $slot->end_time,
             ];
         })->toArray();
     }

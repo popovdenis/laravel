@@ -9,10 +9,10 @@ use Modules\Booking\Console\ConfirmUpcomingBookingCommand;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
-use Modules\Booking\Contracts\SlotChunkInterface;
+use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
-use Modules\Booking\Models\SlotChunk;
+use Modules\Booking\Models\SlotContext;
 use Modules\Booking\Models\Validator\CreditBalanceValidator;
 use Modules\Booking\Models\Validator\SlotAvailabilityValidator;
 use Modules\Booking\Models\Validator\SubmitBookingValidator;
@@ -55,7 +55,7 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
         $this->app->bind(SubmitQuoteValidatorInterface::class, SubmitBookingValidator::class);
         $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
-        $this->app->bind(SlotChunkInterface::class, SlotChunk::class);
+        $this->app->bind(SlotContextInterface::class, SlotContext::class);
     }
 
     /**

@@ -82,8 +82,8 @@ class SyncBookingGridFlat extends Command
                 'subject_title' => $stream->currentSubject->title ?? null,
                 'current_subject_number' => $stream->current_subject_number,
                 //'subject_category' => $booking->subject->category ?? null,
-                'start_time' => $booking->timeslot->start,
-                'end_time' => $booking->timeslot->end,
+                'start_time' => $booking->timeslot->start_time,
+                'end_time' => $booking->timeslot->end_time,
                 'status' => $booking->status,
             ];
 

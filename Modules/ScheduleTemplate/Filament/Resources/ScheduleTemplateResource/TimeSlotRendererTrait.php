@@ -21,7 +21,7 @@ trait TimeSlotRendererTrait
                 Repeater::make("{$dayKey}_{$field}")
                     ->label(false)
                     ->schema([
-                        Select::make('start')
+                        Select::make('start_time')
                             ->label('Start Time')
                             ->options(
                                 collect(range(6 * 60, 22 * 60, 30))
@@ -35,12 +35,12 @@ trait TimeSlotRendererTrait
                             ->required()
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
-                                    $set('end', null); // сбросить end при смене start
+                                    $set('end_time', null);
                                 }
                             })
                             ->columnSpan(6),
 
-                        Select::make('end')
+                        Select::make('end_time')
                             ->label('End Time')
                             ->required()
                             ->options(fn (callable $get) =>
@@ -49,7 +49,7 @@ trait TimeSlotRendererTrait
                                     sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60)
                                     => sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60)
                                 ])
-                                ->filter(fn ($time) => $time > $get('start'))
+                                ->filter(fn ($time) => $time > $get('start_time'))
                                 ->toArray()
                             )
                             ->columnSpan(6),

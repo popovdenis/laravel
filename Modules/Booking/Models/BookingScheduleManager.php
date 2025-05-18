@@ -11,14 +11,14 @@ use Modules\Base\Framework\AbstractSimpleObject;
 use Modules\Base\Framework\DataObject;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\BookingScheduleInterface;
-use Modules\Booking\Contracts\SlotChunkInterface;
+use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Enums\BookingStatus;
-use Modules\Booking\Enums\BookingTypeEnum;
+use Modules\Booking\Exceptions\BookingValidationException;
+use Modules\Booking\Services\BookingSlotService;
 use Modules\LanguageLevel\Contracts\LanguageLevelRepositoryInterface;
 use Modules\LanguageLevel\DTO\SlotResult;
 use Modules\Stream\Contracts\StreamRepositoryInterface;
 use Modules\Stream\Enums\StreamStatus;
-use Modules\Stream\Models\Stream;
 use Modules\User\Models\User;
 
 /**
@@ -32,29 +32,32 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     private SearchCriteriaInterface          $searchCriteria;
     private CustomerTimezone                 $timezone;
     private LanguageLevelRepositoryInterface $languageLevelRepository;
-    private ConfigProvider                   $configProvider;
-    private SlotChunk                        $slotChunk;
+    private SlotContext                      $bookingSlot;
     private DataObject                       $dataObject;
+    private BookingSlotService               $bookingSlotService;
+    private SlotValidator                    $slotValidator;
 
     public function __construct(
-        CustomerTimezone $timezone,
-        SearchCriteriaInterface $searchCriteria,
-        StreamRepositoryInterface $streamRepository,
+        CustomerTimezone                 $timezone,
+        SearchCriteriaInterface          $searchCriteria,
+        StreamRepositoryInterface        $streamRepository,
         LanguageLevelRepositoryInterface $languageLevelRepository,
-        ConfigProvider $configProvider,
-        SlotChunk $slotChunk,
-        DataObject $dataObject,
-        array $data = []
+        SlotContext                      $bookingSlot,
+        DataObject                       $dataObject,
+        BookingSlotService               $bookingSlotService,
+        SlotValidator                    $slotValidator,
+        array                            $data = []
     )
     {
         parent::__construct($data);
-        $this->timezone = $timezone;
-        $this->searchCriteria = $searchCriteria;
-        $this->streamRepository = $streamRepository;
+        $this->timezone                = $timezone;
+        $this->searchCriteria          = $searchCriteria;
+        $this->streamRepository        = $streamRepository;
         $this->languageLevelRepository = $languageLevelRepository;
-        $this->configProvider = $configProvider;
-        $this->slotChunk = $slotChunk;
-        $this->dataObject = $dataObject;
+        $this->bookingSlot             = $bookingSlot;
+        $this->dataObject              = $dataObject;
+        $this->bookingSlotService      = $bookingSlotService;
+        $this->slotValidator           = $slotValidator;
     }
 
     public function setStudent(User $student): self
@@ -92,16 +95,6 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     public function setSubjects($subjects): self
     {
         return $this->setData(self::SUBJECTS, $subjects);
-    }
-
-    public function getDefaultLessonType()
-    {
-        return $this->configProvider->getDefaultLessonType();
-    }
-
-    public function getInitialDaysToShow()
-    {
-        return $this->configProvider->getInitialDaysToShow();
     }
 
     public function getStreams(): LengthAwarePaginator
@@ -169,10 +162,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     {
         if (empty($this->_get(self::FILTER_START_DATE))) {
             $filters = $this->getFilters();
-            $systemTimezone = $this->timezone->getConfigTimezone();
+            $sconfigTimezone = $this->timezone->getConfigTimezone();
 
             $startDate = $filters->hasData('start_date')
-                ? $this->timezone->date($filters->getStartDate())->setTimeFrom(Carbon::now($systemTimezone))
+                ? $this->timezone->date($filters->getStartDate())->setTimeFrom(Carbon::now($sconfigTimezone))
                 : $this->timezone->date()->startOfDay();
 
             $this->setData(self::FILTER_START_DATE, $startDate);
@@ -185,7 +178,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     {
         if (empty($this->_get(self::FILTER_END_DATE))) {
             $filters = $this->getFilters();
-            $daysRange = $this->getInitialDaysToShow();
+            $daysRange = $this->bookingSlotService->getInitialDaysToShow();
 
             $endDate = $filters->hasData('end_date')
                 ? $this->timezone->date($filters->getEndDate())->endOfDay()
@@ -200,13 +193,22 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     public function groupSlots(): array
     {
         $filters = $this->getFilters();
+        $lessonTypeEnum = $this->bookingSlotService->getLessonEnumType($this->getFilters()->getLessonType());
+
+        $bookingSlot = $this->bookingSlot->create();
+        $bookingSlot->setData([
+            'student'       => $this->getStudent(),
+            'lesson_type'   => $lessonTypeEnum,
+            'lesson_length' => $this->bookingSlotService->getChunkLength($lessonTypeEnum),
+        ]);
 
         $groupedSlots = [];
 
         $streams = $this->filterStreamsByLevel($filters->getLevelId());
 
         foreach ($streams as $stream) {
-            $slots = $this->getChunksForStream($stream);
+            $bookingSlot->setStream($stream);
+            $slots = $this->getChunksForStream($bookingSlot);
 
             foreach ($slots as $date => $slotList) {
                 $groupedSlots[$date] = array_merge($groupedSlots[$date] ?? [], $slotList);
@@ -271,12 +273,18 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
     private function getStreamStartDate($stream)
     {
-        return Carbon::parse($stream->start_date, 'UTC')->setTimezone($this->getStudent()->timeZoneId)->startOfDay();
+        $filterStartDate = $this->getFilterStartDate();
+        $streamStart = $this->timezone->date($stream->start_date)->startOfDay();
+
+        return $filterStartDate ?? $streamStart;
     }
 
     private function getStreamEndDate($stream)
     {
-        return Carbon::parse($stream->end_date, 'UTC')->setTimezone($this->getStudent()->timeZoneId)->endOfDay();
+        $filterEndDate = $this->getFilterEndDate();
+        $streamEnd = $this->timezone->date($stream->end_date)->endOfDay();
+
+        return $filterEndDate ?? $streamEnd;
     }
 
     private function getCurrentStreamDate($streamStart)
@@ -286,9 +294,11 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         return $streamStart->greaterThan($filterStartDate) ? $streamStart->copy() : $filterStartDate->copy();
     }
 
-    private function getChunksForStream(Stream $stream): array
+    private function getChunksForStream(SlotContext $bookingSlot): array
     {
         $results = [];
+
+        $stream = $bookingSlot->getStream();
 
         // TODO: get start/end by Repeat
         $streamStart = $this->getStreamStartDate($stream);
@@ -297,6 +307,8 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $slotIndex = $streamStart->diffInDays($currentDate);
 
         while ($currentDate->lte($streamEnd)) {
+            $bookingSlot->setTeacher($stream->teacher);
+
             $teacherDaySlots = $this->getDaySlots($stream->teacher, $currentDate);
             $subjectIds = $stream->languageLevel->subjects->pluck('id')->values();
             $currentIndex = $subjectIds->search($stream->current_subject_id);
@@ -304,15 +316,12 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $subjectId = $subjectIds[$shiftedIndex];
 
             foreach ($teacherDaySlots as $teacherDaySlot) {
-                $slotChunk = $this->slotChunk->create();
-                $slotChunk->setData([
+                $bookingSlot->addData([
                     'day_slot'     => $teacherDaySlot,
-                    'stream'       => $stream,
                     'current_date' => $currentDate,
                     'subject_id'   => $subjectId,
-                    'student'      => $this->getStudent()
                 ]);
-                $chunks = $this->splitSlotToChunks($slotChunk);
+                $chunks = $this->splitSlotToChunks($bookingSlot);
                 foreach ($chunks->toArray() as $date => $chunkList) {
                     $results[$date] = array_merge($results[$date] ?? [], $chunkList);
                 }
@@ -327,51 +336,49 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
     private function getDaySlots(User $teacher, Carbon $currentDate): Collection
     {
-        $sDayOfWeek = $currentDate->format('l');
         $tDayOfWeek = $currentDate->copy()->setTimezone($teacher->timeZoneId)->format('l');
-        $minStartTime = $this->timezone->date(null, null, false)->addMinutes(5);
 
-        return $teacher->scheduleTimeslots->filter(function ($slot) use ($tDayOfWeek, $sDayOfWeek, $minStartTime) {
-            if (strtolower($slot->day) !== strtolower($tDayOfWeek)) {
+        return $teacher->scheduleTimeslots->filter(function ($slot) use ($tDayOfWeek) {
+            if (strtolower($slot->day_of_week) !== strtolower($tDayOfWeek)) {
                 return false;
             }
-//            if (strtolower($slot->day) === strtolower($minStartTime->format('l'))) {
-//                return $this->timezone->date($slot->start, null, false)->greaterThanOrEqualTo($minStartTime);
-//            }
             return true;
         });
     }
 
-    private function splitSlotToChunks(SlotChunkInterface $slotChunk): DataObject
+    private function splitSlotToChunks(SlotContext $bookingSlot): DataObject
     {
         $response = $this->dataObject->create();
 
         $filters = $this->getFilters();
-        $subject = $slotChunk->getStream()->languageLevel->subjects->firstWhere('id', $slotChunk->getSubjectId());
+        $subject = $bookingSlot
+            ->getStream()
+            ->languageLevel
+            ->subjects
+            ->firstWhere('id', $bookingSlot->getSubjectId());
 
         if ($filters->getSubjectIds()
             && $subject
-            && !in_array($slotChunk->getSubjectId(), $filters->getSubjectIds())
+            && !in_array($bookingSlot->getSubjectId(), $filters->getSubjectIds())
         ) {
             return $response;
         }
 
         $student = $this->getStudent();
-        $teacherTz = $slotChunk->getStream()->teacher->timeZoneId ?? 'UTC';
+        $teacherTz = $bookingSlot->getStream()->teacher->timeZoneId ?? 'UTC';
         $studentTz = $student->timeZoneId ?? 'UTC';
 
-        [$tSlotStartInStz, $tSlotEndInStz] = $this->calculateSlotWindow($slotChunk, $teacherTz, $studentTz);
-        $chunkLength = $this->getChunkLength($filters->getLessonType());
+        [$tSlotStartInStz, $tSlotEndInStz] = $this->calculateSlotWindow($bookingSlot, $teacherTz, $studentTz);
 
         $this->generateAvailableChunks(
             $tSlotStartInStz,
             $tSlotEndInStz,
-            $chunkLength,
-            function (Carbon $chunkStartInTz) use ($response, $slotChunk) {
+            $bookingSlot,
+            function (Carbon $chunkStartInTz) use ($response, $bookingSlot) {
                 $dateKey = $chunkStartInTz->toDateString();
                 $response->appendData(
                     $dateKey,
-                    $this->formatSlot($chunkStartInTz, $slotChunk)
+                    $this->formatSlot($chunkStartInTz, $bookingSlot)
                 );
             }
         );
@@ -380,31 +387,21 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     }
 
     private function generateAvailableChunks(
-        Carbon $tSlotStartInStz,
-        Carbon $tSlotEndInStz,
-        int $chunkLength,
-        callable $callback
+        Carbon      $tSlotStartInStz,
+        Carbon      $tSlotEndInStz,
+        SlotContext $bookingSlot,
+        callable    $callback
     ): void
     {
-        $filterStartDate = $this->getFilterStartDate();
-        $filterEndDate = $this->getFilterEndDate();
-        $student = $this->getStudent();
-        $studentTz = $student->timeZoneId;
-
+        $chunkLength = $bookingSlot->getSlotLength();
         $chunkStart = $tSlotStartInStz->copy();
 
         while ($chunkStart->copy()->addMinutes($chunkLength)->lte($tSlotEndInStz)) {
-            $preferredStart = $student->preferred_start_time
-                ? Carbon::createFromFormat('H:i', $student->preferred_start_time->format('H:i'), $studentTz)
-                : null;
-            $preferredEnd = $student->preferred_end_time
-                ? Carbon::createFromFormat('H:i', $student->preferred_end_time->format('H:i'), $studentTz)
-                : null;
+            $bookingSlot
+                ->setSlotStart($chunkStart->copy())
+                ->setSlotEnd($chunkStart->copy()->addMinutes($chunkLength));
 
-            if ($chunkStart->between($filterStartDate, $filterEndDate)
-                && (!$preferredStart || $chunkStart->gte($chunkStart->copy()->setTimeFrom($preferredStart)))
-                && (!$preferredEnd || $chunkStart->lte($chunkStart->copy()->setTimeFrom($preferredEnd)))
-            ) {
+            if ($this->isSlotBookable($bookingSlot)) {
                 $callback($chunkStart);
             }
 
@@ -412,13 +409,24 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         }
     }
 
-    private function formatSlot(Carbon $slotStart, SlotChunkInterface $slotChunk): ?SlotResult
+    public function isSlotBookable(SlotContext $bookingSlot): bool
+    {
+        try {
+            $this->slotValidator->validate($bookingSlot);
+        } catch (BookingValidationException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function formatSlot(Carbon $slotStart, SlotContext $bookingSlot): ?SlotResult
     {
         $filters = $this->getFilters();
         $student = $this->getStudent();
         $userBookedSlots = $this->getUserBookedSlots($student);
 
-        $subject = $slotChunk->getSubject();
+        $subject = $bookingSlot->getSubject();
 
         if (!empty($filters->getSubjectIds()) && $subject && !in_array($subject->id, $filters->getSubjectIds())) {
             return null;
@@ -428,34 +436,26 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
-            $b->stream_id === $slotChunk->getStream()->id &&
+            $b->stream_id === $bookingSlot->getStream()->id &&
             $b->lesson_type->value === $filters->getLessonType() &&
             $b->slot_start_at->equalTo($slotStartUTC)
         );
 
-        $slotChunk->setData(SlotChunkInterface::LESSON_TYPE, $filters->getLessonType())
-                  ->setData(SlotChunkInterface::SLOT_START, $slotStart);
-
-        return $slotChunk->getSlotResult($booking);
+        return $bookingSlot->getSlotResult($booking);
     }
 
-    private function calculateSlotWindow(SlotChunkInterface $slotChunk, string $teacherTz, string $studentTz): array
+    private function calculateSlotWindow(SlotContextInterface $bookingSlot, string $teacherTz, string $studentTz): array
     {
-        $currentDateInTz = $slotChunk->getCurrentDate()->copy()->setTimezone($teacherTz)->format('Y-m-d');
-        $tSlotStart = Carbon::parse($currentDateInTz . ' ' . $slotChunk->getDaySlot()->start, $teacherTz);
-        $tSlotEnd = Carbon::parse($currentDateInTz . ' ' . $slotChunk->getDaySlot()->end, $teacherTz);
+        $currentDateInTz = $bookingSlot->getCurrentDate()->copy()->setTimezone($teacherTz)->format('Y-m-d');
+        $startTime = $bookingSlot->getDaySlot()->start_time;
+        $endTime = $bookingSlot->getDaySlot()->end_time;
+
+        $tSlotStart = Carbon::parse($currentDateInTz . ' ' . $startTime->format('H:i'), $teacherTz);
+        $tSlotEnd = Carbon::parse($currentDateInTz . ' ' . $endTime->format('H:i'), $teacherTz);
 
         return [
             $tSlotStart->setTimezone($studentTz),
             $tSlotEnd->setTimezone($studentTz),
         ];
-    }
-
-    private function getChunkLength(string $lessonType): int
-    {
-        return match (BookingTypeEnum::from($lessonType)) {
-            BookingTypeEnum::BOOKING_TYPE_GROUP => $this->configProvider->getBookingGroupLessonDuration(),
-            BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL => $this->configProvider->getBookingIndividualLessonDuration(),
-        };
     }
 }

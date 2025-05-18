@@ -6,19 +6,23 @@ use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Models\BookingScheduleManager;
+use Modules\Booking\Services\BookingSlotService;
 use Modules\LanguageLevel\Models\LanguageLevel;
 
 class LanguageLevelController extends Controller
 {
     private BookingScheduleManager $bookingScheduleManager;
+    private BookingSlotService     $bookingSlotService;
 
     public function __construct(
         CustomerTimezone $timezone,
-        BookingScheduleManager $bookingScheduleManager
+        BookingScheduleManager $bookingScheduleManager,
+        BookingSlotService $bookingSlotService
     )
     {
         parent::__construct($timezone);
         $this->bookingScheduleManager = $bookingScheduleManager;
+        $this->bookingSlotService = $bookingSlotService;
     }
 
     private function getFilters(Request $request): array
@@ -35,8 +39,8 @@ class LanguageLevelController extends Controller
 
     public function index()
     {
-        $lessonType = $this->bookingScheduleManager->getDefaultLessonType();
-        $visibleDatesCount = $this->bookingScheduleManager->getInitialDaysToShow();
+        $lessonType = $this->bookingSlotService->getDefaultLessonType();
+        $visibleDatesCount = $this->bookingSlotService->getInitialDaysToShow();
 
         return view('languagelevel::index', compact('lessonType', 'visibleDatesCount'));
     }

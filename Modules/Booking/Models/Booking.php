@@ -24,9 +24,11 @@ class Booking extends Model implements PurchasableInterface
         'status',
         'lesson_type',
         'slot_start_at',
+        'slot_end_at',
     ];
     protected $casts = [
         'slot_start_at' => 'datetime',
+        'slot_end_at' => 'datetime',
         'lesson_type'   => BookingTypeEnum::class,
     ];
 

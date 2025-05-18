@@ -3,13 +3,17 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Factories;
 
-use Carbon\Carbon;
+use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\BookingQuoteInterface;
+use Modules\Booking\Data\BookingData;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\SlotContext;
 use Modules\Booking\Models\BookingQuote;
+use Modules\Booking\Services\BookingSlotService;
 use Modules\Payment\Contracts\RequestDataInterface;
 use Modules\ScheduleTimeslot\Contracts\ScheduleTimeslotRepositoryInterface;
+use Modules\Stream\Contracts\StreamRepositoryInterface;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
@@ -19,19 +23,28 @@ use Modules\Subscription\Models\ConfigProvider;
  */
 class BookingQuoteFactory
 {
-    /**
-     * @var \Modules\Subscription\Models\ConfigProvider
-     */
-    private ConfigProvider $configProvider;
+    private ConfigProvider                      $configProvider;
+    private SlotContext                         $slotContext;
     private ScheduleTimeslotRepositoryInterface $scheduleTimeslotRepository;
+    private BookingSlotService                  $bookingSlotService;
+    private StreamRepositoryInterface           $streamRepository;
+    private CustomerTimezone                    $timezone;
 
     public function __construct(
-        ConfigProvider $configProvider,
+        ConfigProvider                      $configProvider,
+        SlotContext                         $slotContext,
+        BookingSlotService                  $bookingSlotService,
+        StreamRepositoryInterface           $streamRepository,
         ScheduleTimeslotRepositoryInterface $scheduleTimeslotRepository,
+        CustomerTimezone                    $timezone
     )
     {
-        $this->configProvider = $configProvider;
+        $this->configProvider             = $configProvider;
+        $this->slotContext                = $slotContext;
+        $this->bookingSlotService         = $bookingSlotService;
+        $this->streamRepository           = $streamRepository;
         $this->scheduleTimeslotRepository = $scheduleTimeslotRepository;
+        $this->timezone                   = $timezone;
     }
 
     public function create(RequestDataInterface $requestData): BookingQuoteInterface
@@ -46,9 +59,26 @@ class BookingQuoteFactory
         $quote->setModel(app(Booking::class));
         $quote->getPayment()->importData($requestData);
 
-        $this->initSlotStartAt($quote, $requestData);
+        $this->setSlotStartEnd($quote, $requestData);
+
+        $this->buildBookingSlot($quote, $requestData);
 
         return $quote;
+    }
+
+    private function buildBookingSlot(BookingQuote $quote, BookingData $requestData): void
+    {
+        $slotContext = $this->slotContext->create();
+        $slotContext->setData([
+            'teacher'       => $quote->getSlot()->teacher,
+            'student'       => $quote->getUser(),
+            'lesson_type'   => $quote->getLessonType(),
+            'lesson_length' => $this->bookingSlotService->getChunkLength($quote->getLessonType()),
+            'stream'        => $this->getStreamById($quote->getStreamId()),
+            'slot_start'    => $requestData->slotStartAt,
+            'slot_end'      => $requestData->slotEndAt,
+        ]);
+        $quote->setSlotContext($slotContext);
     }
 
     private function getBookingAmount(\Modules\Booking\Data\BookingData $bookingData): int
@@ -65,15 +95,17 @@ class BookingQuoteFactory
         return $this->scheduleTimeslotRepository->getById($slotId);
     }
 
-    private function initSlotStartAt(BookingQuote $quote, RequestDataInterface $requestData)
+    private function getStreamById(int $streamId)
     {
-        $student = $quote->getUser();
-        $studentTz = $student->timeZoneId;
+        return $this->streamRepository->getById($streamId);
+    }
 
-        $bookingDateTime = \Carbon\Carbon::parse($requestData->slotStartAt, $studentTz);
+    private function setSlotStartEnd(BookingQuote $quote, RequestDataInterface $requestData): void
+    {
+        $bookingStartTime = $this->timezone->date($requestData->slotStartAt)->setTimezone('UTC');
+        $bookingEndTime = $this->timezone->date($requestData->slotEndAt)->setTimezone('UTC');
 
-        $bookingDateTimeUTC = $bookingDateTime->copy()->setTimezone('UTC');
-
-        $quote->getSlot()->setAttribute('slot_start_at', $bookingDateTimeUTC);
+        $quote->getSlot()->setAttribute('slot_start_at', $bookingStartTime);
+        $quote->getSlot()->setAttribute('slot_end_at', $bookingEndTime);
     }
 }

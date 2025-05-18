@@ -5,9 +5,10 @@ namespace Modules\Booking\Models;
 
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
-use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
+use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Booking\Enums\BookingTypeEnum;
+use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Order\Models\Quote;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\User\Models\User;
@@ -19,25 +20,26 @@ use Modules\User\Models\User;
  */
 class BookingQuote extends Quote implements BookingQuoteInterface
 {
-    protected User $student;
-    protected int $streamId;
-    protected int $slotId;
-    protected ScheduleTimeslot $slot;
-    protected BookingTypeEnum $lessonType;
-    protected int $credits;
-    private SubmitQuoteValidatorInterface $bookingValidator;
-    private SlotAvailabilityValidatorInterface $slotValidator;
+    protected User                          $student;
+    protected int                           $streamId;
+    protected int                           $slotId;
+    protected ScheduleTimeslot              $slot;
+    protected SlotContext                   $slotContext;
+    protected BookingTypeEnum               $lessonType;
+    protected int                           $credits;
+    private SubmitQuoteValidatorInterface   $bookingValidator;
     private CreditBalanceValidatorInterface $creditBalanceValidator;
+    private SlotValidator                   $slotValidator;
 
     public function __construct(
-        SubmitQuoteValidatorInterface      $bookingValidator,
-        SlotAvailabilityValidatorInterface $slotValidator,
-        CreditBalanceValidatorInterface    $creditBalanceValidator,
+        SubmitQuoteValidatorInterface   $bookingValidator,
+        CreditBalanceValidatorInterface $creditBalanceValidator,
+        SlotValidator                   $slotValidator
     )
     {
-        $this->bookingValidator = $bookingValidator;
-        $this->slotValidator = $slotValidator;
+        $this->bookingValidator       = $bookingValidator;
         $this->creditBalanceValidator = $creditBalanceValidator;
+        $this->slotValidator          = $slotValidator;
     }
 
     public function getPaymentMethodConfig(): string
@@ -45,21 +47,25 @@ class BookingQuote extends Quote implements BookingQuoteInterface
         return setting(Booking::PAYMENT_METHOD_CONFIG_PATH);
     }
 
+    /**
+     * @throws BookingValidationException
+     */
     public function validate(): void
     {
         $this->creditBalanceValidator->validate($this);
         $this->bookingValidator->validate($this);
-        $this->slotValidator->validate($this);
+        $this->slotValidator->validate($this->getSlotContext());
     }
 
     public function save(): Booking
     {
         return Booking::create([
-            'student_id' => $this->getUser()->id,
-            'stream_id' => $this->getStreamId(),
+            'student_id'           => $this->getUser()->id,
+            'stream_id'            => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
-            'slot_start_at' => $this->getSlot()->getSlotStartAtAttribute(),
-            'lesson_type' => $this->getLessonType(),
+            'slot_start_at'        => $this->getSlot()->getSlotStartAtAttribute(),
+            'slot_end_at'          => $this->getSlot()->getSlotEndAtAttribute(),
+            'lesson_type'          => $this->getLessonType(),
         ]);
     }
 
@@ -91,6 +97,16 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     public function setSlot(ScheduleTimeslot $slot)
     {
         $this->slot = $slot;
+    }
+
+    public function getSlotContext()
+    {
+        return $this->slotContext;
+    }
+
+    public function setSlotContext(SlotContextInterface $slotContext)
+    {
+        $this->slotContext = $slotContext;
     }
 
     public function setLessonType(BookingTypeEnum $lessonType)

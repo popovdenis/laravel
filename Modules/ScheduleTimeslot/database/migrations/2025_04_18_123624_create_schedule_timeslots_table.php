@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('schedule_timeslots', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('day');
-            $table->time('start');
-            $table->time('end');
+            $table->string('day_of_week');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
         });
     }
