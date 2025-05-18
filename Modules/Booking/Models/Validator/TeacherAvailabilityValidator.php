@@ -33,9 +33,16 @@ class TeacherAvailabilityValidator
             throw new BookingValidationException('The teacher is not provided.');
         }
 
+        $student = $slotContext->getStudent();
+        if (empty($student)) {
+            Log::error('The student is not provided.');
+            throw new BookingValidationException('The teacher is not provided.');
+        }
+
         $teacherTzId = $teacher->timeZoneId;
-        $slotStartTtz = $this->timezone->date($slotContext->getSlotStart(), $teacherTzId);
-        $slotEndTtz = $this->timezone->date($slotContext->getSlotEnd(), $teacherTzId);
+        $studentTzId = $student->timeZoneId;
+        $slotStartTtz = $this->timezone->date($slotContext->getSlotStart(), $studentTzId)->setTimezone($teacherTzId);
+        $slotEndTtz = $this->timezone->date($slotContext->getSlotEnd(), $studentTzId)->setTimezone($teacherTzId);
 
         $dayOfWeek = strtolower($slotStartTtz->format('l'));
 

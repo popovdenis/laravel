@@ -69,11 +69,9 @@ class Timezone implements TimezoneInterface
         return $this->getDateFormat($type) . ' ' . $this->getTimeFormat($type);
     }
 
-    public function date($date = null, string $timezone = null, bool $useTimezone = true, bool $includeTime = true): Carbon
+    public function date($date = null, string $timezone = null, bool $includeTime = true): Carbon
     {
-        if (empty($timezone)) {
-            $timezone = $useTimezone ? $this->getConfigTimezone() : config('app.timezone', 'UTC');
-        }
+        $timezone = $timezone ??  $this->getConfigTimezone();
 
         if (empty($date)) {
             return Carbon::now($timezone);
@@ -85,7 +83,7 @@ class Timezone implements TimezoneInterface
 
         if (!is_numeric($date)) {
             $date = $this->appendTimeIfNeeded((string) $date, $includeTime, $timezone);
-            return Carbon::parse($date, 'UTC')->setTimezone($timezone);
+            return Carbon::parse($date, $timezone);
         }
 
         return Carbon::createFromTimestamp($date, $timezone);

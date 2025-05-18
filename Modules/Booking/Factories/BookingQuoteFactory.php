@@ -77,6 +77,7 @@ class BookingQuoteFactory
             'stream'        => $this->getStreamById($quote->getStreamId()),
             'slot_start'    => $requestData->slotStartAt,
             'slot_end'      => $requestData->slotEndAt,
+            'day_slot'      => $quote->getSlot()
         ]);
         $quote->setSlotContext($slotContext);
     }

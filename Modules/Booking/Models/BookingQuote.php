@@ -63,8 +63,8 @@ class BookingQuote extends Quote implements BookingQuoteInterface
             'student_id'           => $this->getUser()->id,
             'stream_id'            => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
-            'slot_start_at'        => $this->getSlot()->getSlotStartAtAttribute(),
-            'slot_end_at'          => $this->getSlot()->getSlotEndAtAttribute(),
+            'slot_start_at'        => $this->getSlot()->getAttribute('start_time'),
+            'slot_end_at'          => $this->getSlot()->getAttribute('end_time'),
             'lesson_type'          => $this->getLessonType(),
         ]);
     }

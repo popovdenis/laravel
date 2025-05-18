@@ -58,7 +58,7 @@ interface TimezoneInterface
      * @param bool $includeTime
      * @return \DateTime
      */
-    public function date($date = null, string $timezone = null, bool $useTimezone = true, bool $includeTime = true): Carbon;
+    public function date($date = null, string $timezone = null, bool $includeTime = true): Carbon;
 
     /**
      * Create \DateTime object with date converted to scope timezone and scope Locale

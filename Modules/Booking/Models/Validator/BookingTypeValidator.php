@@ -79,14 +79,15 @@ class BookingTypeValidator
                     ->count() >= $maxMembersAllowed;
     }
 
-    private function getBookings(SlotContext $bookingSlot): Collection
+    private function getBookings(SlotContext $slotContext): Collection
     {
-        $start = $bookingSlot->getSlotStart();
-        $end = $start->copy()->addMinutes($bookingSlot->getSlotLength());
+        $studentTz = $slotContext->getStudent()->timeZoneId;
+        $start = $this->timezone->date($slotContext->getSlotStart(), $studentTz);
+        $end = $start->copy()->addMinutes($slotContext->getSlotLength());
 
-        return $bookingSlot->getDaySlot()->bookings->filter(function ($booking) use ($start, $end) {
-            return $this->timezone->date($booking->slot_start_at)->between($start, $end) ||
-                $this->timezone->date($booking->slot_end_at)->between($start, $end);
+        return $slotContext->getDaySlot()->bookings->filter(function ($booking) use ($start, $end, $studentTz) {
+            return $this->timezone->date($booking->slot_start_at, $studentTz)->between($start, $end) ||
+                $this->timezone->date($booking->slot_end_at, $studentTz)->between($start, $end);
         });
     }
 }

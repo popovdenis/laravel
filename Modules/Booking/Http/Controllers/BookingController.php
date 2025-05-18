@@ -9,6 +9,7 @@ use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Data\BookingData;
+use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Factories\BookingQuoteFactory;
 use Modules\Booking\Models\Booking;
@@ -101,10 +102,10 @@ class BookingController extends Controller
                 'booking_id' => $order->purchasable_id,
                 'message' => 'Booking has been successfully created.'
             ]);
-        } catch (AlreadyExistsException $e) {
+        } catch (BookingValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'The selected time slot hasl already been chosen. Please choose another time.',
+                'message' => $e->getMessage(),
             ], 422);
         } catch (SlotUnavailableException $e) {
             return response()->json([
