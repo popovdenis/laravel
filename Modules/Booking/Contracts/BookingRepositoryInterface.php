@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\LanguageLevel\Contracts;
+namespace Modules\Booking\Contracts;
 
 use Modules\Base\Conracts\SearchCriteriaInterface;
 
 /**
- * Interface LanguageLevelRepositoryInterface
+ * Interface BookingRepositoryInterface
  *
- * @package Modules\LanguageLevel\Contracts
+ * @package Modules\Booking\Contracts
  */
-interface LanguageLevelRepositoryInterface
+interface BookingRepositoryInterface
 {
     public function create(array $data);
 

@@ -374,11 +374,10 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             $tSlotStartInStz,
             $tSlotEndInStz,
             $bookingSlot,
-            function (Carbon $chunkStartInTz) use ($response, $bookingSlot) {
-                $dateKey = $chunkStartInTz->toDateString();
+            function () use ($response, $bookingSlot) {
                 $response->appendData(
-                    $dateKey,
-                    $this->formatSlot($chunkStartInTz, $bookingSlot)
+                    $bookingSlot->getSlotStart()->toDateString(),
+                    $this->formatSlot($bookingSlot)
                 );
             }
         );
@@ -402,7 +401,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
                 ->setSlotEnd($chunkStart->copy()->addMinutes($chunkLength));
 
             if ($this->isSlotBookable($bookingSlot)) {
-                $callback($chunkStart);
+                $callback();
             }
 
             $chunkStart->addMinutes($chunkLength);
@@ -420,7 +419,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         return true;
     }
 
-    private function formatSlot(Carbon $slotStart, SlotContext $bookingSlot): ?SlotResult
+    private function formatSlot(SlotContext $bookingSlot): ?SlotResult
     {
         $filters = $this->getFilters();
         $student = $this->getStudent();
@@ -432,13 +431,16 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
             return null;
         }
 
-        $slotStartUTC = $slotStart->copy()->setTimezone('UTC')->format('Y-m-d H:i:s');
+        $slotStart = $bookingSlot->getSlotStart();
+        $slotEnd = $bookingSlot->getSlotEnd();
 
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
             $b->stream_id === $bookingSlot->getStream()->id &&
             $b->lesson_type->value === $filters->getLessonType() &&
-            $b->slot_start_at->equalTo($slotStartUTC)
+            $b->schedule_timeslot_id === $bookingSlot->getDaySlot()->id &&
+            $b->slot_start_at->equalTo($slotStart) &&
+            $b->slot_end_at->equalTo($slotEnd)
         );
 
         return $bookingSlot->getSlotResult($booking);

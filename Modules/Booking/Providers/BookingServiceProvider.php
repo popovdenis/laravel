@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Booking\Console\ConfirmUpcomingBookingCommand;
 use Modules\Booking\Contracts\BookingQuoteInterface;
+use Modules\Booking\Contracts\BookingRepositoryInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotAvailabilityValidatorInterface;
 use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
+use Modules\Booking\Models\BookingRepository;
 use Modules\Booking\Models\SlotContext;
 use Modules\Booking\Models\Validator\CreditBalanceValidator;
 use Modules\Booking\Models\Validator\SlotAvailabilityValidator;
@@ -52,10 +54,10 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(BookingQuoteInterface::class, BookingQuote::class);
 
         // Slot Validator binding
-        $this->app->bind(SlotAvailabilityValidatorInterface::class, SlotAvailabilityValidator::class);
         $this->app->bind(SubmitQuoteValidatorInterface::class, SubmitBookingValidator::class);
         $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
         $this->app->bind(SlotContextInterface::class, SlotContext::class);
+        $this->app->bind(BookingRepositoryInterface::class, BookingRepository::class);
     }
 
     /**

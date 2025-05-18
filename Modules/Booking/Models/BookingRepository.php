@@ -1,35 +1,38 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\LanguageLevel\Models;
+namespace Modules\Booking\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Base\Conracts\SearchCriteriaInterface;
-use Modules\LanguageLevel\Contracts\LanguageLevelRepositoryInterface;
+use Modules\Booking\Contracts\BookingRepositoryInterface;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * Class LanguageLevelRepository
+ * Class BookingRepository
  *
- * @package Modules\LanguageLevel\Models
+ * @package Modules\Booking\Models
  */
-class LanguageLevelRepository implements LanguageLevelRepositoryInterface
+class BookingRepository implements BookingRepositoryInterface
 {
     public function create(array $data)
     {
-        return LanguageLevel::create($data);
+        return Booking::create($data);
     }
 
     public function save($entity)
     {
-        $entity->save();
+        if (!$entity->save()) {
+            throw new \RuntimeException('Failed to save model.');
+        }
 
         return $entity;
     }
 
     public function getById($entityId)
     {
-        return LanguageLevel::findOrFail($entityId);
+        return Booking::findOrFail($entityId);
     }
 
     public function delete($entity)
@@ -39,14 +42,14 @@ class LanguageLevelRepository implements LanguageLevelRepositoryInterface
 
     public function deleteById($entityId)
     {
-        $stream = LanguageLevel::findOrFail($entityId);
+        $stream = Booking::findOrFail($entityId);
 
         return $stream->delete();
     }
 
     public function getList(SearchCriteriaInterface $searchCriteria): LengthAwarePaginator
     {
-        $query = QueryBuilder::for(LanguageLevel::class);
+        $query = QueryBuilder::for(Booking::class);
 
         if ($searchCriteria->getWith()) {
             $query->with($searchCriteria->getWith());

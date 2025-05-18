@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Booking\Models;
 
 use Modules\Booking\Contracts\BookingQuoteInterface;
+use Modules\Booking\Contracts\BookingRepositoryInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
 use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
@@ -30,16 +31,19 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     private SubmitQuoteValidatorInterface   $bookingValidator;
     private CreditBalanceValidatorInterface $creditBalanceValidator;
     private SlotValidator                   $slotValidator;
+    private BookingRepositoryInterface      $bookingRepository;
 
     public function __construct(
         SubmitQuoteValidatorInterface   $bookingValidator,
         CreditBalanceValidatorInterface $creditBalanceValidator,
-        SlotValidator                   $slotValidator
+        SlotValidator                   $slotValidator,
+        BookingRepositoryInterface      $bookingRepository
     )
     {
         $this->bookingValidator       = $bookingValidator;
         $this->creditBalanceValidator = $creditBalanceValidator;
         $this->slotValidator          = $slotValidator;
+        $this->bookingRepository = $bookingRepository;
     }
 
     public function getPaymentMethodConfig(): string
@@ -59,12 +63,12 @@ class BookingQuote extends Quote implements BookingQuoteInterface
 
     public function save(): Booking
     {
-        return Booking::create([
+        return $this->bookingRepository->create([
             'student_id'           => $this->getUser()->id,
             'stream_id'            => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
-            'slot_start_at'        => $this->getSlot()->getAttribute('start_time'),
-            'slot_end_at'          => $this->getSlot()->getAttribute('end_time'),
+            'slot_start_at'        => $this->getSlot()->getAttribute('slot_start_at'),
+            'slot_end_at'          => $this->getSlot()->getAttribute('slot_end_at'),
             'lesson_type'          => $this->getLessonType(),
         ]);
     }
