@@ -1,14 +1,15 @@
 import React from 'react'
 import { useBooking } from './BookingContext'
 import dayjs from 'dayjs'
-import DatetimeRangePicker from './DatetimeRangePicker'
+import DatetimeRangePicker from './DatetimeRangePicker';
+import TimeRangePicker from './TimeRangePicker';
 
 export default function TopFilters() {
     const {
-        filterStartDate,
-        setFilterStartDate,
-        filterEndDate,
-        setFilterEndDate,
+        filterStartDate, setFilterStartDate,
+        filterEndDate, setFilterEndDate,
+        filterStartTime, setFilterStartTime,
+        filterEndTime, setFilterEndTime,
         initialLessonType,
         lessonType,
         setLessonType,
@@ -31,13 +32,23 @@ export default function TopFilters() {
             <div className="flex flex-wrap items-center gap-4 w-full">
                 <div>
                     <p className="text-sm text-gray-700 font-semibold mb-1">Date Range</p>
-                    <DatetimeRangePicker
-                        value={[filterStartDate, filterEndDate]}
-                        onChange={(start, end) => {
-                            setFilterStartDate(start)
-                            setFilterEndDate(end)
-                        }}
-                    />
+                    <div className="flex space-x-2">
+                        <DatetimeRangePicker
+                            value={[filterStartDate, filterEndDate]}
+                            onChange={(start, end) => {
+                                setFilterStartDate(start)
+                                setFilterEndDate(end)
+                            }}
+                        />
+
+                        <TimeRangePicker
+                            value={[filterStartTime, filterEndTime]}
+                            onChange={(startTime, endTime) => {
+                                setFilterStartTime(startTime)
+                                setFilterEndTime(endTime)
+                            }}
+                        />
+                    </div>
                 </div>
 
                 <div>

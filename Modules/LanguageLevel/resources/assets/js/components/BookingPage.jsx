@@ -12,35 +12,30 @@ import FullscreenLoader from './FullscreenLoader';
 
 function BookingPageContent() {
     const {
-        setLevels,
-        setSubjects,
-        selectedLevelId,
-        setSelectedLevelId,
+        setLevels, setSubjects,
+        selectedLevelId, setSelectedLevelId,
         setSlots,
-        selectedSubjectIds,
-        setSelectedSubjectIds,
-        lessonType,
-        setLessonType,
-        filterStartDate,
-        filterEndDate,
-        setFilterStartDate,
-        setFilterEndDate,
-        currentEndDate,
-        setCurrentEndDate,
-        visibleDatesCount,
-        setVisibleDatesCount,
-        loading,
-        setLoading
+        selectedSubjectIds, setSelectedSubjectIds,
+        lessonType, setLessonType,
+        filterStartDate, setFilterStartDate,
+        filterEndDate, setFilterEndDate,
+        filterStartTime, setFilterStartTime,
+        filterEndTime, setFilterEndTime,
+        currentEndDate, setCurrentEndDate,
+        visibleDatesCount, setVisibleDatesCount,
+        loading, setLoading
     } = useBooking()
 
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
-    const showLoadMoreButton =
-        currentEndDate && dayjs(currentEndDate).isBefore(filterEndDate);
+    const showLoadMoreButton = currentEndDate && dayjs(currentEndDate).isBefore(filterEndDate);
 
     const fetchDay = function (date) {
         return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
     }
+    const buildDateTime = function (date, time) {
+        return dayjs(`${date}T${time}`).format('YYYY-MM-DD HH:mm');
+    };
 
     const fetchSlots = async ({ startDate, endDate, append = false }) => {
         try {
@@ -90,24 +85,18 @@ function BookingPageContent() {
         const lessonType = params.get('lesson_type');
         const startDate = params.get('start_date');
         const endDate = params.get('end_date');
+        const startTime = params.get('start_time');
+        const endTime = params.get('end_time');
+        const today = dayjs().format('YYYY-MM-DD');
 
         if (levelId) setSelectedLevelId(Number(levelId));
         if (subjectIds.length) setSelectedSubjectIds(subjectIds.map(id => Number(id)));
         if (lessonType) setLessonType(lessonType);
-
-        const today = dayjs().format('YYYY-MM-DD');
-        if (startDate) {
-            setFilterStartDate(startDate);
-            setCurrentEndDate(startDate);
-        } else {
-            setFilterStartDate(today);
-            setCurrentEndDate(today);
-        }
-        if (endDate) {
-            setFilterEndDate(endDate);
-        } else {
-            setFilterEndDate(fetchDay(today));
-        }
+        startDate ? setFilterStartDate(startDate) : setFilterStartDate(today);
+        startDate ? setCurrentEndDate(startDate) : setCurrentEndDate(today);
+        endDate ? setFilterEndDate(endDate) : setFilterEndDate(fetchDay(today));
+        if (startTime) setFilterStartTime(startTime);
+        if (endTime) setFilterEndTime(endTime);
     }, []);
 
     // 2. Update URL when filters change
@@ -119,23 +108,49 @@ function BookingPageContent() {
         if (lessonType) params.set('lesson_type', lessonType)
         if (filterStartDate) params.set('start_date', filterStartDate)
         if (filterEndDate) params.set('end_date', filterEndDate)
+        if (filterStartTime) params.set('start_time', filterStartTime)
+        if (filterEndTime) params.set('end_time', filterEndTime)
 
         const newUrl = `${window.location.pathname}?${params.toString()}`
         window.history.replaceState({}, '', newUrl)
-    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate])
+    }, [
+        selectedLevelId,
+        selectedSubjectIds,
+        lessonType,
+        filterStartDate,
+        filterEndDate,
+        filterStartTime,
+        filterEndTime
+    ])
 
     // 3. Fetch initial slots when currentEndDate sets
     useEffect(() => {
         if (filterStartDate && filterEndDate) {
-            const nextEnd = fetchDay(filterStartDate);
-            fetchSlots({ startDate: filterStartDate, endDate: nextEnd, append: false });
+            const nextEnd = fetchDay(filterStartDate, filterStartTime);
+            fetchSlots({
+                startDate: buildDateTime(filterStartDate, filterStartTime),
+                endDate: buildDateTime(nextEnd, filterEndTime),
+                append: false
+            });
         }
-    }, [selectedLevelId, selectedSubjectIds, lessonType, filterStartDate, filterEndDate]);
+    }, [
+        selectedLevelId,
+        selectedSubjectIds,
+        lessonType,
+        filterStartDate,
+        filterEndDate,
+        filterStartTime,
+        filterEndTime
+    ]);
 
     const loadMore = async () => {
         if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return;
         const nextEnd = fetchDay(currentEndDate);
-        await fetchSlots({ startDate: currentEndDate, endDate: nextEnd, append: true });
+        await fetchSlots({
+            startDate: buildDateTime(currentEndDate, filterStartTime),
+            endDate: buildDateTime(nextEnd, filterEndTime),
+            append: true
+        });
     };
 
     return (
