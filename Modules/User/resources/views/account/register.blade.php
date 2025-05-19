@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-theme::guest-layout>
     <div class="mb-6 text-center">
         <h1 class="text-2xl font-bold text-gray-800">{{ __('Create an Account') }}</h1>
         <p class="mt-2 flex items-center space-x-2">
@@ -140,4 +140,4 @@
             });
         </script>
     </form>
-</x-guest-layout>
+</x-theme::guest-layout>
