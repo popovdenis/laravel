@@ -42,7 +42,7 @@ class CreditPayment extends AbstractMethod
 
     public function validate(OrderInterface $order): void
     {
-        $user = $order->getQuote()->getUser();
+        $user = $order->getQuote()->getStudent();
         $requiredCredits = $this->configProvider->getGroupLessonPrice(); //TODO: add type
 
         if ($user->getCreditBalance() < $requiredCredits) {
@@ -55,7 +55,7 @@ class CreditPayment extends AbstractMethod
         $this->eventManager->dispatch('sales_order_payment_place_start', ['payment' => $this]);
 
         $quote = $this->getOrder()->getQuote();
-        $this->transactionService->spend($quote->getUser(), $quote->getAmount());
+        $this->transactionService->spend($quote->getStudent(), $quote->getAmount());
 
         $this->eventManager->dispatch('sales_order_payment_place_end', ['payment' => $this]);
 

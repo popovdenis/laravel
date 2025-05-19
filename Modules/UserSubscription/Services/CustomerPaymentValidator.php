@@ -16,7 +16,7 @@ class CustomerPaymentValidator implements CustomerPaymentValidatorInterface
 {
     public function validate(QuoteInterface $bookingQuote): void
     {
-        $user = $bookingQuote->getUser();
+        $user = $bookingQuote->getStudent();
         if ($user->getActiveSubscription() && !$user->hasDefaultPaymentMethod()) {
             throw new SubscriptionValidationException('You don’t have an active payment method.');
         }

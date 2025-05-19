@@ -18,7 +18,7 @@ class OrderFactory implements OrderFactoryInterface
     public function createFromQuote(QuoteInterface $quote): OrderInterface
     {
         $order = app()->make(Order::class);
-        $order->setUserId($quote->getUser()->id);
+        $order->setUserId($quote->getStudent()->id);
         $order->setTotalAmount($quote->getAmount());
         $order->setPayment($quote->getPayment());
         $order->setQuote($quote);

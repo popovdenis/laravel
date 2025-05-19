@@ -70,6 +70,16 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         return $this->_get(self::STUDENT);
     }
 
+    public function setTeacher(User $teacher): self
+    {
+        return $this->setData(self::TEACHER, $teacher);
+    }
+
+    public function getTeacher()
+    {
+        return $this->_get(self::TEACHER);
+    }
+
     public function setFilters(array $filters): self
     {
         $filtersObj = $this->dataObject->create()->setData($filters);
@@ -299,6 +309,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $results = [];
 
         $stream = $bookingSlot->getStream();
+        $bookingSlot->setTeacher($stream->teacher);
 
         // TODO: get start/end by Repeat
         $streamStart = $this->getStreamStartDate($stream);
@@ -307,10 +318,8 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $slotIndex = $streamStart->diffInDays($currentDate);
 
         while ($currentDate->lte($streamEnd)) {
-            $bookingSlot->setTeacher($stream->teacher);
-
-            $teacherDaySlots = $this->getDaySlots($stream->teacher, $currentDate);
-            $subjectIds = $stream->languageLevel->subjects->pluck('id')->values();
+            $teacherDaySlots = $this->getDaySlots($bookingSlot->getTeacher(), $currentDate);
+            $subjectIds = $stream->languageLevel->subjects->pluck('id')->values();//TODO: move to repository
             $currentIndex = $subjectIds->search($stream->current_subject_id);
             $shiftedIndex = ($currentIndex + $slotIndex) % $subjectIds->count();
             $subjectId = $subjectIds[$shiftedIndex];
@@ -365,7 +374,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         }
 
         $student = $this->getStudent();
-        $teacherTz = $bookingSlot->getStream()->teacher->timeZoneId ?? 'UTC';
+        $teacherTz = $bookingSlot->getTeacher()->timeZoneId ?? 'UTC';
         $studentTz = $student->timeZoneId ?? 'UTC';
 
         [$tSlotStartInStz, $tSlotEndInStz] = $this->calculateSlotWindow($bookingSlot, $teacherTz, $studentTz);
@@ -422,25 +431,26 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     private function formatSlot(SlotContext $bookingSlot): ?SlotResult
     {
         $filters = $this->getFilters();
-        $student = $this->getStudent();
-        $userBookedSlots = $this->getUserBookedSlots($student);
-
         $subject = $bookingSlot->getSubject();
 
         if (!empty($filters->getSubjectIds()) && $subject && !in_array($subject->id, $filters->getSubjectIds())) {
             return null;
         }
 
+        $student = $bookingSlot->getStudent();
+        $teacher = $bookingSlot->getTeacher();
+        $userBookedSlots = $this->getUserBookedSlots($student);
         $slotStart = $bookingSlot->getSlotStart();
         $slotEnd = $bookingSlot->getSlotEnd();
 
         $booking = $userBookedSlots->first(fn($b) =>
             $b->student_id === $student->id &&
+            $b->teacher_id === $teacher->id &&
             $b->stream_id === $bookingSlot->getStream()->id &&
             $b->lesson_type->value === $filters->getLessonType() &&
-            $b->schedule_timeslot_id === $bookingSlot->getDaySlot()->id &&
             $b->slot_start_at->equalTo($slotStart) &&
-            $b->slot_end_at->equalTo($slotEnd)
+            $b->slot_end_at->equalTo($slotEnd) &&
+            $b->status <> BookingStatus::CANCELLED
         );
 
         return $bookingSlot->getSlotResult($booking);

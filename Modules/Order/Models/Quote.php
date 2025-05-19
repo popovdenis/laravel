@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Order\Contracts\QuoteInterface;
 use Modules\Payment\Contracts\PaymentInterface;
 use Modules\Payment\Models\Payment;
+use Modules\User\Models\User;
 
 /**
  * Class Quote
@@ -17,6 +18,8 @@ abstract class Quote implements QuoteInterface
 {
     protected ?PaymentInterface $currentPayment = null;
     protected ?Model $model = null;
+    protected User $student;
+    protected User $teacher;
 
     public function getPayment()
     {
@@ -57,5 +60,25 @@ abstract class Quote implements QuoteInterface
     public function setModel(Model $model)
     {
        $this->model = $model;
+    }
+
+    public function setStudent(User $student)
+    {
+        $this->student = $student;
+    }
+
+    public function getStudent(): User
+    {
+        return $this->student;
+    }
+
+    public function setTeacher(User $teacher)
+    {
+        $this->teacher = $teacher;
+    }
+
+    public function getTeacher(): User
+    {
+        return $this->teacher;
     }
 }

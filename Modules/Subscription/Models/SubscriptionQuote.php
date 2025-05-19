@@ -17,7 +17,6 @@ use Modules\UserSubscription\Contracts\CustomerPaymentValidatorInterface;
  */
 class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
 {
-    protected User $user;
     protected int $plan_id;
     protected int $credits;
     protected string $transaction_price_id;
@@ -42,16 +41,6 @@ class SubscriptionQuote extends Quote implements SubscriptionQuoteInterface
     public function save(): ?\Illuminate\Database\Eloquent\Model
     {
         return $this->getModel();
-    }
-
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user)
-    {
-        $this->user = $user;
     }
 
     public function getAmount()

@@ -21,7 +21,6 @@ use Modules\User\Models\User;
  */
 class BookingQuote extends Quote implements BookingQuoteInterface
 {
-    protected User                          $student;
     protected int                           $streamId;
     protected int                           $slotId;
     protected ScheduleTimeslot              $slot;
@@ -64,23 +63,14 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     public function save(): Booking
     {
         return $this->bookingRepository->create([
-            'student_id'           => $this->getUser()->id,
+            'student_id'           => $this->getStudent()->id,
+            'teacher_id'           => $this->getTeacher()->id,
             'stream_id'            => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
             'slot_start_at'        => $this->getSlot()->getAttribute('slot_start_at'),
             'slot_end_at'          => $this->getSlot()->getAttribute('slot_end_at'),
             'lesson_type'          => $this->getLessonType(),
         ]);
-    }
-
-    public function setUser(User $user)
-    {
-        $this->student = $user;
-    }
-
-    public function getUser(): User
-    {
-        return $this->student;
     }
 
     public function setStreamId(int $streamId)

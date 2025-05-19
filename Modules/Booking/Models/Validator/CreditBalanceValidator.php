@@ -16,7 +16,7 @@ class CreditBalanceValidator implements CreditBalanceValidatorInterface
 {
     public function validate(QuoteInterface $bookingQuote): void
     {
-        if ($bookingQuote->getUser()->credit_balance < $bookingQuote->getAmount()) {
+        if ($bookingQuote->getStudent()->credit_balance < $bookingQuote->getAmount()) {
             throw new InsufficientCreditsException('Not enough credits');
         }
     }

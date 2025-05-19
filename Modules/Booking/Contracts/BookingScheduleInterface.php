@@ -10,6 +10,7 @@ namespace Modules\Booking\Contracts;
 interface BookingScheduleInterface
 {
     const STUDENT = 'student';
+    const TEACHER = 'teacher';
     const FILTERS = 'filters';
     const STREAMS = 'streams';
     const LEVELS = 'levels';

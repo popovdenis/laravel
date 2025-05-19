@@ -28,7 +28,7 @@ class SubscriptionTransactionHandler implements PurchasableTransactionHandlerInt
         $subscription = $order->getQuote()->getModel();
 
         $subscription->update($this->subscriptionService->getUpdateUserSubscriptionOptions($quote->getPlan()));
-        $this->subscriptionService->updateCreditBalance($quote->getUser(), $quote->getPlan());
+        $this->subscriptionService->updateCreditBalance($quote->getStudent(), $quote->getPlan());
     }
 
     public function handleOrderCancelled(OrderInterface $order): void

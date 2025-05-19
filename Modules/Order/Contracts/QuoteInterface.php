@@ -15,8 +15,11 @@ interface QuoteInterface
 {
     public function validate();
 
-    public function getUser(): User;
-    public function setUser(User $user);
+    public function getStudent(): User;
+    public function setStudent(User $student);
+
+    public function getTeacher(): User;
+    public function setTeacher(User $teacher);
 
     public function getAmount();
     public function setAmount(int $amount);

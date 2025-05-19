@@ -19,6 +19,7 @@ class Booking extends Model implements PurchasableInterface
 
     protected $fillable = [
         'student_id',
+        'teacher_id',
         'stream_id',
         'schedule_timeslot_id',
         'status',

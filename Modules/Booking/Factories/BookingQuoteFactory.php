@@ -49,10 +49,13 @@ class BookingQuoteFactory
 
     public function create(RequestDataInterface $requestData): BookingQuoteInterface
     {
+        $slot = $this->getSlotById($requestData->slotId);
+
         /** @var BookingQuote $quote */
         $quote = app()->make(BookingQuote::class);
-        $quote->setUser($requestData->student);
-        $quote->setSlot($this->getSlotById($requestData->slotId));
+        $quote->setStudent($requestData->student);
+        $quote->setTeacher($slot->teacher);
+        $quote->setSlot($slot);
         $quote->setLessonType($requestData->lessonType);
         $quote->setStreamId($requestData->streamId);
         $quote->setAmount($this->getBookingAmount($requestData));
@@ -66,12 +69,12 @@ class BookingQuoteFactory
         return $quote;
     }
 
-    private function buildBookingSlot(BookingQuote $quote, BookingData $requestData): void
+    private function buildBookingSlot(BookingQuote $quote, RequestDataInterface $requestData): void
     {
         $slotContext = $this->slotContext->create();
         $slotContext->setData([
-            'teacher'       => $quote->getSlot()->teacher,
-            'student'       => $quote->getUser(),
+            'teacher'       => $quote->getTeacher(),
+            'student'       => $quote->getStudent(),
             'lesson_type'   => $quote->getLessonType(),
             'lesson_length' => $this->bookingSlotService->getChunkLength($quote->getLessonType()),
             'stream'        => $this->getStreamById($quote->getStreamId()),
@@ -82,7 +85,7 @@ class BookingQuoteFactory
         $quote->setSlotContext($slotContext);
     }
 
-    private function getBookingAmount(\Modules\Booking\Data\BookingData $bookingData): int
+    private function getBookingAmount(RequestDataInterface $bookingData): int
     {
         if ($bookingData->lessonType === BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL) {
             return $this->configProvider->getIndividualLessonPrice();

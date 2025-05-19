@@ -40,11 +40,11 @@ class StripePayment extends AbstractMethod
     {
         /** @var SubscriptionQuoteInterface $quote */
         $quote = $this->getOrder()->getQuote();
-        $user = $quote->getUser();
+        $student = $quote->getStudent();
         $plan = $quote->getPlan();
-        $activeSubscription = $user->getActiveSubscription();
+        $activeSubscription = $student->getActiveSubscription();
 
-        if ($activeSubscription && !$user->hasDefaultPaymentMethod()) {
+        if ($activeSubscription && !$student->hasDefaultPaymentMethod()) {
             throw new SubscriptionValidationException('You don’t have an active payment method.');
         }
 
@@ -64,14 +64,14 @@ class StripePayment extends AbstractMethod
                 }
             }
 
-            $newSubscription = $user->newSubscription('default', $quote->getTransactionPriceId());
+            $newSubscription = $student->newSubscription('default', $quote->getTransactionPriceId());
 
             $subscriptionOptions = [];
             if ($plan->isEnabledTrial()) {
                 $newSubscription->trialUntil(now()->addDays($plan->getTrialDays()));
             }
 
-            $subscription = $newSubscription->create($user->defaultPaymentMethod()?->id, [], $subscriptionOptions);
+            $subscription = $newSubscription->create($student->defaultPaymentMethod()?->id, [], $subscriptionOptions);
 
             $quote->setModel($subscription);
         } catch (\Exception $exception) {
