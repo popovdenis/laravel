@@ -6,6 +6,7 @@ namespace Modules\Booking\Models\Validator;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\SlotContextInterface;
+use Modules\Booking\Enums\BookingStatus;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Booking\Models\ConfigProvider;
@@ -85,7 +86,9 @@ class BookingTypeValidator
         $start = $this->timezone->date($slotContext->getSlotStart(), $studentTz);
         $end = $start->copy()->addMinutes($slotContext->getSlotLength());
 
-        return $slotContext->getDaySlot()->bookings->filter(function ($booking) use ($start, $end, $studentTz) {
+        $bookings = $slotContext->getDaySlot()->bookings->where('status', '!=', BookingStatus::CANCELLED);
+
+        return $bookings->filter(function ($booking) use ($start, $end, $studentTz) {
             return $this->timezone->date($booking->slot_start_at, $studentTz)->between($start, $end) ||
                 $this->timezone->date($booking->slot_end_at, $studentTz)->between($start, $end);
         });

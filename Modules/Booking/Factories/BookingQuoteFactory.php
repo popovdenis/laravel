@@ -62,8 +62,6 @@ class BookingQuoteFactory
         $quote->setModel(app(Booking::class));
         $quote->getPayment()->importData($requestData);
 
-        $this->setSlotStartEnd($quote, $requestData);
-
         $this->buildBookingSlot($quote, $requestData);
 
         return $quote;
@@ -78,8 +76,8 @@ class BookingQuoteFactory
             'lesson_type'   => $quote->getLessonType(),
             'lesson_length' => $this->bookingSlotService->getChunkLength($quote->getLessonType()),
             'stream'        => $this->getStreamById($quote->getStreamId()),
-            'slot_start'    => $requestData->slotStartAt,
-            'slot_end'      => $requestData->slotEndAt,
+            'slot_start'    => $this->timezone->date($requestData->slotStartAt, $quote->getStudent()->timeZoneId),
+            'slot_end'      => $this->timezone->date($requestData->slotEndAt, $quote->getStudent()->timeZoneId),
             'day_slot'      => $quote->getSlot()
         ]);
         $quote->setSlotContext($slotContext);
@@ -102,14 +100,5 @@ class BookingQuoteFactory
     private function getStreamById(int $streamId)
     {
         return $this->streamRepository->getById($streamId);
-    }
-
-    private function setSlotStartEnd(BookingQuote $quote, RequestDataInterface $requestData): void
-    {
-        $bookingStartTime = $this->timezone->date($requestData->slotStartAt)->setTimezone('UTC');
-        $bookingEndTime = $this->timezone->date($requestData->slotEndAt)->setTimezone('UTC');
-
-        $quote->getSlot()->setAttribute('slot_start_at', $bookingStartTime);
-        $quote->getSlot()->setAttribute('slot_end_at', $bookingEndTime);
     }
 }

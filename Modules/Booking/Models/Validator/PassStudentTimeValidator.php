@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Models\Validator;
 
-use Carbon\Carbon;
-use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\SlotContextInterface;
 use Modules\Booking\Exceptions\BookingValidationException;
 
@@ -15,13 +13,6 @@ use Modules\Booking\Exceptions\BookingValidationException;
  */
 class PassStudentTimeValidator
 {
-    private CustomerTimezone $timezone;
-
-    public function __construct(CustomerTimezone $timezone)
-    {
-        $this->timezone = $timezone;
-    }
-
     /**
      * @throws BookingValidationException
      */

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Models;
 
+use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\BookingQuoteInterface;
 use Modules\Booking\Contracts\BookingRepositoryInterface;
 use Modules\Booking\Contracts\CreditBalanceValidatorInterface;
@@ -31,18 +32,21 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     private CreditBalanceValidatorInterface $creditBalanceValidator;
     private SlotValidator                   $slotValidator;
     private BookingRepositoryInterface      $bookingRepository;
+    private CustomerTimezone                $timezone;
 
     public function __construct(
         SubmitQuoteValidatorInterface   $bookingValidator,
         CreditBalanceValidatorInterface $creditBalanceValidator,
         SlotValidator                   $slotValidator,
-        BookingRepositoryInterface      $bookingRepository
+        BookingRepositoryInterface      $bookingRepository,
+        CustomerTimezone                $timezone
     )
     {
         $this->bookingValidator       = $bookingValidator;
         $this->creditBalanceValidator = $creditBalanceValidator;
         $this->slotValidator          = $slotValidator;
-        $this->bookingRepository = $bookingRepository;
+        $this->bookingRepository      = $bookingRepository;
+        $this->timezone               = $timezone;
     }
 
     public function getPaymentMethodConfig(): string
@@ -62,13 +66,16 @@ class BookingQuote extends Quote implements BookingQuoteInterface
 
     public function save(): Booking
     {
+        $bookingStartTime = $this->timezone->date($this->getSlotContext()->getSlotStart())->setTimezone('UTC');
+        $bookingEndTime = $this->timezone->date($this->getSlotContext()->getSlotEnd())->setTimezone('UTC');
+
         return $this->bookingRepository->create([
             'student_id'           => $this->getStudent()->id,
             'teacher_id'           => $this->getTeacher()->id,
             'stream_id'            => $this->getStreamId(),
             'schedule_timeslot_id' => $this->getSlot()->id,
-            'slot_start_at'        => $this->getSlot()->getAttribute('slot_start_at'),
-            'slot_end_at'          => $this->getSlot()->getAttribute('slot_end_at'),
+            'slot_start_at'        => $bookingStartTime,
+            'slot_end_at'          => $bookingEndTime,
             'lesson_type'          => $this->getLessonType(),
         ]);
     }
