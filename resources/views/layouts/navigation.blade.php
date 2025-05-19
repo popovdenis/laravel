@@ -17,7 +17,7 @@
                     <x-nav-link :href="route('blog')" :active="request()->routeIs('blog')">
                         {{ __('Blog') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('languagelevel::index')" :active="request()->routeIs('languagelevel::index')">
+                    <x-nav-link :href="route('booking::index')" :active="request()->routeIs('booking::index')">
                         {{ __('Language Levels') }}
                     </x-nav-link>
                 </div>

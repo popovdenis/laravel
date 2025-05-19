@@ -11,53 +11,10 @@ use Modules\LanguageLevel\Models\LanguageLevel;
 
 class LanguageLevelController extends Controller
 {
-    private BookingScheduleManager $bookingScheduleManager;
-    private BookingSlotService     $bookingSlotService;
 
-    public function __construct(
-        CustomerTimezone $timezone,
-        BookingScheduleManager $bookingScheduleManager,
-        BookingSlotService $bookingSlotService
-    )
+    public function index()
     {
-        parent::__construct($timezone);
-        $this->bookingScheduleManager = $bookingScheduleManager;
-        $this->bookingSlotService = $bookingSlotService;
-    }
-
-    private function getFilters(Request $request): array
-    {
-        return [
-            'level_id' => $request->input('level_id'),
-            'subject_ids' => $request->input('subject_ids', []),
-            'type' => $request->input('type'),
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
-            'lesson_type' => $request->input('lesson_type', 'group'),
-        ];
-    }
-
-    public function index(Request $request)
-    {
-        $lessonType = $this->bookingSlotService->getDefaultLessonType();
-        $visibleDatesCount = $this->bookingSlotService->getInitialDaysToShow();
-        $startPreferredTime = $request->user()->getAttribute('preferred_start_time')?->format('H:i') ?? '00:00';
-        $endPreferredTime = $request->user()->getAttribute('preferred_end_time')?->format('H:i') ?? '23:59';
-
-        return view(
-            'languagelevel::index',
-            compact('lessonType', 'visibleDatesCount', 'startPreferredTime', 'endPreferredTime')
-        );
-    }
-
-    public function init(Request $request)
-    {
-        $slotsResponse = $this->bookingScheduleManager
-            ->setFilters($this->getFilters($request))
-            ->setStudent($request->user())
-            ->getBookingScheduleSlots();
-
-        return response()->json($slotsResponse);
+        return view('languagelevel::index');
     }
 
     /**

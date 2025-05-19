@@ -12,7 +12,9 @@ use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Booking\Exceptions\SlotUnavailableException;
 use Modules\Booking\Factories\BookingQuoteFactory;
 use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\BookingScheduleManager;
 use Modules\Booking\Models\ConfigProvider;
+use Modules\Booking\Services\BookingSlotService;
 use Modules\EventManager\Contracts\ManagerInterface;
 use Modules\Order\Contracts\OrderManagerInterface;
 use Modules\Order\Contracts\PurchasableInterface;
@@ -45,33 +47,69 @@ class BookingController extends Controller
     private ManagerInterface        $eventManager;
     private ConfigProvider          $configProvider;
     private UserRepositoryInterface $userRepository;
+    private BookingScheduleManager  $bookingScheduleManager;
+    private BookingSlotService      $bookingSlotService;
 
     public function __construct(
-        CustomerTimezone $timezone,
-        SecurityManager $securityManager,
-        BookingQuoteFactory $bookingQuoteFactory,
-        OrderManagerInterface $orderManager,
-        ManagerInterface $eventManager,
-        ConfigProvider $configProvider,
+        CustomerTimezone        $timezone,
+        SecurityManager         $securityManager,
+        BookingQuoteFactory     $bookingQuoteFactory,
+        OrderManagerInterface   $orderManager,
+        ManagerInterface        $eventManager,
+        ConfigProvider          $configProvider,
         UserRepositoryInterface $userRepository,
-        private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
+        BookingScheduleManager  $bookingScheduleManager,
+        BookingSlotService      $bookingSlotService,
+        private                 $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
         parent::__construct($timezone);
-        $this->securityManager = $securityManager;
-        $this->bookingQuoteFactory = $bookingQuoteFactory;
-        $this->orderManager = $orderManager;
-        $this->eventManager = $eventManager;
-        $this->configProvider = $configProvider;
-        $this->userRepository = $userRepository;
+        $this->securityManager        = $securityManager;
+        $this->bookingQuoteFactory    = $bookingQuoteFactory;
+        $this->orderManager           = $orderManager;
+        $this->eventManager           = $eventManager;
+        $this->configProvider         = $configProvider;
+        $this->userRepository         = $userRepository;
+        $this->bookingScheduleManager = $bookingScheduleManager;
+        $this->bookingSlotService     = $bookingSlotService;
+    }
+
+    private function getFilters(Request $request): array
+    {
+        return [
+            'level_id'    => $request->input('level_id'),
+            'subject_ids' => $request->input('subject_ids', []),
+            'type'        => $request->input('type'),
+            'start_date'  => $request->input('start_date'),
+            'end_date'    => $request->input('end_date'),
+            'lesson_type' => $request->input('lesson_type', 'group'),
+        ];
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('booking::index');
+        $lessonType = $this->bookingSlotService->getDefaultLessonType();
+        $visibleDatesCount = $this->bookingSlotService->getInitialDaysToShow();
+        $startPreferredTime = $request->user()->getAttribute('preferred_start_time')?->format('H:i') ?? '00:00';
+        $endPreferredTime = $request->user()->getAttribute('preferred_end_time')?->format('H:i') ?? '23:59';
+
+        return view(
+            'booking::index',
+            compact('lessonType', 'visibleDatesCount', 'startPreferredTime', 'endPreferredTime')
+        );
+    }
+
+    public function init(Request $request)
+    {
+        $slotsResponse = $this->bookingScheduleManager
+            ->setFilters($this->getFilters($request))
+            ->setStudent($request->user())
+            ->getBookingScheduleSlots();
+
+        return response()->json($slotsResponse);
     }
 
     /**

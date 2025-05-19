@@ -42,7 +42,7 @@ function BookingPageContent() {
             setLoading(true);
             if (append) setIsFetchingMore(true);
 
-            const response = await axios.get('/levels/init', {
+            const response = await axios.get('/booking/init', {
                 params: {
                     level_id: selectedLevelId,
                     subject_ids: selectedSubjectIds,

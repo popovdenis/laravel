@@ -5,7 +5,7 @@ namespace Modules\Booking\Models;
 
 use Modules\Base\Framework\DataObject;
 use Modules\Booking\Contracts\SlotContextInterface;
-use Modules\LanguageLevel\DTO\SlotResult;
+use Modules\Booking\DTO\SlotResult;
 use Modules\User\Models\User;
 
 /**

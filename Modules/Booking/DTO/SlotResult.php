@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\LanguageLevel\DTO;
+namespace Modules\Booking\DTO;
 
 /**
  * Class SlotResult
  *
- * @package Modules\LanguageLevel\DTO
+ * @package Modules\Booking\DTO
  */
 class SlotResult
 {
