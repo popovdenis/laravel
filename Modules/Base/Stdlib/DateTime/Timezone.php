@@ -69,6 +69,13 @@ class Timezone implements TimezoneInterface
         return $this->getDateFormat($type) . ' ' . $this->getTimeFormat($type);
     }
 
+    public function now(string $timezone = null,)
+    {
+        $timezone = $timezone ??  $this->getConfigTimezone();
+
+        return Carbon::now($timezone);
+    }
+
     public function date($date = null, string $timezone = null, bool $includeTime = true): Carbon
     {
         $timezone = $timezone ??  $this->getConfigTimezone();

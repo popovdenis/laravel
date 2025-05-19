@@ -172,10 +172,9 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     {
         if (empty($this->_get(self::FILTER_START_DATE))) {
             $filters = $this->getFilters();
-            $sconfigTimezone = $this->timezone->getConfigTimezone();
 
             $startDate = $filters->hasData('start_date')
-                ? $this->timezone->date($filters->getStartDate())->setTimeFrom(Carbon::now($sconfigTimezone))
+                ? $this->timezone->date($filters->getStartDate())->setTimeFrom($filters->getStartDate())
                 : $this->timezone->date()->startOfDay();
 
             $this->setData(self::FILTER_START_DATE, $startDate);
@@ -283,18 +282,20 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
     private function getStreamStartDate($stream)
     {
-        $filterStartDate = $this->getFilterStartDate();
-        $streamStart = $this->timezone->date($stream->start_date)->startOfDay();
+        if ($filterStartDate = $this->getFilterStartDate()) {
+            return $filterStartDate;
+        }
 
-        return $filterStartDate ?? $streamStart;
+        return $this->timezone->date($stream->start_date)->startOfDay();
     }
 
     private function getStreamEndDate($stream)
     {
-        $filterEndDate = $this->getFilterEndDate();
-        $streamEnd = $this->timezone->date($stream->end_date)->endOfDay();
+        if ($filterEndDate = $this->getFilterEndDate()) {
+            return $filterEndDate;
+        }
 
-        return $filterEndDate ?? $streamEnd;
+        return $this->timezone->date($stream->end_date)->endOfDay();
     }
 
     private function getCurrentStreamDate($streamStart)

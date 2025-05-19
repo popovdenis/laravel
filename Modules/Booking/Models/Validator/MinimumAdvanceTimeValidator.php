@@ -33,8 +33,10 @@ class MinimumAdvanceTimeValidator
     public function validate(SlotContextInterface $slotContext): void
     {
         $allowedTime = $this->getMinimumAllowedTime();
+        $now = $this->timezone->now($slotContext->getStudent()->timeZoneId);
+        $slotStart = $slotContext->getSlotStart();
 
-        if ($this->timezone->date()->diffInMinutes($slotContext->getSlotStart()) < $allowedTime) {
+        if ($now->greaterThanOrEqualTo($slotStart->copy()->subMinutes($allowedTime))) {
             throw new BookingValidationException(sprintf(
                 'Slot must be booked at least %s minutes before it starts.', $allowedTime
             ));
