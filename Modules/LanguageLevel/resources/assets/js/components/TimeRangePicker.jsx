@@ -3,29 +3,30 @@ import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.min.css'
 
 export default function TimeRangeFilter({ value = [], onChange }) {
-    const startRef = useRef(null)
-    const endRef = useRef(null)
+    const startPickerRef = useRef(null);
+    const endPickerRef = useRef(null);
+    const startRef = useRef(null);
+    const endRef = useRef(null);
+    const [start, end] = value;
 
     useEffect(() => {
-        const startPicker = flatpickr(startRef.current, {
+        startPickerRef.current = flatpickr(startRef.current, {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i",
             time_24hr: true,
-            defaultDate: value[0],
+            defaultDate: start,
             onClose: () => setTimeout(() => endRef.current._flatpickr.open(), 1),
             onChange: ([date]) => {
                 endRef.current._flatpickr.set('minTime', date);
-                // setFilterStartTime(date)
             },
         })
-
-        const endPicker = flatpickr(endRef.current, {
+        endPickerRef.current = flatpickr(endRef.current, {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i",
             time_24hr: true,
-            defaultDate: value[1],
+            defaultDate: end,
             onChange: ([date]) => {
                 startRef.current._flatpickr.set('maxTime', date);
             },
@@ -35,10 +36,19 @@ export default function TimeRangeFilter({ value = [], onChange }) {
         })
 
         return () => {
-            startPicker.destroy()
-            endPicker.destroy()
+            startPickerRef.current.destroy()
+            endPickerRef.current.destroy()
         }
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (startPickerRef.current) {
+            startPickerRef.current.setDate(start, false);
+        }
+        if (endPickerRef.current) {
+            endPickerRef.current.setDate(end, false);
+        }
+    }, [start, end]);
 
     return (
         <>

@@ -5,6 +5,7 @@ import fs from 'fs';
 import fg from "fast-glob";
 
 const moduleJsFiles = fg.sync('Modules/**/resources/assets/js/pages/*.jsx');
+const moduleAppJsFiles = fg.sync('Modules/**/resources/assets/js/app.js');
 
 export default defineConfig({
     server: {
@@ -19,6 +20,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                ...moduleAppJsFiles,
                 ...moduleJsFiles,
             ],
             refresh: true,

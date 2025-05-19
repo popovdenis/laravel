@@ -110,6 +110,13 @@ class Timezone implements TimezoneInterface
         return $date;
     }
 
+    public function createFromFormat(string $format, string $datetime, string $timezone = null)
+    {
+        $timezone = $timezone ??  $this->getConfigTimezone();
+
+        return Carbon::createFromFormat($format, $datetime, $timezone);
+    }
+
     public function formatDate(
         $date = null,
         string $format = 'Y-m-d',

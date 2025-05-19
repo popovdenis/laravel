@@ -37,12 +37,17 @@ class LanguageLevelController extends Controller
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $lessonType = $this->bookingSlotService->getDefaultLessonType();
         $visibleDatesCount = $this->bookingSlotService->getInitialDaysToShow();
+        $startPreferredTime = $request->user()->getAttribute('preferred_start_time')?->format('H:i') ?? '00:00';
+        $endPreferredTime = $request->user()->getAttribute('preferred_end_time')?->format('H:i') ?? '23:59';
 
-        return view('languagelevel::index', compact('lessonType', 'visibleDatesCount'));
+        return view(
+            'languagelevel::index',
+            compact('lessonType', 'visibleDatesCount', 'startPreferredTime', 'endPreferredTime')
+        );
     }
 
     public function init(Request $request)

@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import { useBooking } from './BookingContext'
 import dayjs from 'dayjs'
 import DatetimeRangePicker from './DatetimeRangePicker';
 import TimeRangePicker from './TimeRangePicker';
+import {toast} from "sonner";
 
 export default function TopFilters() {
     const {
@@ -26,6 +27,23 @@ export default function TopFilters() {
         setFilterStartDate(today.format('YYYY-MM-DD'))
         setFilterEndDate(endDate.format('YYYY-MM-DD'))
     }
+
+    useEffect(() => {
+        const handlePreferredTimeUpdate = (event) => {
+            if (event.detail) {
+                const { start, end } = event.detail;
+                setFilterStartTime(start);
+                setFilterEndTime(end);
+                toast.success('The preferred time is set.');
+            }
+        };
+
+        window.addEventListener('preferred-time-updated', handlePreferredTimeUpdate);
+
+        return () => {
+            window.removeEventListener('preferred-time-updated', handlePreferredTimeUpdate);
+        };
+    }, []);
 
     return (
         <div className="bg-white border rounded-md p-4 mb-6 md:col-span-3">

@@ -5,7 +5,6 @@ namespace Modules\Booking\Http\Controllers;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Modules\Base\Exceptions\AlreadyExistsException;
 use Modules\Base\Http\Controllers\Controller;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Data\BookingData;
@@ -23,6 +22,7 @@ use Modules\Security\Exceptions\SecurityViolationException;
 use Modules\Security\Models\AttemptRequestEvent;
 use Modules\Security\Models\SecurityManager;
 use Modules\Subscription\Exceptions\InsufficientCreditsException;
+use Modules\User\Contracts\UserRepositoryInterface;
 use Throwable;
 
 class BookingController extends Controller
@@ -42,8 +42,9 @@ class BookingController extends Controller
     /**
      * @var \Modules\EventManager\Contracts\ManagerInterface
      */
-    private ManagerInterface $eventManager;
-    private ConfigProvider $configProvider;
+    private ManagerInterface        $eventManager;
+    private ConfigProvider          $configProvider;
+    private UserRepositoryInterface $userRepository;
 
     public function __construct(
         CustomerTimezone $timezone,
@@ -52,6 +53,7 @@ class BookingController extends Controller
         OrderManagerInterface $orderManager,
         ManagerInterface $eventManager,
         ConfigProvider $configProvider,
+        UserRepositoryInterface $userRepository,
         private $bookingRequestEvent = RequestType::BOOKING_ATTEMPT_REQUEST,
     )
     {
@@ -61,6 +63,7 @@ class BookingController extends Controller
         $this->orderManager = $orderManager;
         $this->eventManager = $eventManager;
         $this->configProvider = $configProvider;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -182,6 +185,21 @@ class BookingController extends Controller
         }
 
         return $booking;
+    }
+
+    public function preferredTime(Request $request)
+    {
+        $request->validate([
+            'start_time' => 'required',
+            'end_time' => 'required',
+        ]);
+
+        $startTime = $request->input('start_time');
+        $endTime = $request->input('end_time');
+
+        $this->userRepository->savePreferredTime($request->user(), $startTime, $endTime);
+
+        return response()->json(['success' => true, 'message' => 'Your preferred time is set.']);
     }
 
     /**

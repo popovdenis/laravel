@@ -23,7 +23,7 @@ function BookingPageContent() {
         filterEndTime, setFilterEndTime,
         currentEndDate, setCurrentEndDate,
         visibleDatesCount, setVisibleDatesCount,
-        loading, setLoading
+        loading, setLoading,
     } = useBooking()
 
     const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -172,9 +172,14 @@ function BookingPageContent() {
     )
 }
 
-export default function BookingPage({ lessonType, visibleDatesCount }) {
+export default function BookingPage({ lessonType, visibleDatesCount, startPreferredTime, endPreferredTime }) {
     return (
-        <BookingProvider defaultLessonType={lessonType} defaultVisibleDatesCount={visibleDatesCount}>
+        <BookingProvider
+            defaultLessonType={lessonType}
+            defaultVisibleDatesCount={visibleDatesCount}
+            startPreferredTime={startPreferredTime}
+            endPreferredTime={endPreferredTime}
+        >
             <>
                 <BookingPageContent />
                 <Toaster richColors position="top-right" />

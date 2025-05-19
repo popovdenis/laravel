@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 export const BookingContext = createContext();
 
-export function BookingProvider({ children, defaultLessonType, defaultVisibleDatesCount }) {
+export function BookingProvider({ children, defaultLessonType, defaultVisibleDatesCount, startPreferredTime, endPreferredTime }) {
     const [levels, setLevels] = useState([]);
     const [subjects, setSubjects] = useState([]);
     const [selectedLevelId, setSelectedLevelId] = useState(null);
@@ -11,8 +11,8 @@ export function BookingProvider({ children, defaultLessonType, defaultVisibleDat
     const [lessonType, setLessonType] = useState(defaultLessonType);
     const [filterStartDate, setFilterStartDate] = useState(null);
     const [filterEndDate, setFilterEndDate] = useState(null);
-    const [filterStartTime, setFilterStartTime] = useState("00:00");
-    const [filterEndTime, setFilterEndTime] = useState("23:59");
+    const [filterStartTime, setFilterStartTime] = useState(startPreferredTime);
+    const [filterEndTime, setFilterEndTime] = useState(endPreferredTime);
     const [slots, setSlots] = useState([]);
     const [currentEndDate, setCurrentEndDate] = useState(null);
     const [initialVisibleDatesCount, setInitialVisibleDatesCount] = useState(defaultVisibleDatesCount);

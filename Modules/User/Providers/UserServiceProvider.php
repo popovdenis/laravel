@@ -5,7 +5,9 @@ namespace Modules\User\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\User\Contracts\AccountManagementInterface;
+use Modules\User\Contracts\UserRepositoryInterface;
 use Modules\User\Models\AccountManager;
+use Modules\User\Models\UserRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -40,6 +42,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
         $this->app->bind(AccountManagementInterface::class, AccountManager::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**

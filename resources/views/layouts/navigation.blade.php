@@ -23,19 +23,11 @@
                 </div>
             </div>
 
-            @php
-                use Binafy\LaravelCart\Models\Cart;
-
-                $cart = auth()->check()
-                    ? Cart::firstOrCreate(['user_id' => auth()->id()])
-                    : null;
-
-                $cartCount = $cart?->items->count() ?? 0;
-            @endphp
-
             @auth
                 <div class="hidden sm:flex sm:items-center sm:space-x-6">
                     <!-- User Dropdown -->
+                    <x-user::preferred-time-dropdown />
+
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
