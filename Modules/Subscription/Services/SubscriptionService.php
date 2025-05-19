@@ -30,25 +30,27 @@ class SubscriptionService
         $this->configProvider = $configProvider;
     }
 
-    public function syncSubscriptionForUser(User $user, ?int $planId): void
+    public function syncSubscriptionForUser(User $user, ?int $planId): bool
     {
         if (!$user->hasRole('Student')) {
             throw new \Exception('Only student can subscribe to this plan.');
         }
-        $currentPlanId = $user->userSubscription?->plan_id;
+        $activeSubscription = $user->getActiveSubscription();
+        $currentPlanId = $activeSubscription?->plan->id;
 
         if ($planId === $currentPlanId) {
             // No changes, do nothing.
-            return;
+            return false;
         }
 
         if ($planId) {
             $plan = $this->getSubscriptionPlan($planId);
-
-            $this->updateCreditBalance($user, $plan);
+            $this->syncSubscriptionCreditBalance($user, $plan);
         } else {
             $user->subscriptions()?->delete();
         }
+
+        return true;
     }
 
     public function getSubscriptionPlan(int $planId): SubscriptionPlan
@@ -56,7 +58,7 @@ class SubscriptionService
         return \Modules\SubscriptionPlan\Models\SubscriptionPlan::find($planId);
     }
 
-    public function updateCreditBalance(User $user, SubscriptionPlan $plan): void
+    public function syncSubscriptionCreditBalance(User $user, SubscriptionPlan $plan): void
     {
         if ($this->configProvider->resetCreditsOnPlanChange()) {
             $this->transactionService->adjustCredits($user, (int) $user->credit_balance);
@@ -90,5 +92,10 @@ class SubscriptionService
             'trial_ends_at'  => $trialEndsAt,
             'credits_amount' => $plan->credits
         ];
+    }
+
+    public function replaceCreditBalance(User $user, int $credits)
+    {
+        $this->transactionService->replace($user, $credits);
     }
 }

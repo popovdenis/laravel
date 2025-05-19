@@ -18,7 +18,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $subscriptionPlan = $user->subscribed() ? $user->subscription()->plan : null;
         $activeSubscription = $user->getActiveSubscription();
         $subscriptionPlan = $activeSubscription ? $activeSubscription->plan : null;
 

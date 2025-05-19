@@ -18,4 +18,6 @@ interface TransactionServiceInterface
     public function refund(User $user, int $amount, string $comment = null): void;
 
     public function adjust(User $user, int $amount, string $comment = null): void;
+
+    public function replace(User $user, int $amount, string $comment = null): void;
 }

@@ -12,6 +12,7 @@ use Modules\User\Models\User;
  * Class TransactionService
  *
  * @package Modules\CreditPayment\Services
+ * TODO: refactor the service. User Transaction History to add balance
  */
 class TransactionService implements TransactionServiceInterface
 {
@@ -31,12 +32,22 @@ class TransactionService implements TransactionServiceInterface
 
     public function refund(User $user, int $amount, string $comment = null): void
     {
-        $user->increment('credit_balance', $amount);
+        $this->topUp(
+            user: $user,
+            amount: $amount,
+            source: 'subscription',
+            comment: $comment ?? 'Making refund'
+        );
     }
 
     public function adjust(User $user, int $amount, string $comment = null): void
     {
         $user->update(['credit_balance' => $user->credit_balance + $amount]);
+    }
+
+    public function replace(User $user, int $amount, string $comment = null): void
+    {
+        $user->update(['credit_balance' => $amount]);
     }
 
     public function adjustCredits(User $user, int $creditBalance): void
