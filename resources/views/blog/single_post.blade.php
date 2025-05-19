@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <x-slot name="title">
         {{ $post->genSeoTitle() }}
     </x-slot>
@@ -31,4 +31,4 @@
             </div>
         @endif
     </div>
-</x-app-layout>
+</x-theme::app-layout>

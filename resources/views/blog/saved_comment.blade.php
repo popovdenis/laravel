@@ -1,5 +1,5 @@
 {{-- resources/views/vendor/blog/saved_comment.blade.php --}}
-<x-app-layout>
+<x-theme::app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800 leading-tight">
             Saved comment
@@ -20,4 +20,4 @@
             Back to blog post
         </a>
     </div>
-</x-app-layout>
+</x-theme::app-layout>

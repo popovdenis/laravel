@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <div class="max-w-md mx-auto py-8">
         <form action="{{ route('subscription') }}" method="POST">
             @csrf
@@ -7,4 +7,4 @@
             </button>
         </form>
     </div>
-</x-app-layout>
+</x-theme::app-layout>

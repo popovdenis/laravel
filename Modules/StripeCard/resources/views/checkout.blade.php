@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <div class="max-w-xl mx-auto mt-12">
         <h2 class="text-xl font-bold mb-4">Purchase 1 Month Access</h2>
         <form action="{{ route('stripecard::checkout.session') }}" method="POST">
@@ -8,4 +8,4 @@
             </button>
         </form>
     </div>
-</x-app-layout>
+</x-theme::app-layout>

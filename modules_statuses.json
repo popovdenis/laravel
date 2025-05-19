@@ -27,5 +27,6 @@
     "UserSubscription": true,
     "Configuration": true,
     "BookingGridFlat": true,
-    "FilamentSyncScheduleMonitor": true
+    "FilamentSyncScheduleMonitor": true,
+    "Theme": true
 }

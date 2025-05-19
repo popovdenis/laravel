@@ -1,5 +1,5 @@
 {{-- resources/views/vendor/blog/index.blade.php --}}
-<x-app-layout>
+<x-theme::app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800 leading-tight">
             {{ $title ?? 'Blog' }}
@@ -63,4 +63,4 @@
             </div>
         @endif
     </div>
-</x-app-layout>
+</x-theme::app-layout>

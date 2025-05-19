@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800">Customer Account</h2>
     </x-slot>
@@ -28,4 +28,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-theme::app-layout>

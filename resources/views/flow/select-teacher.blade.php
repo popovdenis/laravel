@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <h1 class="text-2xl font-bold mb-4">Select a Teacher for {{ $course->title }}</h1>
 
     <ul>
@@ -18,4 +18,4 @@
             </li>
         @endforeach
     </ul>
-</x-app-layout>
+</x-theme::app-layout>

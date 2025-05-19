@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-theme::app-layout>
     <x-slot name="header">
         <h2 class="text-lg font-medium text-gray-900">
             Select Time Slots
@@ -80,4 +80,4 @@
             });
         });
     </script>
-</x-app-layout>
+</x-theme::app-layout>
