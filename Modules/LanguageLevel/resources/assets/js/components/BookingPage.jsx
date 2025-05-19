@@ -35,6 +35,8 @@ function BookingPageContent() {
 
     const [isFetchingMore, setIsFetchingMore] = useState(false);
     const hasInitialized = useRef(false);
+    const showLoadMoreButton =
+        currentEndDate && dayjs(currentEndDate).isBefore(filterEndDate);
 
     const fetchDay = function (date) {
         return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
@@ -143,7 +145,7 @@ function BookingPageContent() {
                 <TopFilters />
                 { loading && <FullscreenLoader />}
                 <SlotsList/>
-                {(
+                {showLoadMoreButton && (
                     <div className="text-center">
                         <button onClick={loadMore} disabled={isFetchingMore} className="btn btn-primary">
                             {isFetchingMore ? 'Loading...' : 'Load More'}
