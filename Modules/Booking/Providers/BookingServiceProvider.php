@@ -110,7 +110,7 @@ class BookingServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
-            $schedule->command(ConfirmUpcomingBookingCommand::SIGNATURE)->cron('0 */2 * * *')->storeOutputInDb();
+            $schedule->command(ConfirmUpcomingBookingCommand::SIGNATURE)->cron('*/30 * * * *')->storeOutputInDb();
         });
     }
 

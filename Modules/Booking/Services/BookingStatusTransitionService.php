@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\Booking\Services;
 
-use Modules\Booking\Models\BookingManager;
+use Modules\Booking\Enums\BookingStatus;
+use Modules\Booking\Models\Booking;
+use Modules\Booking\Models\ConfigProvider;
 
 /**
  * Class BookingStatusTransitionService
@@ -12,22 +14,24 @@ use Modules\Booking\Models\BookingManager;
  */
 class BookingStatusTransitionService
 {
-    private BookingManager $bookingManager;
+    private ConfigProvider $configProvider;
 
-    public function __construct(BookingManager $bookingManager)
+    public function __construct(ConfigProvider $configProvider)
     {
-        $this->bookingManager = $bookingManager;
+        $this->configProvider = $configProvider;
     }
 
     public function handle(): void
     {
-        $bookings = $this->bookingManager->getUpcomingBookings();
-        if ($bookings->isEmpty()) {
-            return;
-        }
+        $deadlineTime = $this->getCancellationDeadlineTime();
 
-        foreach ($bookings as $booking) {
-            $booking->markAsConfirmed();
-        }
+        Booking::where('status', BookingStatus::PENDING)
+            ->whereRaw('TIMESTAMPDIFF(MINUTE, UTC_TIMESTAMP(), slot_start_at) BETWEEN 0 AND ?', [$deadlineTime])
+            ->update(['status' => BookingStatus::CONFIRMED]);
+    }
+
+    private function getCancellationDeadlineTime()
+    {
+        return $this->configProvider->getBookingCancellationDeadline();
     }
 }
