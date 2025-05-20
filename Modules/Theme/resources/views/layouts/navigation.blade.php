@@ -26,7 +26,7 @@
                     <!-- User Dropdown -->
                     <x-user::preferred-time-dropdown />
 
-                    <x-user::credit-display size="lg" />
+                    <x-user::credit-display-header size="lg" />
 
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
