@@ -81,7 +81,6 @@ class BookingServiceProvider extends ServiceProvider
                 $all['student_time'],
                 $all['advance'],
                 $all['lesson_type'],
-                $all['individual'],
             ];
         });
 
