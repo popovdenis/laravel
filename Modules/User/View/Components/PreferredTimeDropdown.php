@@ -13,8 +13,8 @@ use Illuminate\View\View;
  */
 class PreferredTimeDropdown extends Component
 {
-    public string $startTime;
-    public string $endTime;
+    public ?string $startTime;
+    public ?string $endTime;
 
     public function __construct()
     {
