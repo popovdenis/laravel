@@ -16,7 +16,6 @@ use Modules\Booking\Models\BookingQuote;
 use Modules\Booking\Models\BookingRepository;
 use Modules\Booking\Models\SlotContext;
 use Modules\Booking\Models\Validator\CreditBalanceValidator;
-use Modules\Booking\Models\Validator\SlotAvailabilityValidator;
 use Modules\Booking\Models\Validator\SubmitBookingValidator;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
