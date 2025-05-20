@@ -6,6 +6,7 @@ namespace Modules\Booking\Models\Validator;
 use Illuminate\Support\Facades\Log;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\SlotContextInterface;
+use Modules\Booking\Contracts\SlotValidatorInterface;
 use Modules\Booking\Exceptions\BookingValidationException;
 
 /**
@@ -13,7 +14,7 @@ use Modules\Booking\Exceptions\BookingValidationException;
  *
  * @package Modules\Booking\Models\Validator
  */
-class TeacherAvailabilityValidator
+class TeacherAvailabilityValidator implements SlotValidatorInterface
 {
     private CustomerTimezone $timezone;
 

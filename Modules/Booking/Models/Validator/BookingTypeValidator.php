@@ -6,6 +6,7 @@ namespace Modules\Booking\Models\Validator;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\SlotContextInterface;
+use Modules\Booking\Contracts\SlotValidatorInterface;
 use Modules\Booking\Enums\BookingStatus;
 use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Exceptions\BookingValidationException;
@@ -17,7 +18,7 @@ use Modules\Booking\Models\SlotContext;
  *
  * @package Modules\Booking\Models\Validator
  */
-class BookingTypeValidator
+class BookingTypeValidator implements SlotValidatorInterface
 {
     private CustomerTimezone $timezone;
     private ConfigProvider   $configProvider;
@@ -35,8 +36,6 @@ class BookingTypeValidator
     {
         if ($slotContext->getLessonType() === BookingTypeEnum::BOOKING_TYPE_GROUP) {
             $this->validateGroupBooking($slotContext);
-        } else if ($slotContext->getLessonType() === BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL) {
-            $this->validateIndividualBooking($slotContext);
         }
     }
 
@@ -53,16 +52,6 @@ class BookingTypeValidator
             throw new BookingValidationException(sprintf(
                 'This group slot cannot accept more than %s participants.', $maxMembersAllowed
             ));
-        }
-    }
-
-    private function validateIndividualBooking(SlotContextInterface $slotContext): void
-    {
-        // has Group bookings
-        if ($this->getBookings($slotContext)->isNotEmpty()) {
-            throw new BookingValidationException(
-                'Individual slots cannot be booked when a group session is already scheduled.'
-            );
         }
     }
 

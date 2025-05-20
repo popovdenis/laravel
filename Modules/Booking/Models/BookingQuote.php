@@ -13,7 +13,6 @@ use Modules\Booking\Enums\BookingTypeEnum;
 use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Order\Models\Quote;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
-use Modules\User\Models\User;
 
 /**
  * Class BookingQuote
@@ -30,21 +29,18 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     protected int                           $credits;
     private SubmitQuoteValidatorInterface   $bookingValidator;
     private CreditBalanceValidatorInterface $creditBalanceValidator;
-    private SlotValidator                   $slotValidator;
     private BookingRepositoryInterface      $bookingRepository;
     private CustomerTimezone                $timezone;
 
     public function __construct(
         SubmitQuoteValidatorInterface   $bookingValidator,
         CreditBalanceValidatorInterface $creditBalanceValidator,
-        SlotValidator                   $slotValidator,
         BookingRepositoryInterface      $bookingRepository,
         CustomerTimezone                $timezone
     )
     {
         $this->bookingValidator       = $bookingValidator;
         $this->creditBalanceValidator = $creditBalanceValidator;
-        $this->slotValidator          = $slotValidator;
         $this->bookingRepository      = $bookingRepository;
         $this->timezone               = $timezone;
     }
@@ -61,7 +57,14 @@ class BookingQuote extends Quote implements BookingQuoteInterface
     {
         $this->creditBalanceValidator->validate($this);
         $this->bookingValidator->validate($this);
-        $this->slotValidator->validate($this->getSlotContext());
+        $this->buildValidator()->validate($this->getSlotContext());
+    }
+
+    private function buildValidator(): SlotValidator
+    {
+        $validators = app('booking.store.validators');
+
+        return new SlotValidator($validators);
     }
 
     public function save(): Booking

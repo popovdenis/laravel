@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\Booking\Models\Validator;
 
 use Modules\Booking\Contracts\SlotContextInterface;
+use Modules\Booking\Contracts\SlotValidatorInterface;
 use Modules\Booking\Exceptions\BookingValidationException;
 
 /**
@@ -11,7 +12,7 @@ use Modules\Booking\Exceptions\BookingValidationException;
  *
  * @package Modules\Booking\Models\Validator
  */
-class PassStudentTimeValidator
+class PassStudentTimeValidator implements SlotValidatorInterface
 {
     /**
      * @throws BookingValidationException

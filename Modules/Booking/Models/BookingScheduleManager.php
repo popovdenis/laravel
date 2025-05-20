@@ -35,7 +35,6 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
     private SlotContext                      $bookingSlot;
     private DataObject                       $dataObject;
     private BookingSlotService               $bookingSlotService;
-    private SlotValidator                    $slotValidator;
 
     public function __construct(
         CustomerTimezone                 $timezone,
@@ -45,7 +44,6 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         SlotContext                      $bookingSlot,
         DataObject                       $dataObject,
         BookingSlotService               $bookingSlotService,
-        SlotValidator                    $slotValidator,
         array                            $data = []
     )
     {
@@ -57,7 +55,6 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         $this->bookingSlot             = $bookingSlot;
         $this->dataObject              = $dataObject;
         $this->bookingSlotService      = $bookingSlotService;
-        $this->slotValidator           = $slotValidator;
     }
 
     public function setStudent(User $student): self
@@ -418,10 +415,17 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
         }
     }
 
+    private function buildValidator(): SlotValidator
+    {
+        $validators = app('booking.slot.validators');
+
+        return new SlotValidator($validators);
+    }
+
     public function isSlotBookable(SlotContext $bookingSlot): bool
     {
         try {
-            $this->slotValidator->validate($bookingSlot);
+            $this->buildValidator()->validate($bookingSlot);
         } catch (BookingValidationException $e) {
             return false;
         }

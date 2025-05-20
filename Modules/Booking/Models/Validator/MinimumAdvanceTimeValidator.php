@@ -5,6 +5,7 @@ namespace Modules\Booking\Models\Validator;
 
 use Modules\Base\Services\CustomerTimezone;
 use Modules\Booking\Contracts\SlotContextInterface;
+use Modules\Booking\Contracts\SlotValidatorInterface;
 use Modules\Booking\Exceptions\BookingValidationException;
 use Modules\Booking\Models\ConfigProvider;
 
@@ -13,7 +14,7 @@ use Modules\Booking\Models\ConfigProvider;
  *
  * @package Modules\Booking\Models\Validator
  */
-class MinimumAdvanceTimeValidator
+class MinimumAdvanceTimeValidator implements SlotValidatorInterface
 {
     private CustomerTimezone $timezone;
     private ConfigProvider   $configProvider;

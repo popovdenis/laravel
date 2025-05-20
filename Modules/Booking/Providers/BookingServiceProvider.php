@@ -15,8 +15,13 @@ use Modules\Booking\Contracts\SubmitQuoteValidatorInterface;
 use Modules\Booking\Models\BookingQuote;
 use Modules\Booking\Models\BookingRepository;
 use Modules\Booking\Models\SlotContext;
+use Modules\Booking\Models\Validator\BookingTypeValidator;
 use Modules\Booking\Models\Validator\CreditBalanceValidator;
+use Modules\Booking\Models\Validator\IndividualLessonValidator;
+use Modules\Booking\Models\Validator\MinimumAdvanceTimeValidator;
+use Modules\Booking\Models\Validator\PassStudentTimeValidator;
 use Modules\Booking\Models\Validator\SubmitBookingValidator;
+use Modules\Booking\Models\Validator\TeacherAvailabilityValidator;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -57,6 +62,31 @@ class BookingServiceProvider extends ServiceProvider
         $this->app->bind(CreditBalanceValidatorInterface::class, CreditBalanceValidator::class);
         $this->app->bind(SlotContextInterface::class, SlotContext::class);
         $this->app->bind(BookingRepositoryInterface::class, BookingRepository::class);
+
+        $this->app->singleton('booking.validators', function ($app) {
+            return [
+                'teacher' => $app->make(TeacherAvailabilityValidator::class),
+                'student_time' => $app->make(PassStudentTimeValidator::class),
+                'advance' => $app->make(MinimumAdvanceTimeValidator::class),
+                'lesson_type' => $app->make(BookingTypeValidator::class),
+                'individual' => $app->make(IndividualLessonValidator::class),
+            ];
+        });
+
+        $this->app->bind('booking.slot.validators', function () {
+            $all = app('booking.validators');
+
+            return [
+                $all['teacher'],
+                $all['student_time'],
+                $all['advance'],
+                $all['lesson_type'],
+            ];
+        });
+
+        $this->app->bind('booking.store.validators', function () {
+            return app('booking.validators');
+        });
     }
 
     /**
