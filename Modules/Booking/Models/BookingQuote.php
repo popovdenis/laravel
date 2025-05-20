@@ -80,6 +80,7 @@ class BookingQuote extends Quote implements BookingQuoteInterface
             'slot_start_at'        => $bookingStartTime,
             'slot_end_at'          => $bookingEndTime,
             'lesson_type'          => $this->getLessonType(),
+            'current_subject_id'   => $this->getSlotContext()->getCurrentSubject()->id
         ]);
     }
 

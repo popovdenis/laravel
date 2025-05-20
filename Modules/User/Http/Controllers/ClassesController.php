@@ -4,21 +4,33 @@ namespace Modules\User\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\Base\Http\Controllers\Controller;
-use Modules\Booking\Enums\BookingStatus;
+use Modules\Base\Services\CustomerTimezone;
+use Modules\Booking\Contracts\BookingRepositoryInterface;
 
 class ClassesController extends Controller
 {
+    private BookingRepositoryInterface $bookingRepository;
+
+    public function __construct(
+        CustomerTimezone $timezone,
+        BookingRepositoryInterface $bookingRepository
+    )
+    {
+        parent::__construct($timezone);
+        $this->bookingRepository = $bookingRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $classes = auth()->user()->bookings()
-                                 ->where('status', '!=', BookingStatus::CANCELLED)
-                                 ->latest()
-                                 ->paginate(10);
+        $user = $request->user();
+        $type = $request->input('type', BookingRepositoryInterface::SCHEDULED_CLASSES);
 
-        return view('user::classes.index', compact('classes'));
+        $classes = $this->bookingRepository->getUserBookingsByType($user, $type, 5);
+
+        return view('user::classes.index', compact('classes', 'type'));
     }
 
     /**

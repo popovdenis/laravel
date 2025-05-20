@@ -21,6 +21,7 @@ interface SlotContextInterface
     const SLOT_LENGTH = 'lesson_length';
     const SLOT_START = 'slot_start';
     const SLOT_END = 'slot_end';
+    const CURRENT_SUBJECT = 'current_subject';
 
     public function getDaySlot();
 
@@ -30,6 +31,7 @@ interface SlotContextInterface
     public function getCurrentDate();
 
     public function getSubjectId();
+    public function getCurrentSubject();
 
     public function setTeacher(User $teacher);
     public function getTeacher();

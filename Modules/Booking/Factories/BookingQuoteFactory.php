@@ -14,6 +14,7 @@ use Modules\Booking\Services\BookingSlotService;
 use Modules\Payment\Contracts\RequestDataInterface;
 use Modules\ScheduleTimeslot\Contracts\ScheduleTimeslotRepositoryInterface;
 use Modules\Stream\Contracts\StreamRepositoryInterface;
+use Modules\Stream\Models\Stream;
 use Modules\Subscription\Models\ConfigProvider;
 
 /**
@@ -80,6 +81,8 @@ class BookingQuoteFactory
             'slot_end'      => $this->timezone->date($requestData->slotEndAt, $quote->getStudent()->timeZoneId),
             'day_slot'      => $quote->getSlot()
         ]);
+        $slotContext->setData('current_subject', $this->getCurrentSubject($slotContext->getStream()));
+
         $quote->setSlotContext($slotContext);
     }
 
@@ -100,5 +103,10 @@ class BookingQuoteFactory
     private function getStreamById(int $streamId)
     {
         return $this->streamRepository->getById($streamId);
+    }
+
+    private function getCurrentSubject(Stream $stream): \Modules\Subject\Models\Subject
+    {
+        return $stream->languageLevel->subjects->firstWhere('id', $stream->current_subject_id);
     }
 }

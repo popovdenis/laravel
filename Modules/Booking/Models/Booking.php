@@ -11,6 +11,7 @@ use Modules\Order\Contracts\PurchasableInterface;
 use Modules\Order\Models\Order;
 use Modules\ScheduleTimeslot\Models\ScheduleTimeslot;
 use Modules\Stream\Models\Stream;
+use Modules\Subject\Models\Subject;
 use Modules\User\Models\User;
 
 class Booking extends Model implements PurchasableInterface
@@ -22,6 +23,7 @@ class Booking extends Model implements PurchasableInterface
         'teacher_id',
         'stream_id',
         'schedule_timeslot_id',
+        'current_subject_id',
         'status',
         'lesson_type',
         'slot_start_at',
@@ -56,6 +58,11 @@ class Booking extends Model implements PurchasableInterface
     public function timeslot(): BelongsTo
     {
         return $this->belongsTo(ScheduleTimeslot::class, 'schedule_timeslot_id');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'current_subject_id');
     }
 
     public function markAsPending(): void

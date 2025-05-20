@@ -85,6 +85,11 @@ class SlotContext extends DataObject implements SlotContextInterface
         return $this->getData(self::SLOT_END);
     }
 
+    public function getCurrentSubject()
+    {
+        return $this->getData(self::CURRENT_SUBJECT);
+    }
+
     public function getSubject()
     {
         return $this->getStream()->languageLevel->subjects->firstWhere('id', $this->getSubjectId());

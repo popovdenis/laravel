@@ -317,6 +317,7 @@ class BookingScheduleManager extends AbstractSimpleObject implements BookingSche
 
         while ($currentDate->lte($streamEnd)) {
             $teacherDaySlots = $this->getDaySlots($bookingSlot->getTeacher(), $currentDate);
+
             $subjectIds = $stream->languageLevel->subjects->pluck('id')->values();//TODO: move to repository
             $currentIndex = $subjectIds->search($stream->current_subject_id);
             $shiftedIndex = ($currentIndex + $slotIndex) % $subjectIds->count();
