@@ -31,13 +31,18 @@ function BookingPageContent() {
     const showLoadMoreButton = currentEndDate && dayjs(currentEndDate).isBefore(filterEndDate);
 
     const fetchDay = function (date) {
-        return dayjs(date).add(visibleDatesCount, 'day').format('YYYY-MM-DD')
+        const resultDate = dayjs(date).add(visibleDatesCount, 'day');
+        const endDate = dayjs(filterEndDate);
+
+        return resultDate.isAfter(endDate)
+            ? endDate.format('YYYY-MM-DD')
+            : resultDate.format('YYYY-MM-DD');
     }
     const buildDateTime = function (date, time) {
         return dayjs(`${date}T${time}`).format('YYYY-MM-DD HH:mm');
     };
 
-    const fetchSlots = async ({ startDate, endDate, append = false }) => {
+    const fetchSlots = async ({ startDate, endDate, startTime, endTime, append = false }) => {
         try {
             setLoading(true);
             if (append) setIsFetchingMore(true);
@@ -46,8 +51,8 @@ function BookingPageContent() {
                 params: {
                     level_id: selectedLevelId,
                     subject_ids: selectedSubjectIds,
-                    start_date: startDate,
-                    end_date: endDate,
+                    start_date: buildDateTime(startDate, startTime),
+                    end_date: buildDateTime(endDate, endTime),
                     lesson_type: lessonType,
                 }
             });
@@ -126,10 +131,13 @@ function BookingPageContent() {
     // 3. Fetch initial slots when currentEndDate sets
     useEffect(() => {
         if (filterStartDate && filterEndDate) {
-            const nextEnd = fetchDay(filterStartDate, filterStartTime);
+            const nextEnd = fetchDay(filterStartDate);
+
             fetchSlots({
-                startDate: buildDateTime(filterStartDate, filterStartTime),
-                endDate: buildDateTime(nextEnd, filterEndTime),
+                startDate: filterStartDate,
+                endDate: nextEnd,
+                startTime: filterStartTime,
+                endTime: filterEndTime,
                 append: false
             });
         }
@@ -146,9 +154,12 @@ function BookingPageContent() {
     const loadMore = async () => {
         if (!currentEndDate || dayjs(currentEndDate).isSameOrAfter(filterEndDate)) return;
         const nextEnd = fetchDay(currentEndDate);
+
         await fetchSlots({
-            startDate: buildDateTime(currentEndDate, filterStartTime),
-            endDate: buildDateTime(nextEnd, filterEndTime),
+            startDate: currentEndDate,
+            endDate: nextEnd,
+            startTime: filterStartTime,
+            endTime: filterEndTime,
             append: true
         });
     };

@@ -11,7 +11,7 @@ return [
     ],
     'listing' => [
         'default_lesson_type' => 'group',
-        'initial_days_range' => 5,
+        'initial_days_range' => 7,
         'load_more_days' => 5,
     ]
 ];
