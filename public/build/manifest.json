@@ -1,8 +1,14 @@
 {
-  "Modules/LanguageLevel/resources/assets/js/pages/index.jsx": {
-    "file": "assets/index-CF-Zi9Md.js",
+  "Modules/Booking/resources/assets/js/app.js": {
+    "file": "assets/app-l0sNRNKZ.js",
+    "name": "app",
+    "src": "Modules/Booking/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Booking/resources/assets/js/pages/index.jsx": {
+    "file": "assets/index-CvSX5OJ4.js",
     "name": "index",
-    "src": "Modules/LanguageLevel/resources/assets/js/pages/index.jsx",
+    "src": "Modules/Booking/resources/assets/js/pages/index.jsx",
     "isEntry": true,
     "imports": [
       "_index-xsH4HHeE.js"
@@ -11,12 +17,84 @@
       "assets/index-CksuuEqD.css"
     ]
   },
+  "Modules/Configuration/resources/assets/js/app.js": {
+    "file": "assets/app-DP2rzg_V.js",
+    "name": "app",
+    "src": "Modules/Configuration/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Invoice/resources/assets/js/app.js": {
+    "file": "assets/app-K6Dvbx-E.js",
+    "name": "app",
+    "src": "Modules/Invoice/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/LanguageLevel/resources/assets/js/app.js": {
+    "file": "assets/app-C6Kfwj0f.js",
+    "name": "app",
+    "src": "Modules/LanguageLevel/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/ScheduleTemplate/resources/assets/js/app.js": {
+    "file": "assets/app-RnTpOC5-.js",
+    "name": "app",
+    "src": "Modules/ScheduleTemplate/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/ScheduleTimeslot/resources/assets/js/app.js": {
+    "file": "assets/app-DVN7Oi2P.js",
+    "name": "app",
+    "src": "Modules/ScheduleTimeslot/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Stream/resources/assets/js/app.js": {
+    "file": "assets/app-DdXTRxfG.js",
+    "name": "app",
+    "src": "Modules/Stream/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/StripeCard/resources/assets/js/app.js": {
+    "file": "assets/app-BIjMHF-b.js",
+    "name": "app",
+    "src": "Modules/StripeCard/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Subject/resources/assets/js/app.js": {
+    "file": "assets/app-BQEWTaK-.js",
+    "name": "app",
+    "src": "Modules/Subject/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Subscription/resources/assets/js/app.js": {
+    "file": "assets/app-My_wb10K.js",
+    "name": "app",
+    "src": "Modules/Subscription/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/SubscriptionPlan/resources/assets/js/app.js": {
+    "file": "assets/app-D0WdxB02.js",
+    "name": "app",
+    "src": "Modules/SubscriptionPlan/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/Theme/resources/assets/js/app.js": {
+    "file": "assets/app-C3LV8HgG.js",
+    "name": "app",
+    "src": "Modules/Theme/resources/assets/js/app.js",
+    "isEntry": true
+  },
+  "Modules/User/resources/assets/js/app.js": {
+    "file": "assets/app-LjUnHRa3.js",
+    "name": "app",
+    "src": "Modules/User/resources/assets/js/app.js",
+    "isEntry": true
+  },
   "_index-xsH4HHeE.js": {
     "file": "assets/index-xsH4HHeE.js",
     "name": "index"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DgM0izRU.css",
+    "file": "assets/app-BvxkDf07.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
