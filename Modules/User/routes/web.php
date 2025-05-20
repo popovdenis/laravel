@@ -9,6 +9,10 @@ use Modules\User\Http\Controllers\ClassesController;
 use Modules\User\Http\Controllers\UserController;
 use Modules\User\Http\Controllers\OrderController;
 
+Route::get('/', function () {
+    return redirect('/account/profile');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('user', UserController::class)->names('user');
 });
