@@ -36,6 +36,8 @@ class BookingTypeValidator implements SlotValidatorInterface
     {
         if ($slotContext->getLessonType() === BookingTypeEnum::BOOKING_TYPE_GROUP) {
             $this->validateGroupBooking($slotContext);
+        } elseif ($slotContext->getLessonType() === BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL) {
+            $this->validateIndividualBooking($slotContext);
         }
     }
 
@@ -52,6 +54,24 @@ class BookingTypeValidator implements SlotValidatorInterface
             throw new BookingValidationException(sprintf(
                 'This group slot cannot accept more than %s participants.', $maxMembersAllowed
             ));
+        }
+    }
+
+    private function validateIndividualBooking(SlotContextInterface $slotContext): void
+    {
+        $groupedBookings = $this->getBookings($slotContext)
+                                ->where('lesson_type', BookingTypeEnum::BOOKING_TYPE_GROUP->value)
+                                ->count();
+        $individualBookings = $this->getBookings($slotContext)
+                                   ->where('lesson_type', BookingTypeEnum::BOOKING_TYPE_INDIVIDUAL->value)
+                                   ->where('student_id', '!=', $slotContext->getStudent()->id)
+                                   ->where('slot_start_at', $slotContext->getSlotStart())
+                                   ->count();
+
+        if ($groupedBookings || $individualBookings) {
+            throw new BookingValidationException(
+                'Individual slots cannot be booked when a group session is already scheduled.'
+            );
         }
     }
 

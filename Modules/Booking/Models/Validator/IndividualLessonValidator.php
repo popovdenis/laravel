@@ -40,9 +40,9 @@ class IndividualLessonValidator implements SlotValidatorInterface
     {
         // has Group bookings
         if ($this->getBookings($slotContext)->isNotEmpty()) {
-            throw new BookingValidationException(
-                'Individual slots cannot be booked when a group session is already scheduled.'
-            );
+//            throw new BookingValidationException(
+//                'Individual slots cannot be booked when a group session is already scheduled.'
+//            );
         }
     }
 
