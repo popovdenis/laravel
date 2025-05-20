@@ -21,22 +21,14 @@ class BookingManager
         $this->configProvider = $configProvider;
     }
 
-    public function getConfirmedBookings(): Collection
-    {
-        return Booking::leftJoin('booking_grid_flat', 'bookings.id', '=', 'booking_grid_flat.booking_id')
-            ->whereNull('booking_grid_flat.booking_id')
-            ->whereIn('bookings.status', [BookingStatus::PENDING, BookingStatus::CONFIRMED])
-            ->select('bookings.*')
-            ->get();
-    }
-
     public function getUpcomingBookings()
     {
         $cancellationDeadlineTime = $this->getCancellationDeadlineTime();
+
+        $bookings = Booking::where('status', BookingStatus::PENDING)->get();
+
         $minimalToStart = 5;
         $timezone = new \DateTimeZone('Europe/Warsaw');
-//        $dateTime = new \DateTime('now', new \DateTimeZone('UTC'));
-//        $dateTime->setTimezone($timezone);
         $now = now($timezone);
 
         return BookingGridFlat::where('status', BookingStatus::PENDING)
@@ -47,6 +39,6 @@ class BookingManager
 
     private function getCancellationDeadlineTime()
     {
-        return $this->configProvider->getBookingCancellationDeadline() ?? config('booking.rules.cancellation_deadline');
+        return $this->configProvider->getBookingCancellationDeadline();
     }
 }
