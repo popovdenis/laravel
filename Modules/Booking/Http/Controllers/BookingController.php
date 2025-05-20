@@ -102,7 +102,7 @@ class BookingController extends Controller
         );
     }
 
-    public function init(Request $request)
+    public function list(Request $request)
     {
         $slotsResponse = $this->bookingScheduleManager
             ->setFilters($this->getFilters($request))
