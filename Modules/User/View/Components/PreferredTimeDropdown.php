@@ -18,8 +18,8 @@ class PreferredTimeDropdown extends Component
 
     public function __construct()
     {
-        $this->startTime = auth()->user()->getAttribute('preferred_start_time')->format('H:i');
-        $this->endTime = auth()->user()->getAttribute('preferred_end_time')->format('H:i');
+        $this->startTime = auth()->user()->getAttribute('preferred_start_time');
+        $this->endTime = auth()->user()->getAttribute('preferred_end_time');
     }
 
     /**

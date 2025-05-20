@@ -40,8 +40,8 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('preferredTimePicker', () => ({
-            start: '{{ $startTime }}',
-            end: '{{ $endTime }}',
+            start: '{{ $startTime?->format('H:i') }}',
+            end: '{{ $endTime?->format('H:i') }}',
 
             init() {
                 flatpickr(this.$refs.start, {
