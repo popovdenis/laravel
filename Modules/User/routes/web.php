@@ -5,6 +5,7 @@ use Modules\User\Http\Controllers\AccountCreateController;
 use Modules\User\Http\Controllers\AccountLoginController;
 use Modules\User\Http\Controllers\AccountNewPasswordController;
 use Modules\User\Http\Controllers\AccountResetPasswordController;
+use Modules\User\Http\Controllers\ClassesController;
 use Modules\User\Http\Controllers\UserController;
 use Modules\User\Http\Controllers\OrderController;
 
@@ -14,15 +15,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware('auth')->prefix('account')->group(function () {
     // Profile Dashboard
-    Route::get('/profile', [UserController::class, 'index'])->name('profile.dashboard');
-    // Account Information
-    Route::get('/edit', [UserController::class, 'edit'])->name('profile.account-information.edit');
-    Route::patch('/edit', [UserController::class, 'update'])->name('profile.account-information.update');
-    Route::delete('/edit', [UserController::class, 'destroy'])->name('profile.account-information.destroy');
+    Route::get('profile', [UserController::class, 'index'])->name('profile.dashboard');
 
-    Route::get('/my-orders', [OrderController::class, 'index'])->name('profile.orders.index');
-    Route::post('/my-orders', [OrderController::class, 'store'])->name('profile.orders.store');
-    Route::get('/my-orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
+    // Account Information
+    Route::get('edit', [UserController::class, 'edit'])->name('profile.account-information.edit');
+    Route::patch('edit', [UserController::class, 'update'])->name('profile.account-information.update');
+    Route::delete('edit', [UserController::class, 'destroy'])->name('profile.account-information.destroy');
+
+    Route::get('my-orders', [OrderController::class, 'index'])->name('profile.orders.index');
+    Route::post('my-orders', [OrderController::class, 'store'])->name('profile.orders.store');
+    Route::get('my-orders/{order}', [OrderController::class, 'show'])->name('profile.orders.show');
+
+    // My classes
+    Route::get('classes', [ClassesController::class, 'index'])->name('account::classes.index');
 });
 
 Route::middleware('guest')->group(function () {

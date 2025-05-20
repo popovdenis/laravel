@@ -10,6 +10,7 @@
                 </div>
 
                 <!-- Navigation Links -->
+                <x-booking::my-classes-menu />
                 <x-booking::book-classes-menu />
             </div>
 
