@@ -32,7 +32,7 @@ class Configuration extends BaseSettings
                 Tabs\Tab::make('General')->schema([
                     Section::make('Country Options')->schema([
                         Select::make('base.locale.timezone')
-                            ->label('Applicable Payment Method')
+                            ->label('Default Country')
                             ->placeholder('-- Please Select --')
                             ->options($timezones)
                             ->required(),
@@ -40,28 +40,51 @@ class Configuration extends BaseSettings
                 ]),
 
                 Tabs\Tab::make('Booking Settings')->schema([
-                    TextInput::make('booking.rules.group_lesson_duration')
-                        ->label('Duration of Group Lesson')
-                        ->rules(['integer', 'min:0'])
-                        ->numeric()
-                        ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.group_lesson_duration'))),
-                    TextInput::make('booking.rules.individual_lesson_duration')
-                        ->label('Duration of Individual Lesson')
-                        ->rules(['integer', 'min:0'])
-                        ->numeric()
-                        ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.individual_lesson_duration'))),
-                    TextInput::make('booking.rules.cancellation_deadline', config('booking.rules.cancellation_deadline'))
-                        ->label('Allow cancellations up to (minutes before meeting starts)')
-                        ->rules(['integer', 'min:0'])
-                        ->helperText('After this period, cancellations are not allowed.')
-                        ->numeric()
-                        ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.cancellation_deadline'))),
+                    Section::make('General')->schema([
+                        TextInput::make('booking.rules.group_lesson_duration')
+                            ->label('Duration of Group Lesson')
+                            ->rules(['integer', 'min:0'])
+                            ->numeric()
+                            ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.group_lesson_duration')))
+                            ->columnSpan(5),
+                        TextInput::make('booking.rules.individual_lesson_duration')
+                            ->label('Duration of Individual Lesson')
+                            ->rules(['integer', 'min:0'])
+                            ->numeric()
+                            ->columnSpan(5)
+                            ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.individual_lesson_duration'))),
+                        TextInput::make('booking.rules.cancellation_deadline')
+                            ->label('Allow cancellations up to (minutes before meeting starts)')
+                            ->rules(['integer', 'min:0'])
+                            ->helperText('After this period, cancellations are not allowed.')
+                            ->numeric()
+                            ->columnSpan(5)
+                            ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.cancellation_deadline'))),
+                        TextInput::make('booking.rules.minimum_advance_time')
+                             ->label('Minimum advance time (minutes)')
+                             ->rules(['integer', 'min:0'])
+                             ->helperText('Minimum advance time required before booking (in minutes)')
+                             ->numeric()
+                            ->columnSpan(5)
+                             ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.minimum_advance_time'))),
+                        TextInput::make('booking.rules.maximum_group_members_capacity')
+                             ->label('Maximum group size')
+                             ->rules(['integer', 'min:0'])
+                             ->numeric()
+                             ->columnSpan(5)
+                             ->afterStateHydrated(fn ($component, $state) => $state ?? $component->state(config('booking.rules.maximum_group_members_capacity'))),
+                        Select::make('booking.listing.default_lesson_type')
+                              ->options([
+                                  'group' => 'Group',
+                                  'individual' => 'Individual',
+                              ])->columnSpan(5),
+                    ])->columns(10)->collapsible(),
                     Section::make('Advanced Settings')->schema([
                         Select::make('booking.applicable_payment_method')
                             ->options([
                                 'credits' => setting('payment.credits.title', 'Credits'),
                                 'stripe' => setting('payment.stripe.title', 'Stripe'),
-                            ])->columnSpan(6),
+                            ])->columnSpan(5),
                     ])->columns(10)->collapsible()
                 ]),
 
